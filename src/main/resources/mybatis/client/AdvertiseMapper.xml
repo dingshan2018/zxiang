@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.client.advertise.mapper.AdvertiseMapper">
+    
+    <resultMap type="Advertise" id="AdvertiseResult">
+        <result property="advertiseId"    column="advertise_id"    />
+        <result property="advertisorName"    column="advertisor_name"    />
+        <result property="managerId"    column="manager_id"    />
+        <result property="managerName"    column="manager_name"    />
+        <result property="managerPhone"    column="manager_phone"    />
+        <result property="business"    column="business"    />
+        <result property="releaseNum"    column="release_num"    />
+        <result property="lastScheduler"    column="last_scheduler"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="grade"    column="grade"    />
+        <result property="cutOff"    column="cut_off"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectAdvertiseVo">
+        select advertise_id, advertisor_name, manager_id, manager_name, manager_phone, business, release_num, last_scheduler, status, del_flag, grade, cut_off, create_by, create_time, update_by, update_time from zx_advertise
+    </sql>
+	
+    <select id="selectAdvertiseList" parameterType="Advertise" resultMap="AdvertiseResult">
+        <include refid="selectAdvertiseVo"/>
+        <where>  
+            <if test="advertiseId != null and advertiseId != ''"> and advertise_id = #{advertiseId}</if>
+             <if test="advertisorName != null and advertisorName != ''"> and advertisor_name = #{advertisorName}</if>
+             <if test="managerId != null and managerId != ''"> and manager_id = #{managerId}</if>
+             <if test="managerName != null and managerName != ''"> and manager_name = #{managerName}</if>
+             <if test="managerPhone != null and managerPhone != ''"> and manager_phone = #{managerPhone}</if>
+             <if test="business != null and business != ''"> and business = #{business}</if>
+             <if test="releaseNum != null and releaseNum != ''"> and release_num = #{releaseNum}</if>
+             <if test="lastScheduler != null and lastScheduler != ''"> and last_scheduler = #{lastScheduler}</if>
+             <if test="status != null and status != ''"> and status = #{status}</if>
+             <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
+             <if test="grade != null and grade != ''"> and grade = #{grade}</if>
+             <if test="cutOff != null and cutOff != ''"> and cut_off = #{cutOff}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectAdvertiseById" parameterType="Integer" resultMap="AdvertiseResult">
+        <include refid="selectAdvertiseVo"/>
+        where advertise_id = #{advertiseId}
+    </select>
+        
+    <insert id="insertAdvertise" parameterType="Advertise">
+        insert into zx_advertise
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="advertiseId != null and advertiseId != '' ">advertise_id,</if>
+			<if test="advertisorName != null and advertisorName != '' ">advertisor_name,</if>
+			<if test="managerId != null and managerId != '' ">manager_id,</if>
+			<if test="managerName != null and managerName != '' ">manager_name,</if>
+			<if test="managerPhone != null and managerPhone != '' ">manager_phone,</if>
+			<if test="business != null and business != '' ">business,</if>
+			<if test="releaseNum != null and releaseNum != '' ">release_num,</if>
+			<if test="lastScheduler != null and lastScheduler != '' ">last_scheduler,</if>
+			<if test="status != null and status != '' ">status,</if>
+			<if test="delFlag != null and delFlag != '' ">del_flag,</if>
+			<if test="grade != null and grade != '' ">grade,</if>
+			<if test="cutOff != null and cutOff != '' ">cut_off,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="updateBy != null and updateBy != '' ">update_by,</if>
+			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="advertiseId != null and advertiseId != ''">#{advertiseId},</if>
+			<if test="advertisorName != null and advertisorName != ''">#{advertisorName},</if>
+			<if test="managerId != null and managerId != ''">#{managerId},</if>
+			<if test="managerName != null and managerName != ''">#{managerName},</if>
+			<if test="managerPhone != null and managerPhone != ''">#{managerPhone},</if>
+			<if test="business != null and business != ''">#{business},</if>
+			<if test="releaseNum != null and releaseNum != ''">#{releaseNum},</if>
+			<if test="lastScheduler != null and lastScheduler != ''">#{lastScheduler},</if>
+			<if test="status != null and status != ''">#{status},</if>
+			<if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+			<if test="grade != null and grade != ''">#{grade},</if>
+			<if test="cutOff != null and cutOff != ''">#{cutOff},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateAdvertise" parameterType="Advertise">
+        update zx_advertise
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="advertisorName != null  and advertisorName != ''  ">advertisor_name = #{advertisorName},</if>
+            <if test="managerId != null  ">manager_id = #{managerId},</if>
+            <if test="managerName != null  and managerName != ''  ">manager_name = #{managerName},</if>
+            <if test="managerPhone != null  and managerPhone != ''  ">manager_phone = #{managerPhone},</if>
+            <if test="business != null  and business != ''  ">business = #{business},</if>
+            <if test="releaseNum != null  ">release_num = #{releaseNum},</if>
+            <if test="lastScheduler != null  ">last_scheduler = #{lastScheduler},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="delFlag != null  and delFlag != ''  ">del_flag = #{delFlag},</if>
+            <if test="grade != null  and grade != ''  ">grade = #{grade},</if>
+            <if test="cutOff != null  ">cut_off = #{cutOff},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where advertise_id = #{advertiseId}
+    </update>
+
+	<delete id="deleteAdvertiseById" parameterType="Integer">
+        delete from zx_advertise where advertise_id = #{advertiseId}
+    </delete>
+	
+    <delete id="deleteAdvertiseByIds" parameterType="String">
+        delete from zx_advertise where advertise_id in 
+        <foreach item="advertiseId" collection="array" open="(" separator="," close=")">
+            #{advertiseId}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,230 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-place-edit" th:object="${place}">
+            <input id="placeId" name="placeId" th:field="*{placeId}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">父级场所ID：</label>
+                <div class="col-sm-8">
+                    <input id="parentPlaceId" name="parentPlaceId" th:field="*{parentPlaceId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">场所编号（地区编号+序号）：</label>
+                <div class="col-sm-8">
+                    <input id="placeCode" name="placeCode" th:field="*{placeCode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">场所类型（自营、代理、自购）：</label>
+                <div class="col-sm-8">
+                    <input id="placeType" name="placeType" th:field="*{placeType}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">场景(场所业态)：</label>
+                <div class="col-sm-8">
+                    <input id="scene" name="scene" th:field="*{scene}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">场所名称：</label>
+                <div class="col-sm-8">
+                    <input id="name" name="name" th:field="*{name}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">场所简拼：</label>
+                <div class="col-sm-8">
+                    <input id="sname" name="sname" th:field="*{sname}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">详细地址：</label>
+                <div class="col-sm-8">
+                    <input id="address" name="address" th:field="*{address}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">省份：</label>
+                <div class="col-sm-8">
+                    <input id="province" name="province" th:field="*{province}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">城市：</label>
+                <div class="col-sm-8">
+                    <input id="city" name="city" th:field="*{city}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">地区：</label>
+                <div class="col-sm-8">
+                    <input id="county" name="county" th:field="*{county}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">经度：</label>
+                <div class="col-sm-8">
+                    <input id="lon" name="lon" th:field="*{lon}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">纬度：</label>
+                <div class="col-sm-8">
+                    <input id="lat" name="lat" th:field="*{lat}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">扫码套餐（备用）：</label>
+                <div class="col-sm-8">
+                    <input id="packet" name="packet" th:field="*{packet}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">出纸价格（以设备为准，设备没有以场所为准）：</label>
+                <div class="col-sm-8">
+                    <input id="tissuePrice" name="tissuePrice" th:field="*{tissuePrice}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">每次出纸长度：</label>
+                <div class="col-sm-8">
+                    <input id="tissueLen" name="tissueLen" th:field="*{tissueLen}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">维修员：</label>
+                <div class="col-sm-8">
+                    <input id="repairId" name="repairId" th:field="*{repairId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">送纸员：</label>
+                <div class="col-sm-8">
+                    <input id="supplyId" name="supplyId" th:field="*{supplyId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">经办人：</label>
+                <div class="col-sm-8">
+                    <input id="operatorId" name="operatorId" th:field="*{operatorId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">机主：</label>
+                <div class="col-sm-8">
+                    <input id="ownerId" name="ownerId" th:field="*{ownerId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">投放设备数量：</label>
+                <div class="col-sm-8">
+                    <input id="deviceCount" name="deviceCount" th:field="*{deviceCount}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">开户行（合同收款方）：</label>
+                <div class="col-sm-8">
+                    <input id="ctBank" name="ctBank" th:field="*{ctBank}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">收款账号：</label>
+                <div class="col-sm-8">
+                    <input id="ctAccount" name="ctAccount" th:field="*{ctAccount}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">收款人：</label>
+                <div class="col-sm-8">
+                    <input id="ctReceiver" name="ctReceiver" th:field="*{ctReceiver}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">收款人联系电话：</label>
+                <div class="col-sm-8">
+                    <input id="ctPhone" name="ctPhone" th:field="*{ctPhone}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">收款人身份证：</label>
+                <div class="col-sm-8">
+                    <input id="ctIdentity" name="ctIdentity" th:field="*{ctIdentity}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">商家分成比例：</label>
+                <div class="col-sm-8">
+                    <input id="ctRate" name="ctRate" th:field="*{ctRate}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">场所状态：</label>
+                <div class="col-sm-8">
+                    <input id="status" name="status" th:field="*{status}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">是否删除：</label>
+                <div class="col-sm-8">
+                    <input id="delFlag" name="delFlag" th:field="*{delFlag}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <input id="note" name="note" th:field="*{note}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">创建者：</label>
+                <div class="col-sm-8">
+                    <input id="createBy" name="createBy" th:field="*{createBy}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">：</label>
+                <div class="col-sm-8">
+                    <input id="createTime" name="createTime" th:field="*{createTime}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">：</label>
+                <div class="col-sm-8">
+                    <input id="updateBy" name="updateBy" th:field="*{updateBy}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">：</label>
+                <div class="col-sm-8">
+                    <input id="updateTime" name="updateTime" th:field="*{updateTime}" class="form-control" type="text">
+                </div>
+            </div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "business/place"
+		$("#form-place-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			},
+			submitHandler: function(form) {
+				$.operate.save(prefix + "/edit", $('#form-place-edit').serialize());
+			}
+		});
+	</script>
+</body>
+</html>

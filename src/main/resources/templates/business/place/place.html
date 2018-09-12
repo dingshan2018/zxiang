@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="btn-group hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:place:add">
+				<i class="fa fa-plus"></i> 新增
+			</a>
+			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="business:place:remove">
+				<i class="fa fa-trash-o"></i> 删除
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('business:place:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('business:place:remove')}]];
+        var prefix = ctx + "business/place"
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "场所管理",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'placeId', 
+					title : '场所ID' 
+				},
+				{
+					field : 'parentPlaceId', 
+					title : '父级场所ID' 
+				},
+				{
+					field : 'placeCode', 
+					title : '场所编号（地区编号+序号）' 
+				},
+				{
+					field : 'placeType', 
+					title : '场所类型（自营、代理、自购）' 
+				},
+				{
+					field : 'scene', 
+					title : '场景(场所业态)' 
+				},
+				{
+					field : 'name', 
+					title : '场所名称' 
+				},
+				{
+					field : 'sname', 
+					title : '场所简拼' 
+				},
+				{
+					field : 'address', 
+					title : '详细地址' 
+				},
+				{
+					field : 'province', 
+					title : '省份' 
+				},
+				{
+					field : 'city', 
+					title : '城市' 
+				},
+				{
+					field : 'county', 
+					title : '地区' 
+				},
+				{
+					field : 'lon', 
+					title : '经度' 
+				},
+				{
+					field : 'lat', 
+					title : '纬度' 
+				},
+				{
+					field : 'packet', 
+					title : '扫码套餐（备用）' 
+				},
+				{
+					field : 'tissuePrice', 
+					title : '出纸价格（以设备为准，设备没有以场所为准）' 
+				},
+				{
+					field : 'tissueLen', 
+					title : '每次出纸长度' 
+				},
+				{
+					field : 'repairId', 
+					title : '维修员' 
+				},
+				{
+					field : 'supplyId', 
+					title : '送纸员' 
+				},
+				{
+					field : 'operatorId', 
+					title : '经办人' 
+				},
+				{
+					field : 'ownerId', 
+					title : '机主' 
+				},
+				{
+					field : 'deviceCount', 
+					title : '投放设备数量' 
+				},
+				{
+					field : 'ctBank', 
+					title : '开户行（合同收款方）' 
+				},
+				{
+					field : 'ctAccount', 
+					title : '收款账号' 
+				},
+				{
+					field : 'ctReceiver', 
+					title : '收款人' 
+				},
+				{
+					field : 'ctPhone', 
+					title : '收款人联系电话' 
+				},
+				{
+					field : 'ctIdentity', 
+					title : '收款人身份证' 
+				},
+				{
+					field : 'ctRate', 
+					title : '商家分成比例' 
+				},
+				{
+					field : 'status', 
+					title : '场所状态' 
+				},
+				{
+					field : 'delFlag', 
+					title : '是否删除' 
+				},
+				{
+					field : 'note', 
+					title : '备注' 
+				},
+				{
+					field : 'createBy', 
+					title : '创建者' 
+				},
+				{
+					field : 'createTime', 
+					title : '' 
+				},
+				{
+					field : 'updateBy', 
+					title : '' 
+				},
+				{
+					field : 'updateTime', 
+					title : '' 
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.placeId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.placeId + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

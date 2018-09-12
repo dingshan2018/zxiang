@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.business.terminalParam.mapper.TerminalParamMapper">
+    
+    <resultMap type="TerminalParam" id="TerminalParamResult">
+        <result property="id"    column="id"    />
+        <result property="terminalId"    column="terminal_id"    />
+        <result property="paramKey"    column="param_key"    />
+        <result property="paramValue1"    column="param_value1"    />
+        <result property="paramValue2"    column="param_value2"    />
+        <result property="paramValue3"    column="param_value3"    />
+        <result property="paramValue4"    column="param_value4"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+	
+	<sql id="selectTerminalParamVo">
+        select id, terminal_id, param_key, param_value1, param_value2, param_value3, param_value4, create_by, create_time from zx_terminal_param
+    </sql>
+	
+    <select id="selectTerminalParamList" parameterType="TerminalParam" resultMap="TerminalParamResult">
+        <include refid="selectTerminalParamVo"/>
+        <where>  
+            <if test="id != null and id != ''"> and id = #{id}</if>
+             <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
+             <if test="paramKey != null and paramKey != ''"> and param_key = #{paramKey}</if>
+             <if test="paramValue1 != null and paramValue1 != ''"> and param_value1 = #{paramValue1}</if>
+             <if test="paramValue2 != null and paramValue2 != ''"> and param_value2 = #{paramValue2}</if>
+             <if test="paramValue3 != null and paramValue3 != ''"> and param_value3 = #{paramValue3}</if>
+             <if test="paramValue4 != null and paramValue4 != ''"> and param_value4 = #{paramValue4}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectTerminalParamById" parameterType="Integer" resultMap="TerminalParamResult">
+        <include refid="selectTerminalParamVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTerminalParam" parameterType="TerminalParam">
+        insert into zx_terminal_param
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null and id != '' ">id,</if>
+			<if test="terminalId != null and terminalId != '' ">terminal_id,</if>
+			<if test="paramKey != null and paramKey != '' ">param_key,</if>
+			<if test="paramValue1 != null and paramValue1 != '' ">param_value1,</if>
+			<if test="paramValue2 != null and paramValue2 != '' ">param_value2,</if>
+			<if test="paramValue3 != null and paramValue3 != '' ">param_value3,</if>
+			<if test="paramValue4 != null and paramValue4 != '' ">param_value4,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null and id != ''">#{id},</if>
+			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
+			<if test="paramKey != null and paramKey != ''">#{paramKey},</if>
+			<if test="paramValue1 != null and paramValue1 != ''">#{paramValue1},</if>
+			<if test="paramValue2 != null and paramValue2 != ''">#{paramValue2},</if>
+			<if test="paramValue3 != null and paramValue3 != ''">#{paramValue3},</if>
+			<if test="paramValue4 != null and paramValue4 != ''">#{paramValue4},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateTerminalParam" parameterType="TerminalParam">
+        update zx_terminal_param
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="terminalId != null  ">terminal_id = #{terminalId},</if>
+            <if test="paramKey != null  and paramKey != ''  ">param_key = #{paramKey},</if>
+            <if test="paramValue1 != null  and paramValue1 != ''  ">param_value1 = #{paramValue1},</if>
+            <if test="paramValue2 != null  and paramValue2 != ''  ">param_value2 = #{paramValue2},</if>
+            <if test="paramValue3 != null  and paramValue3 != ''  ">param_value3 = #{paramValue3},</if>
+            <if test="paramValue4 != null  and paramValue4 != ''  ">param_value4 = #{paramValue4},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteTerminalParamById" parameterType="Integer">
+        delete from zx_terminal_param where id = #{id}
+    </delete>
+	
+    <delete id="deleteTerminalParamByIds" parameterType="String">
+        delete from zx_terminal_param where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

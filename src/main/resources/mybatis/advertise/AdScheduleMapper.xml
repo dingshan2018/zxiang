@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.advertise.adSchedule.mapper.AdScheduleMapper">
+    
+    <resultMap type="AdSchedule" id="AdScheduleResult">
+        <result property="scheduleId"    column="schedule_id"    />
+        <result property="scheduleName"    column="schedule_name"    />
+        <result property="scheduleType"    column="schedule_type"    />
+        <result property="scheduleStatus"    column="schedule_status"    />
+        <result property="isIssued"    column="is_issued"    />
+        <result property="isDel"    column="is_del"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectAdScheduleVo">
+        select schedule_id, schedule_name, schedule_type, schedule_status, is_issued, is_del, create_by, create_time, update_by, update_time from zx_ad_schedule
+    </sql>
+	
+    <select id="selectAdScheduleList" parameterType="AdSchedule" resultMap="AdScheduleResult">
+        <include refid="selectAdScheduleVo"/>
+        <where>  
+            <if test="scheduleId != null and scheduleId != ''"> and schedule_id = #{scheduleId}</if>
+             <if test="scheduleName != null and scheduleName != ''"> and schedule_name = #{scheduleName}</if>
+             <if test="scheduleType != null and scheduleType != ''"> and schedule_type = #{scheduleType}</if>
+             <if test="scheduleStatus != null and scheduleStatus != ''"> and schedule_status = #{scheduleStatus}</if>
+             <if test="isIssued != null and isIssued != ''"> and is_issued = #{isIssued}</if>
+             <if test="isDel != null and isDel != ''"> and is_del = #{isDel}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectAdScheduleById" parameterType="Integer" resultMap="AdScheduleResult">
+        <include refid="selectAdScheduleVo"/>
+        where schedule_id = #{scheduleId}
+    </select>
+        
+    <insert id="insertAdSchedule" parameterType="AdSchedule">
+        insert into zx_ad_schedule
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="scheduleId != null and scheduleId != '' ">schedule_id,</if>
+			<if test="scheduleName != null and scheduleName != '' ">schedule_name,</if>
+			<if test="scheduleType != null and scheduleType != '' ">schedule_type,</if>
+			<if test="scheduleStatus != null and scheduleStatus != '' ">schedule_status,</if>
+			<if test="isIssued != null and isIssued != '' ">is_issued,</if>
+			<if test="isDel != null and isDel != '' ">is_del,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="updateBy != null and updateBy != '' ">update_by,</if>
+			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="scheduleId != null and scheduleId != ''">#{scheduleId},</if>
+			<if test="scheduleName != null and scheduleName != ''">#{scheduleName},</if>
+			<if test="scheduleType != null and scheduleType != ''">#{scheduleType},</if>
+			<if test="scheduleStatus != null and scheduleStatus != ''">#{scheduleStatus},</if>
+			<if test="isIssued != null and isIssued != ''">#{isIssued},</if>
+			<if test="isDel != null and isDel != ''">#{isDel},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateAdSchedule" parameterType="AdSchedule">
+        update zx_ad_schedule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="scheduleName != null  and scheduleName != ''  ">schedule_name = #{scheduleName},</if>
+            <if test="scheduleType != null  and scheduleType != ''  ">schedule_type = #{scheduleType},</if>
+            <if test="scheduleStatus != null  and scheduleStatus != ''  ">schedule_status = #{scheduleStatus},</if>
+            <if test="isIssued != null  and isIssued != ''  ">is_issued = #{isIssued},</if>
+            <if test="isDel != null  and isDel != ''  ">is_del = #{isDel},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where schedule_id = #{scheduleId}
+    </update>
+
+	<delete id="deleteAdScheduleById" parameterType="Integer">
+        delete from zx_ad_schedule where schedule_id = #{scheduleId}
+    </delete>
+	
+    <delete id="deleteAdScheduleByIds" parameterType="String">
+        delete from zx_ad_schedule where schedule_id in 
+        <foreach item="scheduleId" collection="array" open="(" separator="," close=")">
+            #{scheduleId}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.settle.deviceIncomeDaily.mapper.DeviceIncomeDailyMapper">
+    
+    <resultMap type="DeviceIncomeDaily" id="DeviceIncomeDailyResult">
+        <result property="incomeId"    column="income_id"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="terminalId"    column="terminal_id"    />
+        <result property="placeId"    column="place_id"    />
+        <result property="sellIncome"    column="sell_income"    />
+        <result property="adIncome"    column="ad_income"    />
+        <result property="scanIncome"    column="scan_income"    />
+        <result property="sumDate"    column="sum_date"    />
+        <result property="refundIncome"    column="refund_income"    />
+        <result property="refundNum"    column="refund_num"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectDeviceIncomeDailyVo">
+        select income_id, device_id, terminal_id, place_id, sell_income, ad_income, scan_income, sum_date, refund_income, refund_num, create_by, create_time, update_by, update_time from zx_device_income_daily
+    </sql>
+	
+    <select id="selectDeviceIncomeDailyList" parameterType="DeviceIncomeDaily" resultMap="DeviceIncomeDailyResult">
+        <include refid="selectDeviceIncomeDailyVo"/>
+        <where>  
+            <if test="incomeId != null and incomeId != ''"> and income_id = #{incomeId}</if>
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
+             <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
+             <if test="sellIncome != null and sellIncome != ''"> and sell_income = #{sellIncome}</if>
+             <if test="adIncome != null and adIncome != ''"> and ad_income = #{adIncome}</if>
+             <if test="scanIncome != null and scanIncome != ''"> and scan_income = #{scanIncome}</if>
+             <if test="sumDate != null and sumDate != ''"> and sum_date = #{sumDate}</if>
+             <if test="refundIncome != null and refundIncome != ''"> and refund_income = #{refundIncome}</if>
+             <if test="refundNum != null and refundNum != ''"> and refund_num = #{refundNum}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectDeviceIncomeDailyById" parameterType="Integer" resultMap="DeviceIncomeDailyResult">
+        <include refid="selectDeviceIncomeDailyVo"/>
+        where income_id = #{incomeId}
+    </select>
+        
+    <insert id="insertDeviceIncomeDaily" parameterType="DeviceIncomeDaily">
+        insert into zx_device_income_daily
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="incomeId != null and incomeId != '' ">income_id,</if>
+			<if test="deviceId != null and deviceId != '' ">device_id,</if>
+			<if test="terminalId != null and terminalId != '' ">terminal_id,</if>
+			<if test="placeId != null and placeId != '' ">place_id,</if>
+			<if test="sellIncome != null and sellIncome != '' ">sell_income,</if>
+			<if test="adIncome != null and adIncome != '' ">ad_income,</if>
+			<if test="scanIncome != null and scanIncome != '' ">scan_income,</if>
+			<if test="sumDate != null and sumDate != '' ">sum_date,</if>
+			<if test="refundIncome != null and refundIncome != '' ">refund_income,</if>
+			<if test="refundNum != null and refundNum != '' ">refund_num,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="updateBy != null and updateBy != '' ">update_by,</if>
+			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="incomeId != null and incomeId != ''">#{incomeId},</if>
+			<if test="deviceId != null and deviceId != ''">#{deviceId},</if>
+			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
+			<if test="placeId != null and placeId != ''">#{placeId},</if>
+			<if test="sellIncome != null and sellIncome != ''">#{sellIncome},</if>
+			<if test="adIncome != null and adIncome != ''">#{adIncome},</if>
+			<if test="scanIncome != null and scanIncome != ''">#{scanIncome},</if>
+			<if test="sumDate != null and sumDate != ''">#{sumDate},</if>
+			<if test="refundIncome != null and refundIncome != ''">#{refundIncome},</if>
+			<if test="refundNum != null and refundNum != ''">#{refundNum},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateDeviceIncomeDaily" parameterType="DeviceIncomeDaily">
+        update zx_device_income_daily
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceId != null  ">device_id = #{deviceId},</if>
+            <if test="terminalId != null  ">terminal_id = #{terminalId},</if>
+            <if test="placeId != null  ">place_id = #{placeId},</if>
+            <if test="sellIncome != null  ">sell_income = #{sellIncome},</if>
+            <if test="adIncome != null  ">ad_income = #{adIncome},</if>
+            <if test="scanIncome != null  ">scan_income = #{scanIncome},</if>
+            <if test="sumDate != null  ">sum_date = #{sumDate},</if>
+            <if test="refundIncome != null  ">refund_income = #{refundIncome},</if>
+            <if test="refundNum != null  ">refund_num = #{refundNum},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where income_id = #{incomeId}
+    </update>
+
+	<delete id="deleteDeviceIncomeDailyById" parameterType="Integer">
+        delete from zx_device_income_daily where income_id = #{incomeId}
+    </delete>
+	
+    <delete id="deleteDeviceIncomeDailyByIds" parameterType="String">
+        delete from zx_device_income_daily where income_id in 
+        <foreach item="incomeId" collection="array" open="(" separator="," close=")">
+            #{incomeId}
+        </foreach>
+    </delete>
+    
+</mapper>

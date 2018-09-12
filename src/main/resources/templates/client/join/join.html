@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="btn-group hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="client:join:add">
+				<i class="fa fa-plus"></i> 新增
+			</a>
+			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="client:join:remove">
+				<i class="fa fa-trash-o"></i> 删除
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('client:join:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('client:join:remove')}]];
+        var prefix = ctx + "client/join"
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "加盟商",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'joinId', 
+					title : '加盟ID' 
+				},
+				{
+					field : 'joinerName', 
+					title : '加盟商名称' 
+				},
+				{
+					field : 'joinerId', 
+					title : '加盟机主ID' 
+				},
+				{
+					field : 'deviceNum', 
+					title : '投放设备数量' 
+				},
+				{
+					field : 'bankAccount', 
+					title : '收款账号' 
+				},
+				{
+					field : 'bankReceiver', 
+					title : '收款人' 
+				},
+				{
+					field : 'bankName', 
+					title : '开户行' 
+				},
+				{
+					field : 'status', 
+					title : '状态' 
+				},
+				{
+					field : 'delFlag', 
+					title : '是否删除' 
+				},
+				{
+					field : 'promotionRate', 
+					title : '推广收益' 
+				},
+				{
+					field : 'adRate', 
+					title : '广告收益' 
+				},
+				{
+					field : 'scanRate', 
+					title : '扫码收益' 
+				},
+				{
+					field : 'createBy', 
+					title : '' 
+				},
+				{
+					field : 'createTime', 
+					title : '' 
+				},
+				{
+					field : 'updateBy', 
+					title : '' 
+				},
+				{
+					field : 'updateTime', 
+					title : '' 
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.joinId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.joinId + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.business.changeTerminal.mapper.ChangeTerminalMapper">
+    
+    <resultMap type="ChangeTerminal" id="ChangeTerminalResult">
+        <result property="changeTerminalId"    column="change_terminal_id"    />
+        <result property="oldTerminalId"    column="old_terminal_id"    />
+        <result property="newTerminalId"    column="new_terminal_id"    />
+        <result property="oldVolumn"    column="old_volumn"    />
+        <result property="changerId"    column="changerId"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectChangeTerminalVo">
+        select change_terminal_id, old_terminal_id, new_terminal_id, old_volumn, changerId, create_by, create_time, update_by, update_time from zx_change_terminal
+    </sql>
+	
+    <select id="selectChangeTerminalList" parameterType="ChangeTerminal" resultMap="ChangeTerminalResult">
+        <include refid="selectChangeTerminalVo"/>
+        <where>  
+            <if test="changeTerminalId != null and changeTerminalId != ''"> and change_terminal_id = #{changeTerminalId}</if>
+             <if test="oldTerminalId != null and oldTerminalId != ''"> and old_terminal_id = #{oldTerminalId}</if>
+             <if test="newTerminalId != null and newTerminalId != ''"> and new_terminal_id = #{newTerminalId}</if>
+             <if test="oldVolumn != null and oldVolumn != ''"> and old_volumn = #{oldVolumn}</if>
+             <if test="changerId != null and changerId != ''"> and changerId = #{changerId}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectChangeTerminalById" parameterType="Integer" resultMap="ChangeTerminalResult">
+        <include refid="selectChangeTerminalVo"/>
+        where change_terminal_id = #{changeTerminalId}
+    </select>
+        
+    <insert id="insertChangeTerminal" parameterType="ChangeTerminal">
+        insert into zx_change_terminal
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="changeTerminalId != null and changeTerminalId != '' ">change_terminal_id,</if>
+			<if test="oldTerminalId != null and oldTerminalId != '' ">old_terminal_id,</if>
+			<if test="newTerminalId != null and newTerminalId != '' ">new_terminal_id,</if>
+			<if test="oldVolumn != null and oldVolumn != '' ">old_volumn,</if>
+			<if test="changerId != null and changerId != '' ">changerId,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="updateBy != null and updateBy != '' ">update_by,</if>
+			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="changeTerminalId != null and changeTerminalId != ''">#{changeTerminalId},</if>
+			<if test="oldTerminalId != null and oldTerminalId != ''">#{oldTerminalId},</if>
+			<if test="newTerminalId != null and newTerminalId != ''">#{newTerminalId},</if>
+			<if test="oldVolumn != null and oldVolumn != ''">#{oldVolumn},</if>
+			<if test="changerId != null and changerId != ''">#{changerId},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateChangeTerminal" parameterType="ChangeTerminal">
+        update zx_change_terminal
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="oldTerminalId != null  ">old_terminal_id = #{oldTerminalId},</if>
+            <if test="newTerminalId != null  ">new_terminal_id = #{newTerminalId},</if>
+            <if test="oldVolumn != null  and oldVolumn != ''  ">old_volumn = #{oldVolumn},</if>
+            <if test="changerId != null  ">changerId = #{changerId},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where change_terminal_id = #{changeTerminalId}
+    </update>
+
+	<delete id="deleteChangeTerminalById" parameterType="Integer">
+        delete from zx_change_terminal where change_terminal_id = #{changeTerminalId}
+    </delete>
+	
+    <delete id="deleteChangeTerminalByIds" parameterType="String">
+        delete from zx_change_terminal where change_terminal_id in 
+        <foreach item="changeTerminalId" collection="array" open="(" separator="," close=")">
+            #{changeTerminalId}
+        </foreach>
+    </delete>
+    
+</mapper>

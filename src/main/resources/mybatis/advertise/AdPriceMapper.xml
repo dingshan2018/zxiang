@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.advertise.adPrice.mapper.AdPriceMapper">
+    
+    <resultMap type="AdPrice" id="AdPriceResult">
+        <result property="priceId"    column="price_id"    />
+        <result property="price"    column="price"    />
+        <result property="placeGrade"    column="place_grade"    />
+        <result property="dailyGrade"    column="daily_grade"    />
+        <result property="areaGrade"    column="area_grade"    />
+        <result property="isDel"    column="is_del"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectAdPriceVo">
+        select price_id, price, place_grade, daily_grade, area_grade, is_del, create_by, create_time, update_by, update_time from zx_ad_price
+    </sql>
+	
+    <select id="selectAdPriceList" parameterType="AdPrice" resultMap="AdPriceResult">
+        <include refid="selectAdPriceVo"/>
+        <where>  
+            <if test="priceId != null and priceId != ''"> and price_id = #{priceId}</if>
+             <if test="price != null and price != ''"> and price = #{price}</if>
+             <if test="placeGrade != null and placeGrade != ''"> and place_grade = #{placeGrade}</if>
+             <if test="dailyGrade != null and dailyGrade != ''"> and daily_grade = #{dailyGrade}</if>
+             <if test="areaGrade != null and areaGrade != ''"> and area_grade = #{areaGrade}</if>
+             <if test="isDel != null and isDel != ''"> and is_del = #{isDel}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectAdPriceById" parameterType="Integer" resultMap="AdPriceResult">
+        <include refid="selectAdPriceVo"/>
+        where price_id = #{priceId}
+    </select>
+        
+    <insert id="insertAdPrice" parameterType="AdPrice">
+        insert into zx_ad_price
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="priceId != null and priceId != '' ">price_id,</if>
+			<if test="price != null and price != '' ">price,</if>
+			<if test="placeGrade != null and placeGrade != '' ">place_grade,</if>
+			<if test="dailyGrade != null and dailyGrade != '' ">daily_grade,</if>
+			<if test="areaGrade != null and areaGrade != '' ">area_grade,</if>
+			<if test="isDel != null and isDel != '' ">is_del,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="updateBy != null and updateBy != '' ">update_by,</if>
+			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="priceId != null and priceId != ''">#{priceId},</if>
+			<if test="price != null and price != ''">#{price},</if>
+			<if test="placeGrade != null and placeGrade != ''">#{placeGrade},</if>
+			<if test="dailyGrade != null and dailyGrade != ''">#{dailyGrade},</if>
+			<if test="areaGrade != null and areaGrade != ''">#{areaGrade},</if>
+			<if test="isDel != null and isDel != ''">#{isDel},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateAdPrice" parameterType="AdPrice">
+        update zx_ad_price
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="price != null  ">price = #{price},</if>
+            <if test="placeGrade != null  and placeGrade != ''  ">place_grade = #{placeGrade},</if>
+            <if test="dailyGrade != null  and dailyGrade != ''  ">daily_grade = #{dailyGrade},</if>
+            <if test="areaGrade != null  and areaGrade != ''  ">area_grade = #{areaGrade},</if>
+            <if test="isDel != null  and isDel != ''  ">is_del = #{isDel},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  and createTime != ''  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where price_id = #{priceId}
+    </update>
+
+	<delete id="deleteAdPriceById" parameterType="Integer">
+        delete from zx_ad_price where price_id = #{priceId}
+    </delete>
+	
+    <delete id="deleteAdPriceByIds" parameterType="String">
+        delete from zx_ad_price where price_id in 
+        <foreach item="priceId" collection="array" open="(" separator="," close=")">
+            #{priceId}
+        </foreach>
+    </delete>
+    
+</mapper>

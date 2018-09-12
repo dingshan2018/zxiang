@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.business.place.mapper.PlaceMapper">
+    
+    <resultMap type="Place" id="PlaceResult">
+        <result property="placeId"    column="place_id"    />
+        <result property="parentPlaceId"    column="parent_place_id"    />
+        <result property="placeCode"    column="place_code"    />
+        <result property="placeType"    column="place_type"    />
+        <result property="scene"    column="scene"    />
+        <result property="name"    column="name"    />
+        <result property="sname"    column="sname"    />
+        <result property="address"    column="address"    />
+        <result property="province"    column="province"    />
+        <result property="city"    column="city"    />
+        <result property="county"    column="county"    />
+        <result property="lon"    column="lon"    />
+        <result property="lat"    column="lat"    />
+        <result property="packet"    column="packet"    />
+        <result property="tissuePrice"    column="tissue_price"    />
+        <result property="tissueLen"    column="tissue_len"    />
+        <result property="repairId"    column="repair_id"    />
+        <result property="supplyId"    column="supply_id"    />
+        <result property="operatorId"    column="operator_id"    />
+        <result property="ownerId"    column="owner_id"    />
+        <result property="deviceCount"    column="device_count"    />
+        <result property="ctBank"    column="ct_bank"    />
+        <result property="ctAccount"    column="ct_account"    />
+        <result property="ctReceiver"    column="ct_receiver"    />
+        <result property="ctPhone"    column="ct_phone"    />
+        <result property="ctIdentity"    column="ct_identity"    />
+        <result property="ctRate"    column="ct_rate"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="note"    column="note"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectPlaceVo">
+        select place_id, parent_place_id, place_code, place_type, scene, name, sname, address, province, city, county, lon, lat, packet, tissue_price, tissue_len, repair_id, supply_id, operator_id, owner_id, device_count, ct_bank, ct_account, ct_receiver, ct_phone, ct_identity, ct_rate, status, del_flag, note, create_by, create_time, update_by, update_time from zx_place
+    </sql>
+	
+    <select id="selectPlaceList" parameterType="Place" resultMap="PlaceResult">
+        <include refid="selectPlaceVo"/>
+        <where>  
+            <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
+             <if test="parentPlaceId != null and parentPlaceId != ''"> and parent_place_id = #{parentPlaceId}</if>
+             <if test="placeCode != null and placeCode != ''"> and place_code = #{placeCode}</if>
+             <if test="placeType != null and placeType != ''"> and place_type = #{placeType}</if>
+             <if test="scene != null and scene != ''"> and scene = #{scene}</if>
+             <if test="name != null and name != ''"> and name = #{name}</if>
+             <if test="sname != null and sname != ''"> and sname = #{sname}</if>
+             <if test="address != null and address != ''"> and address = #{address}</if>
+             <if test="province != null and province != ''"> and province = #{province}</if>
+             <if test="city != null and city != ''"> and city = #{city}</if>
+             <if test="county != null and county != ''"> and county = #{county}</if>
+             <if test="lon != null and lon != ''"> and lon = #{lon}</if>
+             <if test="lat != null and lat != ''"> and lat = #{lat}</if>
+             <if test="packet != null and packet != ''"> and packet = #{packet}</if>
+             <if test="tissuePrice != null and tissuePrice != ''"> and tissue_price = #{tissuePrice}</if>
+             <if test="tissueLen != null and tissueLen != ''"> and tissue_len = #{tissueLen}</if>
+             <if test="repairId != null and repairId != ''"> and repair_id = #{repairId}</if>
+             <if test="supplyId != null and supplyId != ''"> and supply_id = #{supplyId}</if>
+             <if test="operatorId != null and operatorId != ''"> and operator_id = #{operatorId}</if>
+             <if test="ownerId != null and ownerId != ''"> and owner_id = #{ownerId}</if>
+             <if test="deviceCount != null and deviceCount != ''"> and device_count = #{deviceCount}</if>
+             <if test="ctBank != null and ctBank != ''"> and ct_bank = #{ctBank}</if>
+             <if test="ctAccount != null and ctAccount != ''"> and ct_account = #{ctAccount}</if>
+             <if test="ctReceiver != null and ctReceiver != ''"> and ct_receiver = #{ctReceiver}</if>
+             <if test="ctPhone != null and ctPhone != ''"> and ct_phone = #{ctPhone}</if>
+             <if test="ctIdentity != null and ctIdentity != ''"> and ct_identity = #{ctIdentity}</if>
+             <if test="ctRate != null and ctRate != ''"> and ct_rate = #{ctRate}</if>
+             <if test="status != null and status != ''"> and status = #{status}</if>
+             <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
+             <if test="note != null and note != ''"> and note = #{note}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectPlaceById" parameterType="Integer" resultMap="PlaceResult">
+        <include refid="selectPlaceVo"/>
+        where place_id = #{placeId}
+    </select>
+        
+    <insert id="insertPlace" parameterType="Place">
+        insert into zx_place
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="placeId != null and placeId != '' ">place_id,</if>
+			<if test="parentPlaceId != null and parentPlaceId != '' ">parent_place_id,</if>
+			<if test="placeCode != null and placeCode != '' ">place_code,</if>
+			<if test="placeType != null and placeType != '' ">place_type,</if>
+			<if test="scene != null and scene != '' ">scene,</if>
+			<if test="name != null and name != '' ">name,</if>
+			<if test="sname != null and sname != '' ">sname,</if>
+			<if test="address != null and address != '' ">address,</if>
+			<if test="province != null and province != '' ">province,</if>
+			<if test="city != null and city != '' ">city,</if>
+			<if test="county != null and county != '' ">county,</if>
+			<if test="lon != null and lon != '' ">lon,</if>
+			<if test="lat != null and lat != '' ">lat,</if>
+			<if test="packet != null and packet != '' ">packet,</if>
+			<if test="tissuePrice != null and tissuePrice != '' ">tissue_price,</if>
+			<if test="tissueLen != null and tissueLen != '' ">tissue_len,</if>
+			<if test="repairId != null and repairId != '' ">repair_id,</if>
+			<if test="supplyId != null and supplyId != '' ">supply_id,</if>
+			<if test="operatorId != null and operatorId != '' ">operator_id,</if>
+			<if test="ownerId != null and ownerId != '' ">owner_id,</if>
+			<if test="deviceCount != null and deviceCount != '' ">device_count,</if>
+			<if test="ctBank != null and ctBank != '' ">ct_bank,</if>
+			<if test="ctAccount != null and ctAccount != '' ">ct_account,</if>
+			<if test="ctReceiver != null and ctReceiver != '' ">ct_receiver,</if>
+			<if test="ctPhone != null and ctPhone != '' ">ct_phone,</if>
+			<if test="ctIdentity != null and ctIdentity != '' ">ct_identity,</if>
+			<if test="ctRate != null and ctRate != '' ">ct_rate,</if>
+			<if test="status != null and status != '' ">status,</if>
+			<if test="delFlag != null and delFlag != '' ">del_flag,</if>
+			<if test="note != null and note != '' ">note,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="updateBy != null and updateBy != '' ">update_by,</if>
+			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="placeId != null and placeId != ''">#{placeId},</if>
+			<if test="parentPlaceId != null and parentPlaceId != ''">#{parentPlaceId},</if>
+			<if test="placeCode != null and placeCode != ''">#{placeCode},</if>
+			<if test="placeType != null and placeType != ''">#{placeType},</if>
+			<if test="scene != null and scene != ''">#{scene},</if>
+			<if test="name != null and name != ''">#{name},</if>
+			<if test="sname != null and sname != ''">#{sname},</if>
+			<if test="address != null and address != ''">#{address},</if>
+			<if test="province != null and province != ''">#{province},</if>
+			<if test="city != null and city != ''">#{city},</if>
+			<if test="county != null and county != ''">#{county},</if>
+			<if test="lon != null and lon != ''">#{lon},</if>
+			<if test="lat != null and lat != ''">#{lat},</if>
+			<if test="packet != null and packet != ''">#{packet},</if>
+			<if test="tissuePrice != null and tissuePrice != ''">#{tissuePrice},</if>
+			<if test="tissueLen != null and tissueLen != ''">#{tissueLen},</if>
+			<if test="repairId != null and repairId != ''">#{repairId},</if>
+			<if test="supplyId != null and supplyId != ''">#{supplyId},</if>
+			<if test="operatorId != null and operatorId != ''">#{operatorId},</if>
+			<if test="ownerId != null and ownerId != ''">#{ownerId},</if>
+			<if test="deviceCount != null and deviceCount != ''">#{deviceCount},</if>
+			<if test="ctBank != null and ctBank != ''">#{ctBank},</if>
+			<if test="ctAccount != null and ctAccount != ''">#{ctAccount},</if>
+			<if test="ctReceiver != null and ctReceiver != ''">#{ctReceiver},</if>
+			<if test="ctPhone != null and ctPhone != ''">#{ctPhone},</if>
+			<if test="ctIdentity != null and ctIdentity != ''">#{ctIdentity},</if>
+			<if test="ctRate != null and ctRate != ''">#{ctRate},</if>
+			<if test="status != null and status != ''">#{status},</if>
+			<if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+			<if test="note != null and note != ''">#{note},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updatePlace" parameterType="Place">
+        update zx_place
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentPlaceId != null  ">parent_place_id = #{parentPlaceId},</if>
+            <if test="placeCode != null  and placeCode != ''  ">place_code = #{placeCode},</if>
+            <if test="placeType != null  and placeType != ''  ">place_type = #{placeType},</if>
+            <if test="scene != null  and scene != ''  ">scene = #{scene},</if>
+            <if test="name != null  and name != ''  ">name = #{name},</if>
+            <if test="sname != null  and sname != ''  ">sname = #{sname},</if>
+            <if test="address != null  and address != ''  ">address = #{address},</if>
+            <if test="province != null  ">province = #{province},</if>
+            <if test="city != null  ">city = #{city},</if>
+            <if test="county != null  ">county = #{county},</if>
+            <if test="lon != null  and lon != ''  ">lon = #{lon},</if>
+            <if test="lat != null  and lat != ''  ">lat = #{lat},</if>
+            <if test="packet != null  ">packet = #{packet},</if>
+            <if test="tissuePrice != null  ">tissue_price = #{tissuePrice},</if>
+            <if test="tissueLen != null  ">tissue_len = #{tissueLen},</if>
+            <if test="repairId != null  ">repair_id = #{repairId},</if>
+            <if test="supplyId != null  ">supply_id = #{supplyId},</if>
+            <if test="operatorId != null  ">operator_id = #{operatorId},</if>
+            <if test="ownerId != null  ">owner_id = #{ownerId},</if>
+            <if test="deviceCount != null  ">device_count = #{deviceCount},</if>
+            <if test="ctBank != null  and ctBank != ''  ">ct_bank = #{ctBank},</if>
+            <if test="ctAccount != null  and ctAccount != ''  ">ct_account = #{ctAccount},</if>
+            <if test="ctReceiver != null  and ctReceiver != ''  ">ct_receiver = #{ctReceiver},</if>
+            <if test="ctPhone != null  and ctPhone != ''  ">ct_phone = #{ctPhone},</if>
+            <if test="ctIdentity != null  and ctIdentity != ''  ">ct_identity = #{ctIdentity},</if>
+            <if test="ctRate != null  ">ct_rate = #{ctRate},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="delFlag != null  and delFlag != ''  ">del_flag = #{delFlag},</if>
+            <if test="note != null  and note != ''  ">note = #{note},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where place_id = #{placeId}
+    </update>
+
+	<delete id="deletePlaceById" parameterType="Integer">
+        delete from zx_place where place_id = #{placeId}
+    </delete>
+	
+    <delete id="deletePlaceByIds" parameterType="String">
+        delete from zx_place where place_id in 
+        <foreach item="placeId" collection="array" open="(" separator="," close=")">
+            #{placeId}
+        </foreach>
+    </delete>
+    
+</mapper>

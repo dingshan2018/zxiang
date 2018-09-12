@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="btn-group hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:changeTerminal:add">
+				<i class="fa fa-plus"></i> 新增
+			</a>
+			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="business:changeTerminal:remove">
+				<i class="fa fa-trash-o"></i> 删除
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('business:changeTerminal:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('business:changeTerminal:remove')}]];
+        var prefix = ctx + "business/changeTerminal"
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "终端更换记录",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'changeTerminalId', 
+					title : '换板记录ID' 
+				},
+				{
+					field : 'oldTerminalId', 
+					title : '旧终端' 
+				},
+				{
+					field : 'newTerminalId', 
+					title : '新终端' 
+				},
+				{
+					field : 'oldVolumn', 
+					title : '旧音量设置' 
+				},
+				{
+					field : 'changerId', 
+					title : '换班人id' 
+				},
+				{
+					field : 'createBy', 
+					title : '' 
+				},
+				{
+					field : 'createTime', 
+					title : '' 
+				},
+				{
+					field : 'updateBy', 
+					title : '' 
+				},
+				{
+					field : 'updateTime', 
+					title : '' 
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.changeTerminalId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.changeTerminalId + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

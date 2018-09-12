@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="btn-group hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="advertise:adBillfile:add">
+				<i class="fa fa-plus"></i> 新增
+			</a>
+			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="advertise:adBillfile:remove">
+				<i class="fa fa-trash-o"></i> 删除
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('advertise:adBillfile:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('advertise:adBillfile:remove')}]];
+        var prefix = ctx + "advertise/adBillfile"
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "节目单所生成的文件",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'billfileId', 
+					title : '主键ID
+' 
+				},
+				{
+					field : 'playbillId', 
+					title : '节目单id
+' 
+				},
+				{
+					field : 'eid', 
+					title : '复制包中元素id
+' 
+				},
+				{
+					field : 'resid', 
+					title : '素材id
+' 
+				},
+				{
+					field : 'resname', 
+					title : '素材名称' 
+				},
+				{
+					field : 'filename', 
+					title : '文件名称' 
+				},
+				{
+					field : 'type', 
+					title : '类型名称' 
+				},
+				{
+					field : 'ressize', 
+					title : '素材大小' 
+				},
+				{
+					field : 'fullfileurl', 
+					title : '文件全路径' 
+				},
+				{
+					field : 'filetype', 
+					title : '文件类型标识' 
+				},
+				{
+					field : 'isweather', 
+					title : '是否有天气预报的分屏' 
+				},
+				{
+					field : 'playbilltype', 
+					title : '0是节目单 1是插播的节目单' 
+				},
+				{
+					field : 'hasforex', 
+					title : '是否有汇率 有汇率存放汇率的样式1,2,3  没有为空' 
+				},
+				{
+					field : 'hasopenfund', 
+					title : '是否有基金 有基金存放基金的样式1,2,3  没有为空' 
+				},
+				{
+					field : 'hasdeposit', 
+					title : '是否有存款利率 有存款存款利率的样式1,2,3  没有为空' 
+				},
+				{
+					field : 'hasloan', 
+					title : '是否有贷款利率 有贷款存款利率的样式1,2,3  没有为空' 
+				},
+				{
+					field : 'hasszczst', 
+					title : '是否有深证成指走势图：有为1 没有为空' 
+				},
+				{
+					field : 'hasszzzst', 
+					title : '是否有上证综指走势图：有为1 没有为空' 
+				},
+				{
+					field : 'hasforeign', 
+					title : '是否有外汇存款利率 有外汇存款利率的样式1,2,3  没有为空' 
+				},
+				{
+					field : 'terminalid', 
+					title : '终端ID' 
+				},
+				{
+					field : 'createBy', 
+					title : '' 
+				},
+				{
+					field : 'createTime', 
+					title : '' 
+				},
+				{
+					field : 'updateBy', 
+					title : '' 
+				},
+				{
+					field : 'updateTime', 
+					title : '' 
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.billfileId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.billfileId + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

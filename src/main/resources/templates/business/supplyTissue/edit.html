@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-supplyTissue-edit" th:object="${supplyTissue}">
+            <input id="supplyTissueId" name="supplyTissueId" th:field="*{supplyTissueId}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">补纸设备：</label>
+                <div class="col-sm-8">
+                    <input id="deviceId" name="deviceId" th:field="*{deviceId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">补纸数量：</label>
+                <div class="col-sm-8">
+                    <input id="tissueCount" name="tissueCount" th:field="*{tissueCount}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">补纸场所：</label>
+                <div class="col-sm-8">
+                    <input id="placeId" name="placeId" th:field="*{placeId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">补纸人员：</label>
+                <div class="col-sm-8">
+                    <input id="supplierId" name="supplierId" th:field="*{supplierId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">：</label>
+                <div class="col-sm-8">
+                    <input id="createBy" name="createBy" th:field="*{createBy}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">：</label>
+                <div class="col-sm-8">
+                    <input id="createTime" name="createTime" th:field="*{createTime}" class="form-control" type="text">
+                </div>
+            </div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "business/supplyTissue"
+		$("#form-supplyTissue-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			},
+			submitHandler: function(form) {
+				$.operate.save(prefix + "/edit", $('#form-supplyTissue-edit').serialize());
+			}
+		});
+	</script>
+</body>
+</html>

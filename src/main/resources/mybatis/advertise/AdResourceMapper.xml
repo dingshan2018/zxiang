@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.advertise.adResource.mapper.AdResourceMapper">
+    
+    <resultMap type="AdResource" id="AdResourceResult">
+        <result property="resourceId"    column="resource_id"    />
+        <result property="resourceName"    column="resource_name"    />
+        <result property="resourceType"    column="resource_type"    />
+        <result property="resourceFilename"    column="resource_filename"    />
+        <result property="resourceSize"    column="resource_size"    />
+        <result property="videoLen"    column="video_len"    />
+        <result property="remark"    column="remark"    />
+        <result property="realVideoLen"    column="real_video_len"    />
+        <result property="resourceCode"    column="resource_code"    />
+        <result property="autotxt"    column="autotxt"    />
+        <result property="resourceSort"    column="resource_sort"    />
+        <result property="clientUnit"    column="client_unit"    />
+        <result property="clientName"    column="client_name"    />
+        <result property="clientTel"    column="client_tel"    />
+        <result property="isNormal"    column="is_normal"    />
+        <result property="state"    column="state"    />
+        <result property="flag"    column="flag"    />
+        <result property="checkmanids"    column="checkmanids"    />
+        <result property="checkmannames"    column="checkmannames"    />
+        <result property="checkmanids2"    column="checkmanids2"    />
+        <result property="checkmannames2"    column="checkmannames2"    />
+        <result property="workflowid"    column="workflowid"    />
+        <result property="resourceScreen"    column="resource_screen"    />
+        <result property="smallPicurl"    column="small_picurl"    />
+        <result property="beginDate"    column="begin_date"    />
+        <result property="endDate"    column="end_date"    />
+        <result property="isDel"    column="is_del"    />
+        <result property="templateId"    column="template_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectAdResourceVo">
+        select resource_id, resource_name, resource_type, resource_filename, resource_size, video_len, remark, real_video_len, resource_code, autotxt, resource_sort, client_unit, client_name, client_tel, is_normal, state, flag, checkmanids, checkmannames, checkmanids2, checkmannames2, workflowid, resource_screen, small_picurl, begin_date, end_date, is_del, template_id, create_by, create_time, update_by, update_time from zx_ad_resource
+    </sql>
+	
+    <select id="selectAdResourceList" parameterType="AdResource" resultMap="AdResourceResult">
+        <include refid="selectAdResourceVo"/>
+        <where>  
+            <if test="resourceId != null and resourceId != ''"> and resource_id = #{resourceId}</if>
+             <if test="resourceName != null and resourceName != ''"> and resource_name = #{resourceName}</if>
+             <if test="resourceType != null and resourceType != ''"> and resource_type = #{resourceType}</if>
+             <if test="resourceFilename != null and resourceFilename != ''"> and resource_filename = #{resourceFilename}</if>
+             <if test="resourceSize != null and resourceSize != ''"> and resource_size = #{resourceSize}</if>
+             <if test="videoLen != null and videoLen != ''"> and video_len = #{videoLen}</if>
+             <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+             <if test="realVideoLen != null and realVideoLen != ''"> and real_video_len = #{realVideoLen}</if>
+             <if test="resourceCode != null and resourceCode != ''"> and resource_code = #{resourceCode}</if>
+             <if test="autotxt != null and autotxt != ''"> and autotxt = #{autotxt}</if>
+             <if test="resourceSort != null and resourceSort != ''"> and resource_sort = #{resourceSort}</if>
+             <if test="clientUnit != null and clientUnit != ''"> and client_unit = #{clientUnit}</if>
+             <if test="clientName != null and clientName != ''"> and client_name = #{clientName}</if>
+             <if test="clientTel != null and clientTel != ''"> and client_tel = #{clientTel}</if>
+             <if test="isNormal != null and isNormal != ''"> and is_normal = #{isNormal}</if>
+             <if test="state != null and state != ''"> and state = #{state}</if>
+             <if test="flag != null and flag != ''"> and flag = #{flag}</if>
+             <if test="checkmanids != null and checkmanids != ''"> and checkmanids = #{checkmanids}</if>
+             <if test="checkmannames != null and checkmannames != ''"> and checkmannames = #{checkmannames}</if>
+             <if test="checkmanids2 != null and checkmanids2 != ''"> and checkmanids2 = #{checkmanids2}</if>
+             <if test="checkmannames2 != null and checkmannames2 != ''"> and checkmannames2 = #{checkmannames2}</if>
+             <if test="workflowid != null and workflowid != ''"> and workflowid = #{workflowid}</if>
+             <if test="resourceScreen != null and resourceScreen != ''"> and resource_screen = #{resourceScreen}</if>
+             <if test="smallPicurl != null and smallPicurl != ''"> and small_picurl = #{smallPicurl}</if>
+             <if test="beginDate != null and beginDate != ''"> and begin_date = #{beginDate}</if>
+             <if test="endDate != null and endDate != ''"> and end_date = #{endDate}</if>
+             <if test="isDel != null and isDel != ''"> and is_del = #{isDel}</if>
+             <if test="templateId != null and templateId != ''"> and template_id = #{templateId}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectAdResourceById" parameterType="String" resultMap="AdResourceResult">
+        <include refid="selectAdResourceVo"/>
+        where resource_id = #{resourceId}
+    </select>
+        
+    <insert id="insertAdResource" parameterType="AdResource">
+        insert into zx_ad_resource
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="resourceId != null and resourceId != '' ">resource_id,</if>
+			<if test="resourceName != null and resourceName != '' ">resource_name,</if>
+			<if test="resourceType != null and resourceType != '' ">resource_type,</if>
+			<if test="resourceFilename != null and resourceFilename != '' ">resource_filename,</if>
+			<if test="resourceSize != null and resourceSize != '' ">resource_size,</if>
+			<if test="videoLen != null and videoLen != '' ">video_len,</if>
+			<if test="remark != null and remark != '' ">remark,</if>
+			<if test="realVideoLen != null and realVideoLen != '' ">real_video_len,</if>
+			<if test="resourceCode != null and resourceCode != '' ">resource_code,</if>
+			<if test="autotxt != null and autotxt != '' ">autotxt,</if>
+			<if test="resourceSort != null and resourceSort != '' ">resource_sort,</if>
+			<if test="clientUnit != null and clientUnit != '' ">client_unit,</if>
+			<if test="clientName != null and clientName != '' ">client_name,</if>
+			<if test="clientTel != null and clientTel != '' ">client_tel,</if>
+			<if test="isNormal != null and isNormal != '' ">is_normal,</if>
+			<if test="state != null and state != '' ">state,</if>
+			<if test="flag != null and flag != '' ">flag,</if>
+			<if test="checkmanids != null and checkmanids != '' ">checkmanids,</if>
+			<if test="checkmannames != null and checkmannames != '' ">checkmannames,</if>
+			<if test="checkmanids2 != null and checkmanids2 != '' ">checkmanids2,</if>
+			<if test="checkmannames2 != null and checkmannames2 != '' ">checkmannames2,</if>
+			<if test="workflowid != null and workflowid != '' ">workflowid,</if>
+			<if test="resourceScreen != null and resourceScreen != '' ">resource_screen,</if>
+			<if test="smallPicurl != null and smallPicurl != '' ">small_picurl,</if>
+			<if test="beginDate != null and beginDate != '' ">begin_date,</if>
+			<if test="endDate != null and endDate != '' ">end_date,</if>
+			<if test="isDel != null and isDel != '' ">is_del,</if>
+			<if test="templateId != null and templateId != '' ">template_id,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="updateBy != null and updateBy != '' ">update_by,</if>
+			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="resourceId != null and resourceId != ''">#{resourceId},</if>
+			<if test="resourceName != null and resourceName != ''">#{resourceName},</if>
+			<if test="resourceType != null and resourceType != ''">#{resourceType},</if>
+			<if test="resourceFilename != null and resourceFilename != ''">#{resourceFilename},</if>
+			<if test="resourceSize != null and resourceSize != ''">#{resourceSize},</if>
+			<if test="videoLen != null and videoLen != ''">#{videoLen},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+			<if test="realVideoLen != null and realVideoLen != ''">#{realVideoLen},</if>
+			<if test="resourceCode != null and resourceCode != ''">#{resourceCode},</if>
+			<if test="autotxt != null and autotxt != ''">#{autotxt},</if>
+			<if test="resourceSort != null and resourceSort != ''">#{resourceSort},</if>
+			<if test="clientUnit != null and clientUnit != ''">#{clientUnit},</if>
+			<if test="clientName != null and clientName != ''">#{clientName},</if>
+			<if test="clientTel != null and clientTel != ''">#{clientTel},</if>
+			<if test="isNormal != null and isNormal != ''">#{isNormal},</if>
+			<if test="state != null and state != ''">#{state},</if>
+			<if test="flag != null and flag != ''">#{flag},</if>
+			<if test="checkmanids != null and checkmanids != ''">#{checkmanids},</if>
+			<if test="checkmannames != null and checkmannames != ''">#{checkmannames},</if>
+			<if test="checkmanids2 != null and checkmanids2 != ''">#{checkmanids2},</if>
+			<if test="checkmannames2 != null and checkmannames2 != ''">#{checkmannames2},</if>
+			<if test="workflowid != null and workflowid != ''">#{workflowid},</if>
+			<if test="resourceScreen != null and resourceScreen != ''">#{resourceScreen},</if>
+			<if test="smallPicurl != null and smallPicurl != ''">#{smallPicurl},</if>
+			<if test="beginDate != null and beginDate != ''">#{beginDate},</if>
+			<if test="endDate != null and endDate != ''">#{endDate},</if>
+			<if test="isDel != null and isDel != ''">#{isDel},</if>
+			<if test="templateId != null and templateId != ''">#{templateId},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateAdResource" parameterType="AdResource">
+        update zx_ad_resource
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="resourceName != null  and resourceName != ''  ">resource_name = #{resourceName},</if>
+            <if test="resourceType != null  and resourceType != ''  ">resource_type = #{resourceType},</if>
+            <if test="resourceFilename != null  and resourceFilename != ''  ">resource_filename = #{resourceFilename},</if>
+            <if test="resourceSize != null  and resourceSize != ''  ">resource_size = #{resourceSize},</if>
+            <if test="videoLen != null  and videoLen != ''  ">video_len = #{videoLen},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="realVideoLen != null  and realVideoLen != ''  ">real_video_len = #{realVideoLen},</if>
+            <if test="resourceCode != null  and resourceCode != ''  ">resource_code = #{resourceCode},</if>
+            <if test="autotxt != null  and autotxt != ''  ">autotxt = #{autotxt},</if>
+            <if test="resourceSort != null  and resourceSort != ''  ">resource_sort = #{resourceSort},</if>
+            <if test="clientUnit != null  and clientUnit != ''  ">client_unit = #{clientUnit},</if>
+            <if test="clientName != null  and clientName != ''  ">client_name = #{clientName},</if>
+            <if test="clientTel != null  and clientTel != ''  ">client_tel = #{clientTel},</if>
+            <if test="isNormal != null  and isNormal != ''  ">is_normal = #{isNormal},</if>
+            <if test="state != null  and state != ''  ">state = #{state},</if>
+            <if test="flag != null  and flag != ''  ">flag = #{flag},</if>
+            <if test="checkmanids != null  and checkmanids != ''  ">checkmanids = #{checkmanids},</if>
+            <if test="checkmannames != null  and checkmannames != ''  ">checkmannames = #{checkmannames},</if>
+            <if test="checkmanids2 != null  and checkmanids2 != ''  ">checkmanids2 = #{checkmanids2},</if>
+            <if test="checkmannames2 != null  and checkmannames2 != ''  ">checkmannames2 = #{checkmannames2},</if>
+            <if test="workflowid != null  and workflowid != ''  ">workflowid = #{workflowid},</if>
+            <if test="resourceScreen != null  and resourceScreen != ''  ">resource_screen = #{resourceScreen},</if>
+            <if test="smallPicurl != null  and smallPicurl != ''  ">small_picurl = #{smallPicurl},</if>
+            <if test="beginDate != null  and beginDate != ''  ">begin_date = #{beginDate},</if>
+            <if test="endDate != null  and endDate != ''  ">end_date = #{endDate},</if>
+            <if test="isDel != null  ">is_del = #{isDel},</if>
+            <if test="templateId != null  ">template_id = #{templateId},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where resource_id = #{resourceId}
+    </update>
+
+	<delete id="deleteAdResourceById" parameterType="String">
+        delete from zx_ad_resource where resource_id = #{resourceId}
+    </delete>
+	
+    <delete id="deleteAdResourceByIds" parameterType="String">
+        delete from zx_ad_resource where resource_id in 
+        <foreach item="resourceId" collection="array" open="(" separator="," close=")">
+            #{resourceId}
+        </foreach>
+    </delete>
+    
+</mapper>

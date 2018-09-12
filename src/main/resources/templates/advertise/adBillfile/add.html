@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-adBillfile-add">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">节目单id
+：</label>
+				<div class="col-sm-8">
+					<input id="playbillId" name="playbillId" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">复制包中元素id
+：</label>
+				<div class="col-sm-8">
+					<input id="eid" name="eid" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">素材id
+：</label>
+				<div class="col-sm-8">
+					<input id="resid" name="resid" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">素材名称：</label>
+				<div class="col-sm-8">
+					<input id="resname" name="resname" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">文件名称：</label>
+				<div class="col-sm-8">
+					<input id="filename" name="filename" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">类型名称：</label>
+				<div class="col-sm-8">
+					<input id="type" name="type" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">素材大小：</label>
+				<div class="col-sm-8">
+					<input id="ressize" name="ressize" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">文件全路径：</label>
+				<div class="col-sm-8">
+					<input id="fullfileurl" name="fullfileurl" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">文件类型标识：</label>
+				<div class="col-sm-8">
+					<input id="filetype" name="filetype" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">是否有天气预报的分屏：</label>
+				<div class="col-sm-8">
+					<input id="isweather" name="isweather" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">0是节目单 1是插播的节目单：</label>
+				<div class="col-sm-8">
+					<input id="playbilltype" name="playbilltype" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">是否有汇率 有汇率存放汇率的样式1,2,3  没有为空：</label>
+				<div class="col-sm-8">
+					<input id="hasforex" name="hasforex" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">是否有基金 有基金存放基金的样式1,2,3  没有为空：</label>
+				<div class="col-sm-8">
+					<input id="hasopenfund" name="hasopenfund" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">是否有存款利率 有存款存款利率的样式1,2,3  没有为空：</label>
+				<div class="col-sm-8">
+					<input id="hasdeposit" name="hasdeposit" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">是否有贷款利率 有贷款存款利率的样式1,2,3  没有为空：</label>
+				<div class="col-sm-8">
+					<input id="hasloan" name="hasloan" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">是否有深证成指走势图：有为1 没有为空：</label>
+				<div class="col-sm-8">
+					<input id="hasszczst" name="hasszczst" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">是否有上证综指走势图：有为1 没有为空：</label>
+				<div class="col-sm-8">
+					<input id="hasszzzst" name="hasszzzst" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">是否有外汇存款利率 有外汇存款利率的样式1,2,3  没有为空：</label>
+				<div class="col-sm-8">
+					<input id="hasforeign" name="hasforeign" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">终端ID：</label>
+				<div class="col-sm-8">
+					<input id="terminalid" name="terminalid" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">：</label>
+				<div class="col-sm-8">
+					<input id="createBy" name="createBy" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">：</label>
+				<div class="col-sm-8">
+					<input id="createTime" name="createTime" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">：</label>
+				<div class="col-sm-8">
+					<input id="updateBy" name="updateBy" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">：</label>
+				<div class="col-sm-8">
+					<input id="updateTime" name="updateTime" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "advertise/adBillfile"
+		$("#form-adBillfile-add").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			},
+			submitHandler: function(form) {
+				$.operate.save(prefix + "/add", $('#form-adBillfile-add').serialize());
+			}
+		});
+	</script>
+</body>
+</html>

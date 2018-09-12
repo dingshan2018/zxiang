@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-tissueRecord-edit" th:object="${tissueRecord}">
+            <input id="tissueRecordId" name="tissueRecordId" th:field="*{tissueRecordId}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">出纸设备：</label>
+                <div class="col-sm-8">
+                    <input id="deviceId" name="deviceId" th:field="*{deviceId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">出纸终端：</label>
+                <div class="col-sm-8">
+                    <input id="terminalId" name="terminalId" th:field="*{terminalId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">出纸场所：</label>
+                <div class="col-sm-8">
+                    <input id="placeId" name="placeId" th:field="*{placeId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">用户微信账号：</label>
+                <div class="col-sm-8">
+                    <input id="openId" name="openId" th:field="*{openId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">微信昵称：</label>
+                <div class="col-sm-8">
+                    <input id="nickName" name="nickName" th:field="*{nickName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">微信头像：</label>
+                <div class="col-sm-8">
+                    <input id="headimgurl" name="headimgurl" th:field="*{headimgurl}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">出纸类型：</label>
+                <div class="col-sm-8">
+                    <input id="tissueChannel" name="tissueChannel" th:field="*{tissueChannel}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">使用人：</label>
+                <div class="col-sm-8">
+                    <input id="createBy" name="createBy" th:field="*{createBy}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">出纸时间：</label>
+                <div class="col-sm-8">
+                    <input id="createTime" name="createTime" th:field="*{createTime}" class="form-control" type="text">
+                </div>
+            </div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "business/tissueRecord"
+		$("#form-tissueRecord-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			},
+			submitHandler: function(form) {
+				$.operate.save(prefix + "/edit", $('#form-tissueRecord-edit').serialize());
+			}
+		});
+	</script>
+</body>
+</html>

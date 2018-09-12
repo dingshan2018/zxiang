@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.record.deviceOrder.mapper.DeviceOrderMapper">
+    
+    <resultMap type="DeviceOrder" id="DeviceOrderResult">
+        <result property="deviceOrderId"    column="device_order_id"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="terminalId"    column="terminal_id"    />
+        <result property="promotionerId"    column="promotioner_id"    />
+        <result property="price"    column="price"    />
+        <result property="cutOff"    column="cut_off"    />
+        <result property="sellerId"    column="seller_id"    />
+        <result property="status"    column="status"    />
+        <result property="buyerId"    column="buyer_id"    />
+        <result property="buyerName"    column="buyer_name"    />
+        <result property="buyerOpenId"    column="buyer_open_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectDeviceOrderVo">
+        select device_order_id, device_id, terminal_id, promotioner_id, price, cut_off, seller_id, status, buyer_id, buyer_name, buyer_open_id, create_by, create_time, update_by, update_time from zx_device_order
+    </sql>
+	
+    <select id="selectDeviceOrderList" parameterType="DeviceOrder" resultMap="DeviceOrderResult">
+        <include refid="selectDeviceOrderVo"/>
+        <where>  
+            <if test="deviceOrderId != null and deviceOrderId != ''"> and device_order_id = #{deviceOrderId}</if>
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
+             <if test="promotionerId != null and promotionerId != ''"> and promotioner_id = #{promotionerId}</if>
+             <if test="price != null and price != ''"> and price = #{price}</if>
+             <if test="cutOff != null and cutOff != ''"> and cut_off = #{cutOff}</if>
+             <if test="sellerId != null and sellerId != ''"> and seller_id = #{sellerId}</if>
+             <if test="status != null and status != ''"> and status = #{status}</if>
+             <if test="buyerId != null and buyerId != ''"> and buyer_id = #{buyerId}</if>
+             <if test="buyerName != null and buyerName != ''"> and buyer_name = #{buyerName}</if>
+             <if test="buyerOpenId != null and buyerOpenId != ''"> and buyer_open_id = #{buyerOpenId}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectDeviceOrderById" parameterType="Integer" resultMap="DeviceOrderResult">
+        <include refid="selectDeviceOrderVo"/>
+        where device_order_id = #{deviceOrderId}
+    </select>
+        
+    <insert id="insertDeviceOrder" parameterType="DeviceOrder">
+        insert into zx_device_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="deviceOrderId != null and deviceOrderId != '' ">device_order_id,</if>
+			<if test="deviceId != null and deviceId != '' ">device_id,</if>
+			<if test="terminalId != null and terminalId != '' ">terminal_id,</if>
+			<if test="promotionerId != null and promotionerId != '' ">promotioner_id,</if>
+			<if test="price != null and price != '' ">price,</if>
+			<if test="cutOff != null and cutOff != '' ">cut_off,</if>
+			<if test="sellerId != null and sellerId != '' ">seller_id,</if>
+			<if test="status != null and status != '' ">status,</if>
+			<if test="buyerId != null and buyerId != '' ">buyer_id,</if>
+			<if test="buyerName != null and buyerName != '' ">buyer_name,</if>
+			<if test="buyerOpenId != null and buyerOpenId != '' ">buyer_open_id,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="updateBy != null and updateBy != '' ">update_by,</if>
+			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="deviceOrderId != null and deviceOrderId != ''">#{deviceOrderId},</if>
+			<if test="deviceId != null and deviceId != ''">#{deviceId},</if>
+			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
+			<if test="promotionerId != null and promotionerId != ''">#{promotionerId},</if>
+			<if test="price != null and price != ''">#{price},</if>
+			<if test="cutOff != null and cutOff != ''">#{cutOff},</if>
+			<if test="sellerId != null and sellerId != ''">#{sellerId},</if>
+			<if test="status != null and status != ''">#{status},</if>
+			<if test="buyerId != null and buyerId != ''">#{buyerId},</if>
+			<if test="buyerName != null and buyerName != ''">#{buyerName},</if>
+			<if test="buyerOpenId != null and buyerOpenId != ''">#{buyerOpenId},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateDeviceOrder" parameterType="DeviceOrder">
+        update zx_device_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceId != null  ">device_id = #{deviceId},</if>
+            <if test="terminalId != null  ">terminal_id = #{terminalId},</if>
+            <if test="promotionerId != null  ">promotioner_id = #{promotionerId},</if>
+            <if test="price != null  ">price = #{price},</if>
+            <if test="cutOff != null  ">cut_off = #{cutOff},</if>
+            <if test="sellerId != null  ">seller_id = #{sellerId},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="buyerId != null  ">buyer_id = #{buyerId},</if>
+            <if test="buyerName != null  and buyerName != ''  ">buyer_name = #{buyerName},</if>
+            <if test="buyerOpenId != null  and buyerOpenId != ''  ">buyer_open_id = #{buyerOpenId},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where device_order_id = #{deviceOrderId}
+    </update>
+
+	<delete id="deleteDeviceOrderById" parameterType="Integer">
+        delete from zx_device_order where device_order_id = #{deviceOrderId}
+    </delete>
+	
+    <delete id="deleteDeviceOrderByIds" parameterType="String">
+        delete from zx_device_order where device_order_id in 
+        <foreach item="deviceOrderId" collection="array" open="(" separator="," close=")">
+            #{deviceOrderId}
+        </foreach>
+    </delete>
+    
+</mapper>

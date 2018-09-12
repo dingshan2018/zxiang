@@ -1,0 +1,186 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="btn-group hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="advertise:adResource:add">
+				<i class="fa fa-plus"></i> 新增
+			</a>
+			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="advertise:adResource:remove">
+				<i class="fa fa-trash-o"></i> 删除
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('advertise:adResource:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('advertise:adResource:remove')}]];
+        var prefix = ctx + "advertise/adResource"
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "素材维护",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'resourceId', 
+					title : '素材ID' 
+				},
+				{
+					field : 'resourceName', 
+					title : '素材名称' 
+				},
+				{
+					field : 'resourceType', 
+					title : '素材类型
+ WHEN '49' THEN '功能图'
+ WHEN '40' THEN '背景图' 
+WHEN '41' THEN '视频文件' 
+WHEN '42' THEN '图片文件'
+ WHEN '43' THEN '文本文件'
+ WHEN '48' THEN '直播频道'
+ WHEN '47' THEN '音频'' 
+				},
+				{
+					field : 'resourceFilename', 
+					title : '素材资源文件名' 
+				},
+				{
+					field : 'resourceSize', 
+					title : '素材大小' 
+				},
+				{
+					field : 'videoLen', 
+					title : '视频播放时长' 
+				},
+				{
+					field : 'remark', 
+					title : '说明' 
+				},
+				{
+					field : 'realVideoLen', 
+					title : '原始视频播放时长' 
+				},
+				{
+					field : 'resourceCode', 
+					title : '素材编码' 
+				},
+				{
+					field : 'autotxt', 
+					title : '动态文字(提供播放情况使用)' 
+				},
+				{
+					field : 'resourceSort', 
+					title : '素材类别' 
+				},
+				{
+					field : 'clientUnit', 
+					title : '客户ID' 
+				},
+				{
+					field : 'clientName', 
+					title : '客户联系人' 
+				},
+				{
+					field : 'clientTel', 
+					title : '客户联系电话' 
+				},
+				{
+					field : 'isNormal', 
+					title : '是否通用素材 1为通用，0为分组使用。' 
+				},
+				{
+					field : 'state', 
+					title : '素材状态(2初审 3 终审 4 完成)' 
+				},
+				{
+					field : 'flag', 
+					title : '标识 素材是否可用(1 可用 0不可用)' 
+				},
+				{
+					field : 'checkmanids', 
+					title : '指定初审人员id列表,分开' 
+				},
+				{
+					field : 'checkmannames', 
+					title : '指定初审人员姓名列表,分开' 
+				},
+				{
+					field : 'checkmanids2', 
+					title : '指定终审人员id列表,分开' 
+				},
+				{
+					field : 'checkmannames2', 
+					title : '指定终审人员姓名列表,分开' 
+				},
+				{
+					field : 'workflowid', 
+					title : '任务工作流' 
+				},
+				{
+					field : 'resourceScreen', 
+					title : '素材给哪个分屏使用，通用2，横屏0，竖屏1' 
+				},
+				{
+					field : 'smallPicurl', 
+					title : '文件缩略图URL' 
+				},
+				{
+					field : 'beginDate', 
+					title : '素材有效期开始时间' 
+				},
+				{
+					field : 'endDate', 
+					title : '素材有效期结束时间' 
+				},
+				{
+					field : 'isDel', 
+					title : '是否已删除（0：删除，其他都是正常）' 
+				},
+				{
+					field : 'templateId', 
+					title : '功能关联的布局模版' 
+				},
+				{
+					field : 'createBy', 
+					title : '' 
+				},
+				{
+					field : 'createTime', 
+					title : '' 
+				},
+				{
+					field : 'updateBy', 
+					title : '' 
+				},
+				{
+					field : 'updateTime', 
+					title : '' 
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.resourceId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.resourceId + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

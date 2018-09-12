@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.settle.userIncome.mapper.UserIncomeMapper">
+    
+    <resultMap type="UserIncome" id="UserIncomeResult">
+        <result property="incomeId"    column="income_id"    />
+        <result property="coperatorId"    column="coperator_id"    />
+        <result property="coperatorType"    column="coperator_type"    />
+        <result property="sumDate"    column="sum_date"    />
+        <result property="adIncome"    column="ad_income"    />
+        <result property="promotionIncome"    column="promotion_income"    />
+        <result property="scanIncome"    column="scan_income"    />
+        <result property="adIncomeRate"    column="ad_income_rate"    />
+        <result property="promotionIncomeRate"    column="promotion_income_rate"    />
+        <result property="scanIncomeRate"    column="scan_income_rate"    />
+        <result property="adRate"    column="ad_rate"    />
+        <result property="promotionRate"    column="promotion_rate"    />
+        <result property="scanRate"    column="scan_rate"    />
+        <result property="refundIncome"    column="refund_income"    />
+        <result property="refundIncomeRate"    column="refund_income_rate"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectUserIncomeVo">
+        select income_id, coperator_id, coperator_type, sum_date, ad_income, promotion_income, scan_income, ad_income_rate, promotion_income_rate, scan_income_rate, ad_rate, promotion_rate, scan_rate, refund_income, refund_income_rate, create_by, create_time, update_by, update_time from zx_user_income
+    </sql>
+	
+    <select id="selectUserIncomeList" parameterType="UserIncome" resultMap="UserIncomeResult">
+        <include refid="selectUserIncomeVo"/>
+        <where>  
+            <if test="incomeId != null and incomeId != ''"> and income_id = #{incomeId}</if>
+             <if test="coperatorId != null and coperatorId != ''"> and coperator_id = #{coperatorId}</if>
+             <if test="coperatorType != null and coperatorType != ''"> and coperator_type = #{coperatorType}</if>
+             <if test="sumDate != null and sumDate != ''"> and sum_date = #{sumDate}</if>
+             <if test="adIncome != null and adIncome != ''"> and ad_income = #{adIncome}</if>
+             <if test="promotionIncome != null and promotionIncome != ''"> and promotion_income = #{promotionIncome}</if>
+             <if test="scanIncome != null and scanIncome != ''"> and scan_income = #{scanIncome}</if>
+             <if test="adIncomeRate != null and adIncomeRate != ''"> and ad_income_rate = #{adIncomeRate}</if>
+             <if test="promotionIncomeRate != null and promotionIncomeRate != ''"> and promotion_income_rate = #{promotionIncomeRate}</if>
+             <if test="scanIncomeRate != null and scanIncomeRate != ''"> and scan_income_rate = #{scanIncomeRate}</if>
+             <if test="adRate != null and adRate != ''"> and ad_rate = #{adRate}</if>
+             <if test="promotionRate != null and promotionRate != ''"> and promotion_rate = #{promotionRate}</if>
+             <if test="scanRate != null and scanRate != ''"> and scan_rate = #{scanRate}</if>
+             <if test="refundIncome != null and refundIncome != ''"> and refund_income = #{refundIncome}</if>
+             <if test="refundIncomeRate != null and refundIncomeRate != ''"> and refund_income_rate = #{refundIncomeRate}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectUserIncomeById" parameterType="Integer" resultMap="UserIncomeResult">
+        <include refid="selectUserIncomeVo"/>
+        where income_id = #{incomeId}
+    </select>
+        
+    <insert id="insertUserIncome" parameterType="UserIncome">
+        insert into zx_user_income
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="incomeId != null and incomeId != '' ">income_id,</if>
+			<if test="coperatorId != null and coperatorId != '' ">coperator_id,</if>
+			<if test="coperatorType != null and coperatorType != '' ">coperator_type,</if>
+			<if test="sumDate != null and sumDate != '' ">sum_date,</if>
+			<if test="adIncome != null and adIncome != '' ">ad_income,</if>
+			<if test="promotionIncome != null and promotionIncome != '' ">promotion_income,</if>
+			<if test="scanIncome != null and scanIncome != '' ">scan_income,</if>
+			<if test="adIncomeRate != null and adIncomeRate != '' ">ad_income_rate,</if>
+			<if test="promotionIncomeRate != null and promotionIncomeRate != '' ">promotion_income_rate,</if>
+			<if test="scanIncomeRate != null and scanIncomeRate != '' ">scan_income_rate,</if>
+			<if test="adRate != null and adRate != '' ">ad_rate,</if>
+			<if test="promotionRate != null and promotionRate != '' ">promotion_rate,</if>
+			<if test="scanRate != null and scanRate != '' ">scan_rate,</if>
+			<if test="refundIncome != null and refundIncome != '' ">refund_income,</if>
+			<if test="refundIncomeRate != null and refundIncomeRate != '' ">refund_income_rate,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="updateBy != null and updateBy != '' ">update_by,</if>
+			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="incomeId != null and incomeId != ''">#{incomeId},</if>
+			<if test="coperatorId != null and coperatorId != ''">#{coperatorId},</if>
+			<if test="coperatorType != null and coperatorType != ''">#{coperatorType},</if>
+			<if test="sumDate != null and sumDate != ''">#{sumDate},</if>
+			<if test="adIncome != null and adIncome != ''">#{adIncome},</if>
+			<if test="promotionIncome != null and promotionIncome != ''">#{promotionIncome},</if>
+			<if test="scanIncome != null and scanIncome != ''">#{scanIncome},</if>
+			<if test="adIncomeRate != null and adIncomeRate != ''">#{adIncomeRate},</if>
+			<if test="promotionIncomeRate != null and promotionIncomeRate != ''">#{promotionIncomeRate},</if>
+			<if test="scanIncomeRate != null and scanIncomeRate != ''">#{scanIncomeRate},</if>
+			<if test="adRate != null and adRate != ''">#{adRate},</if>
+			<if test="promotionRate != null and promotionRate != ''">#{promotionRate},</if>
+			<if test="scanRate != null and scanRate != ''">#{scanRate},</if>
+			<if test="refundIncome != null and refundIncome != ''">#{refundIncome},</if>
+			<if test="refundIncomeRate != null and refundIncomeRate != ''">#{refundIncomeRate},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateUserIncome" parameterType="UserIncome">
+        update zx_user_income
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="coperatorId != null  ">coperator_id = #{coperatorId},</if>
+            <if test="coperatorType != null  and coperatorType != ''  ">coperator_type = #{coperatorType},</if>
+            <if test="sumDate != null  ">sum_date = #{sumDate},</if>
+            <if test="adIncome != null  ">ad_income = #{adIncome},</if>
+            <if test="promotionIncome != null  ">promotion_income = #{promotionIncome},</if>
+            <if test="scanIncome != null  ">scan_income = #{scanIncome},</if>
+            <if test="adIncomeRate != null  ">ad_income_rate = #{adIncomeRate},</if>
+            <if test="promotionIncomeRate != null  ">promotion_income_rate = #{promotionIncomeRate},</if>
+            <if test="scanIncomeRate != null  ">scan_income_rate = #{scanIncomeRate},</if>
+            <if test="adRate != null  ">ad_rate = #{adRate},</if>
+            <if test="promotionRate != null  ">promotion_rate = #{promotionRate},</if>
+            <if test="scanRate != null  ">scan_rate = #{scanRate},</if>
+            <if test="refundIncome != null  ">refund_income = #{refundIncome},</if>
+            <if test="refundIncomeRate != null  ">refund_income_rate = #{refundIncomeRate},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where income_id = #{incomeId}
+    </update>
+
+	<delete id="deleteUserIncomeById" parameterType="Integer">
+        delete from zx_user_income where income_id = #{incomeId}
+    </delete>
+	
+    <delete id="deleteUserIncomeByIds" parameterType="String">
+        delete from zx_user_income where income_id in 
+        <foreach item="incomeId" collection="array" open="(" separator="," close=")">
+            #{incomeId}
+        </foreach>
+    </delete>
+    
+</mapper>

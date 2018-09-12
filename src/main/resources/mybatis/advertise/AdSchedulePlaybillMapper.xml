@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.advertise.adSchedulePlaybill.mapper.AdSchedulePlaybillMapper">
+    
+    <resultMap type="AdSchedulePlaybill" id="AdSchedulePlaybillResult">
+        <result property="schedulePlaybillId"    column="schedule_playbill_id"    />
+        <result property="playbillId"    column="playbill_id"    />
+        <result property="isDel"    column="is_del"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+	
+	<sql id="selectAdSchedulePlaybillVo">
+        select schedule_playbill_id, playbill_id, is_del, create_by, create_time from zx_ad_schedule_playbill
+    </sql>
+	
+    <select id="selectAdSchedulePlaybillList" parameterType="AdSchedulePlaybill" resultMap="AdSchedulePlaybillResult">
+        <include refid="selectAdSchedulePlaybillVo"/>
+        <where>  
+            <if test="schedulePlaybillId != null and schedulePlaybillId != ''"> and schedule_playbill_id = #{schedulePlaybillId}</if>
+             <if test="playbillId != null and playbillId != ''"> and playbill_id = #{playbillId}</if>
+             <if test="isDel != null and isDel != ''"> and is_del = #{isDel}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectAdSchedulePlaybillById" parameterType="Integer" resultMap="AdSchedulePlaybillResult">
+        <include refid="selectAdSchedulePlaybillVo"/>
+        where schedule_playbill_id = #{schedulePlaybillId}
+    </select>
+        
+    <insert id="insertAdSchedulePlaybill" parameterType="AdSchedulePlaybill">
+        insert into zx_ad_schedule_playbill
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="schedulePlaybillId != null and schedulePlaybillId != '' ">schedule_playbill_id,</if>
+			<if test="playbillId != null and playbillId != '' ">playbill_id,</if>
+			<if test="isDel != null and isDel != '' ">is_del,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="schedulePlaybillId != null and schedulePlaybillId != ''">#{schedulePlaybillId},</if>
+			<if test="playbillId != null and playbillId != ''">#{playbillId},</if>
+			<if test="isDel != null and isDel != ''">#{isDel},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateAdSchedulePlaybill" parameterType="AdSchedulePlaybill">
+        update zx_ad_schedule_playbill
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="playbillId != null  ">playbill_id = #{playbillId},</if>
+            <if test="isDel != null  and isDel != ''  ">is_del = #{isDel},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+        </trim>
+        where schedule_playbill_id = #{schedulePlaybillId}
+    </update>
+
+	<delete id="deleteAdSchedulePlaybillById" parameterType="Integer">
+        delete from zx_ad_schedule_playbill where schedule_playbill_id = #{schedulePlaybillId}
+    </delete>
+	
+    <delete id="deleteAdSchedulePlaybillByIds" parameterType="String">
+        delete from zx_ad_schedule_playbill where schedule_playbill_id in 
+        <foreach item="schedulePlaybillId" collection="array" open="(" separator="," close=")">
+            #{schedulePlaybillId}
+        </foreach>
+    </delete>
+    
+</mapper>

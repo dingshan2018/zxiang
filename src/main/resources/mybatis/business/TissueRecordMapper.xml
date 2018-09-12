@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.business.tissueRecord.mapper.TissueRecordMapper">
+    
+    <resultMap type="TissueRecord" id="TissueRecordResult">
+        <result property="tissueRecordId"    column="tissue_record_id"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="terminalId"    column="terminal_id"    />
+        <result property="placeId"    column="place_id"    />
+        <result property="openId"    column="open_id"    />
+        <result property="nickName"    column="nick_name"    />
+        <result property="headimgurl"    column="headimgurl"    />
+        <result property="tissueChannel"    column="tissue_channel"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+	
+	<sql id="selectTissueRecordVo">
+        select tissue_record_id, device_id, terminal_id, place_id, open_id, nick_name, headimgurl, tissue_channel, create_by, create_time from zx_tissue_record
+    </sql>
+	
+    <select id="selectTissueRecordList" parameterType="TissueRecord" resultMap="TissueRecordResult">
+        <include refid="selectTissueRecordVo"/>
+        <where>  
+            <if test="tissueRecordId != null and tissueRecordId != ''"> and tissue_record_id = #{tissueRecordId}</if>
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
+             <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
+             <if test="openId != null and openId != ''"> and open_id = #{openId}</if>
+             <if test="nickName != null and nickName != ''"> and nick_name = #{nickName}</if>
+             <if test="headimgurl != null and headimgurl != ''"> and headimgurl = #{headimgurl}</if>
+             <if test="tissueChannel != null and tissueChannel != ''"> and tissue_channel = #{tissueChannel}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectTissueRecordById" parameterType="Integer" resultMap="TissueRecordResult">
+        <include refid="selectTissueRecordVo"/>
+        where tissue_record_id = #{tissueRecordId}
+    </select>
+        
+    <insert id="insertTissueRecord" parameterType="TissueRecord">
+        insert into zx_tissue_record
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="tissueRecordId != null and tissueRecordId != '' ">tissue_record_id,</if>
+			<if test="deviceId != null and deviceId != '' ">device_id,</if>
+			<if test="terminalId != null and terminalId != '' ">terminal_id,</if>
+			<if test="placeId != null and placeId != '' ">place_id,</if>
+			<if test="openId != null and openId != '' ">open_id,</if>
+			<if test="nickName != null and nickName != '' ">nick_name,</if>
+			<if test="headimgurl != null and headimgurl != '' ">headimgurl,</if>
+			<if test="tissueChannel != null and tissueChannel != '' ">tissue_channel,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="tissueRecordId != null and tissueRecordId != ''">#{tissueRecordId},</if>
+			<if test="deviceId != null and deviceId != ''">#{deviceId},</if>
+			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
+			<if test="placeId != null and placeId != ''">#{placeId},</if>
+			<if test="openId != null and openId != ''">#{openId},</if>
+			<if test="nickName != null and nickName != ''">#{nickName},</if>
+			<if test="headimgurl != null and headimgurl != ''">#{headimgurl},</if>
+			<if test="tissueChannel != null and tissueChannel != ''">#{tissueChannel},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateTissueRecord" parameterType="TissueRecord">
+        update zx_tissue_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceId != null  ">device_id = #{deviceId},</if>
+            <if test="terminalId != null  ">terminal_id = #{terminalId},</if>
+            <if test="placeId != null  ">place_id = #{placeId},</if>
+            <if test="openId != null  and openId != ''  ">open_id = #{openId},</if>
+            <if test="nickName != null  and nickName != ''  ">nick_name = #{nickName},</if>
+            <if test="headimgurl != null  and headimgurl != ''  ">headimgurl = #{headimgurl},</if>
+            <if test="tissueChannel != null  and tissueChannel != ''  ">tissue_channel = #{tissueChannel},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+        </trim>
+        where tissue_record_id = #{tissueRecordId}
+    </update>
+
+	<delete id="deleteTissueRecordById" parameterType="Integer">
+        delete from zx_tissue_record where tissue_record_id = #{tissueRecordId}
+    </delete>
+	
+    <delete id="deleteTissueRecordByIds" parameterType="String">
+        delete from zx_tissue_record where tissue_record_id in 
+        <foreach item="tissueRecordId" collection="array" open="(" separator="," close=")">
+            #{tissueRecordId}
+        </foreach>
+    </delete>
+    
+</mapper>
