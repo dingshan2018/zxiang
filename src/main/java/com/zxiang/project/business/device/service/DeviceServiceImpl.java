@@ -80,5 +80,10 @@ public class DeviceServiceImpl implements IDeviceService
 	{
 		return deviceMapper.deleteDeviceByIds(Convert.toStrArray(ids));
 	}
+
+	@Override
+	public List<Device> selectDropBoxList() {
+		return deviceMapper.selectDropBoxList();
+	}
 	
 }

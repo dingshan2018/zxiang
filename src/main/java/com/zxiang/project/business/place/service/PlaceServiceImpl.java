@@ -80,5 +80,10 @@ public class PlaceServiceImpl implements IPlaceService
 	{
 		return placeMapper.deletePlaceByIds(Convert.toStrArray(ids));
 	}
+
+	@Override
+	public List<Place> selectDropBoxList() {
+		return placeMapper.selectDropBoxList();
+	}
 	
 }

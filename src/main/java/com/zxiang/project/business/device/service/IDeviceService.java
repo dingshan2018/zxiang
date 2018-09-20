@@ -50,5 +50,10 @@ public interface IDeviceService
      * @return 结果
      */
 	public int deleteDeviceByIds(String ids);
+
+	/**
+	 * 查找设备下拉框数据
+	 */
+	public List<Device> selectDropBoxList();
 	
 }

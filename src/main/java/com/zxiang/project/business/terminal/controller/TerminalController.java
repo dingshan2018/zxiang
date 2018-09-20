@@ -1,5 +1,6 @@
 package com.zxiang.project.business.terminal.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -73,6 +74,9 @@ public class TerminalController extends BaseController
 	@ResponseBody
 	public AjaxResult addSave(Terminal terminal)
 	{		
+		String createUserName = getUser().getUserName();
+		terminal.setCreateBy(createUserName);
+		terminal.setCreateTime(new Date());
 		return toAjax(terminalService.insertTerminal(terminal));
 	}
 
@@ -96,6 +100,9 @@ public class TerminalController extends BaseController
 	@ResponseBody
 	public AjaxResult editSave(Terminal terminal)
 	{		
+		String updateUserName = getUser().getUserName();
+		terminal.setUpdateBy(updateUserName);
+		terminal.setUpdateTime(new Date());
 		return toAjax(terminalService.updateTerminal(terminal));
 	}
 	

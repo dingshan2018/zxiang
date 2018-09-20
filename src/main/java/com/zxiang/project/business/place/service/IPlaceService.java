@@ -50,5 +50,10 @@ public interface IPlaceService
      * @return 结果
      */
 	public int deletePlaceByIds(String ids);
+
+	/**
+	 * 查询场所下拉框数据列表
+	 */
+	public List<Place> selectDropBoxList();
 	
 }

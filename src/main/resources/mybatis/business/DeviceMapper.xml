@@ -162,4 +162,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <select id="selectDropBoxList" resultMap="DeviceResult">
+         select device_id, device_code, device_sn from zx_device
+    </select>
+    
 </mapper>

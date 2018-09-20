@@ -81,3 +81,51 @@ $.ajaxSetup({
         }
     }
 }); 
+
+
+/**设备下拉框选择*/
+function selectDeviceList(){
+	var deviceList = [];
+	 $.ajax({
+     	//写你自己的方法，返回map，我返回的map包含了两个属性：data：集合，total：集合记录数量，所以后边会有data.data的写法
+         url: ctx + "business/device/getDropBoxDeviceList",
+         type: "get",
+		//接受数据格式
+         dataType: "json",
+			//要传递的数据
+         data: 'data',
+         async:false,
+         success: function (data) {
+        	 deviceList = data.rows;
+         },
+         error: function (data) {
+             alert("查询设备失败" + data);
+         }
+     })
+     return deviceList;
+}
+
+/**场所下拉框选择*/
+function selectPlaceList(){
+	var placeList = [];
+	$.ajax({
+        url: ctx + "business/place/getDropBoxPlaceList",
+        type: "post",
+        dataType: "json",
+        data: 'data',
+        async:false,
+        success: function (data) {
+        	placeList = data.rows;
+        },
+        error: function (data) {
+            alert("查询场所失败" + data);
+        }
+    })
+    return placeList;
+}
+
+
+/**终端下拉框选择*/
+function selectTerminalList(){
+	console.log("请求终端列表");
+}

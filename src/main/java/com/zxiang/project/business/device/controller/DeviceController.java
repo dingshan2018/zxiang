@@ -111,4 +111,11 @@ public class DeviceController extends BaseController
 		return toAjax(deviceService.deleteDeviceByIds(ids));
 	}
 	
+	@RequestMapping("/getDropBoxDeviceList")
+    @ResponseBody
+    public TableDataInfo getDropBoxDeviceList() {
+		List<Device> list = deviceService.selectDropBoxList();
+		return getDataTable(list);
+    }
+	
 }

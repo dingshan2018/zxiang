@@ -58,5 +58,10 @@ public interface PlaceMapper
      * @return 结果
      */
 	public int deletePlaceByIds(String[] placeIds);
+
+	/**
+	 * 查询场所下拉框数据列表
+	 */
+	public List<Place> selectDropBoxList();
 	
 }

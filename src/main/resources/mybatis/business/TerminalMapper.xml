@@ -25,7 +25,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectTerminalVo">
-        select terminal_id, terminal_code, device_id, place_id, rssi, last_heart_time, last_login_time, volumn, status, del_flag, lon, lat, version, create_by, create_time, update_by, update_time from zx_terminal
+        select terminal_id, terminal_code, 
+        device_id, 
+        (select distinct d.device_code from zx_device d where d.device_id =t.`device_id` ) deviceCode,
+        place_id, 
+        (select distinct p.name from zx_place p where p.place_id =t.`place_id` ) placeName,
+        rssi, last_heart_time, last_login_time, volumn, status, del_flag, lon, lat, version,
+        create_by, create_time, update_by, update_time from zx_terminal t
     </sql>
 	
     <select id="selectTerminalList" parameterType="Terminal" resultMap="TerminalResult">
@@ -36,8 +42,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
              <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
              <if test="rssi != null and rssi != ''"> and rssi = #{rssi}</if>
-             <if test="lastHeartTime != null and lastHeartTime != ''"> and last_heart_time = #{lastHeartTime}</if>
-             <if test="lastLoginTime != null and lastLoginTime != ''"> and last_login_time = #{lastLoginTime}</if>
+             <if test="lastHeartTime != null "> and last_heart_time = #{lastHeartTime}</if>
+             <if test="lastLoginTime != null "> and last_login_time = #{lastLoginTime}</if>
              <if test="volumn != null and volumn != ''"> and volumn = #{volumn}</if>
              <if test="status != null and status != ''"> and status = #{status}</if>
              <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
@@ -45,8 +51,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="lat != null and lat != ''"> and lat = #{lat}</if>
              <if test="version != null and version != ''"> and version = #{version}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
-             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateBy != null "> and update_by = #{updateBy}</if>
              <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
          </where>
     </select>
@@ -64,8 +70,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="deviceId != null and deviceId != '' ">device_id,</if>
 			<if test="placeId != null and placeId != '' ">place_id,</if>
 			<if test="rssi != null and rssi != '' ">rssi,</if>
-			<if test="lastHeartTime != null and lastHeartTime != '' ">last_heart_time,</if>
-			<if test="lastLoginTime != null and lastLoginTime != '' ">last_login_time,</if>
+			<if test="lastHeartTime != null ">last_heart_time,</if>
+			<if test="lastLoginTime != null ">last_login_time,</if>
 			<if test="volumn != null and volumn != '' ">volumn,</if>
 			<if test="status != null and status != '' ">status,</if>
 			<if test="delFlag != null and delFlag != '' ">del_flag,</if>
@@ -73,9 +79,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="lat != null and lat != '' ">lat,</if>
 			<if test="version != null and version != '' ">version,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
-			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="createTime != null ">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
-			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+			<if test="updateTime != null ">update_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
@@ -83,8 +89,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="deviceId != null and deviceId != ''">#{deviceId},</if>
 			<if test="placeId != null and placeId != ''">#{placeId},</if>
 			<if test="rssi != null and rssi != ''">#{rssi},</if>
-			<if test="lastHeartTime != null and lastHeartTime != ''">#{lastHeartTime},</if>
-			<if test="lastLoginTime != null and lastLoginTime != ''">#{lastLoginTime},</if>
+			<if test="lastHeartTime != null ">#{lastHeartTime},</if>
+			<if test="lastLoginTime != null ">#{lastLoginTime},</if>
 			<if test="volumn != null and volumn != ''">#{volumn},</if>
 			<if test="status != null and status != ''">#{status},</if>
 			<if test="delFlag != null and delFlag != ''">#{delFlag},</if>
@@ -92,9 +98,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="lat != null and lat != ''">#{lat},</if>
 			<if test="version != null and version != ''">#{version},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
-			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="createTime != null ">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
-			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+			<if test="updateTime != null ">#{updateTime},</if>
          </trim>
     </insert>
 	 

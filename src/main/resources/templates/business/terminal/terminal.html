@@ -42,12 +42,12 @@
 					title : '终端编号' 
 				},
 				{
-					field : 'deviceId', 
-					title : '绑定设备（仅可绑定一次）' 
+					field : 'deviceCode', 
+					title : '绑定设备编号' 
 				},
 				{
-					field : 'placeId', 
-					title : '场所' 
+					field : 'placeName', 
+					title : '场所名称' 
 				},
 				{
 					field : 'rssi', 
@@ -71,7 +71,16 @@
 				},
 				{
 					field : 'delFlag', 
-					title : '是否删除' 
+					title : '状态' ,
+					formatter : function(value) {
+						if(value==='0'){
+							return "可用";
+						}else if(value==='1'){
+							return "禁用";
+						}else{
+							return "-";
+						}
+					}
 				},
 				{
 					field : 'lon', 

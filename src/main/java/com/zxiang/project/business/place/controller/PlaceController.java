@@ -111,4 +111,11 @@ public class PlaceController extends BaseController
 		return toAjax(placeService.deletePlaceByIds(ids));
 	}
 	
+	@RequestMapping("/getDropBoxPlaceList")
+    @ResponseBody
+    public TableDataInfo getDropBoxPlaceList() {
+		List<Place> list  = placeService.selectDropBoxList();
+		return getDataTable(list);
+    }
+	
 }

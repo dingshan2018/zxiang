@@ -217,4 +217,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <select id="selectDropBoxList" resultMap="PlaceResult">
+        select place_id, parent_place_id, place_code, name, sname from zx_place
+    </select>
+    
 </mapper>

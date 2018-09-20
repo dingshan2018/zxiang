@@ -58,5 +58,10 @@ public interface DeviceMapper
      * @return 结果
      */
 	public int deleteDeviceByIds(String[] deviceIds);
+
+	/**
+	 * 查找设备下拉框数据
+	 */
+	public List<Device> selectDropBoxList();
 	
 }
