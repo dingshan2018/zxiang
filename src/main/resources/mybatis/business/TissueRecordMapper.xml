@@ -18,7 +18,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectTissueRecordVo">
-        select tissue_record_id, device_id, terminal_id, place_id, open_id, nick_name, headimgurl, tissue_channel, create_by, create_time from zx_tissue_record
+        select tissue_record_id, 
+        device_id, 
+        (select distinct d.device_code from zx_device d where d.device_id =tr.`device_id` ) deviceCode,
+        terminal_id,
+        (select distinct t.terminal_code from zx_terminal t where t.terminal_id =tr.`terminal_id` ) terminalCode,
+        place_id, 
+        (select distinct p.name from zx_place p where p.place_id =tr.`place_id` ) placeName,
+        open_id, nick_name, headimgurl, tissue_channel,
+        create_by, create_time from zx_tissue_record tr
     </sql>
 	
     <select id="selectTissueRecordList" parameterType="TissueRecord" resultMap="TissueRecordResult">
@@ -33,7 +41,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="headimgurl != null and headimgurl != ''"> and headimgurl = #{headimgurl}</if>
              <if test="tissueChannel != null and tissueChannel != ''"> and tissue_channel = #{tissueChannel}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
          </where>
     </select>
     
@@ -54,7 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="headimgurl != null and headimgurl != '' ">headimgurl,</if>
 			<if test="tissueChannel != null and tissueChannel != '' ">tissue_channel,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
-			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="createTime != null ">create_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="tissueRecordId != null and tissueRecordId != ''">#{tissueRecordId},</if>
@@ -66,7 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="headimgurl != null and headimgurl != ''">#{headimgurl},</if>
 			<if test="tissueChannel != null and tissueChannel != ''">#{tissueChannel},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
-			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="createTime != null ">#{createTime},</if>
          </trim>
     </insert>
 	 

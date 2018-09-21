@@ -1,5 +1,6 @@
 package com.zxiang.project.business.tissueRecord.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -73,6 +74,11 @@ public class TissueRecordController extends BaseController
 	@ResponseBody
 	public AjaxResult addSave(TissueRecord tissueRecord)
 	{		
+		String createor = getUser().getUserName();
+		long userId = getUserId();
+		
+		tissueRecord.setCreateBy(createor+"("+userId+")");
+		tissueRecord.setCreateTime(new Date());
 		return toAjax(tissueRecordService.insertTissueRecord(tissueRecord));
 	}
 

@@ -1,5 +1,6 @@
 package com.zxiang.project.business.supplyTissue.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -73,6 +74,11 @@ public class SupplyTissueController extends BaseController
 	@ResponseBody
 	public AjaxResult addSave(SupplyTissue supplyTissue)
 	{		
+		String createor = getUser().getUserName();
+		long userId = getUserId();
+		
+		supplyTissue.setCreateBy(createor+"("+userId+")");
+		supplyTissue.setCreateTime(new Date());
 		return toAjax(supplyTissueService.insertSupplyTissue(supplyTissue));
 	}
 

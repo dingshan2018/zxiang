@@ -74,8 +74,10 @@ public class TerminalController extends BaseController
 	@ResponseBody
 	public AjaxResult addSave(Terminal terminal)
 	{		
-		String createUserName = getUser().getUserName();
-		terminal.setCreateBy(createUserName);
+		String createor = getUser().getUserName();
+		long userId = getUserId();
+		
+		terminal.setCreateBy(createor+"("+userId+")");
 		terminal.setCreateTime(new Date());
 		return toAjax(terminalService.insertTerminal(terminal));
 	}
@@ -100,8 +102,10 @@ public class TerminalController extends BaseController
 	@ResponseBody
 	public AjaxResult editSave(Terminal terminal)
 	{		
-		String updateUserName = getUser().getUserName();
-		terminal.setUpdateBy(updateUserName);
+		String updateor = getUser().getUserName();
+		long userId = getUserId();
+		
+		terminal.setUpdateBy(updateor+"("+userId+")");
 		terminal.setUpdateTime(new Date());
 		return toAjax(terminalService.updateTerminal(terminal));
 	}

@@ -75,7 +75,9 @@ public class TerminalTimerController extends BaseController
 	public AjaxResult addSave(TerminalTimer terminalTimer)
 	{		
 		String createor = getUser().getUserName();
-		terminalTimer.setCreateBy(createor);
+		long userId = getUserId();
+		
+		terminalTimer.setCreateBy(createor+"("+userId+")");
 		terminalTimer.setCreateTime(new Date());
 		return toAjax(terminalTimerService.insertTerminalTimer(terminalTimer));
 	}
@@ -101,7 +103,9 @@ public class TerminalTimerController extends BaseController
 	public AjaxResult editSave(TerminalTimer terminalTimer)
 	{		
 		String updateor = getUser().getUserName();
-		terminalTimer.setUpdateBy(updateor);
+		long userId = getUserId();
+		
+		terminalTimer.setUpdateBy(updateor+"("+userId+")");
 		terminalTimer.setUpdateTime(new Date());
 		return toAjax(terminalTimerService.updateTerminalTimer(terminalTimer));
 	}

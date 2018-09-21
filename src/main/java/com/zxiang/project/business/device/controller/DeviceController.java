@@ -75,7 +75,9 @@ public class DeviceController extends BaseController
 	public AjaxResult addSave(Device device)
 	{		
 		String createor = getUser().getUserName();
-		device.setCreateBy(createor);
+		long userId = getUserId();
+		
+		device.setCreateBy(createor+"("+userId+")");
 		device.setCreateTime(new Date());
 		return toAjax(deviceService.insertDevice(device));
 	}
@@ -101,7 +103,9 @@ public class DeviceController extends BaseController
 	public AjaxResult editSave(Device device)
 	{		
 		String updateor = getUser().getUserName();
-		device.setUpdateBy(updateor);
+		long userId = getUserId();
+		
+		device.setUpdateBy(updateor+"("+userId+")");
 		device.setUpdateTime(new Date());
 		return toAjax(deviceService.updateDevice(device));
 	}

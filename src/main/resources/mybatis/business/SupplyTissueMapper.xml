@@ -15,7 +15,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectSupplyTissueVo">
-        select supply_tissue_id, device_id, tissue_count, place_id, supplier_id, create_by, create_time from zx_supply_tissue
+        select supply_tissue_id, device_id,
+        (select distinct d.device_code from zx_device d where d.device_id =zst.`device_id` ) deviceCode,
+         tissue_count, place_id, supplier_id, 
+         create_by, create_time from zx_supply_tissue zst
     </sql>
 	
     <select id="selectSupplyTissueList" parameterType="SupplyTissue" resultMap="SupplyTissueResult">
@@ -27,7 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
              <if test="supplierId != null and supplierId != ''"> and supplier_id = #{supplierId}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
          </where>
     </select>
     
@@ -45,7 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="placeId != null and placeId != '' ">place_id,</if>
 			<if test="supplierId != null and supplierId != '' ">supplier_id,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
-			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="createTime != null  ">create_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="supplyTissueId != null and supplyTissueId != ''">#{supplyTissueId},</if>
@@ -54,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="placeId != null and placeId != ''">#{placeId},</if>
 			<if test="supplierId != null and supplierId != ''">#{supplierId},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
-			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="createTime != null ">#{createTime},</if>
          </trim>
     </insert>
 	 

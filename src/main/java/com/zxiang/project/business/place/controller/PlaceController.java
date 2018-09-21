@@ -75,7 +75,9 @@ public class PlaceController extends BaseController
 	public AjaxResult addSave(Place place)
 	{		
 		String createor = getUser().getUserName();
-		place.setCreateBy(createor);
+		long userId = getUserId();
+		
+		place.setCreateBy(createor+"("+userId+")");
 		place.setCreateTime(new Date());
 		return toAjax(placeService.insertPlace(place));
 	}
@@ -101,7 +103,9 @@ public class PlaceController extends BaseController
 	public AjaxResult editSave(Place place)
 	{		
 		String updateor = getUser().getUserName();
-		place.setUpdateBy(updateor);
+		long userId = getUserId();
+		
+		place.setUpdateBy(updateor+"("+userId+")");
 		place.setUpdateTime(new Date());
 		return toAjax(placeService.updatePlace(place));
 	}

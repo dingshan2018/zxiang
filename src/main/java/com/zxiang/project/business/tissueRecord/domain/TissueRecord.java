@@ -38,6 +38,11 @@ public class TissueRecord extends BaseEntity
 	/** 出纸时间 */
 	private Date createTime;
 
+	private String terminalCode;
+	private String placeName;
+	private String deviceCode;
+	
+	
 	public void setTissueRecordId(Integer tissueRecordId) 
 	{
 		this.tissueRecordId = tissueRecordId;
@@ -129,7 +134,31 @@ public class TissueRecord extends BaseEntity
 		return createTime;
 	}
 
-    public String toString() {
+    public String getTerminalCode() {
+		return terminalCode;
+	}
+
+	public void setTerminalCode(String terminalCode) {
+		this.terminalCode = terminalCode;
+	}
+
+	public String getPlaceName() {
+		return placeName;
+	}
+
+	public void setPlaceName(String placeName) {
+		this.placeName = placeName;
+	}
+
+	public String getDeviceCode() {
+		return deviceCode;
+	}
+
+	public void setDeviceCode(String deviceCode) {
+		this.deviceCode = deviceCode;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("tissueRecordId", getTissueRecordId())
             .append("deviceId", getDeviceId())

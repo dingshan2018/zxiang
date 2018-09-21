@@ -75,7 +75,9 @@ public class TerminalParamController extends BaseController
 	public AjaxResult addSave(TerminalParam terminalParam)
 	{		
 		String createor = getUser().getUserName();
-		terminalParam.setCreateBy(createor);
+		long userId = getUserId();
+
+		terminalParam.setCreateBy(createor+"("+userId+")");
 		terminalParam.setCreateTime(new Date());
 		return toAjax(terminalParamService.insertTerminalParam(terminalParam));
 	}
