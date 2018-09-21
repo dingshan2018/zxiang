@@ -36,6 +36,9 @@ public class ChangeTerminal extends BaseEntity
 	/**  */
 	private Date updateTime;
 
+	private String oldTerminalCode;
+	private String newTerminalCode;
+	
 	public void setChangeTerminalId(Integer changeTerminalId) 
 	{
 		this.changeTerminalId = changeTerminalId;
@@ -118,7 +121,23 @@ public class ChangeTerminal extends BaseEntity
 		return updateTime;
 	}
 
-    public String toString() {
+    public String getOldTerminalCode() {
+		return oldTerminalCode;
+	}
+
+	public void setOldTerminalCode(String oldTerminalCode) {
+		this.oldTerminalCode = oldTerminalCode;
+	}
+
+	public String getNewTerminalCode() {
+		return newTerminalCode;
+	}
+
+	public void setNewTerminalCode(String newTerminalCode) {
+		this.newTerminalCode = newTerminalCode;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("changeTerminalId", getChangeTerminalId())
             .append("oldTerminalId", getOldTerminalId())

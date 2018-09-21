@@ -1,5 +1,6 @@
 package com.zxiang.project.business.changeTerminal.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -73,6 +74,11 @@ public class ChangeTerminalController extends BaseController
 	@ResponseBody
 	public AjaxResult addSave(ChangeTerminal changeTerminal)
 	{		
+		String createor = getUser().getUserName();
+		long userId = getUserId();
+		
+		changeTerminal.setCreateBy(createor+"("+userId+")");
+		changeTerminal.setCreateTime(new Date());
 		return toAjax(changeTerminalService.insertChangeTerminal(changeTerminal));
 	}
 
@@ -96,6 +102,11 @@ public class ChangeTerminalController extends BaseController
 	@ResponseBody
 	public AjaxResult editSave(ChangeTerminal changeTerminal)
 	{		
+		String updateor = getUser().getUserName();
+		long userId = getUserId();
+		
+		changeTerminal.setUpdateBy(updateor+"("+userId+")");
+		changeTerminal.setUpdateTime(new Date());
 		return toAjax(changeTerminalService.updateChangeTerminal(changeTerminal));
 	}
 	

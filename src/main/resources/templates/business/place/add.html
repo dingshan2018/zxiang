@@ -9,7 +9,7 @@
 				<label class="col-sm-3 control-label">父级场所：</label>
 				<div class="col-sm-8">
 					<select class="form-control" name="parentPlaceId" id="parentPlaceId">
-                        <option>==请选择===</option>
+                        <option>---请选择---</option>
                     </select>
 				</div>
 			</div>
@@ -23,7 +23,7 @@
 				<label class="col-sm-3 control-label">场所类型（自营、代理、自购）：</label>
 				<div class="col-sm-8">
 					<select class="form-control" name="placeType" id="placeType">
-                        <option>==请选择===</option>
+                        <option>---请选择---</option>
                         <option value="0">自营</option>
                         <option value="1">代理</option>
                         <option value="2">自购</option>
@@ -58,7 +58,7 @@
 				<label class="col-sm-3 control-label">省份：</label>
 				<div class="col-sm-8">
 					<select class="form-control" name="province" id="province">
-                        <option>==请选择===</option>
+                       	<option>---请选择---</option>
                     </select>
 				</div>
 			</div>
@@ -66,7 +66,7 @@
 				<label class="col-sm-3 control-label">城市：</label>
 				<div class="col-sm-8">
 					<select class="form-control" name="city" id="city">
-                        <option>==请选择===</option>
+                        <option>---请选择---</option>
                     </select>
 				</div>
 			</div>
@@ -74,7 +74,7 @@
 				<label class="col-sm-3 control-label">地区：</label>
 				<div class="col-sm-8">
 					<select class="form-control" name="county" id="county">
-                        <option>==请选择===</option>
+                        <option>---请选择---</option>
                     </select>
 				</div>
 			</div>
@@ -223,7 +223,7 @@
 	    function proviceBind() {
 	        //清空下拉数据
 	        $("#province").html("");
-	        var str = "<option>==请选择===</option>";
+	        var str = "<option>---请选择---</option>";
 	        $.ajax({
 	        	type: "post",
 	        	contentType:"application/json",
@@ -249,7 +249,7 @@
 	            return;
 	        }
 	        $("#city").html("");
-	        var str = "<option>==请选择===</option>";
+	        var str = "<option>---请选择---</option>";
 	        $.ajax({
 	        	type: "post",
 	        	contentType:"application/json",
@@ -275,7 +275,7 @@
 	            return;
 	        }
 	        $("#county").html("");
-	        var str = "<option>==请选择===</option>";
+	        var str = "<option>---请选择---</option>";
 	        //将市的ID拿到数据库进行查询，查询出他的下级进行绑定
 	        $.ajax({
 	        	type: "post",
