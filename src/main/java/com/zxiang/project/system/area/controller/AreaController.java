@@ -1,6 +1,8 @@
 package com.zxiang.project.system.area.controller;
 
 import java.util.List;
+import java.util.Map;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,6 +10,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
@@ -109,4 +112,13 @@ public class AreaController extends BaseController
 		return toAjax(areaService.deleteAreaByIds(ids));
 	}
 	
+	@RequestMapping("/getDropBoxAreaList")
+    @ResponseBody
+    public TableDataInfo getDropBoxAreaList(@RequestBody Map<String, Object> params) {
+		String parentId = (String) params.get("parentId");
+		System.out.println("parentId:"+parentId);
+		List<Area> list = areaService.selectDropBoxList(Long.parseLong(parentId));
+		System.out.println("list:"+list.size());
+		return getDataTable(list);
+    }
 }

@@ -35,15 +35,20 @@
 		        },
 				{
 					field : 'placeId', 
-					title : '场所' 
+					title : '场所' ,
+					hidden: true
 				},
 				{
-					field : 'parentPlaceId', 
-					title : '父级场所' 
+					field : 'name', 
+					title : '场所名称' 
+				},
+				{
+					field : 'sname', 
+					title : '场所简拼' 
 				},
 				{
 					field : 'placeCode', 
-					title : '场所编号（地区编号+序号）' 
+					title : '场所编号' 
 				},
 				{
 					field : 'placeType', 
@@ -54,12 +59,8 @@
 					title : '场景(场所业态)' 
 				},
 				{
-					field : 'name', 
-					title : '场所名称' 
-				},
-				{
-					field : 'sname', 
-					title : '场所简拼' 
+					field : 'parentPlaceName', 
+					title : '父级场所' 
 				},
 				{
 					field : 'address', 
@@ -159,15 +160,15 @@
 				},
 				{
 					field : 'createTime', 
-					title : '' 
+					title : '创建时间' 
 				},
 				{
 					field : 'updateBy', 
-					title : '' 
+					title : '修改者' 
 				},
 				{
 					field : 'updateTime', 
-					title : '' 
+					title : '修改时间' 
 				},
 		        {
 		            title: '操作',
@@ -180,7 +181,22 @@
 		            }
 		        }]
             };
+            //表单加载后隐藏部分字段不展示在列表中，可在页面重新选择展示
             $.table.init(options);
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'placeId');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'lon');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'lat');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'packet');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'tissueLen');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'ctBank');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'ctAccount');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'ctPhone');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'ctIdentity');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'createBy');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
+            
         });
     </script>
 </body>

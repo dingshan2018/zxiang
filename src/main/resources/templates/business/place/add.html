@@ -8,7 +8,9 @@
 			<div class="form-group">	
 				<label class="col-sm-3 control-label">父级场所：</label>
 				<div class="col-sm-8">
-					<input id="parentPlaceId" name="parentPlaceId" class="form-control" type="text">
+					<select class="form-control" name="parentPlaceId" id="parentPlaceId">
+                        <option>==请选择===</option>
+                    </select>
 				</div>
 			</div>
 			<div class="form-group">	
@@ -211,6 +213,11 @@
 	        $("#city").change(function () {
 	        	countyBind();
 	        })
+	        
+	        var placeList = selectPlaceList();
+	    	$.each(placeList, function (i) {
+            	$('#parentPlaceId').append("<option value=" + placeList[i].placeId + ">" + placeList[i].name + "</option>");
+            });
 	    })
 	    
 	    function proviceBind() {
@@ -218,10 +225,11 @@
 	        $("#province").html("");
 	        var str = "<option>==请选择===</option>";
 	        $.ajax({
-	            type: "POST",
+	        	type: "post",
+	        	contentType:"application/json",
+	            dataType: "json",
 	            url: ctx + "system/area/getDropBoxAreaList",
-	            data: { "parentId": ""},
-	            dataType: "JSON",
+	            data: JSON.stringify({ "parentId": "0"}),
 	            async: false,
 	            success: function (data) {
 	                //从服务器获取数据进行绑定
@@ -235,7 +243,7 @@
 	        });
 	    }
 	    function cityBind() {
-	        var provice = $("#province").attr("value");
+	        var provice = $("#province option:selected").val();
 	        //判断省份这个下拉框选中的值是否为空
 	        if (provice == "") {
 	            return;
@@ -243,10 +251,11 @@
 	        $("#city").html("");
 	        var str = "<option>==请选择===</option>";
 	        $.ajax({
-	            type: "POST",
-	            url: "/Home/GetAddress",
-	            data: { "parentId": provice},
-	            dataType: "JSON",
+	        	type: "post",
+	        	contentType:"application/json",
+	            dataType: "json",
+	            url: ctx + "system/area/getDropBoxAreaList",
+	            data: JSON.stringify({ "parentId": provice}),
 	            async: false,
 	            success: function (data) {
 	                //从服务器获取数据进行绑定
@@ -260,7 +269,7 @@
 	        });
 	    }
 	    function countyBind() {
-	        var provice = $("#city").attr("value");
+	        var provice = $("#city option:selected").val();
 	        //判断市这个下拉框选中的值是否为空
 	        if (provice == "") {
 	            return;
@@ -269,10 +278,11 @@
 	        var str = "<option>==请选择===</option>";
 	        //将市的ID拿到数据库进行查询，查询出他的下级进行绑定
 	        $.ajax({
-	            type: "POST",
-	            url: "/Home/GetAddress",
-	            data: { "parentId": provice},
-	            dataType: "JSON",
+	        	type: "post",
+	        	contentType:"application/json",
+	            dataType: "json",
+	            url: ctx + "system/area/getDropBoxAreaList",
+	            data: JSON.stringify({ "parentId": provice}),
 	            async: false,
 	            success: function (data) {
 	                //从服务器获取数据进行绑定

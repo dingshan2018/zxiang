@@ -97,4 +97,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <select id="selectDropBoxList" parameterType="Long" resultMap="AreaResult">
+		SELECT * FROM `sys_area` WHERE pid = #{parentId} AND is_valid=1 ORDER BY porder
+    </select>
+    
 </mapper>

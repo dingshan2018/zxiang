@@ -87,6 +87,7 @@ public class Place extends BaseEntity
 	private Date updateTime;
 
 	
+	private String parentPlaceName;
 	private String provinceName;
 	private String cityName;
 	private String countyName;
@@ -420,6 +421,14 @@ public class Place extends BaseEntity
 
 	public void setCountyName(String countyName) {
 		this.countyName = countyName;
+	}
+
+	public String getParentPlaceName() {
+		return parentPlaceName;
+	}
+
+	public void setParentPlaceName(String parentPlaceName) {
+		this.parentPlaceName = parentPlaceName;
 	}
 
 	public String toString() {

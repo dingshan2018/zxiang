@@ -58,5 +58,7 @@ public interface AreaMapper
      * @return 结果
      */
 	public int deleteAreaByIds(String[] ids);
+
+	public List<Area> selectDropBoxList(long parentId);
 	
 }

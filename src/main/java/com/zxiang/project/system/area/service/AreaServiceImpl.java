@@ -79,5 +79,10 @@ public class AreaServiceImpl implements IAreaService
 	{
 		return areaMapper.deleteAreaByIds(Convert.toStrArray(ids));
 	}
+
+	@Override
+	public List<Area> selectDropBoxList(long parentId) {
+		return areaMapper.selectDropBoxList(parentId);
+	}
 	
 }

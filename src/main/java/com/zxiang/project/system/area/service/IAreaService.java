@@ -50,5 +50,10 @@ public interface IAreaService
      * @return 结果
      */
 	public int deleteAreaByIds(String ids);
+
+	/**
+	 * 通过parentId获取地区信息
+	 */
+	public List<Area> selectDropBoxList(long parentId);
 	
 }

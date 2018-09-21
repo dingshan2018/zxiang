@@ -42,7 +42,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectPlaceVo">
-        select place_id, parent_place_id, place_code, place_type, scene, name, sname, address, 
+        select place_id, parent_place_id,
+        (select distinct pp.name from zx_place pp where pp.place_id =p.`parent_place_id` ) parentPlaceName,
+        place_code, place_type, scene, name, sname, address, 
         province, 
         (select distinct a.pname from sys_area a where a.id =p.`province` ) provinceName,
         city, 
@@ -133,9 +135,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="delFlag != null and delFlag != '' ">del_flag,</if>
 			<if test="note != null and note != '' ">note,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
-			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="createTime != null">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
-			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+			<if test="updateTime != null">update_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="placeId != null and placeId != ''">#{placeId},</if>
@@ -169,9 +171,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="delFlag != null and delFlag != ''">#{delFlag},</if>
 			<if test="note != null and note != ''">#{note},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
-			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="createTime != null ">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
-			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+			<if test="updateTime != null ">#{updateTime},</if>
          </trim>
     </insert>
 	 
