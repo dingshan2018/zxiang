@@ -16,7 +16,7 @@ import com.zxiang.framework.web.controller.BaseController;
 @RequestMapping("/tool/swagger")
 public class SwaggerController extends BaseController
 {
-    @RequiresPermissions("tool:swagger:view")
+//    @RequiresPermissions("tool:swagger:view")
     @GetMapping()
     public String index()
     {

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.system.area.mapper.AreaMapper">
+    
+    <resultMap type="Area" id="AreaResult">
+        <result property="id"    column="id"    />
+        <result property="pid"    column="pid"    />
+        <result property="homecity"    column="homecity"    />
+        <result property="level"    column="level"    />
+        <result property="porder"    column="porder"    />
+        <result property="pname"    column="pname"    />
+        <result property="psname"    column="psname"    />
+        <result property="lon"    column="lon"    />
+        <result property="lat"    column="lat"    />
+        <result property="isValid"    column="is_valid"    />
+    </resultMap>
+	
+	<sql id="selectAreaVo">
+        select id, pid, homecity, level, porder, pname, psname, lon, lat, is_valid from sys_area
+    </sql>
+	
+    <select id="selectAreaList" parameterType="Area" resultMap="AreaResult">
+        <include refid="selectAreaVo"/>
+        <where>  
+            <if test="id != null and id != ''"> and id = #{id}</if>
+             <if test="pid != null and pid != ''"> and pid = #{pid}</if>
+             <if test="homecity != null and homecity != ''"> and homecity = #{homecity}</if>
+             <if test="level != null and level != ''"> and level = #{level}</if>
+             <if test="porder != null and porder != ''"> and porder = #{porder}</if>
+             <if test="pname != null and pname != ''"> and pname = #{pname}</if>
+             <if test="psname != null and psname != ''"> and psname = #{psname}</if>
+             <if test="lon != null and lon != ''"> and lon = #{lon}</if>
+             <if test="lat != null and lat != ''"> and lat = #{lat}</if>
+             <if test="isValid != null and isValid != ''"> and is_valid = #{isValid}</if>
+         </where>
+    </select>
+    
+    <select id="selectAreaById" parameterType="Long" resultMap="AreaResult">
+        <include refid="selectAreaVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertArea" parameterType="Area">
+        insert into sys_area
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null and id != '' ">id,</if>
+			<if test="pid != null and pid != '' ">pid,</if>
+			<if test="homecity != null and homecity != '' ">homecity,</if>
+			<if test="level != null and level != '' ">level,</if>
+			<if test="porder != null and porder != '' ">porder,</if>
+			<if test="pname != null and pname != '' ">pname,</if>
+			<if test="psname != null and psname != '' ">psname,</if>
+			<if test="lon != null and lon != '' ">lon,</if>
+			<if test="lat != null and lat != '' ">lat,</if>
+			<if test="isValid != null and isValid != '' ">is_valid,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null and id != ''">#{id},</if>
+			<if test="pid != null and pid != ''">#{pid},</if>
+			<if test="homecity != null and homecity != ''">#{homecity},</if>
+			<if test="level != null and level != ''">#{level},</if>
+			<if test="porder != null and porder != ''">#{porder},</if>
+			<if test="pname != null and pname != ''">#{pname},</if>
+			<if test="psname != null and psname != ''">#{psname},</if>
+			<if test="lon != null and lon != ''">#{lon},</if>
+			<if test="lat != null and lat != ''">#{lat},</if>
+			<if test="isValid != null and isValid != ''">#{isValid},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateArea" parameterType="Area">
+        update sys_area
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pid != null  ">pid = #{pid},</if>
+            <if test="homecity != null  ">homecity = #{homecity},</if>
+            <if test="level != null  ">level = #{level},</if>
+            <if test="porder != null  ">porder = #{porder},</if>
+            <if test="pname != null  and pname != ''  ">pname = #{pname},</if>
+            <if test="psname != null  and psname != ''  ">psname = #{psname},</if>
+            <if test="lon != null  ">lon = #{lon},</if>
+            <if test="lat != null  ">lat = #{lat},</if>
+            <if test="isValid != null  ">is_valid = #{isValid},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteAreaById" parameterType="Long">
+        delete from sys_area where id = #{id}
+    </delete>
+	
+    <delete id="deleteAreaByIds" parameterType="String">
+        delete from sys_area where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
