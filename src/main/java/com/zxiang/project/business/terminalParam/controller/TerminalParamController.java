@@ -1,5 +1,6 @@
 package com.zxiang.project.business.terminalParam.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -73,6 +74,9 @@ public class TerminalParamController extends BaseController
 	@ResponseBody
 	public AjaxResult addSave(TerminalParam terminalParam)
 	{		
+		String createor = getUser().getUserName();
+		terminalParam.setCreateBy(createor);
+		terminalParam.setCreateTime(new Date());
 		return toAjax(terminalParamService.insertTerminalParam(terminalParam));
 	}
 

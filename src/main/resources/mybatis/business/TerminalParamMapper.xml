@@ -17,7 +17,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectTerminalParamVo">
-        select id, terminal_id, param_key, param_value1, param_value2, param_value3, param_value4, create_by, create_time from zx_terminal_param
+        select id, terminal_id,
+        (select distinct t.terminal_code from zx_terminal t where t.terminal_id =tp.`terminal_id` ) terminalCode,
+        param_key, param_value1, param_value2, param_value3, param_value4, 
+        create_by, create_time from zx_terminal_param tp
     </sql>
 	
     <select id="selectTerminalParamList" parameterType="TerminalParam" resultMap="TerminalParamResult">
@@ -31,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="paramValue3 != null and paramValue3 != ''"> and param_value3 = #{paramValue3}</if>
              <if test="paramValue4 != null and paramValue4 != ''"> and param_value4 = #{paramValue4}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
          </where>
     </select>
     
@@ -51,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="paramValue3 != null and paramValue3 != '' ">param_value3,</if>
 			<if test="paramValue4 != null and paramValue4 != '' ">param_value4,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
-			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="createTime != null ">create_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="id != null and id != ''">#{id},</if>
@@ -62,7 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="paramValue3 != null and paramValue3 != ''">#{paramValue3},</if>
 			<if test="paramValue4 != null and paramValue4 != ''">#{paramValue4},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
-			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="createTime != null ">#{createTime},</if>
          </trim>
     </insert>
 	 
