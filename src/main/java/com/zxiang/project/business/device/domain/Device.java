@@ -64,6 +64,9 @@ public class Device extends BaseEntity
 	/**  */
 	private Date updateTime;
 
+	private String terminalCode;
+	private String placeName;
+	
 	public void setDeviceId(Integer deviceId) 
 	{
 		this.deviceId = deviceId;
@@ -272,7 +275,23 @@ public class Device extends BaseEntity
 		return updateTime;
 	}
 
-    public String toString() {
+    public String getTerminalCode() {
+		return terminalCode;
+	}
+
+	public void setTerminalCode(String terminalCode) {
+		this.terminalCode = terminalCode;
+	}
+
+	public String getPlaceName() {
+		return placeName;
+	}
+
+	public void setPlaceName(String placeName) {
+		this.placeName = placeName;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("deviceId", getDeviceId())
             .append("deviceCode", getDeviceCode())

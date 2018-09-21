@@ -118,4 +118,14 @@ public class TerminalController extends BaseController
 		return toAjax(terminalService.deleteTerminalByIds(ids));
 	}
 	
+	/**
+	 * 查询终端设备下拉列表
+	 */
+	@RequestMapping("/getDropBoxTerminalList")
+    @ResponseBody
+    public TableDataInfo getDropBoxTerminalList() {
+		List<Terminal> list = terminalService.selectDropBoxList();
+		return getDataTable(list);
+    }
+	
 }

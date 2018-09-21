@@ -1,5 +1,6 @@
 package com.zxiang.project.business.device.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -73,6 +74,9 @@ public class DeviceController extends BaseController
 	@ResponseBody
 	public AjaxResult addSave(Device device)
 	{		
+		String createor = getUser().getUserName();
+		device.setCreateBy(createor);
+		device.setCreateTime(new Date());
 		return toAjax(deviceService.insertDevice(device));
 	}
 
@@ -96,6 +100,9 @@ public class DeviceController extends BaseController
 	@ResponseBody
 	public AjaxResult editSave(Device device)
 	{		
+		String updateor = getUser().getUserName();
+		device.setUpdateBy(updateor);
+		device.setUpdateTime(new Date());
 		return toAjax(deviceService.updateDevice(device));
 	}
 	
@@ -111,6 +118,9 @@ public class DeviceController extends BaseController
 		return toAjax(deviceService.deleteDeviceByIds(ids));
 	}
 	
+	/**
+	 * 查找设备下拉框数据
+	 */
 	@RequestMapping("/getDropBoxDeviceList")
     @ResponseBody
     public TableDataInfo getDropBoxDeviceList() {

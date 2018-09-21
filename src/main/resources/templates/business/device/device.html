@@ -35,7 +35,7 @@
 		        },
 				{
 					field : 'deviceId', 
-					title : '' 
+					title : '设备ID' 
 				},
 				{
 					field : 'deviceCode', 
@@ -50,12 +50,12 @@
 					title : '设备类型' 
 				},
 				{
-					field : 'terminalId', 
-					title : '终端ID（板卡ID）' 
+					field : 'terminalCode', 
+					title : '终端编号）' 
 				},
 				{
-					field : 'placeId', 
-					title : '场所Id' 
+					field : 'placeName', 
+					title : '场所' 
 				},
 				{
 					field : 'price', 
@@ -63,11 +63,11 @@
 				},
 				{
 					field : 'lon', 
-					title : '' 
+					title : '经度' 
 				},
 				{
 					field : 'lat', 
-					title : '' 
+					title : '纬度' 
 				},
 				{
 					field : 'releaseTime', 
@@ -103,7 +103,18 @@
 				},
 				{
 					field : 'status', 
-					title : '设备状态(1 下线  2 上线  3 故障 )' 
+					title : '设备状态(1 下线  2 上线  3 故障 )' ,
+					formatter : function(value) {
+						if(value==='1'){
+							return "下线";
+						}else if(value==='2'){
+							return "上线";
+						}else if(value==='3'){
+							return "故障";
+						}else{
+							return "-";
+						}
+					}
 				},
 				{
 					field : 'delFlag', 
@@ -111,19 +122,19 @@
 				},
 				{
 					field : 'createBy', 
-					title : '' 
+					title : '创建者' 
 				},
 				{
 					field : 'createTime', 
-					title : '' 
+					title : '创建时间' 
 				},
 				{
 					field : 'updateBy', 
-					title : '' 
+					title : '修改者' 
 				},
 				{
 					field : 'updateTime', 
-					title : '' 
+					title : '修改时间' 
 				},
 		        {
 		            title: '操作',
@@ -137,6 +148,13 @@
 		        }]
             };
             $.table.init(options);
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'lon');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'lat');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'delFlag');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'createBy');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
         });
     </script>
 </body>

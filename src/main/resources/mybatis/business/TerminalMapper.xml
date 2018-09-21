@@ -138,4 +138,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <select id="selectDropBoxList" parameterType="Terminal" resultMap="TerminalResult">
+		select terminal_id,terminal_code from zx_terminal
+    </select>
+    
 </mapper>

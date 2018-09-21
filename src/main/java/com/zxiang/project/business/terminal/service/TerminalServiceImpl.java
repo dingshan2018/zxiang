@@ -80,5 +80,10 @@ public class TerminalServiceImpl implements ITerminalService
 	{
 		return terminalMapper.deleteTerminalByIds(Convert.toStrArray(ids));
 	}
+
+	@Override
+	public List<Terminal> selectDropBoxList() {
+		return terminalMapper.selectDropBoxList();
+	}
 	
 }

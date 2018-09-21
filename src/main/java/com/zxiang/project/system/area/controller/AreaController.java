@@ -112,13 +112,14 @@ public class AreaController extends BaseController
 		return toAjax(areaService.deleteAreaByIds(ids));
 	}
 	
+	/**
+	 * 根据父地区查询地区信息
+	 */
 	@RequestMapping("/getDropBoxAreaList")
     @ResponseBody
     public TableDataInfo getDropBoxAreaList(@RequestBody Map<String, Object> params) {
 		String parentId = (String) params.get("parentId");
-		System.out.println("parentId:"+parentId);
 		List<Area> list = areaService.selectDropBoxList(Long.parseLong(parentId));
-		System.out.println("list:"+list.size());
 		return getDataTable(list);
     }
 }

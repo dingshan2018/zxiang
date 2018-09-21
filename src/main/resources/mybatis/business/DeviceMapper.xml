@@ -31,7 +31,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectDeviceVo">
-        select device_id, device_code, device_sn, device_type, terminal_id, place_id, price, lon, lat, release_time, remove_time, total_len, remain_len, last_heart_time, last_login_time, last_scan_time, note, status, del_flag, create_by, create_time, update_by, update_time from zx_device
+        select device_id, device_code, device_sn, device_type,
+         terminal_id,
+         (select distinct t.terminal_code from zx_terminal t where t.terminal_id =d.`terminal_id` ) terminalCode,
+         place_id, 
+         (select distinct p.name from zx_place p where p.place_id =d.`place_id` ) placeName,
+         price, lon, lat, release_time, remove_time, total_len, remain_len, last_heart_time, 
+         last_login_time, last_scan_time, note, status, del_flag, create_by, create_time, 
+         update_by, update_time from zx_device d
     </sql>
 	
     <select id="selectDeviceList" parameterType="Device" resultMap="DeviceResult">
@@ -46,20 +53,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="price != null and price != ''"> and price = #{price}</if>
              <if test="lon != null and lon != ''"> and lon = #{lon}</if>
              <if test="lat != null and lat != ''"> and lat = #{lat}</if>
-             <if test="releaseTime != null and releaseTime != ''"> and release_time = #{releaseTime}</if>
-             <if test="removeTime != null and removeTime != ''"> and remove_time = #{removeTime}</if>
+             <if test="releaseTime != null "> and release_time = #{releaseTime}</if>
+             <if test="removeTime != null "> and remove_time = #{removeTime}</if>
              <if test="totalLen != null and totalLen != ''"> and total_len = #{totalLen}</if>
              <if test="remainLen != null and remainLen != ''"> and remain_len = #{remainLen}</if>
-             <if test="lastHeartTime != null and lastHeartTime != ''"> and last_heart_time = #{lastHeartTime}</if>
-             <if test="lastLoginTime != null and lastLoginTime != ''"> and last_login_time = #{lastLoginTime}</if>
-             <if test="lastScanTime != null and lastScanTime != ''"> and last_scan_time = #{lastScanTime}</if>
+             <if test="lastHeartTime != null "> and last_heart_time = #{lastHeartTime}</if>
+             <if test="lastLoginTime != null "> and last_login_time = #{lastLoginTime}</if>
+             <if test="lastScanTime != null "> and last_scan_time = #{lastScanTime}</if>
              <if test="note != null and note != ''"> and note = #{note}</if>
              <if test="status != null and status != ''"> and status = #{status}</if>
              <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="createTime != null"> and create_time = #{createTime}</if>
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
-             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+             <if test="updateTime != null"> and update_time = #{updateTime}</if>
          </where>
     </select>
     
@@ -80,20 +87,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="price != null and price != '' ">price,</if>
 			<if test="lon != null and lon != '' ">lon,</if>
 			<if test="lat != null and lat != '' ">lat,</if>
-			<if test="releaseTime != null and releaseTime != '' ">release_time,</if>
-			<if test="removeTime != null and removeTime != '' ">remove_time,</if>
+			<if test="releaseTime != null  ">release_time,</if>
+			<if test="removeTime != null  ">remove_time,</if>
 			<if test="totalLen != null and totalLen != '' ">total_len,</if>
 			<if test="remainLen != null and remainLen != '' ">remain_len,</if>
-			<if test="lastHeartTime != null and lastHeartTime != '' ">last_heart_time,</if>
-			<if test="lastLoginTime != null and lastLoginTime != '' ">last_login_time,</if>
-			<if test="lastScanTime != null and lastScanTime != '' ">last_scan_time,</if>
+			<if test="lastHeartTime != null  ">last_heart_time,</if>
+			<if test="lastLoginTime != null  ">last_login_time,</if>
+			<if test="lastScanTime != null  ">last_scan_time,</if>
 			<if test="note != null and note != '' ">note,</if>
 			<if test="status != null and status != '' ">status,</if>
 			<if test="delFlag != null and delFlag != '' ">del_flag,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
-			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="createTime != null  ">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
-			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+			<if test="updateTime != null  ">update_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="deviceId != null and deviceId != ''">#{deviceId},</if>
@@ -105,20 +112,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="price != null and price != ''">#{price},</if>
 			<if test="lon != null and lon != ''">#{lon},</if>
 			<if test="lat != null and lat != ''">#{lat},</if>
-			<if test="releaseTime != null and releaseTime != ''">#{releaseTime},</if>
-			<if test="removeTime != null and removeTime != ''">#{removeTime},</if>
+			<if test="releaseTime != null ">#{releaseTime},</if>
+			<if test="removeTime != null ">#{removeTime},</if>
 			<if test="totalLen != null and totalLen != ''">#{totalLen},</if>
 			<if test="remainLen != null and remainLen != ''">#{remainLen},</if>
-			<if test="lastHeartTime != null and lastHeartTime != ''">#{lastHeartTime},</if>
-			<if test="lastLoginTime != null and lastLoginTime != ''">#{lastLoginTime},</if>
-			<if test="lastScanTime != null and lastScanTime != ''">#{lastScanTime},</if>
+			<if test="lastHeartTime != null ">#{lastHeartTime},</if>
+			<if test="lastLoginTime != null ">#{lastLoginTime},</if>
+			<if test="lastScanTime != null ">#{lastScanTime},</if>
 			<if test="note != null and note != ''">#{note},</if>
 			<if test="status != null and status != ''">#{status},</if>
 			<if test="delFlag != null and delFlag != ''">#{delFlag},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
-			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="createTime != null ">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
-			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+			<if test="updateTime != null ">#{updateTime},</if>
          </trim>
     </insert>
 	 

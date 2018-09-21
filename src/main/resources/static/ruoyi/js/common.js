@@ -99,7 +99,7 @@ function selectDeviceList(){
         	 deviceList = data.rows;
          },
          error: function (data) {
-             alert("查询设备失败" + data);
+             alert("查询设备下拉列表失败" + data);
          }
      })
      return deviceList;
@@ -118,7 +118,7 @@ function selectPlaceList(){
         	placeList = data.rows;
         },
         error: function (data) {
-            alert("查询场所失败" + data);
+            alert("查询场所下拉列表失败" + data);
         }
     })
     return placeList;
@@ -128,4 +128,19 @@ function selectPlaceList(){
 /**终端下拉框选择*/
 function selectTerminalList(){
 	console.log("请求终端列表");
+	var terminalList = [];
+	$.ajax({
+        url: ctx + "business/terminal/getDropBoxTerminalList",
+        type: "post",
+        dataType: "json",
+        data: 'data',
+        async:false,
+        success: function (data) {
+        	terminalList = data.rows;
+        },
+        error: function (data) {
+            alert("查询终端设备下拉列表失败" + data);
+        }
+    })
+    return terminalList;
 }

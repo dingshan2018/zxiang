@@ -58,5 +58,10 @@ public interface TerminalMapper
      * @return 结果
      */
 	public int deleteTerminalByIds(String[] terminalIds);
+
+	/**
+	 * 查询终端设备下拉列表
+	 */
+	public List<Terminal> selectDropBoxList();
 	
 }

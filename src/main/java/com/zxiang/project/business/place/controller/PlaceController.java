@@ -118,6 +118,9 @@ public class PlaceController extends BaseController
 		return toAjax(placeService.deletePlaceByIds(ids));
 	}
 	
+	/**
+	 * 查询场所下拉框数据列表
+	 */
 	@RequestMapping("/getDropBoxPlaceList")
     @ResponseBody
     public TableDataInfo getDropBoxPlaceList() {
