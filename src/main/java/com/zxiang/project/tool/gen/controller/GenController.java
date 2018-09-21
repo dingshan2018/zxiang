@@ -35,14 +35,14 @@ public class GenController extends BaseController
     @Autowired
     private IGenService genService;
 
-    @RequiresPermissions("tool:gen:view")
+//    @RequiresPermissions("tool:gen:view")
     @GetMapping()
     public String gen()
     {
         return prefix + "/gen";
     }
 
-    @RequiresPermissions("tool:gen:list")
+//    @RequiresPermissions("tool:gen:list")
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(TableInfo tableInfo)
@@ -55,7 +55,7 @@ public class GenController extends BaseController
     /**
      * 生成代码
      */
-    @RequiresPermissions("tool:gen:code")
+//    @RequiresPermissions("tool:gen:code")
     @Log(title = "代码生成", businessType = BusinessType.GENCODE)
     @GetMapping("/genCode/{tableName}")
     public void genCode(HttpServletResponse response, @PathVariable("tableName") String tableName) throws IOException
@@ -72,7 +72,7 @@ public class GenController extends BaseController
     /**
      * 批量生成代码
      */
-    @RequiresPermissions("tool:gen:code")
+//    @RequiresPermissions("tool:gen:code")
     @Log(title = "代码生成", businessType = BusinessType.GENCODE)
     @GetMapping("/batchGenCode")
     @ResponseBody
