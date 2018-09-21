@@ -38,12 +38,25 @@
 					title : '定时ID' 
 				},
 				{
-					field : 'terminalId', 
-					title : '终端ID' 
+					field : 'terminalCode', 
+					title : '终端' 
 				},
 				{
 					field : 'timerType', 
-					title : '定时类型（1 一次  3 按天 2 按周 3 按月 ）' 
+					title : '定时类型（1 一次  3 按天 2 按周 3 按月 ）' ,
+					formatter : function(value) {
+						if(value==='1'){
+							return "一次";
+						}else if(value==='2'){
+							return "按天";
+						}else if(value==='3'){
+							return "按周";
+						}else if(value==='4'){
+							return "按月";
+						}else{
+							return "-";
+						}
+					}
 				},
 				{
 					field : 'powerOnTime', 
@@ -55,7 +68,16 @@
 				},
 				{
 					field : 'status', 
-					title : '状态 1：生效 2：禁用' 
+					title : '状态 1：生效 2：禁用' ,
+					formatter : function(value) {
+						if(value==='1'){
+							return "生效";
+						}else if(value==='2'){
+							return "禁用";
+						}else{
+							return "-";
+						}
+					}
 				},
 				{
 					field : 'delFlag', 
@@ -63,19 +85,19 @@
 				},
 				{
 					field : 'createBy', 
-					title : '' 
+					title : '创建者' 
 				},
 				{
 					field : 'createTime', 
-					title : '' 
+					title : '创建时间' 
 				},
 				{
 					field : 'updateBy', 
-					title : '' 
+					title : '修改者' 
 				},
 				{
 					field : 'updateTime', 
-					title : '' 
+					title : '修改时间' 
 				},
 		        {
 		            title: '操作',

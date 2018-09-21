@@ -1,5 +1,6 @@
 package com.zxiang.project.business.terminalTimer.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -73,6 +74,9 @@ public class TerminalTimerController extends BaseController
 	@ResponseBody
 	public AjaxResult addSave(TerminalTimer terminalTimer)
 	{		
+		String createor = getUser().getUserName();
+		terminalTimer.setCreateBy(createor);
+		terminalTimer.setCreateTime(new Date());
 		return toAjax(terminalTimerService.insertTerminalTimer(terminalTimer));
 	}
 
@@ -96,6 +100,9 @@ public class TerminalTimerController extends BaseController
 	@ResponseBody
 	public AjaxResult editSave(TerminalTimer terminalTimer)
 	{		
+		String updateor = getUser().getUserName();
+		terminalTimer.setUpdateBy(updateor);
+		terminalTimer.setUpdateTime(new Date());
 		return toAjax(terminalTimerService.updateTerminalTimer(terminalTimer));
 	}
 	

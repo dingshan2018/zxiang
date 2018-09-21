@@ -39,6 +39,8 @@ public class TerminalTimer extends BaseEntity
 	private String updateBy;
 	/**  */
 	private Date updateTime;
+	
+	private String terminalCode;
 
 	public void setTeminalTimerId(Integer teminalTimerId) 
 	{
@@ -140,7 +142,15 @@ public class TerminalTimer extends BaseEntity
 		return updateTime;
 	}
 
-    public String toString() {
+    public String getTerminalCode() {
+		return terminalCode;
+	}
+
+	public void setTerminalCode(String terminalCode) {
+		this.terminalCode = terminalCode;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("teminalTimerId", getTeminalTimerId())
             .append("terminalId", getTerminalId())
