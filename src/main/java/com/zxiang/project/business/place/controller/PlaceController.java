@@ -1,5 +1,6 @@
 package com.zxiang.project.business.place.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -73,6 +74,9 @@ public class PlaceController extends BaseController
 	@ResponseBody
 	public AjaxResult addSave(Place place)
 	{		
+		String createor = getUser().getUserName();
+		place.setCreateBy(createor);
+		place.setCreateTime(new Date());
 		return toAjax(placeService.insertPlace(place));
 	}
 
@@ -96,6 +100,9 @@ public class PlaceController extends BaseController
 	@ResponseBody
 	public AjaxResult editSave(Place place)
 	{		
+		String updateor = getUser().getUserName();
+		place.setUpdateBy(updateor);
+		place.setUpdateTime(new Date());
 		return toAjax(placeService.updatePlace(place));
 	}
 	

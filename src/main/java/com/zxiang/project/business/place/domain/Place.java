@@ -86,6 +86,11 @@ public class Place extends BaseEntity
 	/**  */
 	private Date updateTime;
 
+	
+	private String provinceName;
+	private String cityName;
+	private String countyName;
+	
 	public void setPlaceId(Integer placeId) 
 	{
 		this.placeId = placeId;
@@ -393,7 +398,31 @@ public class Place extends BaseEntity
 		return updateTime;
 	}
 
-    public String toString() {
+    public String getProvinceName() {
+		return provinceName;
+	}
+
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
+	}
+
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	public String getCountyName() {
+		return countyName;
+	}
+
+	public void setCountyName(String countyName) {
+		this.countyName = countyName;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("placeId", getPlaceId())
             .append("parentPlaceId", getParentPlaceId())
