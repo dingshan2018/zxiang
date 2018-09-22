@@ -20,6 +20,7 @@ import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.business.place.domain.Place;
 import com.zxiang.project.business.place.service.IPlaceService;
+import com.zxiang.project.system.area.service.IAreaService;
 
 /**
  * 场所管理 信息操作处理
@@ -35,6 +36,8 @@ public class PlaceController extends BaseController
 	
 	@Autowired
 	private IPlaceService placeService;
+	@Autowired
+	private IAreaService areaService;
 	
 	@RequiresPermissions("business:place:view")
 	@GetMapping()
@@ -91,6 +94,10 @@ public class PlaceController extends BaseController
 		Place place = placeService.selectPlaceById(placeId);
 		mmap.put("place", place);
 		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
+		
+		mmap.put("provinceDropBoxList", areaService.selectDropBoxList(0L));
+		mmap.put("cityDropBoxList", areaService.selectDropBoxList(place.getProvince()));
+		mmap.put("countyDropBoxList", areaService.selectDropBoxList(place.getCity()));
 	    return prefix + "/edit";
 	}
 	
