@@ -261,7 +261,7 @@
 		            async: false,
 		            success: function (data) {
 		                //从服务器获取数据进行绑定
-		                var strData = "";
+		                var strData = ""; 
 		                $.each(data.rows, function (i, item) {
 		                	strData += "<option value=" + item.id + ">" + item.pname + "</option>";
 		                })
