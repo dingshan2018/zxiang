@@ -265,7 +265,7 @@
 		                $.each(data.rows, function (i, item) {
 		                	strData += "<option value=" + item.id + ">" + item.pname + "</option>";
 		                });
-		                //将数据添加到区县这个下拉框里面
+		                //将数据添加到区县这个下拉框里面 
 		                $("#county").append(strData);
 		            },
 		            error: function () { alert("Error:获取地区信息失败"); }
