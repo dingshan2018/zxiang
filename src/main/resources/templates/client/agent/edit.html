@@ -259,7 +259,7 @@
 		            url: ctx + "system/area/getDropBoxAreaList",
 		            data: JSON.stringify({ "parentId": provice}),
 		            async: false,
-		            success: function (data) { 
+		            success: function (data) {
 		                //从服务器获取数据进行绑定
 		                var strData = "";
 		                $.each(data.rows, function (i, item) {
