@@ -117,4 +117,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    
+    <select id="selectzxdevicelist"  resultMap="hashmap">
+        select * from zx_device where del_flag !='0'
+    </select>
+    
 </mapper>
