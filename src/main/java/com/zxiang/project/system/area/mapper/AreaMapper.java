@@ -59,6 +59,9 @@ public interface AreaMapper
      */
 	public int deleteAreaByIds(String[] ids);
 
+	/**
+	 * 根据上级城市查询area
+	 */
 	public List<Area> selectDropBoxList(long parentId);
 	
 }
