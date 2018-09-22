@@ -9,7 +9,10 @@
             <div class="form-group">	
                 <label class="col-sm-3 control-label">终端ID：</label>
                 <div class="col-sm-8">
-                    <input id="terminalId" name="terminalId" th:field="*{terminalId}" class="form-control" type="text">
+                    <select id="terminalId" name="terminalId" class="form-control">
+						<option th:each="terminal:${terminalDropBoxList}" th:value="${terminal.terminalId}"
+						 th:text="${terminal.terminalCode}" th:field="*{terminalId}"></option>
+					</select>
                 </div>
             </div>
             <div class="form-group">	
@@ -40,18 +43,6 @@
                 <label class="col-sm-3 control-label">参数值4：</label>
                 <div class="col-sm-8">
                     <input id="paramValue4" name="paramValue4" th:field="*{paramValue4}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">：</label>
-                <div class="col-sm-8">
-                    <input id="createBy" name="createBy" th:field="*{createBy}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">：</label>
-                <div class="col-sm-8">
-                    <input id="createTime" name="createTime" th:field="*{createTime}" class="form-control" type="text">
                 </div>
             </div>
 			<div class="form-group">

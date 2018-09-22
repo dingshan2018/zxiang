@@ -90,6 +90,7 @@ public class PlaceController extends BaseController
 	{
 		Place place = placeService.selectPlaceById(placeId);
 		mmap.put("place", place);
+		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 	    return prefix + "/edit";
 	}
 	

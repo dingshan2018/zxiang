@@ -18,6 +18,9 @@ import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
+import com.zxiang.project.business.device.service.IDeviceService;
+import com.zxiang.project.business.place.service.IPlaceService;
+import com.zxiang.project.business.terminal.service.ITerminalService;
 import com.zxiang.project.business.tissueRecord.domain.TissueRecord;
 import com.zxiang.project.business.tissueRecord.service.ITissueRecordService;
 
@@ -35,6 +38,12 @@ public class TissueRecordController extends BaseController
 	
 	@Autowired
 	private ITissueRecordService tissueRecordService;
+	@Autowired
+	private IDeviceService deviceService;
+	@Autowired
+	private ITerminalService terminalService; 
+	@Autowired 
+	private IPlaceService placeService;
 	
 	@RequiresPermissions("business:tissueRecord:view")
 	@GetMapping()
@@ -90,6 +99,9 @@ public class TissueRecordController extends BaseController
 	{
 		TissueRecord tissueRecord = tissueRecordService.selectTissueRecordById(tissueRecordId);
 		mmap.put("tissueRecord", tissueRecord);
+		mmap.put("terminalDropBoxList", terminalService.selectDropBoxList());
+		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
+		mmap.put("deviceDropBoxList", deviceService.selectDropBoxList());
 	    return prefix + "/edit";
 	}
 	

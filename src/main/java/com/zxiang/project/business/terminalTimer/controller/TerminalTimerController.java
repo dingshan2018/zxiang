@@ -18,6 +18,7 @@ import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
+import com.zxiang.project.business.terminal.service.ITerminalService;
 import com.zxiang.project.business.terminalTimer.domain.TerminalTimer;
 import com.zxiang.project.business.terminalTimer.service.ITerminalTimerService;
 
@@ -35,6 +36,8 @@ public class TerminalTimerController extends BaseController
 	
 	@Autowired
 	private ITerminalTimerService terminalTimerService;
+	@Autowired
+	private ITerminalService terminalService; 
 	
 	@RequiresPermissions("business:terminalTimer:view")
 	@GetMapping()
@@ -90,6 +93,7 @@ public class TerminalTimerController extends BaseController
 	{
 		TerminalTimer terminalTimer = terminalTimerService.selectTerminalTimerById(teminalTimerId);
 		mmap.put("terminalTimer", terminalTimer);
+		mmap.put("terminalDropBoxList", terminalService.selectDropBoxList());
 	    return prefix + "/edit";
 	}
 	
