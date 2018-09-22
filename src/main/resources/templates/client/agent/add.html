@@ -20,37 +20,31 @@
 			<div class="form-group">	
 				<label class="col-sm-3 control-label">代理省份：</label>
 				<div class="col-sm-8">
-					<input id="province" name="province" class="form-control" type="text">
+					<select class="form-control" name="province" id="province"></select>
 				</div>
 			</div>
 			<div class="form-group">	
 				<label class="col-sm-3 control-label">代理城市：</label>
 				<div class="col-sm-8">
-					<input id="city" name="city" class="form-control" type="text">
+					<select class="form-control" name="city" id="city"></select>
 				</div>
 			</div>
 			<div class="form-group">	
 				<label class="col-sm-3 control-label">代理地区：</label>
 				<div class="col-sm-8">
-					<input id="county" name="county" class="form-control" type="text">
+					<select class="form-control" name="county" id="county"></select>
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">代理等级 1 一级代理  2 二级代理：</label>
+				<label class="col-sm-3 control-label">代理等级：</label>
 				<div class="col-sm-8">
-					<input id="level" name="level" class="form-control" type="text">
+					<input id="level" name="level" class="form-control" type="text" disabled="disabled">
 				</div>
 			</div>
 			<div class="form-group">	
 				<label class="col-sm-3 control-label">设备数量：</label>
 				<div class="col-sm-8">
 					<input id="deviceNum" name="deviceNum" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">是否删除：</label>
-				<div class="col-sm-8">
-					<input id="delFlag" name="delFlag" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
@@ -164,6 +158,103 @@
 				$.operate.save(prefix + "/add", $('#form-agent-add').serialize());
 			}
 		});
+		 $(function () {
+		        //默认绑定省
+		        proviceBind();
+		        //绑定事件
+		        $("#province").change( function () {
+		            cityBind();
+		        })
+		        
+		        $("#city").change(function () {
+		        	countyBind();
+		        	$("#level").val("一级代理");
+		        })
+		        $("#county").change(function () {
+		        	$("#level").val("二级代理");
+		        })
+		    });
+		 function proviceBind() {
+		        //清空下拉数据
+		        var str = "<option value=''>---请选择---</option>";
+		        $("#province").html(str);
+		        $("#city").html(str);
+		        $("#county").html(str);
+		        $.ajax({
+		        	type: "post",
+		        	contentType:"application/json",
+		            dataType: "json",
+		            url: ctx + "system/area/getDropBoxAreaList",
+		            data: JSON.stringify({ "parentId": "0"}),
+		            async: false,
+		            success: function (data) {
+		                //从服务器获取数据进行绑定
+		                var strData = "";
+		                $.each(data.rows, function (i, item) {
+		                	strData += "<option value=" + item.id + ">" + item.pname + "</option>";
+		                })
+		                //将数据添加到省份这个下拉框里面
+		                $("#province").append(strData);
+		            },
+		            error: function () { alert("Error:获取省份信息失败"); }
+		        });
+		    }
+		    function cityBind() {
+		        var provice = $("#province option:selected").val();
+		        var str = "<option value=''>---请选择---</option>";
+		        $("#city").html(str);
+		        $("#county").html(str);
+		        //判断省份这个下拉框选中的值是否为空
+		        if (provice == "") {
+		            return;
+		        }
+		        $.ajax({
+		        	type: "post",
+		        	contentType:"application/json",
+		            dataType: "json",
+		            url: ctx + "system/area/getDropBoxAreaList",
+		            data: JSON.stringify({ "parentId": provice}),
+		            async: false,
+		            success: function (data) {
+		                //从服务器获取数据进行绑定
+		                var strData = "";
+		                $.each(data.rows, function (i, item) {
+		                	strData += "<option value=" + item.id + ">" + item.pname + "</option>";
+		                })
+		                //将数据添加到市这个下拉框里面
+		                $("#city").append(strData);
+		            },
+		            error: function () { alert("Error:获取城市信息失败"); }
+		        });
+		    }
+		    function countyBind() {
+		        var provice = $("#city option:selected").val();
+		        var str = "<option value=''>---请选择---</option>";
+		        //判断市这个下拉框选中的值是否为空
+		        $("#county").html(str);
+		        if (provice == "") {
+		            return;
+		        }
+		        //将市的ID拿到数据库进行查询，查询出他的下级进行绑定
+		        $.ajax({
+		        	type: "post",
+		        	contentType:"application/json",
+		            dataType: "json",
+		            url: ctx + "system/area/getDropBoxAreaList",
+		            data: JSON.stringify({ "parentId": provice}),
+		            async: false,
+		            success: function (data) {
+		                //从服务器获取数据进行绑定
+		                var strData = "";
+		                $.each(data.rows, function (i, item) {
+		                	strData += "<option value=" + item.id + ">" + item.pname + "</option>";
+		                })
+		                //将数据添加到区县这个下拉框里面
+		                $("#county").append(strData);
+		            },
+		            error: function () { alert("Error:获取地区信息失败"); }
+		        });
+		    }
 	</script>
 </body>
 </html>

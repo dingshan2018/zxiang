@@ -1,6 +1,8 @@
 package com.zxiang.project.client.agent.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,13 +12,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
+import com.zxiang.framework.web.controller.BaseController;
+import com.zxiang.framework.web.domain.AjaxResult;
+import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.client.agent.domain.Agent;
 import com.zxiang.project.client.agent.service.IAgentService;
-import com.zxiang.framework.web.controller.BaseController;
-import com.zxiang.framework.web.page.TableDataInfo;
-import com.zxiang.framework.web.domain.AjaxResult;
+import com.zxiang.project.system.area.domain.Area;
+import com.zxiang.project.system.area.service.IAreaService;
 
 /**
  * 代理商 信息操作处理
@@ -32,6 +37,8 @@ public class AgentController extends BaseController
 	
 	@Autowired
 	private IAgentService agentService;
+	@Autowired
+	private IAreaService areaService;
 	
 	@RequiresPermissions("client:agent:view")
 	@GetMapping()
@@ -82,6 +89,16 @@ public class AgentController extends BaseController
 	{
 		Agent agent = agentService.selectAgentById(agentId);
 		mmap.put("agent", agent);
+		List<Area> provinceList = areaService.selectDropBoxList(0);
+		mmap.put("provinceList", provinceList == null ? new ArrayList<Area>() : provinceList);
+		if(agent.getProvince() != null) {
+			List<Area> cityList = areaService.selectDropBoxList(agent.getProvince());
+			mmap.put("cityList", cityList);
+		}
+		if(agent.getCity() != null) {
+			List<Area> countyList = areaService.selectDropBoxList(agent.getCity());
+			mmap.put("countyList", countyList == null ? new ArrayList<Area>() : countyList);
+		}
 	    return prefix + "/edit";
 	}
 	

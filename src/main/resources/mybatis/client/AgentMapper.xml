@@ -32,7 +32,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectAgentVo">
-        select agent_id, pagent_id, agent_name, province, city, county, level, device_num, del_flag, status, manager_id, manager_name, manager_phone, bank_receiver, bank_account, bank_name, promotor_id, ad_rate, scan_rate, promotion_rate, create_by, create_time, update_by, update_time from zx_agent
+        select agent_id, pagent_id, agent_name,
+         province,(select distinct a.pname from sys_area a where a.id =a.`province` ) provinceName,
+         city,(select distinct a.pname from sys_area a where a.id =a.`city` ) cityName,
+         county,(select distinct a.pname from sys_area a where a.id =a.`county` ) countyName, 
+         level, device_num, del_flag, status, manager_id, manager_name, manager_phone, bank_receiver, bank_account, bank_name, promotor_id, ad_rate, scan_rate, promotion_rate, create_by, create_time, update_by, update_time
+          from zx_agent a
     </sql>
 	
     <select id="selectAgentList" parameterType="Agent" resultMap="AgentResult">
@@ -131,9 +136,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="pagentId != null  ">pagent_id = #{pagentId},</if>
             <if test="agentName != null  and agentName != ''  ">agent_name = #{agentName},</if>
-            <if test="province != null  ">province = #{province},</if>
-            <if test="city != null  ">city = #{city},</if>
-            <if test="county != null  ">county = #{county},</if>
+            province = #{province},
+            city = #{city},
+            county = #{county},
             <if test="level != null  ">level = #{level},</if>
             <if test="deviceNum != null  ">device_num = #{deviceNum},</if>
             <if test="delFlag != null  and delFlag != ''  ">del_flag = #{delFlag},</if>

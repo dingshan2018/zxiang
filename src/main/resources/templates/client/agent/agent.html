@@ -33,105 +33,31 @@
                 columns: [{
 		            checkbox: true
 		        },
-				{
-					field : 'agentId', 
-					title : '代理商ID' 
-				},
-				{
-					field : 'pagentId', 
-					title : '父代理商ID' 
-				},
-				{
-					field : 'agentName', 
-					title : '代理商名称' 
-				},
-				{
-					field : 'province', 
-					title : '代理省份' 
-				},
-				{
-					field : 'city', 
-					title : '代理城市' 
-				},
-				{
-					field : 'county', 
-					title : '代理地区' 
-				},
-				{
-					field : 'level', 
-					title : '代理等级 1 一级代理  2 二级代理' 
-				},
-				{
-					field : 'deviceNum', 
-					title : '设备数量' 
-				},
-				{
-					field : 'delFlag', 
-					title : '是否删除' 
-				},
-				{
-					field : 'status', 
-					title : '状态' 
-				},
-				{
-					field : 'managerId', 
-					title : '管理者ID' 
-				},
-				{
-					field : 'managerName', 
-					title : '管理者姓名' 
-				},
-				{
-					field : 'managerPhone', 
-					title : '管理电话' 
-				},
-				{
-					field : 'bankReceiver', 
-					title : '收款人' 
-				},
-				{
-					field : 'bankAccount', 
-					title : '收款账号' 
-				},
-				{
-					field : 'bankName', 
-					title : '收款人姓名' 
-				},
-				{
-					field : 'promotorId', 
-					title : '直推人' 
-				},
-				{
-					field : 'adRate', 
-					title : '广告收益' 
-				},
-				{
-					field : 'scanRate', 
-					title : '扫码收益' 
-				},
-				{
-					field : 'promotionRate', 
-					title : '推广收益' 
-				},
-				{
-					field : 'createBy', 
-					title : '' 
-				},
-				{
-					field : 'createTime', 
-					title : '' 
-				},
-				{
-					field : 'updateBy', 
-					title : '' 
-				},
-				{
-					field : 'updateTime', 
-					title : '' 
-				},
-		        {
-		            title: '操作',
-		            align: 'center',
+				{field : 'agentId',title : '代理商ID'},
+				{field : 'pagentId',title : '父代理商ID'},
+				{field : 'agentName',title : '代理商名称'},
+				{field : 'provinceName', title : '代理省份'},
+				{field : 'cityName',title : '代理城市'},
+				{field : 'countyName',title : '代理地区'},
+				{field : 'level',title : '代理等级'},
+				{field : 'deviceNum',title : '设备数量' },
+				{field : 'delFlag',title : '是否删除'},
+				{field : 'status',title : '状态' },
+				{field : 'managerId',title : '管理者ID' },
+				{field : 'managerName',title : '管理者姓名' },
+				{field : 'managerPhone', title : '管理电话'},
+				{field : 'bankReceiver',title : '收款人'},
+				{field : 'bankAccount',title : '收款账号'},
+				{field : 'bankName',title : '收款人姓名'},
+				{field : 'promotorId',title : '直推人' },
+				{field : 'adRate',title : '广告收益' },
+				{field : 'scanRate', title : '扫码收益' },
+				{field : 'promotionRate',title : '推广收益'},
+				{field : 'createBy', title : '创建人'},
+				{field : 'createTime', title : '创建时间' },
+				{field : 'updateBy', title : '更新时间'},
+				{field : 'updateTime',title : ''},
+		        {title: '操作', align: 'center',
 		            formatter: function(value, row, index) {
 		            	var actions = [];
 		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.agentId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
