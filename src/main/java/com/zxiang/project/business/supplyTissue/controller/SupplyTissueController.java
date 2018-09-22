@@ -18,6 +18,8 @@ import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
+import com.zxiang.project.business.device.service.IDeviceService;
+import com.zxiang.project.business.place.service.IPlaceService;
 import com.zxiang.project.business.supplyTissue.domain.SupplyTissue;
 import com.zxiang.project.business.supplyTissue.service.ISupplyTissueService;
 
@@ -35,6 +37,11 @@ public class SupplyTissueController extends BaseController
 	
 	@Autowired
 	private ISupplyTissueService supplyTissueService;
+	
+	@Autowired 
+	private IPlaceService placeService;
+	@Autowired
+	private IDeviceService deviceService;
 	
 	@RequiresPermissions("business:supplyTissue:view")
 	@GetMapping()
@@ -90,6 +97,8 @@ public class SupplyTissueController extends BaseController
 	{
 		SupplyTissue supplyTissue = supplyTissueService.selectSupplyTissueById(supplyTissueId);
 		mmap.put("supplyTissue", supplyTissue);
+		mmap.put("deviceDropBoxList", deviceService.selectDropBoxList());
+		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 	    return prefix + "/edit";
 	}
 	
