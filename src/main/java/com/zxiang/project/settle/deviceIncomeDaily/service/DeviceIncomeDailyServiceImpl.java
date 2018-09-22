@@ -1,12 +1,17 @@
 package com.zxiang.project.settle.deviceIncomeDaily.service;
 
+import java.util.HashMap;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.zxiang.project.settle.deviceIncomeDaily.mapper.DeviceIncomeDailyMapper;
-import com.zxiang.project.settle.deviceIncomeDaily.domain.DeviceIncomeDaily;
-import com.zxiang.project.settle.deviceIncomeDaily.service.IDeviceIncomeDailyService;
+
 import com.zxiang.common.support.Convert;
+import com.zxiang.project.settle.deviceIncomeDaily.domain.DeviceIncomeDaily;
+import com.zxiang.project.settle.deviceIncomeDaily.mapper.DeviceIncomeDailyMapper;
+import com.zxiang.project.settle.userIncome.service.IUserIncomeService;
 
 /**
  * 设备收入日统计 服务层实现
@@ -17,8 +22,11 @@ import com.zxiang.common.support.Convert;
 @Service
 public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService 
 {
+	private static final Logger logger = LoggerFactory.getLogger(DeviceIncomeDailyServiceImpl.class);
 	@Autowired
 	private DeviceIncomeDailyMapper deviceIncomeDailyMapper;
+	@Autowired
+	private IUserIncomeService iUserIncomeService;
 
 	/**
      * 查询设备收入日统计信息
@@ -78,6 +86,33 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	public int deleteDeviceIncomeDailyByIds(String ids)
 	{
 		return deviceIncomeDailyMapper.deleteDeviceIncomeDailyByIds(Convert.toStrArray(ids));
+	}
+
+	@Override
+	public List<HashMap<String, Object>> selectzxdevicelist(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		return deviceIncomeDailyMapper.selectzxdevicelist(map);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> selectzxdeviceorderlist(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		return deviceIncomeDailyMapper.selectzxdeviceorderlist(map);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> selectzxtissuerecordlist(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		return deviceIncomeDailyMapper.selectzxtissuerecordlist(map);
+	}
+
+	/**
+	 * 每日统计数据
+	 * 
+	 * */
+	@Override
+	public void statisticaldata() {
+		
 	}
 	
 }
