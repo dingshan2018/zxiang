@@ -20,6 +20,7 @@ import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.business.changeTerminal.domain.ChangeTerminal;
 import com.zxiang.project.business.changeTerminal.service.IChangeTerminalService;
+import com.zxiang.project.business.terminal.service.ITerminalService;
 
 /**
  * 终端更换记录 信息操作处理
@@ -35,6 +36,9 @@ public class ChangeTerminalController extends BaseController
 	
 	@Autowired
 	private IChangeTerminalService changeTerminalService;
+	
+	@Autowired
+	private ITerminalService terminalService; 
 	
 	@RequiresPermissions("business:changeTerminal:view")
 	@GetMapping()
@@ -89,7 +93,9 @@ public class ChangeTerminalController extends BaseController
 	public String edit(@PathVariable("changeTerminalId") Integer changeTerminalId, ModelMap mmap)
 	{
 		ChangeTerminal changeTerminal = changeTerminalService.selectChangeTerminalById(changeTerminalId);
+		
 		mmap.put("changeTerminal", changeTerminal);
+		mmap.put("terminalDropBoxList", terminalService.selectDropBoxList());
 	    return prefix + "/edit";
 	}
 	
