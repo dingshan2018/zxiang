@@ -122,4 +122,39 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select * from zx_device where del_flag !='0'
     </select>
     
+     <select id="selectzxdeviceorderlist"  resultMap="hashmap">
+	        SELECT 
+			  device_id,
+			  terminal_id,
+			  promotioner_id,
+			  price,
+			  cut_off,
+			  seller_id,
+			  buyer_id 
+			FROM
+			  zx_device_order 
+			WHERE DATE_FORMAT(create_time, '%Y-%m-%d') = DATE_FORMAT(
+			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
+			    '%Y-%m-%d'
+			  )
+			  and device_id = #{deviceId}
+    </select>
+    
+      <select id="selectzxtissuerecordlist"  resultMap="hashmap">
+	        SELECT 
+			  device_id,
+			  terminal_id,
+			  place_id,
+			  tissue_channel 
+			FROM
+			  zx_tissue_record create_time 
+			  WHERE 
+			   device_id = #{deviceId}
+			AND DATE_FORMAT(create_time, '%Y-%m-%d') = DATE_FORMAT(
+			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
+			    '%Y-%m-%d'
+			  )
+    </select>
+    
+    
 </mapper>
