@@ -18,6 +18,8 @@ import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
+import com.zxiang.project.business.device.service.IDeviceService;
+import com.zxiang.project.business.place.service.IPlaceService;
 import com.zxiang.project.business.terminal.domain.Terminal;
 import com.zxiang.project.business.terminal.service.ITerminalService;
 
@@ -35,6 +37,10 @@ public class TerminalController extends BaseController
 	
 	@Autowired
 	private ITerminalService terminalService;
+	@Autowired 
+	private IPlaceService placeService;
+	@Autowired
+	private IDeviceService deviceService;
 	
 	@RequiresPermissions("business:terminal:view")
 	@GetMapping()
@@ -90,6 +96,8 @@ public class TerminalController extends BaseController
 	{
 		Terminal terminal = terminalService.selectTerminalById(terminalId);
 		mmap.put("terminal", terminal);
+		mmap.put("deviceDropBoxList", deviceService.selectDropBoxList());
+		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 	    return prefix + "/edit";
 	}
 	
