@@ -20,6 +20,8 @@ import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.service.IDeviceService;
+import com.zxiang.project.business.place.service.IPlaceService;
+import com.zxiang.project.business.terminal.service.ITerminalService;
 
 /**
  * 共享设备 信息操作处理
@@ -35,6 +37,10 @@ public class DeviceController extends BaseController
 	
 	@Autowired
 	private IDeviceService deviceService;
+	@Autowired
+	private ITerminalService terminalService; 
+	@Autowired 
+	private IPlaceService placeService;
 	
 	@RequiresPermissions("business:device:view")
 	@GetMapping()
@@ -90,6 +96,8 @@ public class DeviceController extends BaseController
 	{
 		Device device = deviceService.selectDeviceById(deviceId);
 		mmap.put("device", device);
+		mmap.put("terminalDropBoxList", terminalService.selectDropBoxList());
+		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 	    return prefix + "/edit";
 	}
 	
