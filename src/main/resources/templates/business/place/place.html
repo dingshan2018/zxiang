@@ -52,7 +52,18 @@
 				},
 				{
 					field : 'placeType', 
-					title : '场所类型' 
+					title : '场所类型' ,
+					formatter : function(value) {
+						if(value==='0'){
+							return "自营";
+						}else if(value==='1'){
+							return "代理";
+						}else if(value==='2'){
+							return "自购";
+						}else{
+							return "-";
+						}
+					}
 				},
 				{
 					field : 'scene', 
