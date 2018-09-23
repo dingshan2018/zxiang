@@ -61,6 +61,11 @@ public interface DeviceIncomeDailyMapper
      */
 	public int deleteDeviceIncomeDailyByIds(String[] incomeIds);
 	
+	/**
+	 * 判断是否有数据
+	 * 
+	 * */
+	public List<DeviceIncomeDaily> selectDeviceIncomeDaily(DeviceIncomeDaily deviceIncomeDaily);
 	
 	/** 
 	 * 共享设备表查询
@@ -76,5 +81,7 @@ public interface DeviceIncomeDailyMapper
 	 * 出纸记录表查询
 	 * */
 	public List<HashMap<String, Object>> selectzxtissuerecordlist(HashMap<String, Object> map);
+	
+	public List<HashMap<String, Object>> selectzxplace(HashMap<String, Object> map);
 	
 }

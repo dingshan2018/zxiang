@@ -71,4 +71,9 @@ public interface IDeviceIncomeDailyService
 	 * */
 	public List<HashMap<String, Object>> selectzxtissuerecordlist(HashMap<String, Object> map);
 	
+	/** 
+	 * 场所管理表
+	 * */
+	public HashMap<String, Object> selectzxplace(HashMap<String, Object> map);
+	
 }

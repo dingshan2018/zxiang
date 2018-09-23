@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.zxiang.common.support.Convert;
 import com.zxiang.project.settle.deviceIncomeDaily.domain.DeviceIncomeDaily;
 import com.zxiang.project.settle.deviceIncomeDaily.mapper.DeviceIncomeDailyMapper;
+import com.zxiang.project.settle.userIncome.domain.UserIncome;
 import com.zxiang.project.settle.userIncome.service.IUserIncomeService;
 
 /**
@@ -27,7 +28,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	private DeviceIncomeDailyMapper deviceIncomeDailyMapper;
 	@Autowired
 	private IUserIncomeService iUserIncomeService;
-
+    
 	/**
      * 查询设备收入日统计信息
      * 
@@ -112,7 +113,73 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	 * */
 	@Override
 	public void statisticaldata() {
+		//获取所有设备信息
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		List<HashMap<String, Object>> devicelist =selectzxdevicelist(map);
+	    //计算前一日售出设备的金额
+		for (HashMap<String, Object> device : devicelist) {
+			map = new HashMap<String, Object>();
+			map.put("deviceId", device.get("device_id"));
+			List<HashMap<String, Object>> orderlist =selectzxdeviceorderlist(map);
+			if(orderlist.size()>0){
+				HashMap<String, Object> order = orderlist.get(0);
+				String seller_id = order.get("seller_id")+""; //销售人员
+				String buyer_id = order.get("buyer_id")+"";//机主
+				String isincome = order.get("isincome")+"";
+				//获取销售人员信息
+				iUserIncomeService.selectzxsellerlist(seller_id);
+				//判断是否是前一天售出的，01代表是    00代表不是
+				UserIncome userIncome = new UserIncome();
+				if(isincome.equals("01")){
+					userIncome.setPromotionIncomeRate(1000.00);
+					if(order.get("promotioner_id") !=null && order.get("promotioner_id") !="" ){
+						userIncome.setPromotionIncomeRate(500.00);
+					}
+				}else{
+					userIncome.setPromotionIncomeRate(0.00);
+				}
+				//插入数据
+				userIncome.setCoperatorId(Integer.valueOf(seller_id));
+				List<UserIncome> userlist =iUserIncomeService.selectUserIncome(userIncome);
+				if(userlist.size()>0){
+					iUserIncomeService.updateUserIncome(userIncome);
+				}else{
+					iUserIncomeService.insertUserIncome(userIncome);
+				}
+				
+				//计算每日出纸费用
+				tissuedata(device,buyer_id);
+				//计算广告费用
+				addata(map);
+			}
+		}
+		
 		
 	}
 	
+	//计算每日出纸费用
+	public void tissuedata(HashMap<String, Object> map,String buyerid) {
+		//获取机主的信息
+		map = new HashMap<String, Object>();
+		map.put("joinerId", buyerid);
+		List<HashMap<String, Object>> joinlist = iUserIncomeService.selectzxjoinlist(map);
+		HashMap<String, Object> join = joinlist.get(0);
+
+		List<HashMap<String, Object>> tissue =selectzxtissuerecordlist(map);
+	}
+	//计算广告费用
+	public void addata(HashMap<String, Object> map) {
+		List<HashMap<String, Object>> devicelist =selectzxdevicelist(map);
+		
+	}
+
+	//场所管理
+	@Override
+	public HashMap<String, Object> selectzxplace(HashMap<String, Object> map) {
+		List<HashMap<String, Object>> zxplacelist = deviceIncomeDailyMapper.selectzxplace(map);
+		if(zxplacelist.size()>0){
+			return zxplacelist.get(0);
+		}
+		return null;
+	}
 }
