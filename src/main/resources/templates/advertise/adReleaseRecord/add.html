@@ -4,53 +4,41 @@
 <head th:include="include :: header"></head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-adPriceCfg-add">
+        <form class="form-horizontal m" id="form-adReleaseRecord-add">
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
+				<label class="col-sm-3 control-label">推广计划：</label>
 				<div class="col-sm-8">
-					<input id="priceType" name="priceType" class="form-control" type="text">
+					<input id="scheduleId" name="scheduleId" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">场所类型：</label>
+				<label class="col-sm-3 control-label">视讯排期：</label>
 				<div class="col-sm-8">
-					<input id="placeGrade" name="placeGrade" class="form-control" type="text">
+					<input id="sxScheduleId" name="sxScheduleId" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">时段类型：</label>
+				<label class="col-sm-3 control-label">投放设备：</label>
 				<div class="col-sm-8">
-					<input id="dailyGrade" name="dailyGrade" class="form-control" type="text">
+					<input id="deviceId" name="deviceId" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">地区等级：</label>
+				<label class="col-sm-3 control-label">下载时间：</label>
 				<div class="col-sm-8">
-					<input id="areaGrade" name="areaGrade" class="form-control" type="text">
+					<input id="downTime" name="downTime" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">投放位置：</label>
+				<label class="col-sm-3 control-label">播放时间：</label>
 				<div class="col-sm-8">
-					<input id="position" name="position" class="form-control" type="text">
+					<input id="playTime" name="playTime" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">日价格：</label>
+				<label class="col-sm-3 control-label">播放价格：</label>
 				<div class="col-sm-8">
-					<input id="dailyPrice" name="dailyPrice" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">时段数目：</label>
-				<div class="col-sm-8">
-					<input id="timeCnt" name="timeCnt" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
-				<div class="col-sm-8">
-					<input id="isDel" name="isDel" class="form-control" type="text">
+					<input id="price" name="price" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
@@ -87,15 +75,15 @@
 	</div>
     <div th:include="include::footer"></div>
     <script type="text/javascript">
-		var prefix = ctx + "advertise/adPriceCfg"
-		$("#form-adPriceCfg-add").validate({
+		var prefix = ctx + "advertise/adReleaseRecord"
+		$("#form-adReleaseRecord-add").validate({
 			rules:{
 				xxxx:{
 					required:true,
 				},
 			},
 			submitHandler: function(form) {
-				$.operate.save(prefix + "/add", $('#form-adPriceCfg-add').serialize());
+				$.operate.save(prefix + "/add", $('#form-adReleaseRecord-add').serialize());
 			}
 		});
 	</script>

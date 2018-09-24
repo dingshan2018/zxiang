@@ -7,7 +7,7 @@ import java.util.List;
  * 投放价格 服务层
  * 
  * @author ZXiang
- * @date 2018-09-24
+ * @date 2018-09-25
  */
 public interface IAdPriceCfgService 
 {

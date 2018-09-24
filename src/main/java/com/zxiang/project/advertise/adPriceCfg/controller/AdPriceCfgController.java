@@ -22,7 +22,7 @@ import com.zxiang.framework.web.domain.AjaxResult;
  * 投放价格 信息操作处理
  * 
  * @author ZXiang
- * @date 2018-09-24
+ * @date 2018-09-25
  */
 @Controller
 @RequestMapping("/advertise/adPriceCfg")

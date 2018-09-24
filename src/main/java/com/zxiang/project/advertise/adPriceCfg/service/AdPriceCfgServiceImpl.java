@@ -12,7 +12,7 @@ import com.zxiang.common.support.Convert;
  * 投放价格 服务层实现
  * 
  * @author ZXiang
- * @date 2018-09-24
+ * @date 2018-09-25
  */
 @Service
 public class AdPriceCfgServiceImpl implements IAdPriceCfgService 

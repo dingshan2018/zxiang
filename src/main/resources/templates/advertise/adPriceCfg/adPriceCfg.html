@@ -4,6 +4,36 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
+    	<div class="col-sm-12 select-info">
+				<form id="price-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								计费类型：<select name="priceType" th:with="type=${@dict.getType('release_type')}">
+									<option value="">所有</option>
+									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+								</select>
+							</li>
+							<li>
+								投放位置：<select name="priceType" th:with="type=${@dict.getType('release_position')}">
+									<option value="">所有</option>
+									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+								</select>
+							</li>
+							<li>
+								广告类型：<select name="adType" th:with="type=${@dict.getType('ad_type')}">
+									<option value="">所有</option>
+									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+								</select>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							    <a class="btn btn-success btn-rounded btn-sm" onclick="$.table.exportExcel()"><i class="fa fa-download"></i>&nbsp;导出</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="advertise:adPriceCfg:add">
 				<i class="fa fa-plus"></i> 新增
@@ -38,20 +68,24 @@
 					title : '' 
 				},
 				{
-					field : 'placeGrade', 
-					title : '场所类型' 
-				},
-				{
-					field : 'dailyGrade', 
-					title : '时段类型' 
-				},
-				{
-					field : 'areaGrade', 
-					title : '地区等级' 
+					field : 'priceType', 
+					title : '计费类型' 
 				},
 				{
 					field : 'position', 
 					title : '投放位置' 
+				},
+				{
+					field : 'adType', 
+					title : '广告类型' 
+				},
+				{
+					field : 'dailyPrice', 
+					title : '日价格' 
+				},
+				{
+					field : 'timeCnt', 
+					title : '时段' 
 				},
 				{
 					field : 'isDel', 
@@ -59,11 +93,11 @@
 				},
 				{
 					field : 'createBy', 
-					title : '' 
+					title : '创建人' 
 				},
 				{
 					field : 'createTime', 
-					title : '' 
+					title : '创建时间' 
 				},
 				{
 					field : 'updateBy', 

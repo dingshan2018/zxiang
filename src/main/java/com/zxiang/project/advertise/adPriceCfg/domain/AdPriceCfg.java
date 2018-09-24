@@ -9,7 +9,7 @@ import java.util.Date;
  * 投放价格表 zx_ad_price_cfg
  * 
  * @author ZXiang
- * @date 2018-09-24
+ * @date 2018-09-25
  */
 public class AdPriceCfg extends BaseEntity
 {
@@ -17,6 +17,8 @@ public class AdPriceCfg extends BaseEntity
 	
 	/**  */
 	private Integer priceCfgId;
+	/**  */
+	private String priceType;
 	/** 场所类型 */
 	private String placeGrade;
 	/** 时段类型 */
@@ -25,6 +27,10 @@ public class AdPriceCfg extends BaseEntity
 	private String areaGrade;
 	/** 投放位置 */
 	private String position;
+	/** 日价格 */
+	private Float dailyPrice;
+	/** 时段数目 */
+	private Integer timeCnt;
 	/**  */
 	private String isDel;
 	/**  */
@@ -44,6 +50,15 @@ public class AdPriceCfg extends BaseEntity
 	public Integer getPriceCfgId() 
 	{
 		return priceCfgId;
+	}
+	public void setPriceType(String priceType) 
+	{
+		this.priceType = priceType;
+	}
+
+	public String getPriceType() 
+	{
+		return priceType;
 	}
 	public void setPlaceGrade(String placeGrade) 
 	{
@@ -80,6 +95,24 @@ public class AdPriceCfg extends BaseEntity
 	public String getPosition() 
 	{
 		return position;
+	}
+	public void setDailyPrice(Float dailyPrice) 
+	{
+		this.dailyPrice = dailyPrice;
+	}
+
+	public Float getDailyPrice() 
+	{
+		return dailyPrice;
+	}
+	public void setTimeCnt(Integer timeCnt) 
+	{
+		this.timeCnt = timeCnt;
+	}
+
+	public Integer getTimeCnt() 
+	{
+		return timeCnt;
 	}
 	public void setIsDel(String isDel) 
 	{
@@ -130,10 +163,13 @@ public class AdPriceCfg extends BaseEntity
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("priceCfgId", getPriceCfgId())
+            .append("priceType", getPriceType())
             .append("placeGrade", getPlaceGrade())
             .append("dailyGrade", getDailyGrade())
             .append("areaGrade", getAreaGrade())
             .append("position", getPosition())
+            .append("dailyPrice", getDailyPrice())
+            .append("timeCnt", getTimeCnt())
             .append("isDel", getIsDel())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())

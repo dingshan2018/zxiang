@@ -5,20 +5,17 @@
 <body class="gray-bg">
     <div class="container-div">
     <div class="col-sm-12 select-info">
-				<form id="tissue-form">
+				<form id="record-form">
 					<div class="select-list">
 						<ul>
 							<li>
-								代理商户：<input type="text" name="agent"/>
+								播放场所：<input type="text" name="releaser"/>
 							</li>
 							<li>
-								服务网点：<input type="text" name="service"/>
-							</li>
-							<li>
-								加盟商户：<input type="text" name="joiner"/>
+								设备编号：<input type="text" name="scheduleName"/>
 							</li>
 							<li class="select-time">
-								<label>出纸时间： </label>
+								<label>播放时间： </label>
 								<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
 								<span>-</span>
 								<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
@@ -32,10 +29,10 @@
 				</form>
 			</div>
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
-			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:tissueRecord:add">
+			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="advertise:adReleaseRecord:add">
 				<i class="fa fa-plus"></i> 新增
 			</a>
-			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="business:tissueRecord:remove">
+			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="advertise:adReleaseRecord:remove">
 				<i class="fa fa-trash-o"></i> 删除
 			</a>
 		</div>
@@ -46,9 +43,9 @@
     </div>
     <div th:include="include :: footer"></div>
     <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('business:tissueRecord:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('business:tissueRecord:remove')}]];
-        var prefix = ctx + "business/tissueRecord"
+        var editFlag = [[${@permission.hasPermi('advertise:adReleaseRecord:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('advertise:adReleaseRecord:remove')}]];
+        var prefix = ctx + "advertise/adReleaseRecord"
 
         $(function() {
             var options = {
@@ -56,57 +53,49 @@
                 createUrl: prefix + "/add",
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
-                modalName: "出纸记录",
+                modalName: "广告投放设备",
                 columns: [{
 		            checkbox: true
 		        },
 				{
-					field : 'tissueRecordId', 
-					title : 'ID' 
+					field : 'releaseDeviceId', 
+					title : '' 
 				},
 				{
-					field : 'deviceCode', 
-					title : '出纸设备' 
+					field : 'scheduleId', 
+					title : '' 
 				},
 				{
-					field : 'terminalCode', 
-					title : '出纸终端' 
+					field : 'scheduleName', 
+					title : '推广计划' 
 				},
 				{
-					field : 'placeName', 
-					title : '出纸场所' 
+					field : 'advertiser', 
+					title : '广告商' 
 				},
 				{
-					field : 'openId', 
-					title : '用户微信账号' 
+					field : 'deviceId', 
+					title : '投放设备' 
 				},
 				{
-					field : 'nickName', 
-					title : '微信昵称' 
+					field : 'downTime', 
+					title : '下载时间' 
 				},
 				{
-					field : 'headimgurl', 
-					title : '微信头像' 
+					field : 'playTime', 
+					title : '播放时间' 
 				},
 				{
-					field : 'tissueChannel', 
-					title : '出纸类型' 
-				},
-				{
-					field : 'createBy', 
-					title : '使用人' 
-				},
-				{
-					field : 'createTime', 
-					title : '出纸时间' 
+					field : 'price', 
+					title : '当日价格' 
 				},
 		        {
 		            title: '操作',
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	var actions = [];
-		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.tissueRecordId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.tissueRecordId + '\')"><i class="fa fa-remove"></i>删除</a>');
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.releaseDeviceId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.releaseDeviceId + '\')"><i class="fa fa-remove"></i>删除</a>');
 						return actions.join('');
 		            }
 		        }]

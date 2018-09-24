@@ -6,10 +6,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <resultMap type="AdPriceCfg" id="AdPriceCfgResult">
         <result property="priceCfgId"    column="price_cfg_id"    />
+        <result property="priceType"    column="price_type"    />
         <result property="placeGrade"    column="place_grade"    />
         <result property="dailyGrade"    column="daily_grade"    />
         <result property="areaGrade"    column="area_grade"    />
         <result property="position"    column="position"    />
+        <result property="dailyPrice"    column="daily_price"    />
+        <result property="timeCnt"    column="time_cnt"    />
         <result property="isDel"    column="is_del"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
@@ -18,17 +21,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectAdPriceCfgVo">
-        select price_cfg_id, place_grade, daily_grade, area_grade, position, is_del, create_by, create_time, update_by, update_time from zx_ad_price_cfg
+        select price_cfg_id, price_type, place_grade, daily_grade, area_grade, position, daily_price, time_cnt, is_del, create_by, create_time, update_by, update_time from zx_ad_price_cfg
     </sql>
 	
     <select id="selectAdPriceCfgList" parameterType="AdPriceCfg" resultMap="AdPriceCfgResult">
         <include refid="selectAdPriceCfgVo"/>
         <where>  
             <if test="priceCfgId != null and priceCfgId != ''"> and price_cfg_id = #{priceCfgId}</if>
+             <if test="priceType != null and priceType != ''"> and price_type = #{priceType}</if>
              <if test="placeGrade != null and placeGrade != ''"> and place_grade = #{placeGrade}</if>
              <if test="dailyGrade != null and dailyGrade != ''"> and daily_grade = #{dailyGrade}</if>
              <if test="areaGrade != null and areaGrade != ''"> and area_grade = #{areaGrade}</if>
              <if test="position != null and position != ''"> and position = #{position}</if>
+             <if test="dailyPrice != null and dailyPrice != ''"> and daily_price = #{dailyPrice}</if>
+             <if test="timeCnt != null and timeCnt != ''"> and time_cnt = #{timeCnt}</if>
              <if test="isDel != null and isDel != ''"> and is_del = #{isDel}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
              <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
@@ -46,10 +52,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into zx_ad_price_cfg
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="priceCfgId != null and priceCfgId != '' ">price_cfg_id,</if>
+			<if test="priceType != null and priceType != '' ">price_type,</if>
 			<if test="placeGrade != null and placeGrade != '' ">place_grade,</if>
 			<if test="dailyGrade != null and dailyGrade != '' ">daily_grade,</if>
 			<if test="areaGrade != null and areaGrade != '' ">area_grade,</if>
 			<if test="position != null and position != '' ">position,</if>
+			<if test="dailyPrice != null and dailyPrice != '' ">daily_price,</if>
+			<if test="timeCnt != null and timeCnt != '' ">time_cnt,</if>
 			<if test="isDel != null and isDel != '' ">is_del,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
 			<if test="createTime != null and createTime != '' ">create_time,</if>
@@ -58,10 +67,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="priceCfgId != null and priceCfgId != ''">#{priceCfgId},</if>
+			<if test="priceType != null and priceType != ''">#{priceType},</if>
 			<if test="placeGrade != null and placeGrade != ''">#{placeGrade},</if>
 			<if test="dailyGrade != null and dailyGrade != ''">#{dailyGrade},</if>
 			<if test="areaGrade != null and areaGrade != ''">#{areaGrade},</if>
 			<if test="position != null and position != ''">#{position},</if>
+			<if test="dailyPrice != null and dailyPrice != ''">#{dailyPrice},</if>
+			<if test="timeCnt != null and timeCnt != ''">#{timeCnt},</if>
 			<if test="isDel != null and isDel != ''">#{isDel},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
 			<if test="createTime != null and createTime != ''">#{createTime},</if>
@@ -73,10 +85,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateAdPriceCfg" parameterType="AdPriceCfg">
         update zx_ad_price_cfg
         <trim prefix="SET" suffixOverrides=",">
+            <if test="priceType != null  and priceType != ''  ">price_type = #{priceType},</if>
             <if test="placeGrade != null  and placeGrade != ''  ">place_grade = #{placeGrade},</if>
             <if test="dailyGrade != null  and dailyGrade != ''  ">daily_grade = #{dailyGrade},</if>
             <if test="areaGrade != null  and areaGrade != ''  ">area_grade = #{areaGrade},</if>
             <if test="position != null  and position != ''  ">position = #{position},</if>
+            <if test="dailyPrice != null  ">daily_price = #{dailyPrice},</if>
+            <if test="timeCnt != null  ">time_cnt = #{timeCnt},</if>
             <if test="isDel != null  and isDel != ''  ">is_del = #{isDel},</if>
             <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
             <if test="createTime != null  and createTime != ''  ">create_time = #{createTime},</if>

@@ -4,54 +4,42 @@
 <head th:include="include :: header"></head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-adPriceCfg-edit" th:object="${adPriceCfg}">
-            <input id="priceCfgId" name="priceCfgId" th:field="*{priceCfgId}"  type="hidden">
+        <form class="form-horizontal m" id="form-adReleaseRecord-edit" th:object="${adReleaseRecord}">
+            <input id="releaseDeviceId" name="releaseDeviceId" th:field="*{releaseDeviceId}"  type="hidden">
             <div class="form-group">	
-                <label class="col-sm-3 control-label">：</label>
+                <label class="col-sm-3 control-label">推广计划：</label>
                 <div class="col-sm-8">
-                    <input id="priceType" name="priceType" th:field="*{priceType}" class="form-control" type="text">
+                    <input id="scheduleId" name="scheduleId" th:field="*{scheduleId}" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">	
-                <label class="col-sm-3 control-label">场所类型：</label>
+                <label class="col-sm-3 control-label">视讯排期：</label>
                 <div class="col-sm-8">
-                    <input id="placeGrade" name="placeGrade" th:field="*{placeGrade}" class="form-control" type="text">
+                    <input id="sxScheduleId" name="sxScheduleId" th:field="*{sxScheduleId}" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">	
-                <label class="col-sm-3 control-label">时段类型：</label>
+                <label class="col-sm-3 control-label">投放设备：</label>
                 <div class="col-sm-8">
-                    <input id="dailyGrade" name="dailyGrade" th:field="*{dailyGrade}" class="form-control" type="text">
+                    <input id="deviceId" name="deviceId" th:field="*{deviceId}" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">	
-                <label class="col-sm-3 control-label">地区等级：</label>
+                <label class="col-sm-3 control-label">下载时间：</label>
                 <div class="col-sm-8">
-                    <input id="areaGrade" name="areaGrade" th:field="*{areaGrade}" class="form-control" type="text">
+                    <input id="downTime" name="downTime" th:field="*{downTime}" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">	
-                <label class="col-sm-3 control-label">投放位置：</label>
+                <label class="col-sm-3 control-label">播放时间：</label>
                 <div class="col-sm-8">
-                    <input id="position" name="position" th:field="*{position}" class="form-control" type="text">
+                    <input id="playTime" name="playTime" th:field="*{playTime}" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">	
-                <label class="col-sm-3 control-label">日价格：</label>
+                <label class="col-sm-3 control-label">播放价格：</label>
                 <div class="col-sm-8">
-                    <input id="dailyPrice" name="dailyPrice" th:field="*{dailyPrice}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">时段数目：</label>
-                <div class="col-sm-8">
-                    <input id="timeCnt" name="timeCnt" th:field="*{timeCnt}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">：</label>
-                <div class="col-sm-8">
-                    <input id="isDel" name="isDel" th:field="*{isDel}" class="form-control" type="text">
+                    <input id="price" name="price" th:field="*{price}" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">	
@@ -88,15 +76,15 @@
     </div>
     <div th:include="include::footer"></div>
     <script type="text/javascript">
-		var prefix = ctx + "advertise/adPriceCfg"
-		$("#form-adPriceCfg-edit").validate({
+		var prefix = ctx + "advertise/adReleaseRecord"
+		$("#form-adReleaseRecord-edit").validate({
 			rules:{
 				xxxx:{
 					required:true,
 				},
 			},
 			submitHandler: function(form) {
-				$.operate.save(prefix + "/edit", $('#form-adPriceCfg-edit').serialize());
+				$.operate.save(prefix + "/edit", $('#form-adReleaseRecord-edit').serialize());
 			}
 		});
 	</script>
