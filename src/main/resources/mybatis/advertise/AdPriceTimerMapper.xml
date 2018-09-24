@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.advertise.adPriceTimer.mapper.AdPriceTimerMapper">
+    
+    <resultMap type="AdPriceTimer" id="AdPriceTimerResult">
+        <result property="adPriceId"    column="ad_price_id"    />
+        <result property="priceCfgId"    column="price_cfg_id"    />
+        <result property="releaseBeginTime"    column="release_begin_time"    />
+        <result property="releaseEndTime"    column="release_end_time"    />
+        <result property="price"    column="price"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectAdPriceTimerVo">
+        select ad_price_id, price_cfg_id, release_begin_time, release_end_time, price, create_by, create_time, update_by, update_time from zx_ad_price_timer
+    </sql>
+	
+    <select id="selectAdPriceTimerList" parameterType="AdPriceTimer" resultMap="AdPriceTimerResult">
+        <include refid="selectAdPriceTimerVo"/>
+        <where>  
+            <if test="adPriceId != null and adPriceId != ''"> and ad_price_id = #{adPriceId}</if>
+             <if test="priceCfgId != null and priceCfgId != ''"> and price_cfg_id = #{priceCfgId}</if>
+             <if test="releaseBeginTime != null and releaseBeginTime != ''"> and release_begin_time = #{releaseBeginTime}</if>
+             <if test="releaseEndTime != null and releaseEndTime != ''"> and release_end_time = #{releaseEndTime}</if>
+             <if test="price != null and price != ''"> and price = #{price}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectAdPriceTimerById" parameterType="Integer" resultMap="AdPriceTimerResult">
+        <include refid="selectAdPriceTimerVo"/>
+        where ad_price_id = #{adPriceId}
+    </select>
+        
+    <insert id="insertAdPriceTimer" parameterType="AdPriceTimer">
+        insert into zx_ad_price_timer
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="adPriceId != null and adPriceId != '' ">ad_price_id,</if>
+			<if test="priceCfgId != null and priceCfgId != '' ">price_cfg_id,</if>
+			<if test="releaseBeginTime != null and releaseBeginTime != '' ">release_begin_time,</if>
+			<if test="releaseEndTime != null and releaseEndTime != '' ">release_end_time,</if>
+			<if test="price != null and price != '' ">price,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="updateBy != null and updateBy != '' ">update_by,</if>
+			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="adPriceId != null and adPriceId != ''">#{adPriceId},</if>
+			<if test="priceCfgId != null and priceCfgId != ''">#{priceCfgId},</if>
+			<if test="releaseBeginTime != null and releaseBeginTime != ''">#{releaseBeginTime},</if>
+			<if test="releaseEndTime != null and releaseEndTime != ''">#{releaseEndTime},</if>
+			<if test="price != null and price != ''">#{price},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateAdPriceTimer" parameterType="AdPriceTimer">
+        update zx_ad_price_timer
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="priceCfgId != null  ">price_cfg_id = #{priceCfgId},</if>
+            <if test="releaseBeginTime != null  ">release_begin_time = #{releaseBeginTime},</if>
+            <if test="releaseEndTime != null  ">release_end_time = #{releaseEndTime},</if>
+            <if test="price != null  ">price = #{price},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where ad_price_id = #{adPriceId}
+    </update>
+
+	<delete id="deleteAdPriceTimerById" parameterType="Integer">
+        delete from zx_ad_price_timer where ad_price_id = #{adPriceId}
+    </delete>
+	
+    <delete id="deleteAdPriceTimerByIds" parameterType="String">
+        delete from zx_ad_price_timer where ad_price_id in 
+        <foreach item="adPriceId" collection="array" open="(" separator="," close=")">
+            #{adPriceId}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -19,10 +19,10 @@ import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.framework.web.domain.AjaxResult;
 
 /**
- * 广告推广计划 信息操作处理
+ * 广告投放 信息操作处理
  * 
  * @author ZXiang
- * @date 2018-09-11
+ * @date 2018-09-24
  */
 @Controller
 @RequestMapping("/advertise/adSchedule")
@@ -41,7 +41,7 @@ public class AdScheduleController extends BaseController
 	}
 	
 	/**
-	 * 查询广告推广计划列表
+	 * 查询广告投放列表
 	 */
 	@RequiresPermissions("advertise:adSchedule:list")
 	@PostMapping("/list")
@@ -54,7 +54,7 @@ public class AdScheduleController extends BaseController
 	}
 	
 	/**
-	 * 新增广告推广计划
+	 * 新增广告投放
 	 */
 	@GetMapping("/add")
 	public String add()
@@ -63,10 +63,10 @@ public class AdScheduleController extends BaseController
 	}
 	
 	/**
-	 * 新增保存广告推广计划
+	 * 新增保存广告投放
 	 */
 	@RequiresPermissions("advertise:adSchedule:add")
-	@Log(title = "广告推广计划", businessType = BusinessType.INSERT)
+	@Log(title = "广告投放", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
 	public AjaxResult addSave(AdSchedule adSchedule)
@@ -75,21 +75,21 @@ public class AdScheduleController extends BaseController
 	}
 
 	/**
-	 * 修改广告推广计划
+	 * 修改广告投放
 	 */
-	@GetMapping("/edit/{scheduleId}")
-	public String edit(@PathVariable("scheduleId") Integer scheduleId, ModelMap mmap)
+	@GetMapping("/edit/{adScheduleId}")
+	public String edit(@PathVariable("adScheduleId") Integer adScheduleId, ModelMap mmap)
 	{
-		AdSchedule adSchedule = adScheduleService.selectAdScheduleById(scheduleId);
+		AdSchedule adSchedule = adScheduleService.selectAdScheduleById(adScheduleId);
 		mmap.put("adSchedule", adSchedule);
 	    return prefix + "/edit";
 	}
 	
 	/**
-	 * 修改保存广告推广计划
+	 * 修改保存广告投放
 	 */
 	@RequiresPermissions("advertise:adSchedule:edit")
-	@Log(title = "广告推广计划", businessType = BusinessType.UPDATE)
+	@Log(title = "广告投放", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
 	public AjaxResult editSave(AdSchedule adSchedule)
@@ -98,10 +98,10 @@ public class AdScheduleController extends BaseController
 	}
 	
 	/**
-	 * 删除广告推广计划
+	 * 删除广告投放
 	 */
 	@RequiresPermissions("advertise:adSchedule:remove")
-	@Log(title = "广告推广计划", businessType = BusinessType.DELETE)
+	@Log(title = "广告投放", businessType = BusinessType.DELETE)
 	@PostMapping( "/remove")
 	@ResponseBody
 	public AjaxResult remove(String ids)
