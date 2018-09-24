@@ -140,4 +140,11 @@ public interface IUserService
      * @return 结果
      */
     public String selectUserPostGroup(Long userId);
+    /**
+     * 根据用户类型查询用户对象
+     * 
+     * @param user 用户信息
+     * @return 用户信息集合信息
+     */
+    public List<User> selectUserListByUserType(String... str);
 }

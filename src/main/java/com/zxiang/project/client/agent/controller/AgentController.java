@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -22,6 +23,8 @@ import com.zxiang.project.client.agent.domain.Agent;
 import com.zxiang.project.client.agent.service.IAgentService;
 import com.zxiang.project.system.area.domain.Area;
 import com.zxiang.project.system.area.service.IAreaService;
+import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.service.IUserService;
 
 /**
  * 代理商 信息操作处理
@@ -39,6 +42,8 @@ public class AgentController extends BaseController
 	private IAgentService agentService;
 	@Autowired
 	private IAreaService areaService;
+	@Autowired
+	private IUserService userService;
 	
 	@RequiresPermissions("client:agent:view")
 	@GetMapping()
@@ -64,8 +69,10 @@ public class AgentController extends BaseController
 	 * 新增代理商
 	 */
 	@GetMapping("/add")
-	public String add()
-	{
+	public String add(ModelMap mmap) {
+		List<User> userList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
+				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+		mmap.put("userList", userList);
 	    return prefix + "/add";
 	}
 	
@@ -76,8 +83,7 @@ public class AgentController extends BaseController
 	@Log(title = "代理商", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(Agent agent)
-	{		
+	public AjaxResult addSave(Agent agent) {		
 		return toAjax(agentService.insertAgent(agent));
 	}
 
@@ -99,6 +105,9 @@ public class AgentController extends BaseController
 			List<Area> countyList = areaService.selectDropBoxList(agent.getCity());
 			mmap.put("countyList", countyList == null ? new ArrayList<Area>() : countyList);
 		}
+		List<User> userList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
+				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+		mmap.put("userList", userList);
 	    return prefix + "/edit";
 	}
 	

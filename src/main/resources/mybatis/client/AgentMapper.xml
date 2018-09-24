@@ -99,9 +99,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="scanRate != null and scanRate != '' ">scan_rate,</if>
 			<if test="promotionRate != null and promotionRate != '' ">promotion_rate,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
-			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="createTime != null">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
-			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+			<if test="updateTime != null">update_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="agentId != null and agentId != ''">#{agentId},</if>
@@ -125,9 +125,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="scanRate != null and scanRate != ''">#{scanRate},</if>
 			<if test="promotionRate != null and promotionRate != ''">#{promotionRate},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
-			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="createTime != null">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
-			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+			<if test="updateTime != null">#{updateTime},</if>
          </trim>
     </insert>
 	 
@@ -171,5 +171,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{agentId}
         </foreach>
     </delete>
-    
+    <select id="queryParentAgent" parameterType="Integer" resultMap="AgentResult">
+    	select * from zx_agent  where city = #{city} and county is null limit 1
+    </select>
 </mapper>

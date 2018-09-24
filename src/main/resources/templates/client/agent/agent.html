@@ -39,24 +39,30 @@
 				{field : 'provinceName', title : '代理省份'},
 				{field : 'cityName',title : '代理城市'},
 				{field : 'countyName',title : '代理地区'},
-				{field : 'level',title : '代理等级'},
+				{field : 'level',title : '代理等级',formatter: function(value, row, index) {
+					if(value == 1) {return "一级代理"}
+					if(value == 2) {return "二级代理"}
+					return "-";
+	            }},
 				{field : 'deviceNum',title : '设备数量' },
-				{field : 'delFlag',title : '是否删除'},
-				{field : 'status',title : '状态' },
-				{field : 'managerId',title : '管理者ID' },
+				{field : 'status',title : '状态',formatter: function(value, row, index) {
+					if(value == 0) {return "无效"}
+					if(value == 1) {return "有效"}
+					return "-";
+	            } },
 				{field : 'managerName',title : '管理者姓名' },
 				{field : 'managerPhone', title : '管理电话'},
 				{field : 'bankReceiver',title : '收款人'},
 				{field : 'bankAccount',title : '收款账号'},
-				{field : 'bankName',title : '收款人姓名'},
+				{field : 'bankName',title : '开户行'},
 				{field : 'promotorId',title : '直推人' },
 				{field : 'adRate',title : '广告收益' },
 				{field : 'scanRate', title : '扫码收益' },
 				{field : 'promotionRate',title : '推广收益'},
 				{field : 'createBy', title : '创建人'},
 				{field : 'createTime', title : '创建时间' },
-				{field : 'updateBy', title : '更新时间'},
-				{field : 'updateTime',title : ''},
+				{field : 'updateBy', title : '更新人'},
+				{field : 'updateTime',title : '更新时间'},
 		        {title: '操作', align: 'center',
 		            formatter: function(value, row, index) {
 		            	var actions = [];
@@ -67,6 +73,7 @@
 		        }]
             };
             $.table.init(options);
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'agentId');
         });
     </script>
 </body>

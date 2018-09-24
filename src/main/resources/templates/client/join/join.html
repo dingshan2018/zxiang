@@ -66,10 +66,6 @@
 					title : '状态' 
 				},
 				{
-					field : 'delFlag', 
-					title : '是否删除' 
-				},
-				{
 					field : 'promotionRate', 
 					title : '推广收益' 
 				},
@@ -93,6 +89,7 @@
 		        }]
             };
             $.table.init(options);
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'joinId');
         });
     </script>
 </body>
