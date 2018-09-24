@@ -3,6 +3,7 @@ package com.zxiang.project.system.post.mapper;
 import java.util.List;
 
 import com.zxiang.project.system.post.domain.Post;
+import com.zxiang.project.system.user.domain.User;
 
 /**
  * 岗位信息 数据层
@@ -83,4 +84,12 @@ public interface PostMapper
      */
     public Post checkPostCodeUnique(String postCode);
 
+    /**
+     * 根据用户类型查询用户对象
+     * 
+     * @param user 用户信息
+     * @return 用户信息集合信息
+     */
+    public List<User> selectUserListByUserType(String[] userTypes);
+    
 }

@@ -58,5 +58,11 @@ public interface AgentMapper
      * @return 结果
      */
 	public int deleteAgentByIds(String[] agentIds);
+	/**
+	 * 查询父代理商
+	 * @param county
+	 * @return
+	 */
+	Agent queryParentAgent(Integer county);
 	
 }

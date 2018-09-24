@@ -82,28 +82,24 @@
 					title : '状态' 
 				},
 				{
-					field : 'delFlag', 
-					title : '是否删除' 
-				},
-				{
 					field : 'deviceNum', 
 					title : '服务设备数量' 
 				},
 				{
 					field : 'createBy', 
-					title : '' 
+					title : '创建人' 
 				},
 				{
 					field : 'createTime', 
-					title : '' 
+					title : '创建时间' 
 				},
 				{
 					field : 'updateBy', 
-					title : '' 
+					title : '更新人' 
 				},
 				{
 					field : 'updateTime', 
-					title : '' 
+					title : '更新时间' 
 				},
 		        {
 		            title: '操作',
@@ -117,6 +113,7 @@
 		        }]
             };
             $.table.init(options);
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'repairId');
         });
     </script>
 </body>
