@@ -44,8 +44,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDeviceList" parameterType="Device" resultMap="DeviceResult">
         <include refid="selectDeviceVo"/>
         <where>  
-            <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
-             <if test="deviceCode != null and deviceCode != ''"> and device_code = #{deviceCode}</if>
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="deviceCode != null and deviceCode != ''"> 
+             	and device_code like concat('%', #{deviceCode}, '%')
+             </if>
              <if test="deviceSn != null and deviceSn != ''"> and device_sn = #{deviceSn}</if>
              <if test="deviceType != null and deviceType != ''"> and device_type = #{deviceType}</if>
              <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
@@ -64,7 +66,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="status != null and status != ''"> and status = #{status}</if>
              <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null"> and create_time = #{createTime}</if>
+             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				 AND date_format(d.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			 </if>
+			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				 AND date_format(d.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+			 </if>
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
              <if test="updateTime != null"> and update_time = #{updateTime}</if>
          </where>
