@@ -107,4 +107,11 @@ public interface UserMapper
      * @return 结果
      */
     public User checkEmailUnique(String email);
+    /**
+     * 根据用户类型查询用户对象
+     * 
+     * @param user 用户信息
+     * @return 用户信息集合信息
+     */
+    public List<User> selectUserListByUserType(String[] userTypes);
 }

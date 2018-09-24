@@ -1,12 +1,20 @@
 package com.zxiang.project.client.repair.service;
 
+import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.zxiang.project.client.repair.mapper.RepairMapper;
-import com.zxiang.project.client.repair.domain.Repair;
-import com.zxiang.project.client.repair.service.IRepairService;
+
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.security.ShiroUtils;
+import com.zxiang.framework.shiro.service.PasswordService;
+import com.zxiang.project.client.repair.domain.Repair;
+import com.zxiang.project.client.repair.mapper.RepairMapper;
+import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.mapper.UserMapper;
 
 /**
  * 服务商 服务层实现
@@ -19,6 +27,10 @@ public class RepairServiceImpl implements IRepairService
 {
 	@Autowired
 	private RepairMapper repairMapper;
+	@Autowired
+	private UserMapper userMapper;
+	@Autowired
+    private PasswordService passwordService;
 
 	/**
      * 查询服务商信息
@@ -51,8 +63,25 @@ public class RepairServiceImpl implements IRepairService
      * @return 结果
      */
 	@Override
-	public int insertRepair(Repair repair)
-	{
+	public int insertRepair(Repair repair) {
+		if(StringUtils.isNotBlank(repair.getManagerPhone())) {
+			// 根据管理者新增用户
+			User user = userMapper.selectUserByPhoneNumber(repair.getManagerPhone());
+			if(user == null) {
+				user = new User();
+				user.randomSalt();
+				user.setPhonenumber(repair.getManagerPhone());
+				user.setLoginName(repair.getManagerPhone());
+				user.setUserName(repair.getManagerName());
+				user.setPassword(passwordService.encryptPassword(user.getLoginName(), repair.getManagerPhone(), user.getSalt()));
+		        user.setCreateBy(ShiroUtils.getLoginName());
+		        user.setUserType(UserConstants.USER_TYPE_REPAIR);
+		        userMapper.insertUser(user);
+		        repair.setManagerId(user.getUserId().intValue());
+			}
+		}
+		repair.setCreateTime(new Date());
+		repair.setCreateBy(ShiroUtils.getLoginName());
 	    return repairMapper.insertRepair(repair);
 	}
 	
@@ -63,8 +92,25 @@ public class RepairServiceImpl implements IRepairService
      * @return 结果
      */
 	@Override
-	public int updateRepair(Repair repair)
-	{
+	public int updateRepair(Repair repair) {
+		if(StringUtils.isNotBlank(repair.getManagerPhone())) {
+			// 根据管理者新增用户
+			User user = userMapper.selectUserByPhoneNumber(repair.getManagerPhone());
+			if(user == null) {
+				user = new User();
+				user.randomSalt();
+				user.setPhonenumber(repair.getManagerPhone());
+				user.setLoginName(repair.getManagerPhone());
+				user.setUserName(repair.getManagerName());
+				user.setPassword(passwordService.encryptPassword(user.getLoginName(), repair.getManagerPhone(), user.getSalt()));
+		        user.setCreateBy(ShiroUtils.getLoginName());
+		        user.setUserType(UserConstants.USER_TYPE_REPAIR);
+		        userMapper.insertUser(user);
+		        repair.setManagerId(user.getUserId().intValue());
+			}
+		}
+		repair.setUpdateTime(new Date());
+		repair.setUpdateBy(ShiroUtils.getLoginName());
 	    return repairMapper.updateRepair(repair);
 	}
 
