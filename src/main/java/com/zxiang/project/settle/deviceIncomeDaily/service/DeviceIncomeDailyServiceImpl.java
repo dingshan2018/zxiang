@@ -125,36 +125,41 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				HashMap<String, Object> order = orderlist.get(0);
 				String seller_id = order.get("seller_id")+""; //销售人员
 				String buyer_id = order.get("buyer_id")+"";//机主
-				String isincome = order.get("isincome")+"";
+				String isincome = order.get("isincome")+""; //是否是当天售出
 				//获取销售人员信息
 				iUserIncomeService.selectzxsellerlist(seller_id);
-				//判断是否是前一天售出的，01代表是    00代表不是
-				UserIncome userIncome = new UserIncome();
-				if(isincome.equals("01")){
-					userIncome.setPromotionIncomeRate(1000.00);
-					if(order.get("promotioner_id") !=null && order.get("promotioner_id") !="" ){
-						userIncome.setPromotionIncomeRate(500.00);
-					}
-				}else{
-					userIncome.setPromotionIncomeRate(0.00);
-				}
-				//插入数据
-				userIncome.setCoperatorId(Integer.valueOf(seller_id));
-				List<UserIncome> userlist =iUserIncomeService.selectUserIncome(userIncome);
-				if(userlist.size()>0){
-					iUserIncomeService.updateUserIncome(userIncome);
-				}else{
-					iUserIncomeService.insertUserIncome(userIncome);
-				}
-				
+				//计算每日设备推广费用
+				deviceorder(isincome,seller_id,order);
 				//计算每日出纸费用
 				tissuedata(device,buyer_id);
 				//计算广告费用
 				addata(map);
 			}
 		}
-		
-		
+	}
+	
+	//计算每日设备推广费用
+	public void deviceorder(String isincome,String seller_id,HashMap<String, Object> order) {
+		//判断是否是前一天售出的，01代表是    00代表不是
+		UserIncome userIncome = new UserIncome();
+		if(isincome.equals("01")){
+			userIncome.setPromotionIncomeRate(1000.00);
+			if(order.get("promotioner_id") !=null && order.get("promotioner_id") !="" ){
+				userIncome.setPromotionIncomeRate(500.00);
+			}
+		}else{
+			userIncome.setPromotionIncomeRate(0.00);
+		}
+		//插入数据
+		userIncome.setCoperatorId(Integer.valueOf(seller_id));
+		List<UserIncome> userlist =iUserIncomeService.selectUserIncome(userIncome);
+		if(userlist.size()>0){
+			UserIncome income = userlist.get(0);
+			userIncome.setIncomeId(income.getIncomeId());
+			iUserIncomeService.updateUserIncome(userIncome);
+		}else{
+			iUserIncomeService.insertUserIncome(userIncome);
+		}
 	}
 	
 	//计算每日出纸费用

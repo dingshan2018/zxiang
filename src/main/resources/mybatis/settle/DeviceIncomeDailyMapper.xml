@@ -151,7 +151,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			  place_id,
 			  tissue_channel 
 			FROM
-			  zx_tissue_record create_time 
+			  zx_tissue_record  
 			  WHERE 
 			   device_id = #{deviceId}
 			AND DATE_FORMAT(create_time, '%Y-%m-%d') = DATE_FORMAT(
