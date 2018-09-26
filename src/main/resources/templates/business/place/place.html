@@ -14,13 +14,13 @@
 						<li>
 							<!-- 投放地区：<input type="text" name="areaId"/> -->
 							省：<select name="province" id="province">
-                       			<option value="">---请选择---</option>
+                       			<option value="">全部</option>
                     		</select>
                     		市：<select name="city" id="city">
-		                        <option value="">---请选择---</option>
+		                        <option value="">全部</option>
 		                    </select>
 	                    	区县：<select name="county" id="county">
-		                        <option value="">---请选择---</option>
+		                        <option value="">全部</option>
 		                    </select>
 						</li>
 						<li class="select-time">
@@ -31,6 +31,7 @@
 						</li>
 						<li>
 							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
 						</li>
 					</ul>
 				</div>
@@ -191,7 +192,7 @@
         function proviceBind() {
 	        //清空下拉数据
 	        $("#province").html("");
-	        var str = "<option value=''>---请选择---</option>";
+	        var str = "<option value=''>全部</option>";
 	        $.ajax({
 	        	type: "post",
 	        	contentType:"application/json",
@@ -217,7 +218,7 @@
 	            return;
 	        }
 	        $("#city").html("");
-	        var str = "<option value=''>---请选择---</option>";
+	        var str = "<option value=''>全部</option>";
 	        $.ajax({
 	        	type: "post",
 	        	contentType:"application/json",
@@ -243,7 +244,7 @@
 	            return;
 	        }
 	        $("#county").html("");
-	        var str = "<option value=''>---请选择---</option>";
+	        var str = "<option value=''>全部</option>";
 	        //将市的ID拿到数据库进行查询，查询出他的下级进行绑定
 	        $.ajax({
 	        	type: "post",

@@ -12,14 +12,22 @@
 							投放地区：<input type="text" name="areaId"/>
 						</li>
 						<li>
-							投放场所：<input type="text" name="deviceCode"/>
+							投放场所：
+							<select id="placeId" name="placeId">
+								<option value="">全部</option>
+							</select>
 						</li>
 						<li>
-							设备编号：<input type="text" name="deviceCode"/>
+							设备编号：<input type="text" name="deviceCode" id="deviceCode"/>
 						</li>
 						<li>
-							设备状态：<input type="text" name="status"/>
-						</li>
+							设备状态：
+							<select id="status" name="status" >
+								<option value="">全部</option>
+								<option value="2">上线</option>
+		                        <option value="1">下线</option>
+		                        <option value="3">故障</option>
+							</select>
 						</li>
 						<li class="select-time">
 							<label>投放时间： </label>
@@ -29,6 +37,7 @@
 						</li>
 						<li>
 							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
 							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;投放</a>
 							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;撤机</a>
 							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;换板</a>
@@ -59,6 +68,12 @@
         var prefix = ctx + "business/device"
 
         $(function() {
+           	
+        	var placeList = selectPlaceList();
+   	    	$.each(placeList, function (i) {
+               	$('#placeId').append("<option value=" + placeList[i].placeId + ">" + placeList[i].name + "</option>");
+            });
+    	        
             var options = {
                 url: prefix + "/list",
                 createUrl: prefix + "/add",
