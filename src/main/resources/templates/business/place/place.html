@@ -9,10 +9,19 @@
 				<div class="select-list">
 					<ul>
 						<li>
-							投放地区：<input type="text" name="areaId"/>
+							场所名称：<input type="text" name="name" id="name"/>
 						</li>
 						<li>
-							场所名称：<input type="text" name="name"/>
+							<!-- 投放地区：<input type="text" name="areaId"/> -->
+							省：<select name="province" id="province">
+                       			<option value="">---请选择---</option>
+                    		</select>
+                    		市：<select name="city" id="city">
+		                        <option value="">---请选择---</option>
+		                    </select>
+	                    	区县：<select name="county" id="county">
+		                        <option value="">---请选择---</option>
+		                    </select>
 						</li>
 						<li class="select-time">
 							<label>投放时间： </label>
@@ -48,6 +57,21 @@
         var prefix = ctx + "business/place"
 
         $(function() {
+        	var placeList = selectPlaceList();
+	    	$.each(placeList, function (i) {
+            	$('#name').append("<option value=" + placeList[i].placeId + ">" + placeList[i].name + "</option>");
+            });
+	    	 //默认绑定省
+	        proviceBind();
+	        //绑定事件
+	        $("#province").change( function () {
+	            cityBind();
+	        })
+	        
+	        $("#city").change(function () {
+	        	countyBind();
+	        })
+	        
             var options = {
                 url: prefix + "/list",
                 createUrl: prefix + "/add",
@@ -163,6 +187,82 @@
             $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
             
         });
+        
+        function proviceBind() {
+	        //清空下拉数据
+	        $("#province").html("");
+	        var str = "<option value=''>---请选择---</option>";
+	        $.ajax({
+	        	type: "post",
+	        	contentType:"application/json",
+	            dataType: "json",
+	            url: ctx + "system/area/getDropBoxAreaList",
+	            data: JSON.stringify({ "parentId": "0"}),
+	            async: false,
+	            success: function (data) {
+	                //从服务器获取数据进行绑定
+	                $.each(data.rows, function (i, item) {
+	                    str += "<option value=" + item.id + ">" + item.pname + "</option>";
+	                })
+	                //将数据添加到省份这个下拉框里面
+	                $("#province").append(str);
+	            },
+	            error: function () { alert("Error:获取省份信息失败"); }
+	        });
+	    }
+	    function cityBind() {
+	        var provice = $("#province option:selected").val();
+	        //判断省份这个下拉框选中的值是否为空
+	        if (provice == "") {
+	            return;
+	        }
+	        $("#city").html("");
+	        var str = "<option value=''>---请选择---</option>";
+	        $.ajax({
+	        	type: "post",
+	        	contentType:"application/json",
+	            dataType: "json",
+	            url: ctx + "system/area/getDropBoxAreaList",
+	            data: JSON.stringify({ "parentId": provice}),
+	            async: false,
+	            success: function (data) {
+	                //从服务器获取数据进行绑定
+	                $.each(data.rows, function (i, item) {
+	                    str += "<option value=" + item.id + ">" + item.pname + "</option>";
+	                })
+	                //将数据添加到市这个下拉框里面
+	                $("#city").append(str);
+	            },
+	            error: function () { alert("Error:获取城市信息失败"); }
+	        });
+	    }
+	    function countyBind() {
+	        var provice = $("#city option:selected").val();
+	        //判断市这个下拉框选中的值是否为空
+	        if (provice == "") {
+	            return;
+	        }
+	        $("#county").html("");
+	        var str = "<option value=''>---请选择---</option>";
+	        //将市的ID拿到数据库进行查询，查询出他的下级进行绑定
+	        $.ajax({
+	        	type: "post",
+	        	contentType:"application/json",
+	            dataType: "json",
+	            url: ctx + "system/area/getDropBoxAreaList",
+	            data: JSON.stringify({ "parentId": provice}),
+	            async: false,
+	            success: function (data) {
+	                //从服务器获取数据进行绑定
+	                $.each(data.rows, function (i, item) {
+	                    str += "<option value=" + item.id + ">" + item.pname + "</option>";
+	                })
+	                //将数据添加到区县这个下拉框里面
+	                $("#county").append(str);
+	            },
+	            error: function () { alert("Error:获取地区信息失败"); }
+	        });
+	    }	
     </script>
 </body>
 </html>

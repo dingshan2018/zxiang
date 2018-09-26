@@ -222,7 +222,7 @@
 	    function proviceBind() {
 	        //清空下拉数据
 	        $("#province").html("");
-	        var str = "<option>---请选择---</option>";
+	        var str = "<option value=''>---请选择---</option>";
 	        $.ajax({
 	        	type: "post",
 	        	contentType:"application/json",
@@ -248,7 +248,7 @@
 	            return;
 	        }
 	        $("#city").html("");
-	        var str = "<option>---请选择---</option>";
+	        var str = "<option value=''>---请选择---</option>";
 	        $.ajax({
 	        	type: "post",
 	        	contentType:"application/json",
@@ -274,7 +274,7 @@
 	            return;
 	        }
 	        $("#county").html("");
-	        var str = "<option>---请选择---</option>";
+	        var str = "<option value=''>---请选择---</option>";
 	        //将市的ID拿到数据库进行查询，查询出他的下级进行绑定
 	        $.ajax({
 	        	type: "post",
