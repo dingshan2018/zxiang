@@ -2,6 +2,7 @@ package com.zxiang.project.system.user.service;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -353,4 +354,9 @@ public class UserServiceImpl implements IUserService
         }
         return idsStr.toString();
     }
+
+	@Override
+	public List<User> selectUserListByUserType(String... userType) {
+		return userMapper.selectUserListByUserType(userType);
+	}
 }

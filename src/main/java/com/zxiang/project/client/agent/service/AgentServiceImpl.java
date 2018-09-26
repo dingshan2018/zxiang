@@ -1,12 +1,20 @@
 package com.zxiang.project.client.agent.service;
 
+import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.zxiang.project.client.agent.mapper.AgentMapper;
-import com.zxiang.project.client.agent.domain.Agent;
-import com.zxiang.project.client.agent.service.IAgentService;
+
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.security.ShiroUtils;
+import com.zxiang.framework.shiro.service.PasswordService;
+import com.zxiang.project.client.agent.domain.Agent;
+import com.zxiang.project.client.agent.mapper.AgentMapper;
+import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.mapper.UserMapper;
 
 /**
  * 代理商 服务层实现
@@ -19,6 +27,10 @@ public class AgentServiceImpl implements IAgentService
 {
 	@Autowired
 	private AgentMapper agentMapper;
+	@Autowired
+	private UserMapper userMapper;
+	@Autowired
+    private PasswordService passwordService;
 
 	/**
      * 查询代理商信息
@@ -51,8 +63,30 @@ public class AgentServiceImpl implements IAgentService
      * @return 结果
      */
 	@Override
-	public int insertAgent(Agent agent)
-	{
+	public int insertAgent(Agent agent) {
+		if(agent.getCounty() != null) {
+			// 设置父代理商
+			Agent parentAgent = agentMapper.queryParentAgent(agent.getCity());
+			agent.setPagentId(parentAgent == null ? null : parentAgent.getAgentId());
+		}
+		if(StringUtils.isNotBlank(agent.getManagerPhone())) {
+			// 根据管理者新增用户
+			User user = userMapper.selectUserByPhoneNumber(agent.getManagerPhone());
+			if(user == null) {
+				user = new User();
+				user.randomSalt();
+				user.setPhonenumber(agent.getManagerPhone());
+				user.setLoginName(agent.getManagerPhone());
+				user.setUserName(agent.getManagerName());
+				user.setPassword(passwordService.encryptPassword(user.getLoginName(), agent.getManagerPhone(), user.getSalt()));
+		        user.setCreateBy(ShiroUtils.getLoginName());
+		        user.setUserType(UserConstants.USER_TYPE_AGENT);
+		        userMapper.insertUser(user);
+		        agent.setManagerId(user.getUserId().intValue());
+			}
+		}
+		agent.setCreateTime(new Date());
+		agent.setCreateBy(ShiroUtils.getLoginName());
 	    return agentMapper.insertAgent(agent);
 	}
 	
@@ -63,8 +97,33 @@ public class AgentServiceImpl implements IAgentService
      * @return 结果
      */
 	@Override
-	public int updateAgent(Agent agent)
-	{
+	public int updateAgent(Agent agent) {
+		if(agent.getCounty() != null) {
+			Agent parentAgent = agentMapper.queryParentAgent(agent.getCity());
+			agent.setPagentId(parentAgent == null ? null : parentAgent.getAgentId());
+		}else {
+			agent.setPagentId(null);
+		}
+		if(agent.getManagerId() == null) {
+			if(StringUtils.isNotBlank(agent.getManagerPhone())) {
+				// 根据管理者新增用户
+				User user = userMapper.selectUserByPhoneNumber(agent.getManagerPhone());
+				if(user == null) {
+					user = new User();
+					user.randomSalt();
+					user.setPhonenumber(agent.getManagerPhone());
+					user.setLoginName(agent.getManagerPhone());
+					user.setUserName(agent.getManagerName());
+					user.setPassword(passwordService.encryptPassword(user.getLoginName(), agent.getManagerPhone(), user.getSalt()));
+					user.setCreateBy(ShiroUtils.getLoginName());
+					user.setUserType(UserConstants.USER_TYPE_AGENT);
+					userMapper.insertUser(user);
+					agent.setManagerId(user.getUserId().intValue());
+				}
+			}
+		}
+		agent.setUpdateTime(new Date());
+		agent.setUpdateBy(ShiroUtils.getLoginName());
 	    return agentMapper.updateAgent(agent);
 	}
 

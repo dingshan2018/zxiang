@@ -4,6 +4,30 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
+    	<div class="col-sm-12 select-info">
+			<form id="terminal-form">
+				<div class="select-list">
+					<ul>
+						<li>
+							投放地区：<input type="text" name="areaId"/>
+						</li>
+						<li>
+							场所名称：<input type="text" name="name"/>
+						</li>
+						<li class="select-time">
+							<label>投放时间： </label>
+							<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+							<span>-</span>
+							<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+						</li>
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+		
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:place:add">
 				<i class="fa fa-plus"></i> 新增
@@ -30,6 +54,7 @@
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "场所管理",
+                search: false,
                 columns: [{
 		            checkbox: true
 		        },
@@ -52,15 +77,22 @@
 				},
 				{
 					field : 'placeType', 
-					title : '场所类型' 
+					title : '场所类型' ,
+					formatter : function(value) {
+						if(value==='0'){
+							return "自营";
+						}else if(value==='1'){
+							return "代理";
+						}else if(value==='2'){
+							return "自购";
+						}else{
+							return "-";
+						}
+					}
 				},
 				{
 					field : 'scene', 
-					title : '场景(场所业态)' 
-				},
-				{
-					field : 'parentPlaceName', 
-					title : '父级场所' 
+					title : '场景' 
 				},
 				{
 					field : 'address', 
@@ -79,104 +111,37 @@
 					title : '地区' 
 				},
 				{
-					field : 'lon', 
-					title : '经度' 
-				},
-				{
-					field : 'lat', 
-					title : '纬度' 
-				},
-				{
-					field : 'packet', 
-					title : '扫码套餐（备用）' 
-				},
-				{
 					field : 'tissuePrice', 
-					title : '出纸价格（以设备为准，设备没有以场所为准）' 
+					title : '出纸价格' 
 				},
 				{
 					field : 'tissueLen', 
 					title : '每次出纸长度' 
 				},
 				{
-					field : 'repairId', 
-					title : '维修员' 
-				},
-				{
-					field : 'supplyId', 
-					title : '送纸员' 
-				},
-				{
-					field : 'operatorId', 
-					title : '经办人' 
-				},
-				{
-					field : 'ownerId', 
-					title : '机主' 
+					field : 'serviceId', 
+					title : '服务网点' 
 				},
 				{
 					field : 'deviceCount', 
 					title : '投放设备数量' 
 				},
 				{
-					field : 'ctBank', 
-					title : '开户行（合同收款方）' 
-				},
-				{
-					field : 'ctAccount', 
-					title : '收款账号' 
-				},
-				{
-					field : 'ctReceiver', 
-					title : '收款人' 
-				},
-				{
-					field : 'ctPhone', 
-					title : '收款人联系电话' 
-				},
-				{
-					field : 'ctIdentity', 
-					title : '收款人身份证' 
-				},
-				{
-					field : 'ctRate', 
-					title : '商家分成比例' 
-				},
-				{
 					field : 'status', 
 					title : '场所状态' 
 				},
 				{
-					field : 'delFlag', 
-					title : '是否删除' 
-				},
-				{
 					field : 'note', 
 					title : '备注' 
-				},
-				{
-					field : 'createBy', 
-					title : '创建者' 
-				},
-				{
-					field : 'createTime', 
-					title : '创建时间' 
-				},
-				{
-					field : 'updateBy', 
-					title : '修改者' 
-				},
-				{
-					field : 'updateTime', 
-					title : '修改时间' 
 				},
 		        {
 		            title: '操作',
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	var actions = [];
-		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.placeId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.placeId + '\')"><i class="fa fa-remove"></i>删除</a>');
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.placeId + '\')"><i class="fa fa-edit"></i>基础信息</a> ');
+                        actions.push('<a class="btn btn-warning btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.placeId + '\')"><i class="fa fa-edit"></i>合同信息</a>');
+		            	actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.placeId + '\')"><i class="fa fa-remove"></i>删除</a>');
 						return actions.join('');
 		            }
 		        }]

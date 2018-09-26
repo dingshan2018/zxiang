@@ -127,7 +127,6 @@ function selectPlaceList(){
 
 /**终端下拉框选择*/
 function selectTerminalList(){
-	console.log("请求终端列表");
 	var terminalList = [];
 	$.ajax({
         url: ctx + "business/terminal/getDropBoxTerminalList",

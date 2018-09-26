@@ -4,6 +4,33 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
+    <div class="col-sm-12 select-info">
+					<form id="user-form">
+						<div class="select-list">
+							<ul>
+								<li>
+									用户类型：<input type="text" name="coperatorType"/>
+								</li>
+								<li>
+									结算用户：<input type="text" name="settlementer"/>
+								</li>
+								<li>
+									结算地区：<input type="text" name="areaId"/>
+								</li>
+								<li class="select-time">
+									<label>结算日期： </label>
+									<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+									<span>-</span>
+									<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+								</li>
+								<li>
+									<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							    	<a class="btn btn-success btn-rounded btn-sm" onclick="$.table.exportExcel()"><i class="fa fa-download"></i>&nbsp;导出</a>
+								</li>
+							</ul>
+						</div>
+					</form>
+		</div>
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="settle:deviceIncomeDaily:add">
 				<i class="fa fa-plus"></i> 新增
@@ -34,24 +61,41 @@
 		            checkbox: true
 		        },
 				{
-					field : 'incomeId', 
-					title : '' 
-				},
-				{
 					field : 'deviceId', 
 					title : '设备ID' 
+					title : '设备编号' 
 				},
 				{
 					field : 'terminalId', 
 					title : '终端ID' 
+					title : '终端编号' 
 				},
 				{
 					field : 'placeId', 
 					title : '场所Id' 
+					title : '投放场所' 
+				},
+				{
+					field : 'agentId', 
+					title : '一级代理' 
+				},
+				{
+					field : 'subAgentId', 
+					title : '二级代理' 
+				},
+				{
+					field : 'joiner', 
+					title : '加盟商' 
+				},
+				{
+					field : 'server', 
+					title : '服务网点' 
+
 				},
 				{
 					field : 'sellIncome', 
 					title : '销售收入' 
+					title : '推广收入' 
 				},
 				{
 					field : 'adIncome', 
@@ -63,7 +107,10 @@
 				},
 				{
 					field : 'sumDate', 
+
 					title : '合算时间' 
+
+					title : '统计日期' 
 				},
 				{
 					field : 'refundIncome', 

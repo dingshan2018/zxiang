@@ -4,6 +4,41 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
+    	<div class="col-sm-12 select-info">
+			<form id="terminal-form">
+				<div class="select-list">
+					<ul>
+						<li>
+							投放地区：<input type="text" name="areaId"/>
+						</li>
+						<li>
+							投放场所：<input type="text" name="deviceCode"/>
+						</li>
+						<li>
+							设备编号：<input type="text" name="deviceCode"/>
+						</li>
+						<li>
+							设备状态：<input type="text" name="status"/>
+						</li>
+						</li>
+						<li class="select-time">
+							<label>投放时间： </label>
+							<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+							<span>-</span>
+							<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+						</li>
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;投放</a>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;撤机</a>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;换板</a>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;补纸</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+		
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:device:add">
 				<i class="fa fa-plus"></i> 新增
@@ -30,69 +65,32 @@
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "共享设备",
+                search: false,
+                showExport: false,
                 columns: [{
 		            checkbox: true
 		        },
 				{
-					field : 'deviceId', 
-					title : '设备ID' 
-				},
-				{
 					field : 'deviceCode', 
-					title : '设备编号 （场所编号+序号）' 
+					title : '设备编号' 
 				},
 				{
 					field : 'deviceSn', 
-					title : '设备资产编号（钢印编号）' 
-				},
-				{
-					field : 'deviceType', 
-					title : '设备类型' 
+					title : '设备资产编号' 
 				},
 				{
 					field : 'terminalCode', 
-					title : '终端编号）' 
+					title : '终端编号' 
 				},
 				{
 					field : 'placeName', 
 					title : '场所' 
 				},
 				{
-					field : 'price', 
-					title : '出纸价格' 
-				},
-				{
-					field : 'lon', 
-					title : '经度' 
-				},
-				{
-					field : 'lat', 
-					title : '纬度' 
-				},
-				{
-					field : 'releaseTime', 
-					title : '投放时间' 
-				},
-				{
-					field : 'removeTime', 
-					title : '撤机时间' 
-				},
-				{
-					field : 'totalLen', 
-					title : '累计出纸' 
-				},
-				{
 					field : 'remainLen', 
 					title : '剩余出纸' 
 				},
-				{
-					field : 'lastHeartTime', 
-					title : '最后心跳时间' 
-				},
-				{
-					field : 'lastLoginTime', 
-					title : '最后登陆时间' 
-				},
+				
 				{
 					field : 'lastScanTime', 
 					title : '最后扫码时间' 
@@ -103,7 +101,7 @@
 				},
 				{
 					field : 'status', 
-					title : '设备状态(1 下线  2 上线  3 故障 )' ,
+					title : '设备状态' ,
 					formatter : function(value) {
 						if(value==='1'){
 							return "下线";
@@ -116,26 +114,7 @@
 						}
 					}
 				},
-				{
-					field : 'delFlag', 
-					title : '是否删除' 
-				},
-				{
-					field : 'createBy', 
-					title : '创建者' 
-				},
-				{
-					field : 'createTime', 
-					title : '创建时间' 
-				},
-				{
-					field : 'updateBy', 
-					title : '修改者' 
-				},
-				{
-					field : 'updateTime', 
-					title : '修改时间' 
-				},
+				
 		        {
 		            title: '操作',
 		            align: 'center',
