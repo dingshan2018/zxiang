@@ -143,3 +143,22 @@ function selectTerminalList(){
     })
     return terminalList;
 }
+
+/**用户下拉框选择*/
+function selectUserList(){
+	var userList = [];
+	$.ajax({
+        url: ctx + "system/user/getDropBoxUserList",
+        type: "post",
+        dataType: "json",
+        data: 'data',
+        async:false,
+        success: function (data) {
+        	userList = data.rows;
+        },
+        error: function (data) {
+            alert("查询用户下拉列表失败" + data);
+        }
+    })
+    return userList;
+}

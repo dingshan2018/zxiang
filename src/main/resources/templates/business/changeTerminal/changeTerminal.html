@@ -9,11 +9,22 @@
 				<div class="select-list">
 					<ul>
 						<li>
-							终端编号：<input type="text" name="terminalCode"/>
+							旧终端编号：
+							<select id="oldTerminalId" name="oldTerminalId">
+								<option value="">全部</option>
+							</select>
 						</li>
 						<li>
-							更换人：<input type="text" name="changer"/>
+							新终端编号：
+							<select id="newTerminalId" name="newTerminalId">
+								<option value="">全部</option>
+							</select>
 						</li>
+						<li>
+							更换人：
+							<select id="changerId" name="changerId">
+								<option value="">全部</option>
+							</select>
 						</li>
 						<li class="select-time">
 							<label>更换时间： </label>
@@ -23,6 +34,7 @@
 						</li>
 						<li>
 							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
 							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;导出</a>
 						</li>
 					</ul>
@@ -49,12 +61,24 @@
         var prefix = ctx + "business/changeTerminal"
 
         $(function() {
+        	var terminalList = selectTerminalList();
+	    	$.each(terminalList, function (i) {
+	        	$('#oldTerminalId').append("<option value=" + terminalList[i].terminalId + ">" + terminalList[i].terminalCode + "</option>");
+	        	$('#newTerminalId').append("<option value=" + terminalList[i].terminalId + ">" + terminalList[i].terminalCode + "</option>");
+	        });
+	    	
+	    	var changeUserList = selectUserList();
+	    	$.each(changeUserList, function (i) {
+	        	$('#changerId').append("<option value=" + changeUserList[i].userId + ">" + changeUserList[i].userName + "</option>");
+	        });
+	    	
             var options = {
                 url: prefix + "/list",
                 createUrl: prefix + "/add",
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "终端更换记录",
+                search: false,
                 columns: [{
 		            checkbox: true
 		        },
@@ -71,7 +95,7 @@
 					title : '剩余纸张' 
 				},
 				{
-					field : 'changerName', 
+					field : 'changeUserName', 
 					title : '更换人' 
 				},
 		        {

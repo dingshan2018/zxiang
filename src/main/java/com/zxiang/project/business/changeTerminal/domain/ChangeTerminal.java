@@ -38,6 +38,7 @@ public class ChangeTerminal extends BaseEntity
 
 	private String oldTerminalCode;
 	private String newTerminalCode;
+	private String changeUserName;
 	
 	public void setChangeTerminalId(Integer changeTerminalId) 
 	{
@@ -135,6 +136,14 @@ public class ChangeTerminal extends BaseEntity
 
 	public void setNewTerminalCode(String newTerminalCode) {
 		this.newTerminalCode = newTerminalCode;
+	}
+
+	public String getChangeUserName() {
+		return changeUserName;
+	}
+
+	public void setChangeUserName(String changeUserName) {
+		this.changeUserName = changeUserName;
 	}
 
 	public String toString() {

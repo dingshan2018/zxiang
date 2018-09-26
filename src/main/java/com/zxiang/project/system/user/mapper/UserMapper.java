@@ -114,4 +114,9 @@ public interface UserMapper
      * @return 用户信息集合信息
      */
     public List<User> selectUserListByUserType(String[] userTypes);
+
+    /**
+	 * 查询用户下拉框数据列表
+	 */
+	public List<User> selectDropBoxList();
 }
