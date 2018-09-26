@@ -9,7 +9,7 @@
             <div class="form-group">	
                 <label class="col-sm-3 control-label">终端ID：</label>
                 <div class="col-sm-8">
-                    <select id="terminalId" name="terminalId" class="form-control">
+                    <select id="terminalId" name="terminalId" class="form-control" readonly="true">
 						<option th:each="terminal:${terminalDropBoxList}" th:value="${terminal.terminalId}"
 						 th:text="${terminal.terminalCode}" th:field="*{terminalId}"></option>
 					</select>
@@ -29,13 +29,25 @@
             <div class="form-group">	
                 <label class="col-sm-3 control-label">开机时间：</label>
                 <div class="col-sm-8">
-                    <input id="powerOnTime" name="powerOnTime" th:field="*{powerOnTime}" class="form-control" type="text">
+                    <!-- <input id="powerOnTime" name="powerOnTime" th:field="*{powerOnTime}" class="form-control" type="text"> -->
+                    <div id="datetimepicker1" class="input-append date">
+				      	<input type="text" id="powerOnTime" th:field="*{powerOnTime}"></input>
+				      	<span class="add-on">
+				      	  <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+				      	</span>
+				    </div>
                 </div>
             </div>
             <div class="form-group">	
                 <label class="col-sm-3 control-label">关机时间：</label>
                 <div class="col-sm-8">
-                    <input id="powerOffTime" name="powerOffTime" th:field="*{powerOffTime}" class="form-control" type="text">
+                    <!-- <input id="powerOffTime" name="powerOffTime" th:field="*{powerOffTime}" class="form-control" type="text"> -->
+                    <div id="datetimepicker2" class="input-append date">
+				      	<input type="text" id="powerOffTime" th:field="*{powerOffTime}"></input>
+				      	<span class="add-on">
+				      	  <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+				      	</span>
+				    </div>
                 </div>
             </div>
             <div class="form-group">	
@@ -63,7 +75,32 @@
 		</form>
     </div>
     <div th:include="include::footer"></div>
+    <script type="text/javascript" src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js"></script>
     <script type="text/javascript">
+	    $(function(){ 
+	    	$('#datetimepicker1').datetimepicker({
+	            format: 'yyyy-MM-dd hh:mm:ss',
+	            language: 'zh',
+	            pickDate: true,
+	            pickTime: true,
+	            hourStep: 1,
+	            minuteStep: 15,
+	            secondStep: 30,
+	            inputMask: true
+	      	});
+	    	
+	    	$('#datetimepicker2').datetimepicker({
+	            format: 'yyyy-MM-dd hh:mm:ss',
+	            language: 'zh',
+	            pickDate: true,
+	            pickTime: true,
+	            hourStep: 1,
+	            minuteStep: 15,
+	            secondStep: 30,
+	            inputMask: true
+	      	});
+	 	});
+    
 		var prefix = ctx + "business/terminalTimer"
 		$("#form-terminalTimer-edit").validate({
 			rules:{
@@ -72,9 +109,43 @@
 				},
 			},
 			submitHandler: function(form) {
-				$.operate.save(prefix + "/edit", $('#form-terminalTimer-edit').serialize());
+				/* $.operate.save(prefix + "/edit", $('#form-terminalTimer-edit').serialize()); */
+				edit();
 			}
 		});
+		
+		function edit() {
+        	var teminalTimerId = $("#teminalTimerId").val();
+        	var terminalId = $.form.selectSelects("terminalId");
+        	var timerType = $.form.selectSelects("timerType");
+        	var powerOnTime = $("#powerOnTime").val();
+        	var powerOffTime = $("#powerOffTime").val();
+        	var status = $.form.selectSelects("status");
+        	var delFlag = $("input[name='delFlag']:checked").val();
+        	
+        	$.ajax({
+        		cache : true,
+        		type : "POST",
+        		url : prefix + "/edit",
+        		data : {
+        			"teminalTimerId": teminalTimerId,
+        			"terminalId": terminalId,
+        			"timerType": timerType,
+        			"powerOnTime": powerOnTime,
+        			"powerOffTime": powerOffTime,
+        			"status": status,
+        			"delFlag": delFlag
+        		},
+        		async : false,
+        		error : function(request) {
+        			$.modal.alertError("系统错误");
+        		},
+        		success : function(data) {
+        			$.operate.saveSuccess(data);
+        		}
+        	});
+      	}
+		
 	</script>
 </body>
 </html>
