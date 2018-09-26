@@ -140,4 +140,13 @@ public class PlaceController extends BaseController
 		return getDataTable(list);
     }
 	
+	/**
+     * 校验场所编号
+     */
+    @PostMapping("/checkPlaceCodeUnique")
+    @ResponseBody
+    public String checkPlaceCodeUnique(Place place)
+    {
+        return placeService.checkPlaceCodeUnique(place.getPlaceCode());
+    }
 }

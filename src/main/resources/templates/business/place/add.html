@@ -9,7 +9,7 @@
 				<label class="col-sm-3 control-label">父级场所：</label>
 				<div class="col-sm-8">
 					<select class="form-control" name="parentPlaceId" id="parentPlaceId">
-                        <option>---请选择---</option>
+                        <option value="">---请选择---</option>
                     </select>
 				</div>
 			</div>
@@ -23,7 +23,6 @@
 				<label class="col-sm-3 control-label">场所类型（自营、代理、自购）：</label>
 				<div class="col-sm-8">
 					<select class="form-control" name="placeType" id="placeType">
-                        <option>---请选择---</option>
                         <option value="0">自营</option>
                         <option value="1">代理</option>
                         <option value="2">自购</option>
@@ -58,7 +57,7 @@
 				<label class="col-sm-3 control-label">省份：</label>
 				<div class="col-sm-8">
 					<select class="form-control" name="province" id="province">
-                       	<option>---请选择---</option>
+                       	<option value="">---请选择---</option>
                     </select>
 				</div>
 			</div>
@@ -66,7 +65,7 @@
 				<label class="col-sm-3 control-label">城市：</label>
 				<div class="col-sm-8">
 					<select class="form-control" name="city" id="city">
-                        <option>---请选择---</option>
+                        <option value="">---请选择---</option>
                     </select>
 				</div>
 			</div>
@@ -74,7 +73,7 @@
 				<label class="col-sm-3 control-label">地区：</label>
 				<div class="col-sm-8">
 					<select class="form-control" name="county" id="county">
-                        <option>---请选择---</option>
+                        <option value="">---请选择---</option>
                     </select>
 				</div>
 			</div>
@@ -300,10 +299,40 @@
 		var prefix = ctx + "business/place"
 		$("#form-place-add").validate({
 			rules:{
-				xxxx:{
+				placeCode:{
+					required:true,
+					remote: {
+                        url: prefix + "/checkPlaceCodeUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                        	name : function() {
+                                return $.common.trim($("#placeCode").val());
+                            }
+                        },
+                        dataFilter: function(data, type) {
+                        	return $.validate.unique(data);
+                        }
+                    }
+				},
+				name:{
+					required:true,
+				},
+				province:{
+					required:true,
+				},
+				city:{
+					required:true,
+				},
+				county:{
 					required:true,
 				},
 			},
+			messages: {
+                "placeCode": {
+                    remote: "场所编号已存在!"
+                }
+            },
 			submitHandler: function(form) {
 				$.operate.save(prefix + "/add", $('#form-place-add').serialize());
 			}

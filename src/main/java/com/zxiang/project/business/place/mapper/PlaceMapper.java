@@ -63,5 +63,10 @@ public interface PlaceMapper
 	 * 查询场所下拉框数据列表
 	 */
 	public List<Place> selectDropBoxList();
+
+	/**
+     * 校验场所编号
+     */
+	public int checkPlaceCodeUnique(String placeCode);
 	
 }

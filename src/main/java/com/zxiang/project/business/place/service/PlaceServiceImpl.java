@@ -85,5 +85,15 @@ public class PlaceServiceImpl implements IPlaceService
 	public List<Place> selectDropBoxList() {
 		return placeMapper.selectDropBoxList();
 	}
+
+	@Override
+	public String checkPlaceCodeUnique(String placeCode) {
+		 int count = placeMapper.checkPlaceCodeUnique(placeCode);
+        if (count > 0)
+        {
+            return "1";
+        }
+        return "0";
+	}
 	
 }
