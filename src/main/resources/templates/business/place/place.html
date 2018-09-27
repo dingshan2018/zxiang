@@ -93,12 +93,16 @@
 					title : '场所名称' 
 				},
 				{
+					field : 'placeCode', 
+					title : '场所编号' 
+				},
+				{
 					field : 'sname', 
 					title : '场所简拼' 
 				},
 				{
-					field : 'placeCode', 
-					title : '场所编号' 
+					field : 'parentPlaceName', 
+					title : '父级场所名称' 
 				},
 				{
 					field : 'placeType', 
@@ -173,7 +177,6 @@
             };
             //表单加载后隐藏部分字段不展示在列表中，可在页面重新选择展示
             $.table.init(options);
-            $('#bootstrap-table').bootstrapTable('hideColumn', 'placeId');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'lon');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'lat');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'packet');

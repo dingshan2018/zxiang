@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mchange.lang.StringUtils;
 import com.zxiang.common.support.Convert;
 import com.zxiang.project.business.place.domain.Place;
 import com.zxiang.project.business.place.mapper.PlaceMapper;
@@ -46,7 +47,7 @@ public class PlaceServiceImpl implements IPlaceService
 	}
 	
     /**
-     * 新增场所管理
+     * 新增场所管理,场所管理编号按照地区流水号增长
      * 
      * @param place 场所管理信息
      * @return 结果
@@ -54,7 +55,30 @@ public class PlaceServiceImpl implements IPlaceService
 	@Override
 	public int insertPlace(Place place)
 	{
+		Integer county = place.getCounty();
+		String placeCode = getAutoCodeNum(county);
+		placeCode = county + placeCode;
+		place.setPlaceCode(placeCode);		
+		
 	    return placeMapper.insertPlace(place);
+	}
+	
+	/**
+	 * 根据地区编码查询某地区最大场所流水号并+1后返回
+	 * 若有该地区编号则加1，若没有则初始1开始
+	 * @param county
+	 * @return
+	 */
+	public synchronized String getAutoCodeNum(Integer county){
+		String currentMaxCode = placeMapper.getMaxPlaceCode(county);
+		if(com.zxiang.common.utils.StringUtils.isNotEmpty(currentMaxCode)){
+			String currentMax = currentMaxCode.substring(6);
+			int currentMaxNum = Integer.parseInt(currentMax);
+			++currentMaxNum;
+			return String.format("%06d", currentMaxNum);
+		}
+		
+		return String.format("%06d", 1);
 	}
 	
 	/**

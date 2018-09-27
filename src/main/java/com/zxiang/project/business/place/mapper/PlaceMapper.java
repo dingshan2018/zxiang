@@ -69,4 +69,9 @@ public interface PlaceMapper
      */
 	public int checkPlaceCodeUnique(String placeCode);
 	
+	/**
+	 * 获取场所表当前最大编号
+	 */
+	public String getMaxPlaceCode(Integer county);
+	
 }
