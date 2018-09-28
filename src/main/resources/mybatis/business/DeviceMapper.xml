@@ -180,4 +180,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          select device_id, device_code, device_sn from zx_device
     </select>
     
+    <select id="getMaxDeviceCode" parameterType="String" resultType="String">
+		SELECT device_code FROM zx_device WHERE place_id=#{placeId} ORDER BY device_id DESC LIMIT 1
+	</select>
+	
 </mapper>
