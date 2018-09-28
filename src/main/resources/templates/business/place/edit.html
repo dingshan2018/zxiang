@@ -226,23 +226,13 @@
 	        }
 	        $("#city").html("");
 	        var str = "<option>---请选择---</option>";
-	        $.ajax({
-	        	type: "post",
-	        	contentType:"application/json",
-	            dataType: "json",
-	            url: ctx + "system/area/getDropBoxAreaList",
-	            data: JSON.stringify({ "parentId": provice}),
-	            async: false,
-	            success: function (data) {
-	                //从服务器获取数据进行绑定
-	                $.each(data.rows, function (i, item) {
-	                    str += "<option value=" + item.id + ">" + item.pname + "</option>";
-	                })
-	                //将数据添加到市这个下拉框里面
-	                $("#city").append(str);
-	            },
-	            error: function () { alert("Error:获取城市信息失败"); }
-	        });
+	       
+	        var cityAreaList = selectAreaListByPid(provice);
+	        $.each(cityAreaList, function (i, item) {
+                str += "<option value=" + item.id + ">" + item.pname + "</option>";
+            })
+            //将数据添加到市这个下拉框里面
+            $("#city").append(str);
 	    }
 	    function countyBind() {
 	        var provice = $("#city option:selected").val();
@@ -252,24 +242,13 @@
 	        }
 	        $("#county").html("");
 	        var str = "<option>---请选择---</option>";
-	        //将市的ID拿到数据库进行查询，查询出他的下级进行绑定
-	        $.ajax({
-	        	type: "post",
-	        	contentType:"application/json",
-	            dataType: "json",
-	            url: ctx + "system/area/getDropBoxAreaList",
-	            data: JSON.stringify({ "parentId": provice}),
-	            async: false,
-	            success: function (data) {
-	                //从服务器获取数据进行绑定
-	                $.each(data.rows, function (i, item) {
-	                    str += "<option value=" + item.id + ">" + item.pname + "</option>";
-	                })
-	                //将数据添加到区县这个下拉框里面
-	                $("#county").append(str);
-	            },
-	            error: function () { alert("Error:获取地区信息失败"); }
-	        });
+	        
+	        var countyAreaList = selectAreaListByPid(provice);
+	        $.each(countyAreaList, function (i, item) {
+                str += "<option value=" + item.id + ">" + item.pname + "</option>";
+            })
+            //将数据添加到区县这个下拉框里面
+            $("#county").append(str);
 	    }	
     
 		var prefix = ctx + "business/place"

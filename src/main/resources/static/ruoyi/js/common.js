@@ -162,3 +162,21 @@ function selectUserList(){
     })
     return userList;
 }
+
+/**地区下拉框,根据父级地区获取*/
+function selectAreaListByPid(parentAreaId){
+	var areaList = [];
+	$.ajax({
+    	type: "post",
+    	contentType:"application/json",
+        dataType: "json",
+        url: ctx + "system/area/getDropBoxAreaList",
+        data: JSON.stringify({ "parentId": parentAreaId}),
+        async: false,
+        success: function (data) {
+        	areaList = data.rows;
+        },
+        error: function () { alert("Error:获取地区信息失败"); }
+    });
+    return areaList;
+}
