@@ -55,12 +55,7 @@ public class PlaceServiceImpl implements IPlaceService
 	@Override
 	public int insertPlace(Place place)
 	{
-		Integer county = place.getCounty();
-		String placeCode = getAutoCodeNum(county);
-		placeCode = county + placeCode;
-		place.setPlaceCode(placeCode);		
-		
-	    return placeMapper.insertPlace(place);
+	    return getAutoCodeNum(place);
 	}
 	
 	/**
@@ -69,16 +64,23 @@ public class PlaceServiceImpl implements IPlaceService
 	 * @param county
 	 * @return
 	 */
-	public synchronized String getAutoCodeNum(Integer county){
+	public synchronized int getAutoCodeNum(Place place){
+		Integer county = place.getCounty();
+		String placeCode = "";
+		
 		String currentMaxCode = placeMapper.getMaxPlaceCode(county);
 		if(com.zxiang.common.utils.StringUtils.isNotEmpty(currentMaxCode)){
 			String currentMax = currentMaxCode.substring(6);
 			int currentMaxNum = Integer.parseInt(currentMax);
 			++currentMaxNum;
-			return String.format("%06d", currentMaxNum);
+			placeCode = String.format("%06d", currentMaxNum);
+		}else{
+			placeCode = String.format("%06d", 1);
 		}
 		
-		return String.format("%06d", 1);
+		placeCode = county + placeCode;
+		place.setPlaceCode(placeCode);
+		return placeMapper.insertPlace(place);
 	}
 	
 	/**
