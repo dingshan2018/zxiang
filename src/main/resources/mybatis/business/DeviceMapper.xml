@@ -74,6 +74,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 </if>
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
              <if test="updateTime != null"> and update_time = #{updateTime}</if>
+             <!-- 按照省市县下拉框搜索 -->
+             <if test="province != null and province != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.province = #{province})</if>
+             <if test="city != null and city != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.city = #{city})</if>
+             <if test="county != null and county != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.county = #{county})</if>
          </where>
     </select>
     
