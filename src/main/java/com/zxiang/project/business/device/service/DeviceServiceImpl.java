@@ -1,9 +1,11 @@
 package com.zxiang.project.business.device.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zxiang.common.support.Convert;
 import com.zxiang.project.business.device.domain.Device;
@@ -18,6 +20,7 @@ import com.zxiang.project.business.place.mapper.PlaceMapper;
  * @date 2018-09-09
  */
 @Service
+@Transactional
 public class DeviceServiceImpl implements IDeviceService 
 {
 	@Autowired
@@ -88,7 +91,20 @@ public class DeviceServiceImpl implements IDeviceService
 		//3.最大设备编号生成后插入新的流水设备编号
 		deviceCode = placeCode + deviceCode;
 		device.setDeviceCode(deviceCode);
-		return deviceMapper.insertDevice(device);
+		device.setReleaseTime(new Date());
+		device.setStatus("2");
+		//4.场所投放的设备数量+1
+		Place place = placeMapper.selectPlaceById(Integer.parseInt(placeId));
+		Integer deviceCount = place.getDeviceCount();
+		if(deviceCount != null){
+			++deviceCount;
+		}else{
+			deviceCount = 1;
+		}
+		place.setDeviceCount(deviceCount);
+		placeMapper.updatePlace(place);
+		
+		return deviceMapper.updateDevice(device);
 	}
 	
 	/**
@@ -100,7 +116,7 @@ public class DeviceServiceImpl implements IDeviceService
 	@Override
 	public int updateDevice(Device device)
 	{
-	    return deviceMapper.updateDevice(device);
+	    return getAutoCodeNum(device);
 	}
 
 	/**
