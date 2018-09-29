@@ -140,4 +140,34 @@ public class DeviceController extends BaseController
 		return getDataTable(list);
     }
 	
+	/**
+	 * 投放设备
+	 */
+	@GetMapping("/release/{deviceId}")
+	public String release(@PathVariable("deviceId") Integer deviceId, ModelMap mmap)
+	{
+		Device device = deviceService.selectDeviceById(deviceId);
+		mmap.put("device", device);
+		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
+		
+	    return prefix + "/release";
+	}
+	
+	/**
+	 *投放保存共享设备
+	 */
+	//@RequiresPermissions("business:device:release")
+	@Log(title = "投放共享设备", businessType = BusinessType.UPDATE)
+	@PostMapping("/release")
+	@ResponseBody
+	public AjaxResult releaseSave(Device device)
+	{		
+		String updateor = getUser().getUserName();
+		long userId = getUserId();
+		device.setUpdateBy(updateor+"("+userId+")");
+		device.setUpdateTime(new Date());
+		
+		return toAjax(deviceService.updateDevice(device));
+	}
+	
 }

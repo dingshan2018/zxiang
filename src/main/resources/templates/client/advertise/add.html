@@ -6,27 +6,21 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-advertise-add">
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
+				<label class="col-sm-3 control-label">广告商名称：</label>
 				<div class="col-sm-8">
 					<input id="advertisorName" name="advertisorName" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
-				<div class="col-sm-8">
-					<input id="managerId" name="managerId" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
+				<label class="col-sm-3 control-label">管理者名字：</label>
 				<div class="col-sm-8">
 					<input id="managerName" name="managerName" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
+				<label class="col-sm-3 control-label">管理者电话：</label>
 				<div class="col-sm-8">
-					<input id="managerPhone" name="managerPhone" class="form-control" type="text">
+					<input id="managerPhone" name="managerPhone" class="form-control" type="tel" maxlength="11">
 				</div>
 			</div>
 			<div class="form-group">	
@@ -36,63 +30,36 @@
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
+				<label class="col-sm-3 control-label">累计投放广告次数：</label>
 				<div class="col-sm-8">
 					<input id="releaseNum" name="releaseNum" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
+				<label class="col-sm-3 control-label">上次投放ID：</label>
 				<div class="col-sm-8">
 					<input id="lastScheduler" name="lastScheduler" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
+				<label class="col-sm-3 control-label">状态：</label>
 				<div class="col-sm-8">
-					<input id="status" name="status" class="form-control" type="text">
+					<select class="form-control" name="status">
+						<option th:value="1">有效</option>
+						<option th:value="0">无效</option>
+					</select>
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
-				<div class="col-sm-8">
-					<input id="delFlag" name="delFlag" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
+				<label class="col-sm-3 control-label">广告商等级：</label>
 				<div class="col-sm-8">
 					<input id="grade" name="grade" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
+				<label class="col-sm-3 control-label">投放广告折扣：</label>
 				<div class="col-sm-8">
-					<input id="cutOff" name="cutOff" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
-				<div class="col-sm-8">
-					<input id="createBy" name="createBy" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
-				<div class="col-sm-8">
-					<input id="createTime" name="createTime" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
-				<div class="col-sm-8">
-					<input id="updateBy" name="updateBy" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
-				<div class="col-sm-8">
-					<input id="updateTime" name="updateTime" class="form-control" type="text">
+					<input id="cutOff" name="cutOff" class="form-control" type="number" min="0" max="1">
 				</div>
 			</div>
 			<div class="form-group">

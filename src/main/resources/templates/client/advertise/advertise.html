@@ -35,23 +35,23 @@
 		        },
 				{
 					field : 'advertiseId', 
-					title : '' 
+					title : '广告商id' 
 				},
 				{
 					field : 'advertisorName', 
-					title : '' 
+					title : '广告商名称' 
 				},
 				{
 					field : 'managerId', 
-					title : '' 
+					title : '管理者' 
 				},
 				{
 					field : 'managerName', 
-					title : '' 
+					title : '管理者名字' 
 				},
 				{
 					field : 'managerPhone', 
-					title : '' 
+					title : '管理者电话' 
 				},
 				{
 					field : 'business', 
@@ -59,43 +59,40 @@
 				},
 				{
 					field : 'releaseNum', 
-					title : '' 
+					title : '累计投放广告次数' 
 				},
 				{
 					field : 'lastScheduler', 
-					title : '' 
+					title : '上次投放ID' 
 				},
-				{
-					field : 'status', 
-					title : '' 
-				},
-				{
-					field : 'delFlag', 
-					title : '' 
-				},
+				{field : 'status',title : '状态',formatter: function(value, row, index) {
+					if(value == 0) {return "无效"}
+					if(value == 1) {return "有效"}
+					return "-";
+	            } },
 				{
 					field : 'grade', 
-					title : '' 
+					title : '广告商等级' 
 				},
 				{
 					field : 'cutOff', 
-					title : '' 
+					title : '投放广告折扣' 
 				},
 				{
 					field : 'createBy', 
-					title : '' 
+					title : '创建者' 
 				},
 				{
 					field : 'createTime', 
-					title : '' 
+					title : '创建时间' 
 				},
 				{
 					field : 'updateBy', 
-					title : '' 
+					title : '更新者' 
 				},
 				{
 					field : 'updateTime', 
-					title : '' 
+					title : '更新时间' 
 				},
 		        {
 		            title: '操作',
@@ -109,6 +106,7 @@
 		        }]
             };
             $.table.init(options);
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'advertiseId');
         });
     </script>
 </body>

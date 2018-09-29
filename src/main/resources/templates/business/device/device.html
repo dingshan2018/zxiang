@@ -4,6 +4,58 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
+    	<div class="col-sm-12 select-info">
+			<form id="terminal-form">
+				<div class="select-list">
+					<ul>
+						<li>
+							投放场所：
+							<select id="placeId" name="placeId">
+								<option value="">全部</option>
+							</select>
+						</li>
+						<li>
+							省：<select name="province" id="province">
+                       			<option value="">全部</option>
+                    		</select>
+                    		市：<select name="city" id="city">
+		                        <option value="">全部</option>
+		                    </select>
+	                    	区县：<select name="county" id="county">
+		                        <option value="">全部</option>
+		                    </select>
+						</li>
+						<li>
+							设备编号：<input type="text" name="deviceCode" id="deviceCode"/>
+						</li>
+						<li>
+							设备状态：
+							<select id="status" name="status" >
+								<option value="">全部</option>
+								<option value="2">上线</option>
+		                        <option value="1">下线</option>
+		                        <option value="3">故障</option>
+							</select>
+						</li>
+						<li class="select-time">
+							<label>投放时间： </label>
+							<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+							<span>-</span>
+							<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+						</li>
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="release()"><i class="fa fa-search"></i>&nbsp;投放</a>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;撤机</a>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;换板</a>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;补纸</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+		
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:device:add">
 				<i class="fa fa-plus"></i> 新增
@@ -24,75 +76,68 @@
         var prefix = ctx + "business/device"
 
         $(function() {
+           	//投放场所下拉框数据
+        	var placeList = selectPlaceList();
+   	    	$.each(placeList, function (i) {
+               	$('#placeId').append("<option value=" + placeList[i].placeId + ">" + placeList[i].name + "</option>");
+            });
+
+   	    	//投放地区联动搜索
+   	    	//默认绑定省
+	        proviceBind();
+	        //绑定事件
+	        $("#province").change( function () {
+	            cityBind();
+	        })
+	        
+	        $("#city").change(function () {
+	        	countyBind();
+	        })
+	        
             var options = {
                 url: prefix + "/list",
                 createUrl: prefix + "/add",
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "共享设备",
+                search: false,
+                showExport: false,
                 columns: [{
 		            checkbox: true
 		        },
-				{
+		        {
 					field : 'deviceId', 
 					title : '设备ID' 
 				},
 				{
 					field : 'deviceCode', 
-					title : '设备编号 （场所编号+序号）' 
-				},
-				{
-					field : 'deviceSn', 
-					title : '设备资产编号（钢印编号）' 
-				},
-				{
-					field : 'deviceType', 
-					title : '设备类型' 
-				},
-				{
-					field : 'terminalCode', 
-					title : '终端编号）' 
+					title : '设备编号' 
 				},
 				{
 					field : 'placeName', 
 					title : '场所' 
 				},
 				{
-					field : 'price', 
-					title : '出纸价格' 
+					field : 'terminalCode', 
+					title : '终端编号' 
 				},
 				{
-					field : 'lon', 
-					title : '经度' 
-				},
-				{
-					field : 'lat', 
-					title : '纬度' 
+					field : 'deviceSn', 
+					title : '设备资产编号' 
 				},
 				{
 					field : 'releaseTime', 
 					title : '投放时间' 
 				},
 				{
-					field : 'removeTime', 
-					title : '撤机时间' 
-				},
-				{
-					field : 'totalLen', 
-					title : '累计出纸' 
+					field : 'lastHeartTime', 
+					title : '最后心跳时间' 
 				},
 				{
 					field : 'remainLen', 
 					title : '剩余出纸' 
 				},
-				{
-					field : 'lastHeartTime', 
-					title : '最后心跳时间' 
-				},
-				{
-					field : 'lastLoginTime', 
-					title : '最后登陆时间' 
-				},
+				
 				{
 					field : 'lastScanTime', 
 					title : '最后扫码时间' 
@@ -103,7 +148,7 @@
 				},
 				{
 					field : 'status', 
-					title : '设备状态(1 下线  2 上线  3 故障 )' ,
+					title : '设备状态' ,
 					formatter : function(value) {
 						if(value==='1'){
 							return "下线";
@@ -115,10 +160,6 @@
 							return "-";
 						}
 					}
-				},
-				{
-					field : 'delFlag', 
-					title : '是否删除' 
 				},
 				{
 					field : 'createBy', 
@@ -152,10 +193,77 @@
             $('#bootstrap-table').bootstrapTable('hideColumn', 'lat');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'delFlag');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'createBy');
-            $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
         });
+        
+        function proviceBind() {
+	        //清空下拉数据
+	        $("#province").html("");
+	        var str = "<option value=''>全部</option>";
+	        
+	        var provinceAreaList = selectAreaListByPid("0");
+	        $.each(provinceAreaList, function (i, item) {
+                str += "<option value=" + item.id + ">" + item.pname + "</option>";
+            })
+            //将数据添加到省份这个下拉框里面
+            $("#province").append(str);
+	    }
+	    function cityBind() {
+	        var provice = $("#province option:selected").val();
+	        //判断省份这个下拉框选中的值是否为空
+	        if (provice == "") {
+	            return;
+	        }
+	        $("#city").html("");
+	        var str = "<option value=''>全部</option>";
+	        
+	        var cityAreaList = selectAreaListByPid(provice);
+	        $.each(cityAreaList, function (i, item) {
+                str += "<option value=" + item.id + ">" + item.pname + "</option>";
+            })
+            //将数据添加到市这个下拉框里面
+            $("#city").append(str);
+	    }
+	    function countyBind() {
+	        var provice = $("#city option:selected").val();
+	        //判断市这个下拉框选中的值是否为空
+	        if (provice == "") {
+	            return;
+	        }
+	        $("#county").html("");
+	        var str = "<option value=''>全部</option>";
+	        
+	        var countyAreaList = selectAreaListByPid(provice);
+	        $.each(countyAreaList, function (i, item) {
+                str += "<option value=" + item.id + ">" + item.pname + "</option>";
+            })
+            //将数据添加到区县这个下拉框里面
+            $("#county").append(str);
+	    }
+	    
+	  	//打开设备投放选择投放场所弹窗
+        function release(id) {
+        	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+    		if (rows.length == 0) {
+    			$.modal.alertWarning("请至少选择一条记录");
+    			return;
+    		}
+    		if (rows.length > 1){
+    			$.modal.alertWarning("只能选择一条记录");
+    			return;
+    		}
+    		//若已经有设备编号说明已经投放过，不允许再次投放
+    		var deviceCode = $.table.selectColumns($.table._option.columns[2].field);
+    		if(deviceCode != ''){
+    			$.modal.alertWarning("该设备已投放!");
+    			return ;
+    		}
+    		//
+        	var url = ctx + "business/device/release/"+rows;
+        	$.modal.open("选择投放场所", url);
+		}
+	  	
     </script>
 </body>
 </html>

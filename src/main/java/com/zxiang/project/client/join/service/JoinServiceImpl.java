@@ -1,12 +1,15 @@
 package com.zxiang.project.client.join.service;
 
+import java.util.Date;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.zxiang.project.client.join.mapper.JoinMapper;
-import com.zxiang.project.client.join.domain.Join;
-import com.zxiang.project.client.join.service.IJoinService;
+
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.security.ShiroUtils;
+import com.zxiang.project.client.join.domain.Join;
+import com.zxiang.project.client.join.mapper.JoinMapper;
 
 /**
  * 加盟商 服务层实现
@@ -51,8 +54,9 @@ public class JoinServiceImpl implements IJoinService
      * @return 结果
      */
 	@Override
-	public int insertJoin(Join join)
-	{
+	public int insertJoin(Join join) {
+		join.setCreateTime(new Date());
+		join.setCreateBy(ShiroUtils.getLoginName());
 	    return joinMapper.insertJoin(join);
 	}
 	
@@ -63,8 +67,9 @@ public class JoinServiceImpl implements IJoinService
      * @return 结果
      */
 	@Override
-	public int updateJoin(Join join)
-	{
+	public int updateJoin(Join join) {
+		join.setUpdateTime(new Date());
+		join.setUpdateBy(ShiroUtils.getLoginName());
 	    return joinMapper.updateJoin(join);
 	}
 

@@ -6,16 +6,30 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-device-edit" th:object="${device}">
             <input id="deviceId" name="deviceId" th:field="*{deviceId}"  type="hidden">
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">设备编号 （场所编号+序号）：</label>
+             <div class="form-group">	
+                <label class="col-sm-3 control-label">设备编号：</label>
                 <div class="col-sm-8">
-                    <input id="deviceCode" name="deviceCode" th:field="*{deviceCode}" class="form-control" type="text">
+                    <input id="deviceCode" name="deviceCode" th:field="*{deviceCode}" class="form-control" type="text" readonly="readonly">
                 </div>
             </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">设备资产编号（钢印编号）：</label>
+            <!-- <div class="form-group">	
+                <label class="col-sm-3 control-label">场所：</label>
                 <div class="col-sm-8">
-                    <input id="deviceSn" name="deviceSn" th:field="*{deviceSn}" class="form-control" type="text">
+                    <select id="placeId" name="placeId" class="form-control">
+                    	<option value=""></option>
+						<option th:each="place:${placeDropBoxList}" th:value="${place.placeId}"
+						 th:text="${place.name}" th:field="*{placeId}"></option>
+					</select>
+                </div>
+            </div> -->
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">终端：</label>
+                <div class="col-sm-8">
+                    <select id="terminalId" name="terminalId" class="form-control" disabled="disabled">
+                    	<option value=""></option>
+						<option th:each="terminal:${terminalDropBoxList}" th:value="${terminal.terminalId}"
+						 th:text="${terminal.terminalCode}" th:field="*{terminalId}"></option>
+					</select>
                 </div>
             </div>
             <div class="form-group">	
@@ -25,23 +39,22 @@
                 </div>
             </div>
             <div class="form-group">	
-                <label class="col-sm-3 control-label">终端（板卡）：</label>
+                <label class="col-sm-3 control-label">设备资产编号（钢印编号）：</label>
                 <div class="col-sm-8">
-                    <select id="terminalId" name="terminalId" class="form-control">
-						<option th:each="terminal:${terminalDropBoxList}" th:value="${terminal.terminalId}"
-						 th:text="${terminal.terminalCode}" th:field="*{terminalId}"></option>
-					</select>
+                    <input id="deviceSn" name="deviceSn" th:field="*{deviceSn}" class="form-control" type="text">
                 </div>
             </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">场所：</label>
+            <!-- <div class="form-group">	
+                <label class="col-sm-3 control-label">设备状态：</label>
                 <div class="col-sm-8">
-                    <select id="placeId" name="placeId" class="form-control">
-						<option th:each="place:${placeDropBoxList}" th:value="${place.placeId}"
-						 th:text="${place.name}" th:field="*{placeId}"></option>
-					</select>
-                </div>
-            </div>
+					<select id="status" name="status" class="form-control">
+						<option value=""></option>
+						<option value="2" th:selected="${device.status=='2'}">上线</option>
+                        <option value="1" th:selected="${device.status=='1'}">下线</option>
+                        <option value="3" th:selected="${device.status=='3'}">故障</option>
+					</select>	
+				</div>
+            </div> -->
             <div class="form-group">	
                 <label class="col-sm-3 control-label">出纸价格：</label>
                 <div class="col-sm-8">
@@ -60,7 +73,7 @@
                     <input id="lat" name="lat" th:field="*{lat}" class="form-control" type="text">
                 </div>
             </div>
-            <div class="form-group">	
+           <!--  <div class="form-group">	
                 <label class="col-sm-3 control-label">投放时间：</label>
                 <div class="col-sm-8">
                     <input id="releaseTime" name="releaseTime" th:field="*{releaseTime}" class="form-control" type="text">
@@ -71,7 +84,7 @@
                 <div class="col-sm-8">
                     <input id="removeTime" name="removeTime" th:field="*{removeTime}" class="form-control" type="text">
                 </div>
-            </div>
+            </div> -->
             <div class="form-group">	
                 <label class="col-sm-3 control-label">累计出纸：</label>
                 <div class="col-sm-8">
@@ -85,39 +98,9 @@
                 </div>
             </div>
             <div class="form-group">	
-                <label class="col-sm-3 control-label">最后心跳时间：</label>
-                <div class="col-sm-8">
-                    <input id="lastHeartTime" name="lastHeartTime" th:field="*{lastHeartTime}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">最后登陆时间：</label>
-                <div class="col-sm-8">
-                    <input id="lastLoginTime" name="lastLoginTime" th:field="*{lastLoginTime}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">最后扫码时间：</label>
-                <div class="col-sm-8">
-                    <input id="lastScanTime" name="lastScanTime" th:field="*{lastScanTime}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">	
                 <label class="col-sm-3 control-label">备注：</label>
                 <div class="col-sm-8">
                     <input id="note" name="note" th:field="*{note}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">设备状态(1 下线  2 上线  3 故障 )：</label>
-                <div class="col-sm-8">
-                    <input id="status" name="status" th:field="*{status}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">是否删除：</label>
-                <div class="col-sm-8">
-                    <input id="delFlag" name="delFlag" th:field="*{delFlag}" class="form-control" type="text">
                 </div>
             </div>
 			<div class="form-group">

@@ -14,6 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="remainPaper"    column="remain_paper"    />
     </resultMap>
 	
 	<sql id="selectChangeTerminalVo">
@@ -22,8 +23,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         (select distinct t.terminal_code from zx_terminal t where t.terminal_id =zct.`old_terminal_id` ) oldTerminalCode,
         new_terminal_id, 
         (select distinct t.terminal_code from zx_terminal t where t.terminal_id =zct.`new_terminal_id` ) newTerminalCode,
-        old_volumn, changerId, create_by, create_time, 
-        update_by, update_time from zx_change_terminal zct
+        old_volumn, 
+        changerId, 
+        (select distinct u.user_name from sys_user u where u.user_id =zct.`changerId` ) changeUserName,
+        create_by, create_time, 
+        update_by, update_time,remain_paper from zx_change_terminal zct
     </sql>
 	
     <select id="selectChangeTerminalList" parameterType="ChangeTerminal" resultMap="ChangeTerminalResult">
@@ -35,9 +39,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="oldVolumn != null and oldVolumn != ''"> and old_volumn = #{oldVolumn}</if>
              <if test="changerId != null and changerId != ''"> and changerId = #{changerId}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				AND date_format(zct.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			 </if>
+			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				AND date_format(zct.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+			 </if>
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
              <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="remainPaper != null and remainPaper != ''"> and remain_paper = #{remainPaper}</if>
          </where>
     </select>
     
@@ -58,6 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createTime != null  ">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
 			<if test="updateTime != null  ">update_time,</if>
+			<if test="remainPaper != null and remainPaper != '' ">remain_paper,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="changeTerminalId != null and changeTerminalId != ''">#{changeTerminalId},</if>
@@ -69,6 +80,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createTime != null">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
 			<if test="updateTime != null">#{updateTime},</if>
+			<if test="remainPaper != null and remainPaper != ''">#{remainPaper},</if>
          </trim>
     </insert>
 	 
@@ -83,6 +95,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remainPaper != null  ">remain_paper = #{remainPaper},</if>
         </trim>
         where change_terminal_id = #{changeTerminalId}
     </update>

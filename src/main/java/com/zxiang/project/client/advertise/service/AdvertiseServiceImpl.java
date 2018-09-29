@@ -1,12 +1,20 @@
 package com.zxiang.project.client.advertise.service;
 
+import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
-import com.zxiang.project.client.advertise.domain.Advertise;
-import com.zxiang.project.client.advertise.service.IAdvertiseService;
+
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.security.ShiroUtils;
+import com.zxiang.framework.shiro.service.PasswordService;
+import com.zxiang.project.client.advertise.domain.Advertise;
+import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
+import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.mapper.UserMapper;
 
 /**
  * 广告商 服务层实现
@@ -19,6 +27,10 @@ public class AdvertiseServiceImpl implements IAdvertiseService
 {
 	@Autowired
 	private AdvertiseMapper advertiseMapper;
+	@Autowired
+	private UserMapper userMapper;
+	@Autowired
+    private PasswordService passwordService;
 
 	/**
      * 查询广告商信息
@@ -51,8 +63,25 @@ public class AdvertiseServiceImpl implements IAdvertiseService
      * @return 结果
      */
 	@Override
-	public int insertAdvertise(Advertise advertise)
-	{
+	public int insertAdvertise(Advertise advertise) {
+		if(StringUtils.isNotBlank(advertise.getManagerPhone())) {
+			// 根据管理者新增用户
+			User user = userMapper.selectUserByPhoneNumber(advertise.getManagerPhone());
+			if(user == null) {
+				user = new User();
+				user.randomSalt();
+				user.setPhonenumber(advertise.getManagerPhone());
+				user.setLoginName(advertise.getManagerPhone());
+				user.setUserName(advertise.getManagerName());
+				user.setPassword(passwordService.encryptPassword(user.getLoginName(), advertise.getManagerPhone(), user.getSalt()));
+		        user.setCreateBy(ShiroUtils.getLoginName());
+		        user.setUserType(UserConstants.USER_TYPE_ADVERTISE);
+		        userMapper.insertUser(user);
+		        advertise.setManagerId(user.getUserId().intValue());
+			}
+		}
+		advertise.setCreateTime(new Date());
+		advertise.setCreateBy(ShiroUtils.getLoginName());
 	    return advertiseMapper.insertAdvertise(advertise);
 	}
 	
@@ -63,8 +92,27 @@ public class AdvertiseServiceImpl implements IAdvertiseService
      * @return 结果
      */
 	@Override
-	public int updateAdvertise(Advertise advertise)
-	{
+	public int updateAdvertise(Advertise advertise) {
+		if(advertise.getManagerId() == null) {
+			if(StringUtils.isNotBlank(advertise.getManagerPhone())) {
+				// 根据管理者新增用户
+				User user = userMapper.selectUserByPhoneNumber(advertise.getManagerPhone());
+				if(user == null) {
+					user = new User();
+					user.randomSalt();
+					user.setPhonenumber(advertise.getManagerPhone());
+					user.setLoginName(advertise.getManagerPhone());
+					user.setUserName(advertise.getManagerName());
+					user.setPassword(passwordService.encryptPassword(user.getLoginName(), advertise.getManagerPhone(), user.getSalt()));
+					user.setCreateBy(ShiroUtils.getLoginName());
+					user.setUserType(UserConstants.USER_TYPE_ADVERTISE);
+					userMapper.insertUser(user);
+					advertise.setManagerId(user.getUserId().intValue());
+				}
+			}
+		}
+		advertise.setUpdateTime(new Date());
+		advertise.setUpdateBy(ShiroUtils.getLoginName());
 	    return advertiseMapper.updateAdvertise(advertise);
 	}
 

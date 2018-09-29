@@ -35,9 +35,12 @@ public class ChangeTerminal extends BaseEntity
 	private String updateBy;
 	/**  */
 	private Date updateTime;
+	
+	private Integer remainPaper;
 
 	private String oldTerminalCode;
 	private String newTerminalCode;
+	private String changeUserName;
 	
 	public void setChangeTerminalId(Integer changeTerminalId) 
 	{
@@ -135,6 +138,22 @@ public class ChangeTerminal extends BaseEntity
 
 	public void setNewTerminalCode(String newTerminalCode) {
 		this.newTerminalCode = newTerminalCode;
+	}
+
+	public String getChangeUserName() {
+		return changeUserName;
+	}
+
+	public void setChangeUserName(String changeUserName) {
+		this.changeUserName = changeUserName;
+	}
+
+	public Integer getRemainPaper() {
+		return remainPaper;
+	}
+
+	public void setRemainPaper(Integer remainPaper) {
+		this.remainPaper = remainPaper;
 	}
 
 	public String toString() {

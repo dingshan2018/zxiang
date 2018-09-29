@@ -4,6 +4,29 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
+    	<div class="col-sm-12 select-info">
+			<form id="terminal-form">
+				<div class="select-list">
+					<ul>
+						<li>
+							终端编号：<input type="text" name="terminalCode"/>
+						</li>
+						<li class="select-time">
+							<label>创建时间： </label>
+							<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+							<span>-</span>
+							<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+						</li>
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="addTerminalParam()" shiro:hasPermission="business:terminalParam:add"><i class="fa fa-search"></i>&nbsp;参数设置</a>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="addTerminalTimer()" shiro:hasPermission="business:terminalTimer:add"><i class="fa fa-search"></i>&nbsp;定时设置</a>							
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+    	
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:terminal:add">
 				<i class="fa fa-plus"></i> 新增
@@ -30,6 +53,8 @@
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "终端管理",
+                search: false,
+                showExport: false,
                 columns: [{
 		            checkbox: true
 		        },
@@ -67,16 +92,25 @@
 				},
 				{
 					field : 'status', 
-					title : '终端状态' 
+					title : '终端状态' ,
+					formatter : function(value) {
+						if(value==='1'){
+							return "生效";
+						}else if(value==='2'){
+							return "禁用";
+						}else{
+							return "-";
+						}
+					}
 				},
 				{
 					field : 'delFlag', 
-					title : '状态' ,
+					title : '是否删除',
 					formatter : function(value) {
 						if(value==='0'){
-							return "可用";
+							return "否";
 						}else if(value==='1'){
-							return "禁用";
+							return "是";
 						}else{
 							return "-";
 						}
@@ -123,6 +157,29 @@
             };
             $.table.init(options);
         });
+        
+        //添加终端参数弹窗函数
+        function addTerminalParam(id) {
+        	/* var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+    		if (rows.length == 0) {
+    			$.modal.alertWarning("请至少选择一条记录");
+    			return;
+    		}
+    		if (rows.length > 1){
+    			$.modal.alertWarning("只能选择一条记录");
+    			return;
+    		} */
+    		
+        	var url = ctx + "business/terminalParam/add";
+        	$.modal.open("添加终端参数", url);
+		}
+        
+      	//添加终端定时弹窗函数
+        function addTerminalTimer(id) {
+        	var url = ctx + "business/terminalTimer/add";
+        	$.modal.open("添加定时设置", url);
+		}
+        
     </script>
 </body>
 </html>

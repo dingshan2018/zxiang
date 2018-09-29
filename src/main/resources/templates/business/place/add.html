@@ -6,24 +6,53 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-place-add">
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">父级场所：</label>
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>场所名称：</label>
 				<div class="col-sm-8">
-					<select class="form-control" name="parentPlaceId" id="parentPlaceId">
-                        <option>---请选择---</option>
+					<input id="name" name="name" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">场所简拼：</label>
+				<div class="col-sm-8">
+					<input id="sname" name="sname" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>省份：</label>
+				<div class="col-sm-8">
+					<select class="form-control" name="province" id="province">
+                       	<option value="">---请选择---</option>
                     </select>
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">场所编号（地区编号+序号）：</label>
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>城市：</label>
 				<div class="col-sm-8">
-					<input id="placeCode" name="placeCode" class="form-control" type="text">
+					<select class="form-control" name="city" id="city">
+                        <option value="">---请选择---</option>
+                    </select>
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">场所类型（自营、代理、自购）：</label>
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>地区：</label>
+				<div class="col-sm-8">
+					<select class="form-control" name="county" id="county">
+                        <option value="">---请选择---</option>
+                    </select>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">父级场所：</label>
+				<div class="col-sm-8">
+					<select class="form-control" name="parentPlaceId" id="parentPlaceId">
+                        <option value="">---请选择---</option>
+                    </select>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">场所类型：</label>
 				<div class="col-sm-8">
 					<select class="form-control" name="placeType" id="placeType">
-                        <option>---请选择---</option>
                         <option value="0">自营</option>
                         <option value="1">代理</option>
                         <option value="2">自购</option>
@@ -37,45 +66,9 @@
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">场所名称：</label>
-				<div class="col-sm-8">
-					<input id="name" name="name" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">场所简拼：</label>
-				<div class="col-sm-8">
-					<input id="sname" name="sname" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
 				<label class="col-sm-3 control-label">详细地址：</label>
 				<div class="col-sm-8">
 					<input id="address" name="address" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">省份：</label>
-				<div class="col-sm-8">
-					<select class="form-control" name="province" id="province">
-                       	<option>---请选择---</option>
-                    </select>
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">城市：</label>
-				<div class="col-sm-8">
-					<select class="form-control" name="city" id="city">
-                        <option>---请选择---</option>
-                    </select>
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">地区：</label>
-				<div class="col-sm-8">
-					<select class="form-control" name="county" id="county">
-                        <option>---请选择---</option>
-                    </select>
 				</div>
 			</div>
 			<div class="form-group">	
@@ -223,24 +216,14 @@
 	    function proviceBind() {
 	        //清空下拉数据
 	        $("#province").html("");
-	        var str = "<option>---请选择---</option>";
-	        $.ajax({
-	        	type: "post",
-	        	contentType:"application/json",
-	            dataType: "json",
-	            url: ctx + "system/area/getDropBoxAreaList",
-	            data: JSON.stringify({ "parentId": "0"}),
-	            async: false,
-	            success: function (data) {
-	                //从服务器获取数据进行绑定
-	                $.each(data.rows, function (i, item) {
-	                    str += "<option value=" + item.id + ">" + item.pname + "</option>";
-	                })
-	                //将数据添加到省份这个下拉框里面
-	                $("#province").append(str);
-	            },
-	            error: function () { alert("Error:获取省份信息失败"); }
-	        });
+	        var str = "<option value=''>---请选择---</option>";
+	       
+	        var provinceAreaList = selectAreaListByPid("0");
+	        $.each(provinceAreaList, function (i, item) {
+                str += "<option value=" + item.id + ">" + item.pname + "</option>";
+            })
+            //将数据添加到省份这个下拉框里面
+            $("#province").append(str);
 	    }
 	    function cityBind() {
 	        var provice = $("#province option:selected").val();
@@ -249,24 +232,14 @@
 	            return;
 	        }
 	        $("#city").html("");
-	        var str = "<option>---请选择---</option>";
-	        $.ajax({
-	        	type: "post",
-	        	contentType:"application/json",
-	            dataType: "json",
-	            url: ctx + "system/area/getDropBoxAreaList",
-	            data: JSON.stringify({ "parentId": provice}),
-	            async: false,
-	            success: function (data) {
-	                //从服务器获取数据进行绑定
-	                $.each(data.rows, function (i, item) {
-	                    str += "<option value=" + item.id + ">" + item.pname + "</option>";
-	                })
-	                //将数据添加到市这个下拉框里面
-	                $("#city").append(str);
-	            },
-	            error: function () { alert("Error:获取城市信息失败"); }
-	        });
+	        var str = "<option value=''>---请选择---</option>";
+	       
+	        var cityAreaList = selectAreaListByPid(provice);
+	        $.each(cityAreaList, function (i, item) {
+                str += "<option value=" + item.id + ">" + item.pname + "</option>";
+            })
+            //将数据添加到市这个下拉框里面
+            $("#city").append(str);
 	    }
 	    function countyBind() {
 	        var provice = $("#city option:selected").val();
@@ -275,35 +248,54 @@
 	            return;
 	        }
 	        $("#county").html("");
-	        var str = "<option>---请选择---</option>";
-	        //将市的ID拿到数据库进行查询，查询出他的下级进行绑定
-	        $.ajax({
-	        	type: "post",
-	        	contentType:"application/json",
-	            dataType: "json",
-	            url: ctx + "system/area/getDropBoxAreaList",
-	            data: JSON.stringify({ "parentId": provice}),
-	            async: false,
-	            success: function (data) {
-	                //从服务器获取数据进行绑定
-	                $.each(data.rows, function (i, item) {
-	                    str += "<option value=" + item.id + ">" + item.pname + "</option>";
-	                })
-	                //将数据添加到区县这个下拉框里面
-	                $("#county").append(str);
-	            },
-	            error: function () { alert("Error:获取地区信息失败"); }
-	        });
+	        var str = "<option value=''>---请选择---</option>";
+	        
+	        var countyAreaList = selectAreaListByPid(provice);
+	        $.each(countyAreaList, function (i, item) {
+                str += "<option value=" + item.id + ">" + item.pname + "</option>";
+            })
+            //将数据添加到区县这个下拉框里面
+            $("#county").append(str);
 	    }	
     
     
 		var prefix = ctx + "business/place"
 		$("#form-place-add").validate({
 			rules:{
-				xxxx:{
+				placeCode:{
+					required:true,
+					remote: {
+                        url: prefix + "/checkPlaceCodeUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                        	name : function() {
+                                return $.common.trim($("#placeCode").val());
+                            }
+                        },
+                        dataFilter: function(data, type) {
+                        	return $.validate.unique(data);
+                        }
+                    }
+				},
+				name:{
+					required:true,
+				},
+				province:{
+					required:true,
+				},
+				city:{
+					required:true,
+				},
+				county:{
 					required:true,
 				},
 			},
+			messages: {
+                "placeCode": {
+                    remote: "场所编号已存在!"
+                }
+            },
 			submitHandler: function(form) {
 				$.operate.save(prefix + "/add", $('#form-place-add').serialize());
 			}

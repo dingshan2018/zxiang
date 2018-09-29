@@ -66,6 +66,12 @@ public class Device extends BaseEntity
 
 	private String terminalCode;
 	private String placeName;
+	/** 省份 */
+	private Integer province;
+	/** 城市 */
+	private Integer city;
+	/** 地区 */
+	private Integer county;
 	
 	public void setDeviceId(Integer deviceId) 
 	{
@@ -289,6 +295,30 @@ public class Device extends BaseEntity
 
 	public void setPlaceName(String placeName) {
 		this.placeName = placeName;
+	}
+	
+	public Integer getProvince() {
+		return province;
+	}
+
+	public void setProvince(Integer province) {
+		this.province = province;
+	}
+
+	public Integer getCity() {
+		return city;
+	}
+
+	public void setCity(Integer city) {
+		this.city = city;
+	}
+
+	public Integer getCounty() {
+		return county;
+	}
+
+	public void setCounty(Integer county) {
+		this.county = county;
 	}
 
 	public String toString() {

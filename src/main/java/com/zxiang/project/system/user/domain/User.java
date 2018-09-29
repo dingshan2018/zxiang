@@ -26,6 +26,8 @@ public class User extends BaseEntity
 
     /** 部门父ID */
     private Long parentId;
+    /** 用户类型 */
+    private String userType;
 
     /** 登录名称 */
     @Excel(name = "登录名称")
@@ -276,7 +278,15 @@ public class User extends BaseEntity
         return postIds;
     }
 
-    public void setPostIds(Long[] postIds)
+    public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
+
+	public void setPostIds(Long[] postIds)
     {
         this.postIds = postIds;
     }

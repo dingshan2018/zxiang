@@ -21,6 +21,8 @@ import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.business.changeTerminal.domain.ChangeTerminal;
 import com.zxiang.project.business.changeTerminal.service.IChangeTerminalService;
 import com.zxiang.project.business.terminal.service.ITerminalService;
+import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.service.IUserService;
 
 /**
  * 终端更换记录 信息操作处理
@@ -39,6 +41,8 @@ public class ChangeTerminalController extends BaseController
 	
 	@Autowired
 	private ITerminalService terminalService; 
+	@Autowired
+	private IUserService userService;
 	
 	@RequiresPermissions("business:changeTerminal:view")
 	@GetMapping()
@@ -64,8 +68,10 @@ public class ChangeTerminalController extends BaseController
 	 * 新增终端更换记录
 	 */
 	@GetMapping("/add")
-	public String add()
+	public String add(ModelMap mmap)
 	{
+		List<User> userList = userService.selectUserList(new User());
+		mmap.put("userList", userList);
 	    return prefix + "/add";
 	}
 	
@@ -96,6 +102,7 @@ public class ChangeTerminalController extends BaseController
 		
 		mmap.put("changeTerminal", changeTerminal);
 		mmap.put("terminalDropBoxList", terminalService.selectDropBoxList());
+		mmap.put("userList", userService.selectUserList(new User()));
 	    return prefix + "/edit";
 	}
 	
