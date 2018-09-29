@@ -58,7 +58,7 @@ public class DeviceServiceImpl implements IDeviceService
 	@Override
 	public int insertDevice(Device device)
 	{
-		return getAutoCodeNum(device);
+		return deviceMapper.insertDevice(device);
 	}
 	
 	/**
