@@ -149,4 +149,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select terminal_id,terminal_code from zx_terminal
     </select>
     
+    <select id="checkTerminalCodeUnique" parameterType="String" resultType="int">
+		SELECT COUNT(1) FROM `zx_terminal` WHERE terminal_code=#{terminalCode}
+	</select>
+	
 </mapper>

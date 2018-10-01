@@ -12,6 +12,8 @@ import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.mapper.DeviceMapper;
 import com.zxiang.project.business.place.domain.Place;
 import com.zxiang.project.business.place.mapper.PlaceMapper;
+import com.zxiang.project.business.terminal.domain.Terminal;
+import com.zxiang.project.business.terminal.mapper.TerminalMapper;
 
 /**
  * 共享设备 服务层实现
@@ -27,6 +29,8 @@ public class DeviceServiceImpl implements IDeviceService
 	private DeviceMapper deviceMapper;
 	@Autowired
 	private PlaceMapper placeMapper;
+	@Autowired
+	private TerminalMapper terminalMapper;
 	
 	/**
      * 查询共享设备信息
@@ -103,6 +107,11 @@ public class DeviceServiceImpl implements IDeviceService
 		}
 		place.setDeviceCount(deviceCount);
 		placeMapper.updatePlace(place);
+		//终端数据也将绑定的设备编号信息插入
+		Terminal terminal = terminalMapper.selectTerminalById(device.getTerminalId());
+		terminal.setDeviceId(device.getDeviceId());
+		terminal.setPlaceId(Integer.parseInt(placeId));
+		terminalMapper.updateTerminal(terminal);
 		
 		return deviceMapper.updateDevice(device);
 	}

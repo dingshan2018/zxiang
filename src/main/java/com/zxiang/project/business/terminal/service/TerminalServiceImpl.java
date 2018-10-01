@@ -85,5 +85,15 @@ public class TerminalServiceImpl implements ITerminalService
 	public List<Terminal> selectDropBoxList() {
 		return terminalMapper.selectDropBoxList();
 	}
+
+	@Override
+	public String checkTerminalCodeUnique(String terminalCode) {
+		int count = terminalMapper.checkTerminalCodeUnique(terminalCode);
+        if (count > 0)
+        {
+            return "1";
+        }
+        return "0";
+	}
 	
 }

@@ -94,8 +94,26 @@
 			rules:{
 				terminalCode:{
 					required:true,
-				}
+					remote: {
+                        url: prefix + "/checkTerminalCodeUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                        	name : function() {
+                                return $.common.trim($("#terminalCode").val());
+                            }
+                        },
+                        dataFilter: function(data, type) {
+                        	return $.validate.unique(data);
+                        }
+                    }
+				},
 			},
+			messages: {
+                "terminalCode": {
+                    remote: "终端编号已存在!"
+                }
+            },
 			submitHandler: function(form) {
 				$.operate.save(prefix + "/add", $('#form-terminal-add').serialize());
 			}

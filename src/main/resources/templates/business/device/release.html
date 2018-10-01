@@ -5,6 +5,7 @@
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-device-release" th:object="${device}">
+        	<input id="terminalId" name="terminalId" th:field="*{terminalId}" class="form-control" type="hidden">
         	<div class="form-group">	
                 <label class="col-sm-3 control-label">设备ID：</label>
                 <div class="col-sm-8">
@@ -52,6 +53,7 @@
 		//提交投放设备请求
 		function release() {
 			var deviceId = $("#deviceId").val();
+			var terminalId = $("#terminalId").val();
         	var placeId = $.form.selectSelects("placeId");
         	
         	$.ajax({
@@ -60,7 +62,8 @@
         		url : prefix + "/release",
         		data : {
         			"deviceId": deviceId,
-        			"placeId": placeId
+        			"placeId": placeId,
+        			"terminalId":terminalId
         		},
         		async : false,
         		error : function(request) {

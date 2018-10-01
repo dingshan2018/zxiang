@@ -140,4 +140,14 @@ public class TerminalController extends BaseController
 		return getDataTable(list);
     }
 	
+	
+	/**
+     * 校验终端编号
+     */
+    @PostMapping("/checkTerminalCodeUnique")
+    @ResponseBody
+    public String checkTerminalCodeUnique(Terminal terminal)
+    {
+        return terminalService.checkTerminalCodeUnique(terminal.getTerminalCode());
+    }
 }

@@ -56,4 +56,9 @@ public interface ITerminalService
 	 */
 	public List<Terminal> selectDropBoxList();
 	
+	/**
+     * 校验终端编号
+     */
+	public String checkTerminalCodeUnique(String terminalCode);
+	
 }
