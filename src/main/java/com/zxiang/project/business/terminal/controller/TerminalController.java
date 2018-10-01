@@ -140,6 +140,15 @@ public class TerminalController extends BaseController
 		return getDataTable(list);
     }
 	
+	/**
+	 * 查询未被设备绑定的终端
+	 */
+	@RequestMapping("/getDropBoxValidlList")
+    @ResponseBody
+    public TableDataInfo getDropBoxValidlList() {
+		List<Terminal> list = terminalService.getDropBoxValidlList();
+		return getDataTable(list);
+    }
 	
 	/**
      * 校验终端编号

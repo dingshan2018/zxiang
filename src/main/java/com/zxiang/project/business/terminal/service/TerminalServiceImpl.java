@@ -87,6 +87,11 @@ public class TerminalServiceImpl implements ITerminalService
 	}
 
 	@Override
+	public List<Terminal> getDropBoxValidlList() {
+		return terminalMapper.getDropBoxValidlList();
+	}
+	
+	@Override
 	public String checkTerminalCodeUnique(String terminalCode) {
 		int count = terminalMapper.checkTerminalCodeUnique(terminalCode);
         if (count > 0)
@@ -95,5 +100,5 @@ public class TerminalServiceImpl implements ITerminalService
         }
         return "0";
 	}
-	
+
 }

@@ -156,7 +156,7 @@ public class DeviceController extends BaseController
 	/**
 	 *投放保存共享设备
 	 */
-	//@RequiresPermissions("business:device:release")
+	@RequiresPermissions("business:device:release")
 	@Log(title = "投放共享设备", businessType = BusinessType.UPDATE)
 	@PostMapping("/release")
 	@ResponseBody

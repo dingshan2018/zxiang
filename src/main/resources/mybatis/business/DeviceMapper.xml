@@ -86,7 +86,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where device_id = #{deviceId}
     </select>
         
-    <insert id="insertDevice" parameterType="Device">
+    <insert id="insertDevice" parameterType="Device" useGeneratedKeys="true" keyProperty="deviceId">
         insert into zx_device
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="deviceId != null and deviceId != '' ">device_id,</if>

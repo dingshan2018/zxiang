@@ -65,7 +65,13 @@ public class DeviceServiceImpl implements IDeviceService
 	@Override
 	public int insertDevice(Device device)
 	{
-		return deviceMapper.insertDevice(device);
+		int deviceSave = deviceMapper.insertDevice(device);
+		//设备绑定终端后也要修改终端数据对应设备ID的值，设备不能再次绑定该终端
+		Terminal terminal = terminalMapper.selectTerminalById(device.getTerminalId());
+		terminal.setDeviceId(device.getDeviceId());
+		terminalMapper.updateTerminal(terminal);
+		
+		return deviceSave;
 	}
 	
 	/**
