@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zxiang.common.support.Convert;
+import com.zxiang.project.business.changeTerminal.domain.ChangeTerminal;
+import com.zxiang.project.business.changeTerminal.mapper.ChangeTerminalMapper;
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.mapper.DeviceMapper;
 import com.zxiang.project.business.place.domain.Place;
@@ -31,6 +33,8 @@ public class DeviceServiceImpl implements IDeviceService
 	private PlaceMapper placeMapper;
 	@Autowired
 	private TerminalMapper terminalMapper;
+	@Autowired 
+	private ChangeTerminalMapper TerminalMapper;
 	
 	/**
      * 查询共享设备信息
@@ -172,6 +176,31 @@ public class DeviceServiceImpl implements IDeviceService
 		place.setDeviceCount(deviceCount);
 		placeMapper.updatePlace(place);
 		
+		return deviceMapper.updateDevice(device);
+	}
+
+	@Override
+	public int changeDevice(Device device,String operatorUser) {
+		// 终端更换记录表插入数据 
+		ChangeTerminal changeTerminal = new ChangeTerminal();
+		changeTerminal.setOldTerminalId(device.getTerminalId());
+		changeTerminal.setNewTerminalId(device.getNewTerminalId());
+		changeTerminal.setOldVolumn(device.getOldVolumn());
+		changeTerminal.setRemainPaper(device.getRemainPaper());
+		changeTerminal.setChangerId(device.getChangerId());
+		changeTerminal.setCreateBy(operatorUser);
+		changeTerminal.setCreateTime(new Date());
+		TerminalMapper.insertChangeTerminal(changeTerminal);
+		//若设备已经投放，则新终端也要插入设备编号和场所编号信息，但场所投放数量不再增加设备count
+		Terminal terminal = terminalMapper.selectTerminalById(device.getNewTerminalId());
+		terminal.setDeviceId(device.getDeviceId());
+		if(device.getPlaceId() != null){
+			terminal.setPlaceId(Integer.parseInt(device.getPlaceId()));
+		}
+		terminalMapper.updateTerminal(terminal);
+		
+		// 最后设备更新终端字段
+		device.setTerminalId(device.getNewTerminalId());
 		return deviceMapper.updateDevice(device);
 	}
 

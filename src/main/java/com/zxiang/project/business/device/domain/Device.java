@@ -72,6 +72,11 @@ public class Device extends BaseEntity
 	private Integer city;
 	/** 地区 */
 	private Integer county;
+	//终端换板字段
+	private Integer newTerminalId;//新终端
+	private String oldVolumn;//音量
+	private Integer changerId;//换板人ID
+	private Integer remainPaper;//剩余纸张数
 	
 	public void setDeviceId(Integer deviceId) 
 	{
@@ -319,6 +324,38 @@ public class Device extends BaseEntity
 
 	public void setCounty(Integer county) {
 		this.county = county;
+	}
+
+	public Integer getNewTerminalId() {
+		return newTerminalId;
+	}
+
+	public void setNewTerminalId(Integer newTerminalId) {
+		this.newTerminalId = newTerminalId;
+	}
+
+	public String getOldVolumn() {
+		return oldVolumn;
+	}
+
+	public void setOldVolumn(String oldVolumn) {
+		this.oldVolumn = oldVolumn;
+	}
+
+	public Integer getChangerId() {
+		return changerId;
+	}
+
+	public void setChangerId(Integer changerId) {
+		this.changerId = changerId;
+	}
+
+	public Integer getRemainPaper() {
+		return remainPaper;
+	}
+
+	public void setRemainPaper(Integer remainPaper) {
+		this.remainPaper = remainPaper;
 	}
 
 	public String toString() {

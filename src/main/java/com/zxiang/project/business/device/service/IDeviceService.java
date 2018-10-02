@@ -69,4 +69,11 @@ public interface IDeviceService
 	 * @return
 	 */
 	public int removeDeviceUpdate(Device device);
+
+	/**
+	 * 设备换板
+	 * @param device
+	 * @return
+	 */
+	public int changeDevice(Device device,String operatorUser);
 }
