@@ -167,7 +167,7 @@ public class DeviceController extends BaseController
 		device.setUpdateBy(updateor+"("+userId+")");
 		device.setUpdateTime(new Date());
 		
-		return toAjax(deviceService.updateDevice(device));
+		return toAjax(deviceService.releaseUpdateDevice(device));
 	}
 	
 	/**

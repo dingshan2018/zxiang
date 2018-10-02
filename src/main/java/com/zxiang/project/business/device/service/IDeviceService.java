@@ -57,10 +57,16 @@ public interface IDeviceService
 	public List<Device> selectDropBoxList();
 
 	/**
+	 * 共享是设备投放
+	 * @param device
+	 * @return
+	 */
+	public int releaseUpdateDevice(Device device);
+	
+	/**
 	 * 共享设备撤机
 	 * @param device
 	 * @return
 	 */
 	public int removeDeviceUpdate(Device device);
-	
 }

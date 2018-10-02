@@ -74,6 +74,41 @@ public class DeviceServiceImpl implements IDeviceService
 		return deviceSave;
 	}
 	
+	
+	/**
+     * 修改共享设备
+     * 
+     * @param device 共享设备信息
+     * @return 结果
+     */
+	@Override
+	public int updateDevice(Device device)
+	{
+	    return deviceMapper.updateDevice(device);
+	}
+
+	/**
+     * 删除共享设备对象
+     * 
+     * @param ids 需要删除的数据ID
+     * @return 结果
+     */
+	@Override
+	public int deleteDeviceByIds(String ids)
+	{
+		return deviceMapper.deleteDeviceByIds(Convert.toStrArray(ids));
+	}
+
+	@Override
+	public List<Device> selectDropBoxList() {
+		return deviceMapper.selectDropBoxList();
+	}
+
+	@Override
+	public int releaseUpdateDevice(Device device) {
+		return getAutoCodeNum(device);
+	}
+	
 	/**
 	 * 设备编号为场所编号加3为序号
 	 * @param device
@@ -122,35 +157,6 @@ public class DeviceServiceImpl implements IDeviceService
 		return deviceMapper.updateDevice(device);
 	}
 	
-	/**
-     * 修改共享设备
-     * 
-     * @param device 共享设备信息
-     * @return 结果
-     */
-	@Override
-	public int updateDevice(Device device)
-	{
-	    return getAutoCodeNum(device);
-	}
-
-	/**
-     * 删除共享设备对象
-     * 
-     * @param ids 需要删除的数据ID
-     * @return 结果
-     */
-	@Override
-	public int deleteDeviceByIds(String ids)
-	{
-		return deviceMapper.deleteDeviceByIds(Convert.toStrArray(ids));
-	}
-
-	@Override
-	public List<Device> selectDropBoxList() {
-		return deviceMapper.selectDropBoxList();
-	}
-
 	@Override
 	public int removeDeviceUpdate(Device device) {
 		//设置撤机时间
@@ -168,5 +174,5 @@ public class DeviceServiceImpl implements IDeviceService
 		
 		return deviceMapper.updateDevice(device);
 	}
-	
+
 }
