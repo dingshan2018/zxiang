@@ -150,5 +150,23 @@ public class DeviceServiceImpl implements IDeviceService
 	public List<Device> selectDropBoxList() {
 		return deviceMapper.selectDropBoxList();
 	}
+
+	@Override
+	public int removeDeviceUpdate(Device device) {
+		//设置撤机时间
+		device.setRemoveTime(new Date());
+		//场所投放的设备数量-1
+		Place place = placeMapper.selectPlaceById(Integer.parseInt(device.getPlaceId()));
+		Integer deviceCount = place.getDeviceCount();
+		if(deviceCount != null){
+			--deviceCount;
+		}else{
+			deviceCount = 0;
+		}
+		place.setDeviceCount(deviceCount);
+		placeMapper.updatePlace(place);
+		
+		return deviceMapper.updateDevice(device);
+	}
 	
 }

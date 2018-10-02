@@ -46,8 +46,8 @@
 						<li>
 							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
 							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
-							<a class="btn btn-primary btn-rounded btn-sm" onclick="release()"><i class="fa fa-search"></i>&nbsp;投放</a>
-							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;撤机</a>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="release()" shiro:hasPermission="business:device:release"><i class="fa fa-search"></i>&nbsp;投放</a>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="removeDevice()" shiro:hasPermission="business:device:removeDevice"><i class="fa fa-search"></i>&nbsp;撤机</a>
 							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;换板</a>
 							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;补纸</a>
 						</li>
@@ -128,6 +128,10 @@
 				{
 					field : 'releaseTime', 
 					title : '投放时间' 
+				},
+				{
+					field : 'removeTime', 
+					title : '撤机时间' 
 				},
 				{
 					field : 'lastHeartTime', 
@@ -262,6 +266,34 @@
     		//
         	var url = ctx + "business/device/release/"+rows;
         	$.modal.open("选择投放场所", url);
+		}
+	  	
+        //打开设备撤机弹窗
+        function removeDevice() {
+	       	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+	   		if (rows.length == 0) {
+	   			$.modal.alertWarning("请至少选择一条记录");
+	   			return;
+	   		}
+	   		if (rows.length > 1){
+	   			$.modal.alertWarning("只能选择一条记录");
+	   			return;
+	   		}
+	   		//若没有设备编号说明未投放，不允许撤机
+    		var deviceCode = $.table.selectColumns($.table._option.columns[2].field);
+    		if(deviceCode == ''){
+    			$.modal.alertWarning("该设备未投放，不能撤机!");
+    			return ;
+    		}
+	   		//若已经有撤机时间说明已经撤机，不允许再次撤机
+	   		var removeTime = $.table.selectColumns($.table._option.columns[7].field);
+	   		if(removeTime != ''){
+	   			$.modal.alertWarning("该设备已被撤机!");
+	   			return ;
+	   		}
+	   		//
+	       	var url = ctx + "business/device/removeDevice/"+rows;
+	       	$.modal.open("撤机", url);
 		}
 	  	
     </script>

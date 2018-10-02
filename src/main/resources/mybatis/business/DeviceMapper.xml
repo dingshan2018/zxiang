@@ -55,7 +55,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="price != null and price != ''"> and price = #{price}</if>
              <if test="lon != null and lon != ''"> and lon = #{lon}</if>
              <if test="lat != null and lat != ''"> and lat = #{lat}</if>
-             <if test="releaseTime != null "> and release_time = #{releaseTime}</if>
+             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				 AND date_format(d.release_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			 </if>
+			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				 AND date_format(d.release_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+			 </if>
              <if test="removeTime != null "> and remove_time = #{removeTime}</if>
              <if test="totalLen != null and totalLen != ''"> and total_len = #{totalLen}</if>
              <if test="remainLen != null and remainLen != ''"> and remain_len = #{remainLen}</if>
@@ -66,12 +71,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="status != null and status != ''"> and status = #{status}</if>
              <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
-				 AND date_format(d.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
-			 </if>
-			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
-				 AND date_format(d.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
-			 </if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
              <if test="updateTime != null"> and update_time = #{updateTime}</if>
              <!-- 按照省市县下拉框搜索 -->

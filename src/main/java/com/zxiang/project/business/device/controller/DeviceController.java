@@ -141,7 +141,7 @@ public class DeviceController extends BaseController
     }
 	
 	/**
-	 * 投放设备
+	 * 设备投放
 	 */
 	@GetMapping("/release/{deviceId}")
 	public String release(@PathVariable("deviceId") Integer deviceId, ModelMap mmap)
@@ -154,7 +154,7 @@ public class DeviceController extends BaseController
 	}
 	
 	/**
-	 *投放保存共享设备
+	 *投放保存
 	 */
 	@RequiresPermissions("business:device:release")
 	@Log(title = "投放共享设备", businessType = BusinessType.UPDATE)
@@ -170,4 +170,32 @@ public class DeviceController extends BaseController
 		return toAjax(deviceService.updateDevice(device));
 	}
 	
+	/**
+	 * 设备撤机
+	 */
+	@GetMapping("/removeDevice/{deviceId}")
+	public String removeDevice(@PathVariable("deviceId") Integer deviceId, ModelMap mmap)
+	{
+		Device device = deviceService.selectDeviceById(deviceId);
+		mmap.put("device", device);
+		
+	    return prefix + "/removeDevice";
+	}
+	
+	/**
+	 *撤机保存
+	 */
+	@RequiresPermissions("business:device:removeDevice")
+	@Log(title = "撤机共享设备", businessType = BusinessType.UPDATE)
+	@PostMapping("/removeDevice")
+	@ResponseBody
+	public AjaxResult removeDeviceSave(Device device)
+	{		
+		String updateor = getUser().getUserName();
+		long userId = getUserId();
+		device.setUpdateBy(updateor+"("+userId+")");
+		device.setUpdateTime(new Date());
+		
+		return toAjax(deviceService.removeDeviceUpdate(device));
+	}
 }
