@@ -63,5 +63,16 @@ public interface TerminalMapper
 	 * 查询终端设备下拉列表
 	 */
 	public List<Terminal> selectDropBoxList();
+
+	/**
+	 * 查询未被设备绑定的终端
+	 */
+	public List<Terminal> getDropBoxValidlList();
+	
+	/**
+	 * 校验终端编号唯一
+	 */
+	public int checkTerminalCodeUnique(String terminalCode);
+
 	
 }

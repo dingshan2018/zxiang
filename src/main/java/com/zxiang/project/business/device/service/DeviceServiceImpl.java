@@ -8,10 +8,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zxiang.common.support.Convert;
+import com.zxiang.project.business.changeTerminal.domain.ChangeTerminal;
+import com.zxiang.project.business.changeTerminal.mapper.ChangeTerminalMapper;
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.mapper.DeviceMapper;
 import com.zxiang.project.business.place.domain.Place;
 import com.zxiang.project.business.place.mapper.PlaceMapper;
+import com.zxiang.project.business.terminal.domain.Terminal;
+import com.zxiang.project.business.terminal.mapper.TerminalMapper;
 
 /**
  * 共享设备 服务层实现
@@ -27,6 +31,10 @@ public class DeviceServiceImpl implements IDeviceService
 	private DeviceMapper deviceMapper;
 	@Autowired
 	private PlaceMapper placeMapper;
+	@Autowired
+	private TerminalMapper terminalMapper;
+	@Autowired 
+	private ChangeTerminalMapper TerminalMapper;
 	
 	/**
      * 查询共享设备信息
@@ -61,7 +69,48 @@ public class DeviceServiceImpl implements IDeviceService
 	@Override
 	public int insertDevice(Device device)
 	{
-		return deviceMapper.insertDevice(device);
+		int deviceSave = deviceMapper.insertDevice(device);
+		//设备绑定终端后也要修改终端数据对应设备ID的值，设备不能再次绑定该终端
+		Terminal terminal = terminalMapper.selectTerminalById(device.getTerminalId());
+		terminal.setDeviceId(device.getDeviceId());
+		terminalMapper.updateTerminal(terminal);
+		
+		return deviceSave;
+	}
+	
+	
+	/**
+     * 修改共享设备
+     * 
+     * @param device 共享设备信息
+     * @return 结果
+     */
+	@Override
+	public int updateDevice(Device device)
+	{
+	    return deviceMapper.updateDevice(device);
+	}
+
+	/**
+     * 删除共享设备对象
+     * 
+     * @param ids 需要删除的数据ID
+     * @return 结果
+     */
+	@Override
+	public int deleteDeviceByIds(String ids)
+	{
+		return deviceMapper.deleteDeviceByIds(Convert.toStrArray(ids));
+	}
+
+	@Override
+	public List<Device> selectDropBoxList() {
+		return deviceMapper.selectDropBoxList();
+	}
+
+	@Override
+	public int releaseUpdateDevice(Device device) {
+		return getAutoCodeNum(device);
 	}
 	
 	/**
@@ -103,37 +152,56 @@ public class DeviceServiceImpl implements IDeviceService
 		}
 		place.setDeviceCount(deviceCount);
 		placeMapper.updatePlace(place);
+		//终端数据也将绑定的设备编号信息插入
+		Terminal terminal = terminalMapper.selectTerminalById(device.getTerminalId());
+		terminal.setDeviceId(device.getDeviceId());
+		terminal.setPlaceId(Integer.parseInt(placeId));
+		terminalMapper.updateTerminal(terminal);
 		
 		return deviceMapper.updateDevice(device);
 	}
 	
-	/**
-     * 修改共享设备
-     * 
-     * @param device 共享设备信息
-     * @return 结果
-     */
 	@Override
-	public int updateDevice(Device device)
-	{
-	    return getAutoCodeNum(device);
-	}
-
-	/**
-     * 删除共享设备对象
-     * 
-     * @param ids 需要删除的数据ID
-     * @return 结果
-     */
-	@Override
-	public int deleteDeviceByIds(String ids)
-	{
-		return deviceMapper.deleteDeviceByIds(Convert.toStrArray(ids));
+	public int removeDeviceUpdate(Device device) {
+		//设置撤机时间
+		device.setRemoveTime(new Date());
+		//场所投放的设备数量-1
+		Place place = placeMapper.selectPlaceById(Integer.parseInt(device.getPlaceId()));
+		Integer deviceCount = place.getDeviceCount();
+		if(deviceCount != null){
+			--deviceCount;
+		}else{
+			deviceCount = 0;
+		}
+		place.setDeviceCount(deviceCount);
+		placeMapper.updatePlace(place);
+		
+		return deviceMapper.updateDevice(device);
 	}
 
 	@Override
-	public List<Device> selectDropBoxList() {
-		return deviceMapper.selectDropBoxList();
+	public int changeDevice(Device device,String operatorUser) {
+		// 终端更换记录表插入数据 
+		ChangeTerminal changeTerminal = new ChangeTerminal();
+		changeTerminal.setOldTerminalId(device.getTerminalId());
+		changeTerminal.setNewTerminalId(device.getNewTerminalId());
+		changeTerminal.setOldVolumn(device.getOldVolumn());
+		changeTerminal.setRemainPaper(device.getRemainPaper());
+		changeTerminal.setChangerId(device.getChangerId());
+		changeTerminal.setCreateBy(operatorUser);
+		changeTerminal.setCreateTime(new Date());
+		TerminalMapper.insertChangeTerminal(changeTerminal);
+		//若设备已经投放，则新终端也要插入设备编号和场所编号信息，但场所投放数量不再增加设备count
+		Terminal terminal = terminalMapper.selectTerminalById(device.getNewTerminalId());
+		terminal.setDeviceId(device.getDeviceId());
+		if(device.getPlaceId() != null){
+			terminal.setPlaceId(Integer.parseInt(device.getPlaceId()));
+		}
+		terminalMapper.updateTerminal(terminal);
+		
+		// 最后设备更新终端字段
+		device.setTerminalId(device.getNewTerminalId());
+		return deviceMapper.updateDevice(device);
 	}
-	
+
 }

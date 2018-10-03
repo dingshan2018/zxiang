@@ -108,7 +108,7 @@
     <div th:include="include::footer"></div>
     <script type="text/javascript">
 	    $(function(){ 
-	    	var terminalList = selectTerminalList();
+	    	var terminalList = selectTerminaValidlList();
 	    	$.each(terminalList, function (i) {
 	        	$('#terminalId').append("<option value=" + terminalList[i].terminalId + ">" + terminalList[i].terminalCode + "</option>");
 	        });
@@ -130,6 +130,26 @@
 				$.operate.save(prefix + "/add", $('#form-device-add').serialize());
 			}
 		});
+		
+		//未被绑定且有效的终端下拉框选择
+		function selectTerminaValidlList(){
+			var terminalList = [];
+			$.ajax({
+		        url: ctx + "business/terminal/getDropBoxValidlList",
+		        type: "post",
+		        dataType: "json",
+		        data: 'data',
+		        async:false,
+		        success: function (data) {
+		        	terminalList = data.rows;
+		        },
+		        error: function (data) {
+		            alert("查询未绑定的终端设备下拉列表失败" + data);
+		        }
+		    })
+		    return terminalList;
+		}
+		
 	</script>
 </body>
 </html>

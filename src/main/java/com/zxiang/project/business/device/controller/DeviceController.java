@@ -22,6 +22,8 @@ import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.service.IDeviceService;
 import com.zxiang.project.business.place.service.IPlaceService;
 import com.zxiang.project.business.terminal.service.ITerminalService;
+import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.service.IUserService;
 
 /**
  * 共享设备 信息操作处理
@@ -41,6 +43,8 @@ public class DeviceController extends BaseController
 	private ITerminalService terminalService; 
 	@Autowired 
 	private IPlaceService placeService;
+	@Autowired
+	private IUserService userService;
 	
 	@RequiresPermissions("business:device:view")
 	@GetMapping()
@@ -141,7 +145,7 @@ public class DeviceController extends BaseController
     }
 	
 	/**
-	 * 投放设备
+	 * 设备投放
 	 */
 	@GetMapping("/release/{deviceId}")
 	public String release(@PathVariable("deviceId") Integer deviceId, ModelMap mmap)
@@ -154,10 +158,10 @@ public class DeviceController extends BaseController
 	}
 	
 	/**
-	 *投放保存共享设备
+	 *投放保存
 	 */
-	//@RequiresPermissions("business:device:release")
-	@Log(title = "投放共享设备", businessType = BusinessType.UPDATE)
+	@RequiresPermissions("business:device:release")
+	@Log(title = "投放共享设备保存", businessType = BusinessType.UPDATE)
 	@PostMapping("/release")
 	@ResponseBody
 	public AjaxResult releaseSave(Device device)
@@ -167,7 +171,69 @@ public class DeviceController extends BaseController
 		device.setUpdateBy(updateor+"("+userId+")");
 		device.setUpdateTime(new Date());
 		
-		return toAjax(deviceService.updateDevice(device));
+		return toAjax(deviceService.releaseUpdateDevice(device));
 	}
 	
+	/**
+	 * 设备撤机
+	 */
+	@GetMapping("/removeDevice/{deviceId}")
+	public String removeDevice(@PathVariable("deviceId") Integer deviceId, ModelMap mmap)
+	{
+		Device device = deviceService.selectDeviceById(deviceId);
+		mmap.put("device", device);
+		
+	    return prefix + "/removeDevice";
+	}
+	
+	/**
+	 *撤机保存
+	 */
+	@RequiresPermissions("business:device:removeDevice")
+	@Log(title = "撤机共享设备保存", businessType = BusinessType.UPDATE)
+	@PostMapping("/removeDevice")
+	@ResponseBody
+	public AjaxResult removeDeviceSave(Device device)
+	{		
+		String updateor = getUser().getUserName();
+		long userId = getUserId();
+		device.setUpdateBy(updateor+"("+userId+")");
+		device.setUpdateTime(new Date());
+		
+		return toAjax(deviceService.removeDeviceUpdate(device));
+	}
+	
+	/**
+	 * 设备换板
+	 */
+	@GetMapping("/changeDevice/{deviceId}")
+	public String changeDevice(@PathVariable("deviceId") Integer deviceId, ModelMap mmap)
+	{
+		Device device = deviceService.selectDeviceById(deviceId);
+		mmap.put("device", device);
+		mmap.put("terminalDropBoxList", terminalService.getDropBoxValidlList());
+		
+		List<User> userList = userService.selectUserList(new User());
+		mmap.put("userList", userList);
+		
+	    return prefix + "/changeDevice";
+	}
+	
+	/**
+	 *换板保存
+	 */
+	@RequiresPermissions("business:device:changeDevice")
+	@Log(title = "设备换板保存", businessType = BusinessType.UPDATE)
+	@PostMapping("/changeDevice")
+	@ResponseBody
+	public AjaxResult changeDevice(Device device)
+	{		
+		String updateor = getUser().getUserName();
+		long userId = getUserId();
+		String operatorUser = updateor+"("+userId+")";
+		device.setUpdateBy(operatorUser);
+		device.setUpdateTime(new Date());
+		
+		return toAjax(deviceService.changeDevice(device,operatorUser));
+	}
 }

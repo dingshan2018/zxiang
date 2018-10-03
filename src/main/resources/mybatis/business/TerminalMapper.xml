@@ -149,4 +149,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select terminal_id,terminal_code from zx_terminal
     </select>
     
+    <select id="getDropBoxValidlList"  resultMap="TerminalResult">
+		SELECT terminal_id,terminal_code FROM zx_terminal 
+		WHERE STATUS =1  AND device_id IS NULL AND del_flag = '0'
+    </select>
+    
+    <select id="checkTerminalCodeUnique" parameterType="String" resultType="int">
+		SELECT COUNT(1) FROM `zx_terminal` WHERE terminal_code=#{terminalCode}
+	</select>
+	
 </mapper>

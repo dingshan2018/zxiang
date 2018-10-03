@@ -55,5 +55,25 @@ public interface IDeviceService
 	 * 查找设备下拉框数据
 	 */
 	public List<Device> selectDropBoxList();
+
+	/**
+	 * 共享是设备投放
+	 * @param device
+	 * @return
+	 */
+	public int releaseUpdateDevice(Device device);
 	
+	/**
+	 * 共享设备撤机
+	 * @param device
+	 * @return
+	 */
+	public int removeDeviceUpdate(Device device);
+
+	/**
+	 * 设备换板
+	 * @param device
+	 * @return
+	 */
+	public int changeDevice(Device device,String operatorUser);
 }
