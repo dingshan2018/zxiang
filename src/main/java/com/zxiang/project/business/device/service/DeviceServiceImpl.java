@@ -191,13 +191,17 @@ public class DeviceServiceImpl implements IDeviceService
 		changeTerminal.setCreateBy(operatorUser);
 		changeTerminal.setCreateTime(new Date());
 		TerminalMapper.insertChangeTerminal(changeTerminal);
+		//换板后旧终端状态置为无效
+		Terminal oldTerminal = terminalMapper.selectTerminalById(device.getTerminalId());
+		oldTerminal.setStatus("2");
+		terminalMapper.updateTerminal(oldTerminal);
 		//若设备已经投放，则新终端也要插入设备编号和场所编号信息，但场所投放数量不再增加设备count
-		Terminal terminal = terminalMapper.selectTerminalById(device.getNewTerminalId());
-		terminal.setDeviceId(device.getDeviceId());
+		Terminal newTerminal = terminalMapper.selectTerminalById(device.getNewTerminalId());
+		newTerminal.setDeviceId(device.getDeviceId());
 		if(device.getPlaceId() != null){
-			terminal.setPlaceId(Integer.parseInt(device.getPlaceId()));
+			newTerminal.setPlaceId(Integer.parseInt(device.getPlaceId()));
 		}
-		terminalMapper.updateTerminal(terminal);
+		terminalMapper.updateTerminal(newTerminal);
 		
 		// 最后设备更新终端字段
 		device.setTerminalId(device.getNewTerminalId());
