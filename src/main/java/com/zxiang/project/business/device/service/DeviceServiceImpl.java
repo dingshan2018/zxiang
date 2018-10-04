@@ -14,6 +14,8 @@ import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.mapper.DeviceMapper;
 import com.zxiang.project.business.place.domain.Place;
 import com.zxiang.project.business.place.mapper.PlaceMapper;
+import com.zxiang.project.business.supplyTissue.domain.SupplyTissue;
+import com.zxiang.project.business.supplyTissue.mapper.SupplyTissueMapper;
 import com.zxiang.project.business.terminal.domain.Terminal;
 import com.zxiang.project.business.terminal.mapper.TerminalMapper;
 
@@ -35,6 +37,8 @@ public class DeviceServiceImpl implements IDeviceService
 	private TerminalMapper terminalMapper;
 	@Autowired 
 	private ChangeTerminalMapper TerminalMapper;
+	@Autowired
+	private SupplyTissueMapper supplyTissueMapper;
 	
 	/**
      * 查询共享设备信息
@@ -206,6 +210,24 @@ public class DeviceServiceImpl implements IDeviceService
 		// 最后设备更新终端字段
 		device.setTerminalId(device.getNewTerminalId());
 		return deviceMapper.updateDevice(device);
+	}
+
+	@Override
+	public int supplyTissueAdd(Device device, String operatorUser) {
+		
+		Integer deviceId = device.getDeviceId(); 
+		Integer placeId = Integer.parseInt(device.getPlaceId());
+		Integer tissueCount = device.getTissueCount();
+		Integer supplierId = device.getSupplierId();
+		
+		SupplyTissue supplyTissue = new SupplyTissue();
+		supplyTissue.setDeviceId(deviceId);
+		supplyTissue.setPlaceId(placeId);
+		supplyTissue.setTissueCount(tissueCount);
+		supplyTissue.setSupplierId(supplierId);
+		supplyTissue.setCreateBy(operatorUser);
+		supplyTissue.setCreateTime(new Date());
+		return supplyTissueMapper.insertSupplyTissue(supplyTissue );
 	}
 
 }

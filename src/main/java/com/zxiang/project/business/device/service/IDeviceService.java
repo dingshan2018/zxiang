@@ -76,4 +76,12 @@ public interface IDeviceService
 	 * @return
 	 */
 	public int changeDevice(Device device,String operatorUser);
+
+	/**
+	 * 设备补纸
+	 * @param device
+	 * @param operatorUser
+	 * @return
+	 */
+	public int supplyTissueAdd(Device device, String operatorUser);
 }

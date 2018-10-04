@@ -49,7 +49,7 @@
 							<a class="btn btn-primary btn-rounded btn-sm" onclick="release()" shiro:hasPermission="business:device:release"><i class="fa fa-search"></i>&nbsp;投放</a>
 							<a class="btn btn-primary btn-rounded btn-sm" onclick="removeDevice()" shiro:hasPermission="business:device:removeDevice"><i class="fa fa-search"></i>&nbsp;撤机</a>
 							<a class="btn btn-primary btn-rounded btn-sm" onclick="changeDevice()" shiro:hasPermission="business:device:changeDevice"><i class="fa fa-search"></i>&nbsp;换板</a>
-							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;补纸</a>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="supplyTissue()" shiro:hasPermission="business:device:supplyTissueAdd"><i class="fa fa-search"></i>&nbsp;补纸</a>
 						</li>
 					</ul>
 				</div>
@@ -312,6 +312,21 @@
 	       	$.modal.open("设备换板", url);
 		}
         
+      	//打开设备补纸弹窗
+      	function supplyTissue() {
+	       	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+	   		if (rows.length == 0) {
+	   			$.modal.alertWarning("请至少选择一条记录");
+	   			return;
+	   		}
+	   		if (rows.length > 1){
+	   			$.modal.alertWarning("只能选择一条记录");
+	   			return;
+	   		}
+	   		//
+	       	var url = ctx + "business/device/supplyTissueAdd/"+rows;
+	       	$.modal.open("设备补纸", url);
+		}
     </script>
 </body>
 </html>

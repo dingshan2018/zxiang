@@ -77,6 +77,9 @@ public class Device extends BaseEntity
 	private String oldVolumn;//音量
 	private Integer changerId;//换板人ID
 	private Integer remainPaper;//剩余纸张数
+	//设备补纸字段
+	private Integer tissueCount;
+	private Integer supplierId;
 	
 	public void setDeviceId(Integer deviceId) 
 	{
@@ -356,6 +359,22 @@ public class Device extends BaseEntity
 
 	public void setRemainPaper(Integer remainPaper) {
 		this.remainPaper = remainPaper;
+	}
+
+	public Integer getTissueCount() {
+		return tissueCount;
+	}
+
+	public void setTissueCount(Integer tissueCount) {
+		this.tissueCount = tissueCount;
+	}
+
+	public Integer getSupplierId() {
+		return supplierId;
+	}
+
+	public void setSupplierId(Integer supplierId) {
+		this.supplierId = supplierId;
 	}
 
 	public String toString() {

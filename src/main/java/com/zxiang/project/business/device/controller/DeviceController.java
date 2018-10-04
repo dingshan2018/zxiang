@@ -236,4 +236,37 @@ public class DeviceController extends BaseController
 		
 		return toAjax(deviceService.changeDevice(device,operatorUser));
 	}
+	
+	/**
+	 * 设备补纸
+	 */
+	@GetMapping("/supplyTissueAdd/{deviceId}")
+	public String supplyTissueAdd(@PathVariable("deviceId") Integer deviceId, ModelMap mmap)
+	{
+		Device device = deviceService.selectDeviceById(deviceId);
+		mmap.put("device", device);
+		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
+		List<User> userList = userService.selectUserList(new User());
+		mmap.put("userList", userList);
+		
+	    return prefix + "/supplyTissueAdd";
+	}
+	
+	/**
+	 *补纸保存
+	 */
+	@RequiresPermissions("business:device:supplyTissueAdd")
+	@Log(title = "设备补纸保存", businessType = BusinessType.UPDATE)
+	@PostMapping("/supplyTissueAdd")
+	@ResponseBody
+	public AjaxResult supplyTissueAdd(Device device)
+	{		
+		String updateor = getUser().getUserName();
+		long userId = getUserId();
+		String operatorUser = updateor+"("+userId+")";
+		device.setUpdateBy(operatorUser);
+		device.setUpdateTime(new Date());
+		
+		return toAjax(deviceService.supplyTissueAdd(device,operatorUser));
+	}
 }
