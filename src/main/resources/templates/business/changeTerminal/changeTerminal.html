@@ -4,6 +4,43 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
+    	<div class="col-sm-12 select-info">
+			<form id="change-form">
+				<div class="select-list">
+					<ul>
+						<li>
+							旧终端编号：
+							<select id="oldTerminalId" name="oldTerminalId">
+								<option value="">全部</option>
+							</select>
+						</li>
+						<li>
+							新终端编号：
+							<select id="newTerminalId" name="newTerminalId">
+								<option value="">全部</option>
+							</select>
+						</li>
+						<li>
+							更换人：
+							<select id="changerId" name="changerId">
+								<option value="">全部</option>
+							</select>
+						</li>
+						<li class="select-time">
+							<label>更换时间： </label>
+							<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+							<span>-</span>
+							<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+						</li>
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;导出</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:changeTerminal:add">
 				<i class="fa fa-plus"></i> 新增
@@ -24,19 +61,27 @@
         var prefix = ctx + "business/changeTerminal"
 
         $(function() {
+        	var terminalList = selectTerminalList();
+	    	$.each(terminalList, function (i) {
+	        	$('#oldTerminalId').append("<option value=" + terminalList[i].terminalId + ">" + terminalList[i].terminalCode + "</option>");
+	        	$('#newTerminalId').append("<option value=" + terminalList[i].terminalId + ">" + terminalList[i].terminalCode + "</option>");
+	        });
+	    	
+	    	var changeUserList = selectUserList();
+	    	$.each(changeUserList, function (i) {
+	        	$('#changerId').append("<option value=" + changeUserList[i].userId + ">" + changeUserList[i].userName + "</option>");
+	        });
+	    	
             var options = {
                 url: prefix + "/list",
                 createUrl: prefix + "/add",
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "终端更换记录",
+                search: false,
                 columns: [{
 		            checkbox: true
 		        },
-				{
-					field : 'changeTerminalId', 
-					title : '换板记录ID' 
-				},
 				{
 					field : 'oldTerminalCode', 
 					title : '旧终端' 
@@ -47,11 +92,15 @@
 				},
 				{
 					field : 'oldVolumn', 
-					title : '旧音量设置' 
+					title : '旧终端音量' 
 				},
 				{
-					field : 'changerId', 
-					title : '换班人id' 
+					field : 'remainPaper', 
+					title : '剩余纸张' 
+				},
+				{
+					field : 'changeUserName', 
+					title : '更换人' 
 				},
 				{
 					field : 'createBy', 
@@ -60,14 +109,6 @@
 				{
 					field : 'createTime', 
 					title : '创建时间' 
-				},
-				{
-					field : 'updateBy', 
-					title : '修改者' 
-				},
-				{
-					field : 'updateTime', 
-					title : '修改时间' 
 				},
 		        {
 		            title: '操作',

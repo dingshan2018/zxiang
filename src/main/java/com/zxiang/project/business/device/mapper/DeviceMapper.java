@@ -63,5 +63,10 @@ public interface DeviceMapper
 	 * 查找设备下拉框数据
 	 */
 	public List<Device> selectDropBoxList();
+
+	/**
+	 * 获取设备当前最大编号
+	 */
+	public String getMaxDeviceCode(String placeId);
 	
 }

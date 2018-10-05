@@ -4,6 +4,33 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
+	    <div class="col-sm-12 select-info">
+					<form id="user-form">
+						<div class="select-list">
+							<ul>
+								<li>
+									用户类型：<input type="text" name="coperatorType"/>
+								</li>
+								<li>
+									结算用户：<input type="text" name="settlementer"/>
+								</li>
+								<li>
+									结算地区：<input type="text" name="areaId"/>
+								</li>
+								<li class="select-time">
+									<label>结算日期： </label>
+									<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+									<span>-</span>
+									<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+								</li>
+								<li>
+									<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							    	<a class="btn btn-success btn-rounded btn-sm" onclick="$.table.exportExcel()"><i class="fa fa-download"></i>&nbsp;导出</a>
+								</li>
+							</ul>
+						</div>
+					</form>
+		</div>
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="settle:userIncome:add">
 				<i class="fa fa-plus"></i> 新增
@@ -33,92 +60,62 @@
                 columns: [{
 		            checkbox: true
 		        },
-				{
-					field : 'incomeId', 
-					title : '' 
-				},
-				{
-					field : 'coperatorId', 
-					title : '合作客户ID' 
+		        {
+					field : 'sumDate', 
+					title : '统计日期' 
 				},
 				{
 					field : 'coperatorType', 
 					title : '合作类型' 
 				},
 				{
-					field : 'sumDate', 
-					title : '统计日期' 
+					field : 'coperatorId', 
+					title : '合作客户' 
 				},
 				{
 					field : 'adIncome', 
-					title : '广告基数' 
-				},
-				{
-					field : 'promotionIncome', 
-					title : '推广基数' 
-				},
-				{
-					field : 'scanIncome', 
-					title : '扫码基数' 
-				},
-				{
-					field : 'adIncomeRate', 
-					title : '广告收入值' 
-				},
-				{
-					field : 'promotionIncomeRate', 
-					title : '推广收入值' 
-				},
-				{
-					field : 'scanIncomeRate', 
-					title : '扫码收入值' 
+					title : '今日广告' 
 				},
 				{
 					field : 'adRate', 
-					title : '广告收入系数' 
+					title : '广告分润系数' 
+				},
+				{
+					field : 'adIncomeRate', 
+					title : '广告分润' 
+				},
+				{
+					field : 'promotionIncome', 
+					title : '今日推广' 
 				},
 				{
 					field : 'promotionRate', 
-					title : '推广收入系数' 
+					title : '推广分润系数' 
+				},
+				{
+					field : 'promotionIncomeRate', 
+					title : '推广分润' 
+				},
+				{
+					field : 'scanIncome', 
+					title : '今日扫码' 
 				},
 				{
 					field : 'scanRate', 
-					title : '扫码收入系数' 
+					title : '扫码分润系数' 
+				},
+				{
+					field : 'scanIncomeRate', 
+					title : '扫码分润' 
 				},
 				{
 					field : 'refundIncome', 
-					title : '退款收入' 
+					title : '今日退款' 
 				},
 				{
 					field : 'refundIncomeRate', 
-					title : '退款收入值' 
-				},
-				{
-					field : 'createBy', 
-					title : '' 
-				},
-				{
-					field : 'createTime', 
-					title : '' 
-				},
-				{
-					field : 'updateBy', 
-					title : '' 
-				},
-				{
-					field : 'updateTime', 
-					title : '' 
-				},
-		        {
-		            title: '操作',
-		            align: 'center',
-		            formatter: function(value, row, index) {
-		            	var actions = [];
-		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.incomeId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.incomeId + '\')"><i class="fa fa-remove"></i>删除</a>');
-						return actions.join('');
-		            }
-		        }]
+					title : '今日分润退款' 
+				}]
             };
             $.table.init(options);
         });

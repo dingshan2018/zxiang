@@ -147,4 +147,9 @@ public interface IUserService
      * @return 用户信息集合信息
      */
     public List<User> selectUserListByUserType(String... str);
+
+    /**
+   	 * 查询用户下拉框数据列表
+   	 */
+	public List<User> getDropBoxUserList();
 }

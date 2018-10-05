@@ -6,27 +6,37 @@ import com.zxiang.framework.web.domain.BaseEntity;
 import java.util.Date;
 
 /**
- * 广告推广计划表 zx_ad_schedule
+ * 广告投放表 zx_ad_schedule
  * 
  * @author ZXiang
- * @date 2018-09-11
+ * @date 2018-09-24
  */
 public class AdSchedule extends BaseEntity
 {
 	private static final long serialVersionUID = 1L;
 	
-	/** 推广计划ID */
-	private Integer scheduleId;
 	/**  */
+	private Integer adScheduleId;
+	/** 投放名称 */
 	private String scheduleName;
+	/** 投放方式 */
+	private String releaseType;
+	/** 投放位置 */
+	private String releasePosition;
+	/** 视讯排期ID */
+	private Integer sxScheduleId;
 	/**  */
-	private String scheduleType;
-	/**  */
-	private String scheduleStatus;
-	/**  */
-	private String isIssued;
+	private String status;
+	/** 总价 */
+	private Float totalPay;
+	/** 押金 */
+	private Float prepay;
+	/** 投放终端数 */
+	private Integer releaseTermNum;
 	/**  */
 	private String isDel;
+	/** 投放备注 */
+	private String releaseNote;
 	/**  */
 	private String createBy;
 	/**  */
@@ -36,14 +46,14 @@ public class AdSchedule extends BaseEntity
 	/**  */
 	private Date updateTime;
 
-	public void setScheduleId(Integer scheduleId) 
+	public void setAdScheduleId(Integer adScheduleId) 
 	{
-		this.scheduleId = scheduleId;
+		this.adScheduleId = adScheduleId;
 	}
 
-	public Integer getScheduleId() 
+	public Integer getAdScheduleId() 
 	{
-		return scheduleId;
+		return adScheduleId;
 	}
 	public void setScheduleName(String scheduleName) 
 	{
@@ -54,32 +64,68 @@ public class AdSchedule extends BaseEntity
 	{
 		return scheduleName;
 	}
-	public void setScheduleType(String scheduleType) 
+	public void setReleaseType(String releaseType) 
 	{
-		this.scheduleType = scheduleType;
+		this.releaseType = releaseType;
 	}
 
-	public String getScheduleType() 
+	public String getReleaseType() 
 	{
-		return scheduleType;
+		return releaseType;
 	}
-	public void setScheduleStatus(String scheduleStatus) 
+	public void setReleasePosition(String releasePosition) 
 	{
-		this.scheduleStatus = scheduleStatus;
-	}
-
-	public String getScheduleStatus() 
-	{
-		return scheduleStatus;
-	}
-	public void setIsIssued(String isIssued) 
-	{
-		this.isIssued = isIssued;
+		this.releasePosition = releasePosition;
 	}
 
-	public String getIsIssued() 
+	public String getReleasePosition() 
 	{
-		return isIssued;
+		return releasePosition;
+	}
+	public void setSxScheduleId(Integer sxScheduleId) 
+	{
+		this.sxScheduleId = sxScheduleId;
+	}
+
+	public Integer getSxScheduleId() 
+	{
+		return sxScheduleId;
+	}
+	public void setStatus(String status) 
+	{
+		this.status = status;
+	}
+
+	public String getStatus() 
+	{
+		return status;
+	}
+	public void setTotalPay(Float totalPay) 
+	{
+		this.totalPay = totalPay;
+	}
+
+	public Float getTotalPay() 
+	{
+		return totalPay;
+	}
+	public void setPrepay(Float prepay) 
+	{
+		this.prepay = prepay;
+	}
+
+	public Float getPrepay() 
+	{
+		return prepay;
+	}
+	public void setReleaseTermNum(Integer releaseTermNum) 
+	{
+		this.releaseTermNum = releaseTermNum;
+	}
+
+	public Integer getReleaseTermNum() 
+	{
+		return releaseTermNum;
 	}
 	public void setIsDel(String isDel) 
 	{
@@ -89,6 +135,15 @@ public class AdSchedule extends BaseEntity
 	public String getIsDel() 
 	{
 		return isDel;
+	}
+	public void setReleaseNote(String releaseNote) 
+	{
+		this.releaseNote = releaseNote;
+	}
+
+	public String getReleaseNote() 
+	{
+		return releaseNote;
 	}
 	public void setCreateBy(String createBy) 
 	{
@@ -129,12 +184,17 @@ public class AdSchedule extends BaseEntity
 
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("scheduleId", getScheduleId())
+            .append("adScheduleId", getAdScheduleId())
             .append("scheduleName", getScheduleName())
-            .append("scheduleType", getScheduleType())
-            .append("scheduleStatus", getScheduleStatus())
-            .append("isIssued", getIsIssued())
+            .append("releaseType", getReleaseType())
+            .append("releasePosition", getReleasePosition())
+            .append("sxScheduleId", getSxScheduleId())
+            .append("status", getStatus())
+            .append("totalPay", getTotalPay())
+            .append("prepay", getPrepay())
+            .append("releaseTermNum", getReleaseTermNum())
             .append("isDel", getIsDel())
+            .append("releaseNote", getReleaseNote())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())

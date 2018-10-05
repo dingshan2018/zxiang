@@ -56,4 +56,15 @@ public interface ITerminalService
 	 */
 	public List<Terminal> selectDropBoxList();
 	
+	/**
+	 * 查询未被设备绑定的终端
+	 */
+	public List<Terminal> getDropBoxValidlList();
+	
+	/**
+     * 校验终端编号
+     */
+	public String checkTerminalCodeUnique(String terminalCode);
+
+	
 }

@@ -359,4 +359,9 @@ public class UserServiceImpl implements IUserService
 	public List<User> selectUserListByUserType(String... userType) {
 		return userMapper.selectUserListByUserType(userType);
 	}
+
+	@Override
+	public List<User> getDropBoxUserList() {
+		return userMapper.selectDropBoxList();
+	}
 }

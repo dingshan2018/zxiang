@@ -4,59 +4,59 @@ import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
 import java.util.List;	
 
 /**
- * 广告推广计划 数据层
+ * 广告投放 数据层
  * 
  * @author ZXiang
- * @date 2018-09-11
+ * @date 2018-09-24
  */
 public interface AdScheduleMapper 
 {
 	/**
-     * 查询广告推广计划信息
+     * 查询广告投放信息
      * 
-     * @param scheduleId 广告推广计划ID
-     * @return 广告推广计划信息
+     * @param adScheduleId 广告投放ID
+     * @return 广告投放信息
      */
-	public AdSchedule selectAdScheduleById(Integer scheduleId);
+	public AdSchedule selectAdScheduleById(Integer adScheduleId);
 	
 	/**
-     * 查询广告推广计划列表
+     * 查询广告投放列表
      * 
-     * @param adSchedule 广告推广计划信息
-     * @return 广告推广计划集合
+     * @param adSchedule 广告投放信息
+     * @return 广告投放集合
      */
 	public List<AdSchedule> selectAdScheduleList(AdSchedule adSchedule);
 	
 	/**
-     * 新增广告推广计划
+     * 新增广告投放
      * 
-     * @param adSchedule 广告推广计划信息
+     * @param adSchedule 广告投放信息
      * @return 结果
      */
 	public int insertAdSchedule(AdSchedule adSchedule);
 	
 	/**
-     * 修改广告推广计划
+     * 修改广告投放
      * 
-     * @param adSchedule 广告推广计划信息
+     * @param adSchedule 广告投放信息
      * @return 结果
      */
 	public int updateAdSchedule(AdSchedule adSchedule);
 	
 	/**
-     * 删除广告推广计划
+     * 删除广告投放
      * 
-     * @param scheduleId 广告推广计划ID
+     * @param adScheduleId 广告投放ID
      * @return 结果
      */
-	public int deleteAdScheduleById(Integer scheduleId);
+	public int deleteAdScheduleById(Integer adScheduleId);
 	
 	/**
-     * 批量删除广告推广计划
+     * 批量删除广告投放
      * 
-     * @param scheduleIds 需要删除的数据ID
+     * @param adScheduleIds 需要删除的数据ID
      * @return 结果
      */
-	public int deleteAdScheduleByIds(String[] scheduleIds);
+	public int deleteAdScheduleByIds(String[] adScheduleIds);
 	
 }

@@ -127,7 +127,6 @@ function selectPlaceList(){
 
 /**终端下拉框选择*/
 function selectTerminalList(){
-	console.log("请求终端列表");
 	var terminalList = [];
 	$.ajax({
         url: ctx + "business/terminal/getDropBoxTerminalList",
@@ -143,4 +142,41 @@ function selectTerminalList(){
         }
     })
     return terminalList;
+}
+
+/**用户下拉框选择*/
+function selectUserList(){
+	var userList = [];
+	$.ajax({
+        url: ctx + "system/user/getDropBoxUserList",
+        type: "post",
+        dataType: "json",
+        data: 'data',
+        async:false,
+        success: function (data) {
+        	userList = data.rows;
+        },
+        error: function (data) {
+            alert("查询用户下拉列表失败" + data);
+        }
+    })
+    return userList;
+}
+
+/**地区下拉框,根据父级地区获取*/
+function selectAreaListByPid(parentAreaId){
+	var areaList = [];
+	$.ajax({
+    	type: "post",
+    	contentType:"application/json",
+        dataType: "json",
+        url: ctx + "system/area/getDropBoxAreaList",
+        data: JSON.stringify({ "parentId": parentAreaId}),
+        async: false,
+        success: function (data) {
+        	areaList = data.rows;
+        },
+        error: function () { alert("Error:获取地区信息失败"); }
+    });
+    return areaList;
 }

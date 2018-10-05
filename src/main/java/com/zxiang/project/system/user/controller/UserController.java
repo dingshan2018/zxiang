@@ -199,4 +199,14 @@ public class UserController extends BaseController
     {
         return userService.checkEmailUnique(user);
     }
+    
+    /**
+	 * 查询用户下拉框数据列表
+	 */
+	@RequestMapping("/getDropBoxUserList")
+    @ResponseBody
+    public TableDataInfo getDropBoxUserList() {
+		List<User> list  = userService.getDropBoxUserList();
+		return getDataTable(list);
+    }
 }

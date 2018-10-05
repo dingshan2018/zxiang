@@ -239,4 +239,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select place_id, parent_place_id, place_code, name, sname from zx_place
     </select>
     
+    <select id="checkPlaceCodeUnique" parameterType="String" resultType="int">
+		select count(1) from zx_place where place_code=#{placeCode}
+	</select>
+	
+	<select id="getMaxPlaceCode" parameterType="Integer" resultType="String">
+		SELECT place_code FROM zx_place WHERE county=#{county} ORDER BY place_id DESC LIMIT 1
+	</select>
+	
 </mapper>
