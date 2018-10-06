@@ -58,7 +58,12 @@
 		var prefix = ctx + "business/supplyTissue"
 		$("#form-supplyTissue-add").validate({
 			rules:{
-				xxxx:{
+				tissueCount:{
+					required:true,
+					digits:true,
+					min:1
+				},
+				supplierId:{
 					required:true,
 				},
 			},
