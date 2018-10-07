@@ -143,6 +143,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			  order by create_time desc
     </select>
     
+    <!-- 广告价钱 -->
+      <select id="selectreleaserecordlist"  resultType="java.util.HashMap">
+       SELECT 
+		  * 
+		FROM
+		  zx_ad_release_record 
+		WHERE schedule_id = #{scheduleId} 
+		  AND device_id = #{deviceId} 
+    </select>
+    
       <select id="selectzxtissuerecordlist"  resultType="java.util.HashMap">
       
 	        SELECT 

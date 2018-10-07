@@ -88,8 +88,12 @@ public class UserIncomeServiceImpl implements IUserIncomeService
 	}
 
 	@Override
-	public List<HashMap<String, Object>> selectzxsellerlist(String sellerId) {
-		return userIncomeMapper.selectzxsellerlist(sellerId);
+	public HashMap<String, Object> selectzxsellerlist(String sellerId) {
+		List<HashMap<String, Object>> list = userIncomeMapper.selectzxsellerlist(sellerId);
+		if(list.size()>0) {
+			return list.get(0);
+		}
+		return null;
 	}
 
 	@Override

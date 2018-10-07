@@ -58,7 +58,7 @@ public interface IUserIncomeService
 	/**
 	 * 获取销售人员类型
 	 * */
-	public List<HashMap<String, Object>> selectzxsellerlist(String sellerId);
+	public HashMap<String, Object> selectzxsellerlist(String sellerId);
 	/**
 	 * 代理商
 	 * */

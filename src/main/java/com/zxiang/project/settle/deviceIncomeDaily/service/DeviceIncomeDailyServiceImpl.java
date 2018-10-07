@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.druid.util.StringUtils;
 import com.zxiang.common.support.Convert;
 import com.zxiang.project.settle.deviceIncomeDaily.domain.DeviceIncomeDaily;
 import com.zxiang.project.settle.deviceIncomeDaily.mapper.DeviceIncomeDailyMapper;
@@ -123,13 +124,13 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			List<HashMap<String, Object>> orderlist =selectzxdeviceorderlist(map);
 			if(orderlist.size()>0){
 				HashMap<String, Object> order = orderlist.get(0);
-				String seller_id = order.get("seller_id")+""; //销售人员
+				String promotioner_id = order.get("promotioner_id")+""; //推荐人
 				String buyer_id = order.get("buyer_id")+"";//机主
 				String isincome = order.get("isincome")+""; //是否是当天售出
-				//获取销售人员信息
-				iUserIncomeService.selectzxsellerlist(seller_id);
+				//获取推荐人人员信息
+				HashMap<String, Object> user = iUserIncomeService.selectzxsellerlist(promotioner_id);
 				//计算每日设备推广费用
-				deviceorder(isincome,seller_id,order);
+				deviceorder(isincome,promotioner_id,user);
 				//计算每日出纸费用
 				tissuedata(device,buyer_id);
 				//计算广告费用
@@ -144,7 +145,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		UserIncome userIncome = new UserIncome();
 		if(isincome.equals("01")){
 			userIncome.setPromotionIncomeRate(1000.00);
-			if(order.get("promotioner_id") !=null && order.get("promotioner_id") !="" ){
+			if(order.get("puser_id") !=null && order.get("puser_id") !="" ){
 				userIncome.setPromotionIncomeRate(500.00);
 			}
 		}else{
@@ -165,10 +166,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	//计算每日出纸费用
 	public void tissuedata(HashMap<String, Object> map,String buyerid) {
 		//获取机主的信息
-		map = new HashMap<String, Object>();
-		map.put("joinerId", buyerid);
-		List<HashMap<String, Object>> joinlist = iUserIncomeService.selectzxjoinlist(map);
-		HashMap<String, Object> join = joinlist.get(0);
+		HashMap<String, Object> user = iUserIncomeService.selectzxsellerlist(buyerid);
 
 		List<HashMap<String, Object>> tissue =selectzxtissuerecordlist(map);
 	}

@@ -147,30 +147,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 用户角色信息数据 -->
     
       <!-- 判断销售人类型 -->
-      <select id="selectzxsellerlist" parameterType="string"  resultType="java.util.List">
-		  	SELECT * FROM (   
-		    SELECT 
-			  agent_id sellerId,
-			  IF(LEVEL = 1,'01','02') coperatorType  
-			FROM
-			  zx_agent 
-			WHERE del_flag != '0'
-			UNION ALL
-			SELECT 
-			  manager_id  sellerId,
-			  '03'  coperatorType
-			FROM
-			  zx_repair 
-			WHERE del_flag != '0' 
-			UNION ALL
-		       SELECT 
-			  joiner_id  sellerId,
-			  '04' coperatorType
-			FROM
-			  zx_join 
-			WHERE del_flag != '0'
-			) t
-			WHERE sellerId = #{sellerId}
+      <select id="selectzxsellerlist" parameterType="string"  resultType="java.util.HashMap">
+		  SELECT  * FROM  sys_user WHERE user_id = #{sellerId}
     </select>
     
     
