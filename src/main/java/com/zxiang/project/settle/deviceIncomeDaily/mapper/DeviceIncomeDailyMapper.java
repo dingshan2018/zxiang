@@ -1,6 +1,8 @@
 package com.zxiang.project.settle.deviceIncomeDaily.mapper;
 
 import com.zxiang.project.settle.deviceIncomeDaily.domain.DeviceIncomeDaily;
+
+import java.util.HashMap;
 import java.util.List;	
 
 /**
@@ -58,5 +60,33 @@ public interface DeviceIncomeDailyMapper
      * @return 结果
      */
 	public int deleteDeviceIncomeDailyByIds(String[] incomeIds);
+	
+	/**
+	 * 判断是否有数据
+	 * 
+	 * */
+	public List<DeviceIncomeDaily> selectDeviceIncomeDaily(DeviceIncomeDaily deviceIncomeDaily);
+	
+	/** 
+	 * 共享设备表查询
+	 * */
+	public List<HashMap<String, Object>> selectzxdevicelist(HashMap<String, Object> map);
+	
+	/** 
+	 * 设备表销售表查询
+	 * */
+	public List<HashMap<String, Object>> selectzxdeviceorderlist(HashMap<String, Object> map);
+	
+	/** 
+	 * 广告价钱查询
+	 * */
+	public List<HashMap<String, Object>> selectreleaserecordlist(HashMap<String, Object> map);
+	
+	/** 
+	 * 出纸记录表查询
+	 * */
+	public List<HashMap<String, Object>> selectzxtissuerecordlist(HashMap<String, Object> map);
+	
+	public List<HashMap<String, Object>> selectzxplace(HashMap<String, Object> map);
 	
 }

@@ -53,55 +53,47 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertDeviceIncomeDaily" parameterType="DeviceIncomeDaily">
         insert into zx_device_income_daily
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="incomeId != null and incomeId != '' ">income_id,</if>
 			<if test="deviceId != null and deviceId != '' ">device_id,</if>
 			<if test="terminalId != null and terminalId != '' ">terminal_id,</if>
 			<if test="placeId != null and placeId != '' ">place_id,</if>
 			<if test="sellIncome != null and sellIncome != '' ">sell_income,</if>
 			<if test="adIncome != null and adIncome != '' ">ad_income,</if>
 			<if test="scanIncome != null and scanIncome != '' ">scan_income,</if>
-			<if test="sumDate != null and sumDate != '' ">sum_date,</if>
 			<if test="refundIncome != null and refundIncome != '' ">refund_income,</if>
 			<if test="refundNum != null and refundNum != '' ">refund_num,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
-			<if test="createTime != null and createTime != '' ">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
-			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+			sum_date,
+			create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="incomeId != null and incomeId != ''">#{incomeId},</if>
 			<if test="deviceId != null and deviceId != ''">#{deviceId},</if>
 			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
 			<if test="placeId != null and placeId != ''">#{placeId},</if>
 			<if test="sellIncome != null and sellIncome != ''">#{sellIncome},</if>
 			<if test="adIncome != null and adIncome != ''">#{adIncome},</if>
 			<if test="scanIncome != null and scanIncome != ''">#{scanIncome},</if>
-			<if test="sumDate != null and sumDate != ''">#{sumDate},</if>
 			<if test="refundIncome != null and refundIncome != ''">#{refundIncome},</if>
 			<if test="refundNum != null and refundNum != ''">#{refundNum},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
-			<if test="createTime != null and createTime != ''">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
-			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+			now(),
+			DATE_SUB(CURDATE(), INTERVAL 1 DAY)
          </trim>
     </insert>
 	 
     <update id="updateDeviceIncomeDaily" parameterType="DeviceIncomeDaily">
         update zx_device_income_daily
         <trim prefix="SET" suffixOverrides=",">
-            <if test="deviceId != null  ">device_id = #{deviceId},</if>
             <if test="terminalId != null  ">terminal_id = #{terminalId},</if>
             <if test="placeId != null  ">place_id = #{placeId},</if>
-            <if test="sellIncome != null  ">sell_income = #{sellIncome},</if>
-            <if test="adIncome != null  ">ad_income = #{adIncome},</if>
-            <if test="scanIncome != null  ">scan_income = #{scanIncome},</if>
-            <if test="sumDate != null  ">sum_date = #{sumDate},</if>
-            <if test="refundIncome != null  ">refund_income = #{refundIncome},</if>
-            <if test="refundNum != null  ">refund_num = #{refundNum},</if>
+            <if test="sellIncome != null  ">sell_income =sell_income+#{sellIncome},</if>
+            <if test="adIncome != null  ">ad_income =ad_income+#{adIncome},</if>
+            <if test="scanIncome != null  ">scan_income =scan_income+ #{scanIncome},</if>
+            <if test="refundIncome != null  ">refund_income =refund_income+ #{refundIncome},</if>
+            <if test="refundNum != null  ">refund_num = refund_num+#{refundNum},</if>
             <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
-            <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
-            <if test="updateTime != null  ">update_time = #{updateTime},</if>
         </trim>
         where income_id = #{incomeId}
     </update>
@@ -116,5 +108,72 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{incomeId}
         </foreach>
     </delete>
+    
+    
+    <!-- 设备分润计算  -->
+    
+     <select id="selectDeviceIncomeDaily" parameterType="DeviceIncomeDaily" resultMap="DeviceIncomeDailyResult">
+        select income_id from zx_device_income_daily
+        <where>  
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+         	 and DATE_FORMAT(sum_date, '%Y-%m-%d') = DATE_FORMAT(
+			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
+			    '%Y-%m-%d'
+			  )
+         </where>
+    </select>
+    
+    <select id="selectzxdevicelist"  resultType="java.util.HashMap">
+        select * from zx_device where del_flag !='0'
+    </select>
+    
+     <select id="selectzxdeviceorderlist"  resultType="java.util.HashMap">
+	        SELECT 
+			  device_id,
+			  terminal_id,
+			  promotioner_id,
+			  price,
+			  cut_off,
+			  seller_id,
+			  buyer_id,
+			  IF(DATE_FORMAT(create_time, '%Y-%m-%d') = DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 DAY),'%Y-%m-%d'),'01','00') isincome 
+			FROM
+			  zx_device_order 
+			WHERE  device_id = #{deviceId}
+			  order by create_time desc
+    </select>
+    
+    <!-- 广告价钱 -->
+      <select id="selectreleaserecordlist"  resultType="java.util.HashMap">
+       SELECT 
+		  * 
+		FROM
+		  zx_ad_release_record 
+		WHERE 
+		device_id = #{deviceId}
+		<if test="deviceId != null and deviceId != ''"> and schedule_id = #{scheduleId}</if>
+    </select>
+    
+      <select id="selectzxtissuerecordlist"  resultType="java.util.HashMap">
+      
+	        SELECT 
+			  device_id,
+			  terminal_id,
+			  place_id,
+			  tissue_channel 
+			FROM
+			  zx_tissue_record  
+			  WHERE 
+			   device_id = #{deviceId}
+			AND DATE_FORMAT(create_time, '%Y-%m-%d') = DATE_FORMAT(
+			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
+			    '%Y-%m-%d'
+			  )
+    </select>
+    
+      
+    <select id="selectzxplace"  resultType="java.util.HashMap">
+        select * from zx_place where del_flag !='0' and place_id = #{placeId}
+    </select>
     
 </mapper>

@@ -1,5 +1,6 @@
 package com.zxiang.project.settle.userIncome.service;
 
+import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,6 +79,41 @@ public class UserIncomeServiceImpl implements IUserIncomeService
 	public int deleteUserIncomeByIds(String ids)
 	{
 		return userIncomeMapper.deleteUserIncomeByIds(Convert.toStrArray(ids));
+	}
+
+	@Override
+	public List<UserIncome> selectUserIncome(UserIncome userIncome) {
+		// TODO Auto-generated method stub
+		return userIncomeMapper.selectUserIncome(userIncome);
+	}
+
+	@Override
+	public HashMap<String, Object> selectzxsellerlist(String sellerId) {
+		List<HashMap<String, Object>> list = userIncomeMapper.selectzxsellerlist(sellerId);
+		if(list.size()>0) {
+			return list.get(0);
+		}
+		return null;
+	}
+
+	@Override
+	public List<HashMap<String, Object>> selectzxagentlist(HashMap<String, Object> map) {
+		return userIncomeMapper.selectzxagentlist(map);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> selectzxjoinlist(HashMap<String, Object> map) {
+		return userIncomeMapper.selectzxjoinlist(map);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> selectzxrepairlist(HashMap<String, Object> map) {
+		return userIncomeMapper.selectzxrepairlist(map);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> selectzxrepairarealist(HashMap<String, Object> map) {
+		return userIncomeMapper.selectzxrepairarealist(map);
 	}
 	
 }

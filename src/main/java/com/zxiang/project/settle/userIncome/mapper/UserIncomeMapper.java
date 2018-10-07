@@ -1,6 +1,8 @@
 package com.zxiang.project.settle.userIncome.mapper;
 
 import com.zxiang.project.settle.userIncome.domain.UserIncome;
+
+import java.util.HashMap;
 import java.util.List;	
 
 /**
@@ -58,5 +60,29 @@ public interface UserIncomeMapper
      * @return 结果
      */
 	public int deleteUserIncomeByIds(String[] incomeIds);
+	
+	/**
+	 * 判断是否有记录
+	 * 
+	 * */
+	public List<UserIncome> selectUserIncome(UserIncome userIncome);
+	/**
+	 * 获取销售人员类型
+	 * */
+	public List<HashMap<String, Object>> selectzxsellerlist(String sellerId);
+	/**
+	 * 代理商
+	 * */
+	public List<HashMap<String, Object>> selectzxagentlist(HashMap<String, Object> map);
+	/**
+	 * 加盟商
+	 * */
+	public List<HashMap<String, Object>> selectzxjoinlist(HashMap<String, Object> map);
+	/**
+	 * 服务商
+	 * */
+	public List<HashMap<String, Object>> selectzxrepairlist(HashMap<String, Object> map);
+	
+	public List<HashMap<String, Object>> selectzxrepairarealist(HashMap<String, Object> map);
 	
 }
