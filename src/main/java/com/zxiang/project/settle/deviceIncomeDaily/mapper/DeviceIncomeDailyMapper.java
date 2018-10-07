@@ -78,6 +78,11 @@ public interface DeviceIncomeDailyMapper
 	public List<HashMap<String, Object>> selectzxdeviceorderlist(HashMap<String, Object> map);
 	
 	/** 
+	 * 广告价钱查询
+	 * */
+	public List<HashMap<String, Object>> selectreleaserecordlist(HashMap<String, Object> map);
+	
+	/** 
 	 * 出纸记录表查询
 	 * */
 	public List<HashMap<String, Object>> selectzxtissuerecordlist(HashMap<String, Object> map);

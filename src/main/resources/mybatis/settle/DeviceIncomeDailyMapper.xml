@@ -149,8 +149,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  * 
 		FROM
 		  zx_ad_release_record 
-		WHERE schedule_id = #{scheduleId} 
-		  AND device_id = #{deviceId} 
+		WHERE 
+		device_id = #{deviceId}
+		<if test="deviceId != null and deviceId != ''"> and schedule_id = #{scheduleId}</if>
     </select>
     
       <select id="selectzxtissuerecordlist"  resultType="java.util.HashMap">

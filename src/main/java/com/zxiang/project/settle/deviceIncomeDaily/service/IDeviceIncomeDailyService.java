@@ -76,4 +76,9 @@ public interface IDeviceIncomeDailyService
 	 * */
 	public HashMap<String, Object> selectzxplace(HashMap<String, Object> map);
 	
+	/** 
+	 * 广告价钱查询
+	 * */
+	public List<HashMap<String, Object>> selectreleaserecordlist(HashMap<String, Object> map);
+	
 }
