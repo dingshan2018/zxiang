@@ -8,6 +8,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="joinId"    column="join_id"    />
         <result property="joinerName"    column="joiner_name"    />
         <result property="joinerId"    column="joiner_id"    />
+        <result property="managerName"    column="manager_name"    />
+        <result property="managerPhone"    column="manager_phone"    />
         <result property="deviceNum"    column="device_num"    />
         <result property="bankAccount"    column="bank_account"    />
         <result property="bankReceiver"    column="bank_receiver"    />
@@ -24,15 +26,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectJoinVo">
-        select join_id, joiner_name, joiner_id, device_num, bank_account, bank_receiver, bank_name, status, del_flag, promotion_rate, ad_rate, scan_rate, create_by, create_time, update_by, update_time from zx_join
+        select join_id, joiner_name, joiner_id, device_num, bank_account, bank_receiver, bank_name,manager_name, manager_phone,
+         status, del_flag, promotion_rate, ad_rate, scan_rate, create_by, create_time, update_by, update_time from zx_join
     </sql>
 	
     <select id="selectJoinList" parameterType="Join" resultMap="JoinResult">
         <include refid="selectJoinVo"/>
         <where>  
             <if test="joinId != null and joinId != ''"> and join_id = #{joinId}</if>
-             <if test="joinerName != null and joinerName != ''"> and joiner_name = #{joinerName}</if>
+             <if test="joinerName != null and joinerName != ''"> and joiner_name like concat('%', #{joinerName}, '%')</if>
              <if test="joinerId != null and joinerId != ''"> and joiner_id = #{joinerId}</if>
+             <if test="managerName != null  and managerName != ''  ">and manager_name like concat('%', #{managerName}, '%')</if>
+             <if test="managerPhone != null  and managerPhone != ''  ">and manager_phone like concat('%', #{managerPhone}, '%')</if>
              <if test="deviceNum != null and deviceNum != ''"> and device_num = #{deviceNum}</if>
              <if test="bankAccount != null and bankAccount != ''"> and bank_account = #{bankAccount}</if>
              <if test="bankReceiver != null and bankReceiver != ''"> and bank_receiver = #{bankReceiver}</if>
@@ -60,6 +65,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="joinId != null and joinId != '' ">join_id,</if>
 			<if test="joinerName != null and joinerName != '' ">joiner_name,</if>
 			<if test="joinerId != null and joinerId != '' ">joiner_id,</if>
+			<if test="managerName != null and managerName != '' ">manager_name,</if>
+			<if test="managerPhone != null and managerPhone != '' ">manager_phone,</if>
 			<if test="deviceNum != null and deviceNum != '' ">device_num,</if>
 			<if test="bankAccount != null and bankAccount != '' ">bank_account,</if>
 			<if test="bankReceiver != null and bankReceiver != '' ">bank_receiver,</if>
@@ -78,6 +85,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="joinId != null and joinId != ''">#{joinId},</if>
 			<if test="joinerName != null and joinerName != ''">#{joinerName},</if>
 			<if test="joinerId != null and joinerId != ''">#{joinerId},</if>
+			<if test="managerName != null and managerName != ''">#{managerName},</if>
+			<if test="managerPhone != null and managerPhone != ''">#{managerPhone},</if>
 			<if test="deviceNum != null and deviceNum != ''">#{deviceNum},</if>
 			<if test="bankAccount != null and bankAccount != ''">#{bankAccount},</if>
 			<if test="bankReceiver != null and bankReceiver != ''">#{bankReceiver},</if>
@@ -99,6 +108,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="joinerName != null  and joinerName != ''  ">joiner_name = #{joinerName},</if>
             <if test="joinerId != null  ">joiner_id = #{joinerId},</if>
+            <if test="managerName != null  and managerName != ''  ">manager_name = #{managerName},</if>
+            <if test="managerPhone != null  and managerPhone != ''  ">manager_phone = #{managerPhone},</if>
             <if test="deviceNum != null  ">device_num = #{deviceNum},</if>
             <if test="bankAccount != null  and bankAccount != ''  ">bank_account = #{bankAccount},</if>
             <if test="bankReceiver != null  and bankReceiver != ''  ">bank_receiver = #{bankReceiver},</if>

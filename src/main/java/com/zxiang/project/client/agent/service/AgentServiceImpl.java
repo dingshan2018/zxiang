@@ -13,6 +13,8 @@ import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
 import com.zxiang.project.client.agent.domain.Agent;
 import com.zxiang.project.client.agent.mapper.AgentMapper;
+import com.zxiang.project.system.dept.domain.Dept;
+import com.zxiang.project.system.dept.mapper.DeptMapper;
 import com.zxiang.project.system.user.domain.User;
 import com.zxiang.project.system.user.mapper.UserMapper;
 
@@ -31,6 +33,8 @@ public class AgentServiceImpl implements IAgentService
 	private UserMapper userMapper;
 	@Autowired
     private PasswordService passwordService;
+	@Autowired
+	private DeptMapper deptMapper;
 
 	/**
      * 查询代理商信息
@@ -81,6 +85,13 @@ public class AgentServiceImpl implements IAgentService
 				user.setPassword(passwordService.encryptPassword(user.getLoginName(), agent.getManagerPhone(), user.getSalt()));
 		        user.setCreateBy(ShiroUtils.getLoginName());
 		        user.setUserType(UserConstants.USER_TYPE_AGENT);
+		        
+		        Dept dept = new Dept();
+		        dept.setDeptName(UserConstants.DEPT_NAME);
+		        List<Dept> depts = deptMapper.selectDeptList(dept);
+		        if(depts != null && depts.size() > 0) {
+		        	user.setDeptId(depts.get(0).getDeptId());
+		        }
 		        userMapper.insertUser(user);
 		        agent.setManagerId(user.getUserId().intValue());
 			}
@@ -104,22 +115,20 @@ public class AgentServiceImpl implements IAgentService
 		}else {
 			agent.setPagentId(null);
 		}
-		if(agent.getManagerId() == null) {
-			if(StringUtils.isNotBlank(agent.getManagerPhone())) {
-				// 根据管理者新增用户
-				User user = userMapper.selectUserByPhoneNumber(agent.getManagerPhone());
-				if(user == null) {
-					user = new User();
-					user.randomSalt();
-					user.setPhonenumber(agent.getManagerPhone());
-					user.setLoginName(agent.getManagerPhone());
-					user.setUserName(agent.getManagerName());
-					user.setPassword(passwordService.encryptPassword(user.getLoginName(), agent.getManagerPhone(), user.getSalt()));
-					user.setCreateBy(ShiroUtils.getLoginName());
-					user.setUserType(UserConstants.USER_TYPE_AGENT);
-					userMapper.insertUser(user);
-					agent.setManagerId(user.getUserId().intValue());
-				}
+		if(StringUtils.isNotBlank(agent.getManagerPhone())) {
+			// 根据管理者新增用户
+			User user = userMapper.selectUserByPhoneNumber(agent.getManagerPhone());
+			if(user == null) {
+				user = new User();
+				user.randomSalt();
+				user.setPhonenumber(agent.getManagerPhone());
+				user.setLoginName(agent.getManagerPhone());
+				user.setUserName(agent.getManagerName());
+				user.setPassword(passwordService.encryptPassword(user.getLoginName(), agent.getManagerPhone(), user.getSalt()));
+				user.setCreateBy(ShiroUtils.getLoginName());
+				user.setUserType(UserConstants.USER_TYPE_AGENT);
+				userMapper.insertUser(user);
+				agent.setManagerId(user.getUserId().intValue());
 			}
 		}
 		agent.setUpdateTime(new Date());

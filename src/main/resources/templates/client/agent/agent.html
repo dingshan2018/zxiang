@@ -4,6 +4,24 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
+    	<div class="col-sm-12 select-info">
+			<form id="change-form">
+				<div class="select-list">
+					<ul>
+						<li>
+							代理商名称： <input type="text" name="agentName" id="agentName"/>
+						</li>
+						<li>
+							管理者电话： <input type="text" name="managerPhone" id="managerPhone"/>
+						</li>
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="client:agent:add">
 				<i class="fa fa-plus"></i> 新增
@@ -74,6 +92,11 @@
             };
             $.table.init(options);
             $('#bootstrap-table').bootstrapTable('hideColumn', 'agentId');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'pagentId');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'createBy');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
         });
     </script>
 </body>

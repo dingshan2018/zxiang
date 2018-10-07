@@ -99,4 +99,8 @@ public class UserConstants
     public static final String USER_TYPE_REPAIR = "04";
     /** 用户类型：广告商 * */
     public static final String USER_TYPE_ADVERTISE = "05";
+    /** 用户类型：业务员 * */
+    public static final String USER_TYPE_SALESMAN = "06";
+    
+    public static final String DEPT_NAME = "合作伙伴";
 }

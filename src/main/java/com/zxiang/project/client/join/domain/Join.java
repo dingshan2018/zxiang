@@ -1,9 +1,11 @@
 package com.zxiang.project.client.join.domain;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 import com.zxiang.framework.web.domain.BaseEntity;
-import java.util.Date;
 
 /**
  * 加盟商表 zx_join
@@ -21,6 +23,10 @@ public class Join extends BaseEntity
 	private String joinerName;
 	/** 加盟机主ID */
 	private Integer joinerId;
+	/** 管理者姓名 */
+	private String managerName;
+	/** 管理电话 */
+	private String managerPhone;
 	/** 投放设备数量 */
 	private Integer deviceNum;
 	/** 收款账号 */
@@ -193,7 +199,23 @@ public class Join extends BaseEntity
 		return updateTime;
 	}
 
-    public String toString() {
+    public String getManagerName() {
+		return managerName;
+	}
+
+	public void setManagerName(String managerName) {
+		this.managerName = managerName;
+	}
+
+	public String getManagerPhone() {
+		return managerPhone;
+	}
+
+	public void setManagerPhone(String managerPhone) {
+		this.managerPhone = managerPhone;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("joinId", getJoinId())
             .append("joinerName", getJoinerName())

@@ -13,6 +13,8 @@ import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
 import com.zxiang.project.client.repair.domain.Repair;
 import com.zxiang.project.client.repair.mapper.RepairMapper;
+import com.zxiang.project.system.dept.domain.Dept;
+import com.zxiang.project.system.dept.mapper.DeptMapper;
 import com.zxiang.project.system.user.domain.User;
 import com.zxiang.project.system.user.mapper.UserMapper;
 
@@ -31,6 +33,8 @@ public class RepairServiceImpl implements IRepairService
 	private UserMapper userMapper;
 	@Autowired
     private PasswordService passwordService;
+	@Autowired
+	private DeptMapper deptMapper;
 
 	/**
      * 查询服务商信息
@@ -76,6 +80,12 @@ public class RepairServiceImpl implements IRepairService
 				user.setPassword(passwordService.encryptPassword(user.getLoginName(), repair.getManagerPhone(), user.getSalt()));
 		        user.setCreateBy(ShiroUtils.getLoginName());
 		        user.setUserType(UserConstants.USER_TYPE_REPAIR);
+		        Dept dept = new Dept();
+		        dept.setDeptName(UserConstants.DEPT_NAME);
+		        List<Dept> depts = deptMapper.selectDeptList(dept);
+		        if(depts != null && depts.size() > 0) {
+		        	user.setDeptId(depts.get(0).getDeptId());
+		        }
 		        userMapper.insertUser(user);
 		        repair.setManagerId(user.getUserId().intValue());
 			}

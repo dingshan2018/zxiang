@@ -3,13 +3,20 @@ package com.zxiang.project.client.join.service;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.security.ShiroUtils;
+import com.zxiang.framework.shiro.service.PasswordService;
 import com.zxiang.project.client.join.domain.Join;
 import com.zxiang.project.client.join.mapper.JoinMapper;
+import com.zxiang.project.system.dept.domain.Dept;
+import com.zxiang.project.system.dept.mapper.DeptMapper;
+import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.mapper.UserMapper;
 
 /**
  * 加盟商 服务层实现
@@ -22,6 +29,12 @@ public class JoinServiceImpl implements IJoinService
 {
 	@Autowired
 	private JoinMapper joinMapper;
+	@Autowired
+	private UserMapper userMapper;
+	@Autowired
+    private PasswordService passwordService;
+	@Autowired
+	private DeptMapper deptMapper;
 
 	/**
      * 查询加盟商信息
@@ -55,6 +68,29 @@ public class JoinServiceImpl implements IJoinService
      */
 	@Override
 	public int insertJoin(Join join) {
+		if(StringUtils.isNotBlank(join.getManagerPhone())) {
+			// 根据管理者新增用户
+			User user = userMapper.selectUserByPhoneNumber(join.getManagerPhone());
+			if(user == null) {
+				user = new User();
+				user.randomSalt();
+				user.setPhonenumber(join.getManagerPhone());
+				user.setLoginName(join.getManagerPhone());
+				user.setUserName(join.getManagerName());
+				user.setPassword(passwordService.encryptPassword(user.getLoginName(), join.getManagerPhone(), user.getSalt()));
+		        user.setCreateBy(ShiroUtils.getLoginName());
+		        user.setUserType(UserConstants.USER_TYPE_JOIN);
+		        
+		        Dept dept = new Dept();
+		        dept.setDeptName(UserConstants.DEPT_NAME);
+		        List<Dept> depts = deptMapper.selectDeptList(dept);
+		        if(depts != null && depts.size() > 0) {
+		        	user.setDeptId(depts.get(0).getDeptId());
+		        }
+		        userMapper.insertUser(user);
+		        join.setJoinerId(user.getUserId().intValue());
+			}
+		}
 		join.setCreateTime(new Date());
 		join.setCreateBy(ShiroUtils.getLoginName());
 	    return joinMapper.insertJoin(join);
@@ -68,6 +104,22 @@ public class JoinServiceImpl implements IJoinService
      */
 	@Override
 	public int updateJoin(Join join) {
+		if(StringUtils.isNotBlank(join.getManagerPhone())) {
+			// 根据管理者新增用户
+			User user = userMapper.selectUserByPhoneNumber(join.getManagerPhone());
+			if(user == null) {
+				user = new User();
+				user.randomSalt();
+				user.setPhonenumber(join.getManagerPhone());
+				user.setLoginName(join.getManagerPhone());
+				user.setUserName(join.getManagerName());
+				user.setPassword(passwordService.encryptPassword(user.getLoginName(), join.getManagerPhone(), user.getSalt()));
+				user.setCreateBy(ShiroUtils.getLoginName());
+				user.setUserType(UserConstants.USER_TYPE_JOIN);
+				userMapper.insertUser(user);
+				join.setJoinerId(user.getUserId().intValue());
+			}
+		}
 		join.setUpdateTime(new Date());
 		join.setUpdateBy(ShiroUtils.getLoginName());
 	    return joinMapper.updateJoin(join);

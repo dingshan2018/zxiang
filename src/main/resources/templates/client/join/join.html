@@ -4,6 +4,24 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
+		<div class="col-sm-12 select-info">
+			<form id="change-form">
+				<div class="select-list">
+					<ul>
+						<li>
+							加盟商名称： <input type="text" name="joinerName" id="joinerName"/>
+						</li>
+						<li>
+							管理者电话： <input type="text" name="managerPhone" id="managerPhone"/>
+						</li>
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="client:join:add">
 				<i class="fa fa-plus"></i> 新增
@@ -30,6 +48,7 @@
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "加盟商",
+                search: false,
                 columns: [{
 		            checkbox: true
 		        },
@@ -42,8 +61,12 @@
 					title : '加盟商名称' 
 				},
 				{
-					field : 'joinerId', 
-					title : '加盟机主ID' 
+					field : 'managerName', 
+					title : '管理者' 
+				},
+				{
+					field : 'managerPhone', 
+					title : '管理者电话' 
 				},
 				{
 					field : 'deviceNum', 
@@ -61,10 +84,11 @@
 					field : 'bankName', 
 					title : '开户行' 
 				},
-				{
-					field : 'status', 
-					title : '状态' 
-				},
+				{field : 'status',title : '状态',formatter: function(value, row, index) {
+					if(value == 0) {return "无效"}
+					if(value == 1) {return "有效"}
+					return "-";
+	            } },
 				{
 					field : 'promotionRate', 
 					title : '推广收益' 

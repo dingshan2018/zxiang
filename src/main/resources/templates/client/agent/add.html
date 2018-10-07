@@ -140,8 +140,12 @@
 		        	countyBind();
 		        	$("#level").val("一级代理");
 		        })
-		        $("#county").change(function () {
-		        	$("#level").val("二级代理");
+		         $("#county").change(function (event) {
+		        	if($("#county").val() == null || $("#county").val().trim() ==''){
+		        		$("#level").val(1);$("#levelName").val("一级代理");
+		        	}else{
+			        	$("#level").val(2);$("#levelName").val("二级代理");
+		        	}
 		        })
 		    });
 		 function proviceBind() {

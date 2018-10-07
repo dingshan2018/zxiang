@@ -13,6 +13,8 @@ import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
 import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
+import com.zxiang.project.system.dept.domain.Dept;
+import com.zxiang.project.system.dept.mapper.DeptMapper;
 import com.zxiang.project.system.user.domain.User;
 import com.zxiang.project.system.user.mapper.UserMapper;
 
@@ -31,6 +33,8 @@ public class AdvertiseServiceImpl implements IAdvertiseService
 	private UserMapper userMapper;
 	@Autowired
     private PasswordService passwordService;
+	@Autowired
+	private DeptMapper deptMapper;
 
 	/**
      * 查询广告商信息
@@ -76,6 +80,13 @@ public class AdvertiseServiceImpl implements IAdvertiseService
 				user.setPassword(passwordService.encryptPassword(user.getLoginName(), advertise.getManagerPhone(), user.getSalt()));
 		        user.setCreateBy(ShiroUtils.getLoginName());
 		        user.setUserType(UserConstants.USER_TYPE_ADVERTISE);
+		      
+		        Dept dept = new Dept();
+		        dept.setDeptName(UserConstants.DEPT_NAME);
+		        List<Dept> depts = deptMapper.selectDeptList(dept);
+		        if(depts != null && depts.size() > 0) {
+		        	user.setDeptId(depts.get(0).getDeptId());
+		        }
 		        userMapper.insertUser(user);
 		        advertise.setManagerId(user.getUserId().intValue());
 			}

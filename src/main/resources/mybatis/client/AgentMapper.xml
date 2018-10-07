@@ -45,7 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="agentId != null and agentId != ''"> and agent_id = #{agentId}</if>
              <if test="pagentId != null and pagentId != ''"> and pagent_id = #{pagentId}</if>
-             <if test="agentName != null and agentName != ''"> and agent_name = #{agentName}</if>
+             <if test="agentName != null and agentName != ''"> and agent_name like concat('%', #{agentName}, '%')</if>
              <if test="province != null and province != ''"> and province = #{province}</if>
              <if test="city != null and city != ''"> and city = #{city}</if>
              <if test="county != null and county != ''"> and county = #{county}</if>
@@ -54,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
              <if test="status != null and status != ''"> and status = #{status}</if>
              <if test="managerId != null and managerId != ''"> and manager_id = #{managerId}</if>
-             <if test="managerName != null and managerName != ''"> and manager_name = #{managerName}</if>
+             <if test="managerName != null and managerName != ''"> and manager_phone like concat('%', #{managerPhone}, '%')</if>
              <if test="managerPhone != null and managerPhone != ''"> and manager_phone = #{managerPhone}</if>
              <if test="bankReceiver != null and bankReceiver != ''"> and bank_receiver = #{bankReceiver}</if>
              <if test="bankAccount != null and bankAccount != ''"> and bank_account = #{bankAccount}</if>

@@ -33,10 +33,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectRepairVo"/>
         <where>  
             <if test="repairId != null and repairId != ''"> and repair_id = #{repairId}</if>
-             <if test="repairName != null and repairName != ''"> and repair_name = #{repairName}</if>
+             <if test="repairName != null and repairName != ''"> and repair_name like concat('%', #{repairName}, '%')</if>
              <if test="managerName != null and managerName != ''"> and manager_name = #{managerName}</if>
              <if test="managerId != null and managerId != ''"> and manager_id = #{managerId}</if>
-             <if test="managerPhone != null and managerPhone != ''"> and manager_phone = #{managerPhone}</if>
+             <if test="managerPhone != null  and managerPhone != ''  ">and manager_phone like concat('%', #{managerPhone}, '%')</if>
              <if test="bankReceiver != null and bankReceiver != ''"> and bank_receiver = #{bankReceiver}</if>
              <if test="bankAccount != null and bankAccount != ''"> and bank_account = #{bankAccount}</if>
              <if test="bankName != null and bankName != ''"> and bank_name = #{bankName}</if>

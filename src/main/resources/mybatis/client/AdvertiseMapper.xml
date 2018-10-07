@@ -31,10 +31,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectAdvertiseVo"/>
         <where>  
             <if test="advertiseId != null and advertiseId != ''"> and advertise_id = #{advertiseId}</if>
-             <if test="advertisorName != null and advertisorName != ''"> and advertisor_name = #{advertisorName}</if>
+             <if test="advertisorName != null and advertisorName != ''"> and advertisor_name like concat('%', #{advertisorName}, '%')</if>
              <if test="managerId != null and managerId != ''"> and manager_id = #{managerId}</if>
              <if test="managerName != null and managerName != ''"> and manager_name = #{managerName}</if>
-             <if test="managerPhone != null and managerPhone != ''"> and manager_phone = #{managerPhone}</if>
+             <if test="managerPhone != null and managerPhone != ''"> and manager_phone like concat('%', #{managerPhone}, '%')</if>
              <if test="business != null and business != ''"> and business = #{business}</if>
              <if test="releaseNum != null and releaseNum != ''"> and release_num = #{releaseNum}</if>
              <if test="lastScheduler != null and lastScheduler != ''"> and last_scheduler = #{lastScheduler}</if>

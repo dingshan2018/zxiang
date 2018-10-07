@@ -5,7 +5,6 @@
 <head th:include="include :: header"></head>
 <link href="/ajax/libs/jquery-layout/jquery.layout-latest.css" th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
 <link href="/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css" th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
-
 <body class="gray-bg">
 	<div class="ui-layout-west">
 		<div class="main-content">
@@ -37,13 +36,19 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								登录名称：<input type="text" name="loginName"/>
+								登录名称：<input type="text" name="loginName" style="width: 150px;"/>
 							</li>
 							<li>
-								手机号码：<input type="text" name="phonenumber"/>
+								手机号码：<input type="text" name="phonenumber" style="width: 150px;"/>
 							</li>
 							<li>
-								用户状态：<select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
+								用户类型：<select name="userType" th:with="type=${@dict.getType('user_type')}" style="width: 150px;">
+									<option value="">所有</option>
+									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+								</select>
+							</li>
+							<li>
+								用户状态：<select name="status" th:with="type=${@dict.getType('sys_normal_disable')}" style="width: 150px;">
 									<option value="">所有</option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
@@ -110,7 +115,8 @@
 		        },
 		        {
 		            field: 'userId',
-		            title: '用户ID'
+		            title: '用户ID',
+		            visible: false
 		        },
 		        {
 		            field: 'loginName',
@@ -124,6 +130,18 @@
 		        {
 		            field: 'dept.deptName',
 		            title: '部门'
+		        },
+		        {
+		            field: 'userType',
+		            title: '用户类型',
+		            formatter: function(value, row, index) {
+		            	if(value == '00') {return "系统用户"}
+						if(value == '02') {return "加盟商"}
+						if(value == '03') {return "代理商"}
+						if(value == '04') {return "服务商"}
+						if(value == '05') {return "广告商"}
+						if(value == '06') {return "业务员"}
+		            }
 		        },
 		        {
 		            field: 'email',
