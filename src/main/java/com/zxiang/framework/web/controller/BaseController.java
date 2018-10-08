@@ -23,6 +23,9 @@ import com.zxiang.project.system.user.domain.User;
  */
 public class BaseController
 {
+	//用户类型-服务商代码04
+	public final static String  TYPE_REPAIR = "04";
+	
     /**
      * 将前台传递过来的日期格式的字符串，自动转化为Date类型
      */

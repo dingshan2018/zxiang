@@ -70,8 +70,11 @@ public class ChangeTerminalController extends BaseController
 	@GetMapping("/add")
 	public String add(ModelMap mmap)
 	{
-		List<User> userList = userService.selectUserList(new User());
+		User queryUser = new User();
+		queryUser.setUserType(TYPE_REPAIR);
+		List<User> userList = userService.selectUserList(queryUser);
 		mmap.put("userList", userList);
+		
 	    return prefix + "/add";
 	}
 	

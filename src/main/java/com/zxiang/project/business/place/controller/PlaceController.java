@@ -21,6 +21,8 @@ import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.business.place.domain.Place;
 import com.zxiang.project.business.place.service.IPlaceService;
 import com.zxiang.project.system.area.service.IAreaService;
+import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.service.IUserService;
 
 /**
  * 场所管理 信息操作处理
@@ -38,6 +40,8 @@ public class PlaceController extends BaseController
 	private IPlaceService placeService;
 	@Autowired
 	private IAreaService areaService;
+	@Autowired
+	private IUserService userService;
 	
 	@RequiresPermissions("business:place:view")
 	@GetMapping()
@@ -63,8 +67,13 @@ public class PlaceController extends BaseController
 	 * 新增场所管理
 	 */
 	@GetMapping("/add")
-	public String add()
+	public String add(ModelMap mmap)
 	{
+		User queryUser = new User();
+		queryUser.setUserType(TYPE_REPAIR);
+		List<User> userList = userService.selectUserList(queryUser);
+		mmap.put("userList", userList);
+		
 	    return prefix + "/add";
 	}
 	

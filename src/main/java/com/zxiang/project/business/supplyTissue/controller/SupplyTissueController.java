@@ -22,6 +22,8 @@ import com.zxiang.project.business.device.service.IDeviceService;
 import com.zxiang.project.business.place.service.IPlaceService;
 import com.zxiang.project.business.supplyTissue.domain.SupplyTissue;
 import com.zxiang.project.business.supplyTissue.service.ISupplyTissueService;
+import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.service.IUserService;
 
 /**
  * 补纸记录 信息操作处理
@@ -34,7 +36,7 @@ import com.zxiang.project.business.supplyTissue.service.ISupplyTissueService;
 public class SupplyTissueController extends BaseController
 {
     private String prefix = "business/supplyTissue";
-	
+    
 	@Autowired
 	private ISupplyTissueService supplyTissueService;
 	
@@ -42,6 +44,8 @@ public class SupplyTissueController extends BaseController
 	private IPlaceService placeService;
 	@Autowired
 	private IDeviceService deviceService;
+	@Autowired
+	private IUserService userService;
 	
 	@RequiresPermissions("business:supplyTissue:view")
 	@GetMapping()
@@ -67,8 +71,13 @@ public class SupplyTissueController extends BaseController
 	 * 新增补纸记录
 	 */
 	@GetMapping("/add")
-	public String add()
+	public String add(ModelMap mmap)
 	{
+		User queryUser = new User();
+		queryUser.setUserType(TYPE_REPAIR);
+		List<User> userList = userService.selectUserList(queryUser);
+		mmap.put("userList", userList);
+		
 	    return prefix + "/add";
 	}
 	

@@ -36,7 +36,7 @@ import com.zxiang.project.system.user.service.IUserService;
 public class DeviceController extends BaseController
 {
     private String prefix = "business/device";
-	
+    
 	@Autowired
 	private IDeviceService deviceService;
 	@Autowired
@@ -213,7 +213,9 @@ public class DeviceController extends BaseController
 		mmap.put("device", device);
 		mmap.put("terminalDropBoxList", terminalService.getDropBoxValidlList());
 		
-		List<User> userList = userService.selectUserList(new User());
+		User queryUser = new User();
+		queryUser.setUserType(TYPE_REPAIR);
+		List<User> userList = userService.selectUserList(queryUser);
 		mmap.put("userList", userList);
 		
 	    return prefix + "/changeDevice";
@@ -246,7 +248,10 @@ public class DeviceController extends BaseController
 		Device device = deviceService.selectDeviceById(deviceId);
 		mmap.put("device", device);
 		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
-		List<User> userList = userService.selectUserList(new User());
+		
+		User queryUser = new User();
+		queryUser.setUserType(TYPE_REPAIR);
+		List<User> userList = userService.selectUserList(queryUser);
 		mmap.put("userList", userList);
 		
 	    return prefix + "/supplyTissueAdd";
