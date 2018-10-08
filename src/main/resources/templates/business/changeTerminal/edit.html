@@ -10,6 +10,7 @@
                 <label class="col-sm-3 control-label">旧终端：</label>
                 <div class="col-sm-8">
 	                <select id="oldTerminalId" name="oldTerminalId" class="form-control">
+						<option value=""></option>
 						<option th:each="terminal:${terminalDropBoxList}" th:value="${terminal.terminalId}"
 						 th:text="${terminal.terminalCode}" th:field="*{oldTerminalId}"></option>
 					</select>
@@ -19,6 +20,7 @@
                 <label class="col-sm-3 control-label">新终端：</label>
                 <div class="col-sm-8">
                      <select id="newTerminalId" name="newTerminalId" class="form-control">
+						<option value=""></option>
 						<option th:each="terminal:${terminalDropBoxList}" th:value="${terminal.terminalId}"
 						 th:text="${terminal.terminalCode}" th:field="*{newTerminalId}"></option>
 					</select>
@@ -40,6 +42,7 @@
                 <label class="col-sm-3 control-label">换板人：</label>
                 <div class="col-sm-8">
                     <select id="changerId" name="changerId" class="form-control">
+						<option value=""></option>
 						<option th:each="user:${userList}" th:value="${user.userId}"
 						 th:text="${user.userName}" th:field="*{changerId}"></option>
 					</select>

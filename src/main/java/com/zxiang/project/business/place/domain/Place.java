@@ -91,6 +91,8 @@ public class Place extends BaseEntity
 	private String provinceName;
 	private String cityName;
 	private String countyName;
+	private String repairName;
+	private String supplyName;
 	
 	public void setPlaceId(Integer placeId) 
 	{
@@ -429,6 +431,22 @@ public class Place extends BaseEntity
 
 	public void setParentPlaceName(String parentPlaceName) {
 		this.parentPlaceName = parentPlaceName;
+	}
+
+	public String getRepairName() {
+		return repairName;
+	}
+
+	public void setRepairName(String repairName) {
+		this.repairName = repairName;
+	}
+
+	public String getSupplyName() {
+		return supplyName;
+	}
+
+	public void setSupplyName(String supplyName) {
+		this.supplyName = supplyName;
 	}
 
 	public String toString() {

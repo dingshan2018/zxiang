@@ -51,7 +51,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         (select distinct a.pname from sys_area a where a.id =p.`city` ) cityName,
         county,
         (select distinct a.pname from sys_area a where a.id =p.`county` ) countyName,
-        lon, lat, packet, tissue_price, tissue_len, repair_id, supply_id, operator_id, owner_id,
+        lon, lat, packet, tissue_price, tissue_len, 
+        repair_id, 
+        (select distinct u.user_name from sys_user u where u.user_id =p.`repair_id` ) repairName,
+        supply_id, 
+        (select distinct u.user_name from sys_user u where u.user_id =p.`supply_id` ) supplyName,
+        operator_id, owner_id,
         device_count, ct_bank,ct_account, ct_receiver, ct_phone, ct_identity, ct_rate, status, del_flag, note, 
         create_by, create_time, update_by, update_time from zx_place p
     </sql>

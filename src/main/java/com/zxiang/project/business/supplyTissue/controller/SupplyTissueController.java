@@ -108,6 +108,12 @@ public class SupplyTissueController extends BaseController
 		mmap.put("supplyTissue", supplyTissue);
 		mmap.put("deviceDropBoxList", deviceService.selectDropBoxList());
 		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
+		
+		User queryUser = new User();
+		queryUser.setUserType(TYPE_REPAIR);
+		List<User> userList = userService.selectUserList(queryUser);
+		mmap.put("userList", userList);
+		
 	    return prefix + "/edit";
 	}
 	

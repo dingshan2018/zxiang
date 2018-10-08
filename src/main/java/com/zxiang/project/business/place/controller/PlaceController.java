@@ -107,6 +107,12 @@ public class PlaceController extends BaseController
 		mmap.put("provinceDropBoxList", areaService.selectDropBoxList(0L));
 		mmap.put("cityDropBoxList", areaService.selectDropBoxList(place.getProvince()));
 		mmap.put("countyDropBoxList", areaService.selectDropBoxList(place.getCity()));
+		
+		User queryUser = new User();
+		queryUser.setUserType(TYPE_REPAIR);
+		List<User> userList = userService.selectUserList(queryUser);
+		mmap.put("userList", userList);
+		
 	    return prefix + "/edit";
 	}
 	

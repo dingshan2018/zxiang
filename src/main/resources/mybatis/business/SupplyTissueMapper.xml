@@ -20,6 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          tissue_count, place_id, 
          (select distinct p.name from zx_place p where p.place_id =zst.`place_id` ) placeName,
          supplier_id, 
+         (select distinct u.user_name from sys_user u where u.user_id =zst.`supplier_id` ) supplierName,
          create_by, create_time from zx_supply_tissue zst
     </sql>
 	

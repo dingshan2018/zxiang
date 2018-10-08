@@ -34,6 +34,7 @@ public class SupplyTissue extends BaseEntity
 	
 	private String deviceCode;
 	private String placeName;
+	private String supplierName;
 
 	public void setSupplyTissueId(Integer supplyTissueId) 
 	{
@@ -113,6 +114,14 @@ public class SupplyTissue extends BaseEntity
 
 	public void setPlaceName(String placeName) {
 		this.placeName = placeName;
+	}
+
+	public String getSupplierName() {
+		return supplierName;
+	}
+
+	public void setSupplierName(String supplierName) {
+		this.supplierName = supplierName;
 	}
 
 	public String toString() {

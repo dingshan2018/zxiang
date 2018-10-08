@@ -105,7 +105,12 @@ public class ChangeTerminalController extends BaseController
 		
 		mmap.put("changeTerminal", changeTerminal);
 		mmap.put("terminalDropBoxList", terminalService.selectDropBoxList());
-		mmap.put("userList", userService.selectUserList(new User()));
+
+		User queryUser = new User();
+		queryUser.setUserType(TYPE_REPAIR);
+		List<User> userList = userService.selectUserList(queryUser);
+		mmap.put("userList", userList);
+		
 	    return prefix + "/edit";
 	}
 	
