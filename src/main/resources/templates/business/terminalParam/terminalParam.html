@@ -4,10 +4,32 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
+    	<div class="col-sm-12 select-info">
+			<form id="terminal-form">
+				<div class="select-list">
+					<ul>
+						<li>
+							终端：
+							<select id="terminalId" name="terminalId">
+								<option value="">全部</option>
+		                      	<option th:each="t : ${terminalParamList}" th:text="${t['terminalCode']}" th:value="${t['terminalId']}" th:field="*{terminal.terminalId}"></option>
+		                  	</select>
+						</li>
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+		
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
-			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:terminalParam:add">
+			<!-- <a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:terminalParam:add">
 				<i class="fa fa-plus"></i> 新增
-			</a>
+			</a> -->
+			<a class="btn btn-outline btn-success btn-rounded" th:onclick="'javascript:$.operate.add(\''+${terminal.terminalId}+'\')'" shiro:hasPermission="business:terminalParam:add">
+	                <i class="fa fa-plus"></i> 新增
+            </a>
 			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="business:terminalParam:remove">
 				<i class="fa fa-trash-o"></i> 删除
 			</a>
@@ -26,10 +48,12 @@
         $(function() {
             var options = {
                 url: prefix + "/list",
-                createUrl: prefix + "/add",
+                createUrl: prefix + "/add/{id}",
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "终端参数",
+                search: false,
+                queryParams: queryParams,
                 columns: [{
 		            checkbox: true
 		        },
@@ -82,6 +106,12 @@
             };
             $.table.init(options);
         });
+        
+        function queryParams(params) {
+			return {
+				terminalId:       $("#terminalId").val()
+			};
+		}
     </script>
 </body>
 </html>

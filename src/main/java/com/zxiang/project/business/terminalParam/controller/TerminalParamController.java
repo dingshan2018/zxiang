@@ -62,9 +62,10 @@ public class TerminalParamController extends BaseController
 	/**
 	 * 新增终端参数
 	 */
-	@GetMapping("/add")
-	public String add()
+	@GetMapping("/add/{terminalId}")
+	public String add(@PathVariable("terminalId") Integer terminalId, ModelMap mmap)
 	{
+		mmap.put("terminal", terminalService.selectTerminalById(terminalId));
 	    return prefix + "/add";
 	}
 	

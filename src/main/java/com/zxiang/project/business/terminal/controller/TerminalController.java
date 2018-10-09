@@ -159,4 +159,16 @@ public class TerminalController extends BaseController
     {
         return terminalService.checkTerminalCodeUnique(terminal.getTerminalCode());
     }
+    
+    /**
+     * 查询终端参数详细
+     */
+    @RequiresPermissions("business:terminal:list")
+    @GetMapping("/terminalParamDetail/{terminalId}")
+    public String detail(@PathVariable("terminalId") Integer terminalId, ModelMap mmap)
+    {
+        mmap.put("terminal", terminalService.selectTerminalById(terminalId));
+        mmap.put("terminalParamList", terminalService.selectDropBoxList());
+        return "business/terminalParam/terminalParam";
+    }
 }

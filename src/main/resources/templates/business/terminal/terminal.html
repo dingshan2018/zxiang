@@ -160,7 +160,7 @@
         
         //添加终端参数弹窗函数
         function addTerminalParam(id) {
-        	/* var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+        	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
     		if (rows.length == 0) {
     			$.modal.alertWarning("请至少选择一条记录");
     			return;
@@ -168,10 +168,14 @@
     		if (rows.length > 1){
     			$.modal.alertWarning("只能选择一条记录");
     			return;
-    		} */
+    		}
     		
-        	var url = ctx + "business/terminalParam/add";
-        	$.modal.open("添加终端参数", url);
+        	//var url = ctx + "business/terminalParam/add";
+        	//$.modal.open("添加终端参数", url);
+        	//采用列表的形式处理
+        	var terminaId = $.table.selectColumns($.table._option.columns[1].field);
+    		var url = prefix + '/terminalParamDetail/' + terminaId;
+ 		    createMenuItem(url, "终端参数");
 		}
         
       	//添加终端定时弹窗函数
