@@ -54,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where advertise_id = #{advertiseId}
     </select>
         
-    <insert id="insertAdvertise" parameterType="Advertise">
+    <insert id="insertAdvertise" parameterType="Advertise" useGeneratedKeys="true" keyProperty="advertiseId">
         insert into zx_advertise
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="advertiseId != null and advertiseId != '' ">advertise_id,</if>

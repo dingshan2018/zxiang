@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zxiang.common.constant.UserConstants;
+import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
@@ -15,6 +16,7 @@ import com.zxiang.project.client.repair.domain.Repair;
 import com.zxiang.project.client.repair.mapper.RepairMapper;
 import com.zxiang.project.system.dept.domain.Dept;
 import com.zxiang.project.system.dept.mapper.DeptMapper;
+import com.zxiang.project.system.role.service.IRoleService;
 import com.zxiang.project.system.user.domain.User;
 import com.zxiang.project.system.user.mapper.UserMapper;
 
@@ -35,6 +37,8 @@ public class RepairServiceImpl implements IRepairService
     private PasswordService passwordService;
 	@Autowired
 	private DeptMapper deptMapper;
+	@Autowired
+	private IRoleService iroleService;
 
 	/**
      * 查询服务商信息
@@ -68,31 +72,40 @@ public class RepairServiceImpl implements IRepairService
      */
 	@Override
 	public int insertRepair(Repair repair) {
+		User user = null;
 		if(StringUtils.isNotBlank(repair.getManagerPhone())) {
 			// 根据管理者新增用户
-			User user = userMapper.selectUserByPhoneNumber(repair.getManagerPhone());
-			if(user == null) {
-				user = new User();
-				user.randomSalt();
-				user.setPhonenumber(repair.getManagerPhone());
-				user.setLoginName(repair.getManagerPhone());
-				user.setUserName(repair.getManagerName());
-				user.setPassword(passwordService.encryptPassword(user.getLoginName(), repair.getManagerPhone(), user.getSalt()));
-		        user.setCreateBy(ShiroUtils.getLoginName());
-		        user.setUserType(UserConstants.USER_TYPE_REPAIR);
-		        Dept dept = new Dept();
-		        dept.setDeptName(UserConstants.DEPT_NAME);
-		        List<Dept> depts = deptMapper.selectDeptList(dept);
-		        if(depts != null && depts.size() > 0) {
-		        	user.setDeptId(depts.get(0).getDeptId());
-		        }
-		        userMapper.insertUser(user);
-		        repair.setManagerId(user.getUserId().intValue());
+			user = userMapper.selectUserByPhoneNumber(repair.getManagerPhone());
+			if(user != null) {
+				throw new RRException(String.format("该手机号[%s]对应的用户已存在", repair.getManagerPhone()));
 			}
+			user = new User();
+			user.randomSalt();
+			user.setPhonenumber(repair.getManagerPhone());
+			user.setLoginName(repair.getManagerPhone());
+			user.setUserName(repair.getManagerName());
+			user.setPassword(passwordService.encryptPassword(user.getLoginName(), repair.getManagerPhone(), user.getSalt()));
+			user.setCreateBy(ShiroUtils.getLoginName());
+			user.setUserType(UserConstants.USER_TYPE_REPAIR);
+			Dept dept = new Dept();
+			dept.setDeptName(UserConstants.DEPT_NAME);
+			List<Dept> depts = deptMapper.selectDeptList(dept);
+			if(depts != null && depts.size() > 0) {
+				user.setDeptId(depts.get(0).getDeptId());
+			}
+			userMapper.insertUser(user);
+			repair.setManagerId(user.getUserId().intValue());
+			// 设置默认角色
+			iroleService.setDefaultRole(user, UserConstants.ROLE_NAME_REPAIR);
 		}
 		repair.setCreateTime(new Date());
 		repair.setCreateBy(ShiroUtils.getLoginName());
-	    return repairMapper.insertRepair(repair);
+		int i =  repairMapper.insertRepair(repair);
+	    if(user != null) {
+	    	user.setPuserId(repair.getRepairId());
+	    	userMapper.updateUser(user);
+	    }
+	    return i;
 	}
 	
 	/**

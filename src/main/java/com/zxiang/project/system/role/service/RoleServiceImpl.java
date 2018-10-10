@@ -5,10 +5,12 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zxiang.common.constant.UserConstants;
+import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.StringUtils;
 import com.zxiang.common.utils.security.ShiroUtils;
@@ -16,6 +18,8 @@ import com.zxiang.project.system.role.domain.Role;
 import com.zxiang.project.system.role.domain.RoleMenu;
 import com.zxiang.project.system.role.mapper.RoleMapper;
 import com.zxiang.project.system.role.mapper.RoleMenuMapper;
+import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.domain.UserRole;
 import com.zxiang.project.system.user.mapper.UserRoleMapper;
 
 /**
@@ -255,5 +259,17 @@ public class RoleServiceImpl implements IRoleService
     {
         return userRoleMapper.countUserRoleByRoleId(roleId);
     }
+
+	@Override
+	public void setDefaultRole(User user, String clientName) {
+		Role role = roleMapper.checkRoleNameUnique(clientName);
+		if(role == null) {
+			throw new RRException(String.format("[%s]未设置默认权限", clientName));
+		}
+		UserRole userRole = new UserRole();
+		userRole.setRoleId(role.getRoleId());
+		userRole.setUserId(user.getUserId());
+		userRoleMapper.insertUserRole(userRole);
+	}
 
 }

@@ -58,7 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where repair_id = #{repairId}
     </select>
         
-    <insert id="insertRepair" parameterType="Repair">
+    <insert id="insertRepair" parameterType="Repair"  useGeneratedKeys="true" keyProperty="repairId">
         insert into zx_repair
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="repairId != null and repairId != '' ">repair_id,</if>

@@ -103,4 +103,12 @@ public class UserConstants
     public static final String USER_TYPE_SALESMAN = "06";
     
     public static final String DEPT_NAME = "合作伙伴";
+    public static final String ROLE_NAME_AGENT = "代理商";
+    public static final String ROLE_NAME_AGENT_SALESMAN = "代理商业务员";
+    public static final String ROLE_NAME_JOIN = "加盟商";
+    public static final String ROLE_NAME_JOIN_SALESMAN = "加盟商业务员";
+    public static final String ROLE_NAME_REPAIR = "服务商";
+    public static final String ROLE_NAME_REPAIR_SALESMAN = "服务商业务员";
+    public static final String ROLE_NAME_AD = "广告商";
+    public static final String ROLE_NAME_AD_SALESMAN = "广告商业务员";
 }

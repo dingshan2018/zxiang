@@ -43,5 +43,6 @@ public interface UserRoleMapper
      * @return 结果
      */
     public int batchUserRole(List<UserRole> userRoleList);
+    public int insertUserRole(UserRole userRole);
 
 }

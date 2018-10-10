@@ -75,7 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where agent_id = #{agentId}
     </select>
         
-    <insert id="insertAgent" parameterType="Agent">
+    <insert id="insertAgent" parameterType="Agent" useGeneratedKeys="true" keyProperty="agentId">
         insert into zx_agent
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="agentId != null and agentId != '' ">agent_id,</if>
