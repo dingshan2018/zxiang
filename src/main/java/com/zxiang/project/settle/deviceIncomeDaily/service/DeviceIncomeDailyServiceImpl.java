@@ -171,11 +171,12 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		String placeId  = map.get("place_id") + ""; //场所Id
 		int tissuenum = tissuelist.size();
 		
-		//插入机主出纸二维码广告数据(每次出纸收益0.3元)
+		//(需要判断是否有广告)插入机主出纸二维码广告数据(每次出纸收益0.3元) 和  服务收益（0.025元）
 		UserIncome userIncome = new UserIncome();
 		userIncome.setCoperatorId(Integer.valueOf(buyerid));
 		List<UserIncome> userlist =iUserIncomeService.selectUserIncome(userIncome);
 		userIncome.setAdIncomeRate(tissuenum*0.3);
+		userIncome.setScanIncomeRate(tissuenum*0.025);
 		if(userlist.size()>0){
 			UserIncome income = userlist.get(0);
 			userIncome.setIncomeId(income.getIncomeId());
@@ -184,11 +185,12 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			iUserIncomeService.insertUserIncome(userIncome);
 		}
 		
-		//插入代理商出纸二维码广告数据（地级市代理每次出纸收益0.02元，县区、县级市代理每次出纸收益0.05元）
+		//插入代理商出纸二维码广告数据（地级市代理每次出纸收益0.02元，县区、县级市代理每次出纸收益0.05元）和  服务收益（0.025元）
 		UserIncome userIncome1 = new UserIncome();
 		userIncome.setCoperatorId(Integer.valueOf(buyerid));
 		List<UserIncome> userlist1 =iUserIncomeService.selectUserIncome(userIncome);
 		userIncome.setAdIncomeRate(tissuenum*0.05);
+		userIncome.setAdIncomeRate(tissuenum*0.025);
 		if(userlist1.size()>0){
 			UserIncome income = userlist1.get(0);
 			userIncome.setIncomeId(income.getIncomeId());
@@ -215,43 +217,49 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	public void addata(HashMap<String, Object> map,String buyerid) {
 		List<HashMap<String, Object>> releaserecordlist =selectreleaserecordlist(map);//广告投放设备
 		String placeId  = map.get("place_id") + ""; //场所Id
-		//插入机主广告数据(视频广告投放金额40% , 轮播广告投放金额40%)
-		UserIncome userIncome = new UserIncome();
-		userIncome.setCoperatorId(Integer.valueOf(buyerid));
-		List<UserIncome> userlist =iUserIncomeService.selectUserIncome(userIncome);
-		userIncome.setAdIncomeRate(0.3);
-		if(userlist.size()>0){
-			UserIncome income = userlist.get(0);
-			userIncome.setIncomeId(income.getIncomeId());
-			iUserIncomeService.updateUserIncome(userIncome);
-		}else{
-			iUserIncomeService.insertUserIncome(userIncome);
-		}
-		
-		//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）
-		UserIncome userIncome1 = new UserIncome();
-		userIncome.setCoperatorId(Integer.valueOf(buyerid));
-		List<UserIncome> userlist1 =iUserIncomeService.selectUserIncome(userIncome);
-		userIncome.setAdIncomeRate(0.05);
-		if(userlist1.size()>0){
-			UserIncome income = userlist1.get(0);
-			userIncome.setIncomeId(income.getIncomeId());
-			iUserIncomeService.updateUserIncome(userIncome);
-		}else{
-			iUserIncomeService.insertUserIncome(userIncome);
-		}
-		
-		//插入服务商广告数据（所服务的机子视频广告投放金额3%,所服务的机子轮播广告投放金额3%）
-		UserIncome userIncome2 = new UserIncome();
-		userIncome.setCoperatorId(Integer.valueOf(buyerid));
-		List<UserIncome> userlist2 =iUserIncomeService.selectUserIncome(userIncome);
-		userIncome.setAdIncomeRate(0.05);
-		if(userlist2.size()>0){
-			UserIncome income = userlist2.get(0);
-			userIncome.setIncomeId(income.getIncomeId());
-			iUserIncomeService.updateUserIncome(userIncome);
-		}else{
-			iUserIncomeService.insertUserIncome(userIncome);
+		for(HashMap<String, Object> releaserecord : releaserecordlist) {
+			double price = Double.valueOf(releaserecord.get("price")+""); //广告价格
+			//获取推广计划
+			HashMap<String, Object> selecadschedule = selecadschedulelist(Integer.valueOf(releaserecord.get("schedule_id").toString()));
+			
+			//插入机主广告数据(视频广告投放金额40% , 轮播广告投放金额40%)
+			UserIncome userIncome = new UserIncome();
+			userIncome.setCoperatorId(Integer.valueOf(buyerid));
+			List<UserIncome> userlist =iUserIncomeService.selectUserIncome(userIncome);
+			userIncome.setAdIncomeRate(0.3);
+			if(userlist.size()>0){
+				UserIncome income = userlist.get(0);
+				userIncome.setIncomeId(income.getIncomeId());
+				iUserIncomeService.updateUserIncome(userIncome);
+			}else{
+				iUserIncomeService.insertUserIncome(userIncome);
+			}
+			
+			//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）
+			UserIncome userIncome1 = new UserIncome();
+			userIncome.setCoperatorId(Integer.valueOf(buyerid));
+			List<UserIncome> userlist1 =iUserIncomeService.selectUserIncome(userIncome);
+			userIncome.setAdIncomeRate(0.05);
+			if(userlist1.size()>0){
+				UserIncome income = userlist1.get(0);
+				userIncome.setIncomeId(income.getIncomeId());
+				iUserIncomeService.updateUserIncome(userIncome);
+			}else{
+				iUserIncomeService.insertUserIncome(userIncome);
+			}
+			
+			//插入服务商广告数据（所服务的机子视频广告投放金额3%,所服务的机子轮播广告投放金额3%）
+			UserIncome userIncome2 = new UserIncome();
+			userIncome.setCoperatorId(Integer.valueOf(buyerid));
+			List<UserIncome> userlist2 =iUserIncomeService.selectUserIncome(userIncome);
+			userIncome.setAdIncomeRate(0.05);
+			if(userlist2.size()>0){
+				UserIncome income = userlist2.get(0);
+				userIncome.setIncomeId(income.getIncomeId());
+				iUserIncomeService.updateUserIncome(userIncome);
+			}else{
+				iUserIncomeService.insertUserIncome(userIncome);
+			}	
 		}
 	}
 
@@ -264,9 +272,18 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		}
 		return null;
 	}
-
+    //广告播放价格
 	@Override
 	public List<HashMap<String, Object>> selectreleaserecordlist(HashMap<String, Object> map) {
 		return deviceIncomeDailyMapper.selectreleaserecordlist(map);
+	}
+	 //推广计划
+	@Override
+	public HashMap<String, Object> selecadschedulelist(Integer scheduleId) {
+		List<HashMap<String, Object>> list = deviceIncomeDailyMapper.selecadschedulelist(scheduleId);
+		if(list.size()>0) {
+			return list.get(0);
+		}
+		return null;
 	}
 }

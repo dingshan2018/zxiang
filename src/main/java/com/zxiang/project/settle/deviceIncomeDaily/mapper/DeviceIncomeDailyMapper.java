@@ -3,7 +3,9 @@ package com.zxiang.project.settle.deviceIncomeDaily.mapper;
 import com.zxiang.project.settle.deviceIncomeDaily.domain.DeviceIncomeDaily;
 
 import java.util.HashMap;
-import java.util.List;	
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;	
 
 /**
  * 设备收入日统计 数据层
@@ -78,7 +80,13 @@ public interface DeviceIncomeDailyMapper
 	public List<HashMap<String, Object>> selectzxdeviceorderlist(HashMap<String, Object> map);
 	
 	/** 
-	 * 广告价钱查询
+	 * 广告推广计划查询
+	 * */
+	public List<HashMap<String, Object>> selecadschedulelist(@Param("scheduleId")Integer scheduleId);
+	
+	/** 
+	 * 广告播放价钱查询
+	 * 
 	 * */
 	public List<HashMap<String, Object>> selectreleaserecordlist(HashMap<String, Object> map);
 	
