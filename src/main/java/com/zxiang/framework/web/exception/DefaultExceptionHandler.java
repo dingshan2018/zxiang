@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.zxiang.common.exception.DemoModeException;
+import com.zxiang.common.exception.RRException;
 import com.zxiang.common.utils.security.PermissionUtils;
 import com.zxiang.framework.web.domain.AjaxResult;
 
@@ -48,6 +49,9 @@ public class DefaultExceptionHandler
     public AjaxResult notFount(RuntimeException e)
     {
         log.error("运行时异常:", e);
+        if(e instanceof RRException) {
+        	return AjaxResult.error(e.getMessage());
+        }
         return AjaxResult.error("运行时异常:" + e.getMessage());
     }
 

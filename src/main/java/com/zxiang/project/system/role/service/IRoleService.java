@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.zxiang.project.system.role.domain.Role;
+import com.zxiang.project.system.user.domain.User;
 
 /**
  * 角色业务层
@@ -108,5 +109,11 @@ public interface IRoleService
      * @return 结果
      */
     public int countUserRoleByRoleId(Long roleId);
+    /**
+     * 设置默认权限
+     * @param user
+     * @param cleintName
+     */
+    public void setDefaultRole(User user,String clientName);
 
 }

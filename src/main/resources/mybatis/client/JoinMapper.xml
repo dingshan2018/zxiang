@@ -59,7 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where join_id = #{joinId}
     </select>
         
-    <insert id="insertJoin" parameterType="Join">
+    <insert id="insertJoin" parameterType="Join" useGeneratedKeys="true" keyProperty="joinId">
         insert into zx_join
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="joinId != null and joinId != '' ">join_id,</if>

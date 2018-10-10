@@ -2,6 +2,7 @@ package com.zxiang.project.system.user.domain;
 
 import java.util.Arrays;
 import java.util.Date;
+
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 
 import com.zxiang.framework.aspectj.lang.annotation.Excel;
@@ -20,6 +21,8 @@ public class User extends BaseEntity
     /** 用户ID */
     @Excel(name = "用户序号")
     private Long userId;
+    /** 主体ID */
+    private Integer puserId;
 
     /** 部门ID */
     private Long deptId;
@@ -291,7 +294,15 @@ public class User extends BaseEntity
         this.postIds = postIds;
     }
 
-    @Override
+    public Integer getPuserId() {
+		return puserId;
+	}
+
+	public void setPuserId(Integer puserId) {
+		this.puserId = puserId;
+	}
+
+	@Override
     public String toString()
     {
         return "User [userId=" + userId + ", deptId=" + deptId + ", parentId=" + parentId + ", loginName=" + loginName

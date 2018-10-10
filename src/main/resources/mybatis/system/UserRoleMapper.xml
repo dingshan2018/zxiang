@@ -24,6 +24,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach> 
  	</delete>
 	
+	<insert id="insertUserRole" useGeneratedKeys="true" keyProperty="roleId">
+		insert into sys_user_role(role_id, user_id) values (#{roleId},#{userId})
+	</insert>
 	<insert id="batchUserRole">
 		insert into sys_user_role(user_id, role_id) values
 		<foreach item="item" index="index" collection="list" separator=",">

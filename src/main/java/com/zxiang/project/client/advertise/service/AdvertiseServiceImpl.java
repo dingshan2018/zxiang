@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zxiang.common.constant.UserConstants;
+import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
@@ -15,6 +16,7 @@ import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
 import com.zxiang.project.system.dept.domain.Dept;
 import com.zxiang.project.system.dept.mapper.DeptMapper;
+import com.zxiang.project.system.role.service.IRoleService;
 import com.zxiang.project.system.user.domain.User;
 import com.zxiang.project.system.user.mapper.UserMapper;
 
@@ -35,6 +37,8 @@ public class AdvertiseServiceImpl implements IAdvertiseService
     private PasswordService passwordService;
 	@Autowired
 	private DeptMapper deptMapper;
+	@Autowired
+	private IRoleService iroleService;
 
 	/**
      * 查询广告商信息
@@ -68,32 +72,41 @@ public class AdvertiseServiceImpl implements IAdvertiseService
      */
 	@Override
 	public int insertAdvertise(Advertise advertise) {
+		User user = null;
 		if(StringUtils.isNotBlank(advertise.getManagerPhone())) {
 			// 根据管理者新增用户
-			User user = userMapper.selectUserByPhoneNumber(advertise.getManagerPhone());
-			if(user == null) {
-				user = new User();
-				user.randomSalt();
-				user.setPhonenumber(advertise.getManagerPhone());
-				user.setLoginName(advertise.getManagerPhone());
-				user.setUserName(advertise.getManagerName());
-				user.setPassword(passwordService.encryptPassword(user.getLoginName(), advertise.getManagerPhone(), user.getSalt()));
-		        user.setCreateBy(ShiroUtils.getLoginName());
-		        user.setUserType(UserConstants.USER_TYPE_ADVERTISE);
-		      
-		        Dept dept = new Dept();
-		        dept.setDeptName(UserConstants.DEPT_NAME);
-		        List<Dept> depts = deptMapper.selectDeptList(dept);
-		        if(depts != null && depts.size() > 0) {
-		        	user.setDeptId(depts.get(0).getDeptId());
-		        }
-		        userMapper.insertUser(user);
-		        advertise.setManagerId(user.getUserId().intValue());
+			user = userMapper.selectUserByPhoneNumber(advertise.getManagerPhone());
+			if(user != null) {
+				throw new RRException(String.format("该手机号[%s]对应的用户已存在", advertise.getManagerPhone()));
 			}
+			user = new User();
+			user.randomSalt();
+			user.setPhonenumber(advertise.getManagerPhone());
+			user.setLoginName(advertise.getManagerPhone());
+			user.setUserName(advertise.getManagerName());
+			user.setPassword(passwordService.encryptPassword(user.getLoginName(), advertise.getManagerPhone(), user.getSalt()));
+			user.setCreateBy(ShiroUtils.getLoginName());
+			user.setUserType(UserConstants.USER_TYPE_ADVERTISE);
+			
+			Dept dept = new Dept();
+			dept.setDeptName(UserConstants.DEPT_NAME);
+			List<Dept> depts = deptMapper.selectDeptList(dept);
+			if(depts != null && depts.size() > 0) {
+				user.setDeptId(depts.get(0).getDeptId());
+			}
+			userMapper.insertUser(user);
+			advertise.setManagerId(user.getUserId().intValue());
+			// 设置默认角色
+			iroleService.setDefaultRole(user, UserConstants.ROLE_NAME_AD);
 		}
 		advertise.setCreateTime(new Date());
 		advertise.setCreateBy(ShiroUtils.getLoginName());
-	    return advertiseMapper.insertAdvertise(advertise);
+		int i = advertiseMapper.insertAdvertise(advertise);
+	    if(user != null) {
+	    	user.setPuserId(advertise.getAdvertiseId());
+	    	userMapper.updateUser(user);
+	    }
+	    return i;
 	}
 	
 	/**
