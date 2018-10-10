@@ -286,7 +286,6 @@ public class DeviceController extends BaseController
     public TableDataInfo getDeviceById(@RequestBody Map<String, Object> params) {
 		String deviceId = (String) params.get("deviceId");
 		Device device = deviceService.selectDeviceById(Integer.parseInt(deviceId));
-		System.out.println("device:"+device.getTerminalCode());
 		List<Device> list = new ArrayList<>();
 		list.add(device);
 		return getDataTable(list);
