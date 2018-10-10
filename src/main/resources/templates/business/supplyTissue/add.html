@@ -16,9 +16,11 @@
 			<div class="form-group">	
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>补纸场所：</label>
 				<div class="col-sm-8">
-					<select id="placeId" name="placeId" class="form-control">
+					<!-- <select id="placeId" name="placeId" class="form-control">
 						<option value="">---请选择---</option>
-					</select>
+					</select> -->
+					<input id="placeId" name="placeId" class="form-control" type="hidden" readonly="readonly">
+					<input id="placeName" name="placeName" class="form-control" type="text" readonly="readonly">
 				</div>
 			</div>
 			<div class="form-group">	
@@ -56,6 +58,35 @@
 	    	$.each(placeList, function (i) {
             	$('#placeId').append("<option value=" + placeList[i].placeId + ">" + placeList[i].name + "</option>");
             });
+	    	
+	    	//绑定事件,选择设备之后自动选择终端和场所
+	        $("#deviceId").change( function () {
+	        	var deviceId = $("#deviceId option:selected").val();
+		        //判断这个下拉框选中的值是否为空
+		        if (deviceId == "") {
+		            return;
+		        }
+		        var deviceObject;
+		   	 	$.ajax({
+		            url: ctx + "business/device/getDeviceById",
+		            type: "post",
+		        	contentType:"application/json",
+		            dataType: "json",
+		   			//要传递的数据
+		            data: JSON.stringify({ "deviceId": deviceId}),
+		            async:false,
+		            success: function (data) {
+		            	//设置终端下拉框
+		            	deviceObject = data.rows[0];
+		            	$("#placeId").val(deviceObject.placeId);
+		            	$("#placeName").val(deviceObject.placeName);
+		            },
+		            error: function (data) {
+		                alert("查询设备信息失败" + data);
+		            }
+		        })
+		        
+	        })
 	 	});
     
 		var prefix = ctx + "business/supplyTissue"

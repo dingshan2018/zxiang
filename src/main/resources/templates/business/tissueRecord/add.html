@@ -6,27 +6,25 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-tissueRecord-add">
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">出纸设备：</label>
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>出纸设备：</label>
 				<div class="col-sm-8">
 					<select id="deviceId" name="deviceId" class="form-control">
-						<option>---请选择---</option>
+						<option value="">---请选择---</option>
 					</select>
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">出纸终端：</label>
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>出纸终端：</label>
 				<div class="col-sm-8">
-					<select id="terminalId" name="terminalId" class="form-control">
-						<option>---请选择---</option>
-					</select>
+					<input id="terminalId" name="terminalId" class="form-control" readonly="readonly" type="hidden">
+                	<input id="terminalCode" name="terminalCode" class="form-control" readonly="readonly">
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">出纸场所：</label>
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>出纸场所：</label>
 				<div class="col-sm-8">
-					<select id="placeId" name="placeId" class="form-control">
-						<option>---请选择---</option>
-					</select>
+					<input id="placeId" name="placeId" class="form-control" type="hidden" readonly="readonly">
+					<input id="placeName" name="placeName" class="form-control" type="text" readonly="readonly">
 				</div>
 			</div>
 			<div class="form-group">	
@@ -78,12 +76,49 @@
 	    	$.each(placeList, function (i) {
 	        	$('#placeId').append("<option value=" + placeList[i].placeId + ">" + placeList[i].name + "</option>");
 	        });
+	    	
+	    	//绑定事件,选择设备之后自动选择终端和场所
+	        $("#deviceId").change( function () {
+	        	var deviceId = $("#deviceId option:selected").val();
+		        //判断这个下拉框选中的值是否为空
+		        if (deviceId == "") {
+		            return;
+		        }
+		        var deviceObject;
+		   	 	$.ajax({
+		            url: ctx + "business/device/getDeviceById",
+		            type: "post",
+		        	contentType:"application/json",
+		            dataType: "json",
+		   			//要传递的数据
+		            data: JSON.stringify({ "deviceId": deviceId}),
+		            async:false,
+		            success: function (data) {
+		            	//设置终端下拉框
+		            	deviceObject = data.rows[0];
+		            	$("#terminalId").val(deviceObject.terminalId);
+		            	$("#terminalCode").val(deviceObject.terminalCode);
+		            	$("#placeId").val(deviceObject.placeId);
+		            	$("#placeName").val(deviceObject.placeName);
+		            },
+		            error: function (data) {
+		                alert("查询设备信息失败" + data);
+		            }
+		        })
+		        
+	        })
 	 	});
     
 		var prefix = ctx + "business/tissueRecord"
 		$("#form-tissueRecord-add").validate({
 			rules:{
-				xxxx:{
+				deviceId:{
+					required:true,
+				},
+				placeId:{
+					required:true,
+				},
+				terminalId:{
 					required:true,
 				},
 			},

@@ -7,7 +7,7 @@
         <form class="form-horizontal m" id="form-place-edit" th:object="${place}">
             <input id="placeId" name="placeId" th:field="*{placeId}"  type="hidden">
             <div class="form-group">	
-                <label class="col-sm-3 control-label">场所名称：</label>
+                <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>场所名称：</label>
                 <div class="col-sm-8">
                     <input id="name" name="name" th:field="*{name}" class="form-control" type="text">
                 </div>
@@ -21,28 +21,26 @@
             <div class="form-group">	
                 <label class="col-sm-3 control-label">省份：</label>
                 <div class="col-sm-8">
-                    <select id="province" name="province" class="form-control">
+                    <!-- <select id="province" name="province" class="form-control">
 						<option th:each="province:${provinceDropBoxList}" th:value="${province.id}"
 						 th:text="${province.pname}" th:field="*{province}"></option>
-					</select>
+					</select> -->
+					<input id="province" name="province" th:field="*{province}"  type="hidden">
+					<input id="provinceName" name="provinceName" th:field="*{provinceName}" class="form-control" type="text" readonly="readonly">
                 </div>
             </div>
             <div class="form-group">	
                 <label class="col-sm-3 control-label">城市：</label>
                 <div class="col-sm-8">
-                    <select id="city" name="city" class="form-control">
-						<option th:each="city:${cityDropBoxList}" th:value="${city.id}"
-						 th:text="${city.pname}" th:field="*{city}"></option>
-					</select>
+					<input id="city" name="city" th:field="*{city}"  type="hidden">
+					<input id="cityName" name="cityName" th:field="*{cityName}" class="form-control" type="text" readonly="readonly">
                 </div>
             </div>
             <div class="form-group">	
                 <label class="col-sm-3 control-label">地区：</label>
                 <div class="col-sm-8">
-                    <select id="county" name="county" class="form-control">
-						<option th:each="county:${countyDropBoxList}" th:value="${county.id}"
-						 th:text="${county.pname}" th:field="*{county}"></option>
-					</select>
+					<input id="county" name="county" th:field="*{county}"  type="hidden">
+					<input id="countyName" name="countyName" th:field="*{countyName}" class="form-control" type="text" readonly="readonly">
                 </div>
             </div>
             <div class="form-group">	
@@ -262,7 +260,7 @@
 		var prefix = ctx + "business/place"
 		$("#form-place-edit").validate({
 			rules:{
-				xxxx:{
+				name:{
 					required:true,
 				},
 			},
