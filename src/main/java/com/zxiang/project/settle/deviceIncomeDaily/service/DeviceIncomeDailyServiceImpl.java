@@ -137,6 +137,9 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				addata(map,buyer_id);
 			}
 		}
+		
+		//需要推广代理人（查询前一天加入代理商）
+		promotionagent();
 	}
 	
 	//计算每日设备推广费用
@@ -168,9 +171,12 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		//获取机主的信息
 		HashMap<String, Object> user = iUserIncomeService.selectzxsellerlist(buyerid);
 		List<HashMap<String, Object>> tissuelist =selectzxtissuerecordlist(map);
-		String placeId  = map.get("place_id") + ""; //场所Id
+		int placeId  = Integer.valueOf(map.get("place_id") + ""); //场所Id
+		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
 		int tissuenum = tissuelist.size();
 		
+		
+		//------------------------客户昨日收入--------------------------------------------------------
 		//(需要判断是否有广告)插入机主出纸二维码广告数据(每次出纸收益0.3元) 和  服务收益（0.025元）
 		UserIncome userIncome = new UserIncome();
 		userIncome.setCoperatorId(Integer.valueOf(buyerid));
@@ -212,11 +218,16 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			iUserIncomeService.insertUserIncome(userIncome);
 		}
 		
+		
+		//---------------------设备昨日收入---------------------------------
+		
 	}
 	//计算广告费用
 	public void addata(HashMap<String, Object> map,String buyerid) {
 		List<HashMap<String, Object>> releaserecordlist =selectreleaserecordlist(map);//广告投放设备
-		String placeId  = map.get("place_id") + ""; //场所Id
+		int placeId  = Integer.valueOf(map.get("place_id") + ""); //场所Id
+		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
+		//--------------------------------------客户昨日收入-----------------------------------------------
 		for(HashMap<String, Object> releaserecord : releaserecordlist) {
 			double price = Double.valueOf(releaserecord.get("price")+""); //广告价格
 			//获取推广计划
@@ -260,6 +271,26 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			}else{
 				iUserIncomeService.insertUserIncome(userIncome);
 			}	
+		}
+		
+		
+		//---------------------设备昨日收入---------------------------------
+	}
+	
+	
+	
+	//计算推广代理收益
+	public void promotionagent() {
+		UserIncome userIncome = new UserIncome();
+		//插入数据
+		userIncome.setCoperatorId(Integer.valueOf("1111"));
+		List<UserIncome> userlist =iUserIncomeService.selectUserIncome(userIncome);
+		if(userlist.size()>0){
+			UserIncome income = userlist.get(0);
+			userIncome.setIncomeId(income.getIncomeId());
+			iUserIncomeService.updateUserIncome(userIncome);
+		}else{
+			iUserIncomeService.insertUserIncome(userIncome);
 		}
 	}
 

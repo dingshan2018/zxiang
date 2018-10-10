@@ -77,7 +77,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="refundNum != null and refundNum != ''">#{refundNum},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
-			now(),
+			DATE_SUB(CURDATE(), INTERVAL 1 DAY),
 			DATE_SUB(CURDATE(), INTERVAL 1 DAY)
          </trim>
     </insert>
