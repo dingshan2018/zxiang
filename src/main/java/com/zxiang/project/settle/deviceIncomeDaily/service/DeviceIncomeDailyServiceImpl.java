@@ -127,14 +127,16 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				String promotioner_id = order.get("promotioner_id")+""; //推荐人
 				String buyer_id = order.get("buyer_id")+"";//机主
 				String isincome = order.get("isincome")+""; //是否是当天售出
+				List<HashMap<String, Object>> tissuelist =selectzxtissuerecordlist(device);
+				int tissuenum = tissuelist.size(); //出纸数量
 				//获取推荐人人员信息
 				HashMap<String, Object> user = iUserIncomeService.selectzxsellerlist(promotioner_id);
 				//计算每日设备推广费用
 				deviceorder(isincome,promotioner_id,user);
 				//计算每日出纸费用（二维码推广告）
-				tissuedata(device,buyer_id);
+				tissuedata(device,buyer_id,tissuenum);
 				//计算广告费用
-				addata(map,buyer_id);
+				addata(map,buyer_id,tissuenum);
 			}
 		}
 		
@@ -167,15 +169,15 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	}
 	
 	//计算每日出纸费用
-	public void tissuedata(HashMap<String, Object> map,String buyerid) {
+	public void tissuedata(HashMap<String, Object> map,String buyerid,int tissuenum) {
 		//获取机主的信息
 		HashMap<String, Object> user = iUserIncomeService.selectzxsellerlist(buyerid);
-		List<HashMap<String, Object>> tissuelist =selectzxtissuerecordlist(map);
+		//List<HashMap<String, Object>> tissuelist =selectzxtissuerecordlist(map);
 		int placeId  = Integer.valueOf(map.get("place_id") + ""); //场所Id
 		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
-		int tissuenum = tissuelist.size();
+		//int tissuenum = tissuelist.size();
 		
-		
+		//推广广告放到计算广告那边算
 		//------------------------客户昨日收入--------------------------------------------------------
 		//(需要判断是否有广告)插入机主出纸二维码广告数据(每次出纸收益0.3元) 和  服务收益（0.025元）
 		UserIncome userIncome = new UserIncome();
@@ -239,7 +241,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		
 	}
 	//计算广告费用
-	public void addata(HashMap<String, Object> map,String buyerid) {
+	public void addata(HashMap<String, Object> map,String buyerid,int tissuenum) {
 		List<HashMap<String, Object>> releaserecordlist =selectreleaserecordlist(map);//广告投放设备
 		int placeId  = Integer.valueOf(map.get("place_id") + ""); //场所Id
 		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
@@ -250,7 +252,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			//获取推广计划
 			HashMap<String, Object> selecadschedule = selecadschedulelist(Integer.valueOf(releaserecord.get("schedule_id").toString()));
 			
-			//插入机主广告数据(视频广告投放金额40% , 轮播广告投放金额40%)
+			//插入机主广告数据(视频广告投放金额40% , 轮播广告投放金额40%)和  推广视频，轮播图广告收益  15% 和(需要判断是否有广告)插入机主出纸二维码广告数据(每次出纸收益0.3元)
 			UserIncome userIncome = new UserIncome();
 			userIncome.setCoperatorId(Integer.valueOf(buyerid));
 			List<UserIncome> userlist =iUserIncomeService.selectUserIncome(userIncome);
@@ -263,7 +265,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				iUserIncomeService.insertUserIncome(userIncome);
 			}
 			
-			//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）
+			//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）和推广视频，轮播图广告收益  15%
 			UserIncome userIncome1 = new UserIncome();
 			userIncome.setCoperatorId(Integer.valueOf(buyerid));
 			List<UserIncome> userlist1 =iUserIncomeService.selectUserIncome(userIncome);
@@ -276,7 +278,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				iUserIncomeService.insertUserIncome(userIncome);
 			}
 			
-			//插入服务商广告数据（所服务的机子视频广告投放金额3%,所服务的机子轮播广告投放金额3%）
+			//插入服务商广告数据（所服务的机子视频广告投放金额3%,所服务的机子轮播广告投放金额3%）和 推广视频，轮播图广告收益  15%
 			UserIncome userIncome2 = new UserIncome();
 			userIncome.setCoperatorId(Integer.valueOf(buyerid));
 			List<UserIncome> userlist2 =iUserIncomeService.selectUserIncome(userIncome);
@@ -315,6 +317,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		//插入数据
 		userIncome.setCoperatorId(Integer.valueOf("1111"));
 		List<UserIncome> userlist =iUserIncomeService.selectUserIncome(userIncome);
+		userIncome.setPromotionIncomeRate(0.0);
 		if(userlist.size()>0){
 			UserIncome income = userlist.get(0);
 			userIncome.setIncomeId(income.getIncomeId());
