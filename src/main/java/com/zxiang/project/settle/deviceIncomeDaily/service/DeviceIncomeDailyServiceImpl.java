@@ -148,7 +148,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		UserIncome userIncome = new UserIncome();
 		if(isincome.equals("01")){
 			userIncome.setPromotionIncomeRate(1000.00);
-			if(order.get("puser_id") !=null && order.get("puser_id") !="" ){
+			if(order.get("suuser_id") !=null && order.get("suuser_id") !="" ){
 				userIncome.setPromotionIncomeRate(500.00);
 			}
 		}else{
@@ -220,6 +220,22 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		
 		
 		//---------------------设备昨日收入---------------------------------
+		DeviceIncomeDaily deviceIncomeDaily = new DeviceIncomeDaily();
+		deviceIncomeDaily.setDeviceId(deviceId);
+		List<DeviceIncomeDaily> deviceIncomeDailylist = deviceIncomeDailyMapper.selectDeviceIncomeDaily(deviceIncomeDaily);
+		deviceIncomeDaily.setScanIncome(0.0);//扫码收入
+		if(deviceIncomeDailylist.size()>0){
+			DeviceIncomeDaily income = deviceIncomeDailylist.get(0);
+			deviceIncomeDaily.setIncomeId(income.getIncomeId());
+			updateDeviceIncomeDaily(deviceIncomeDaily);
+		}else{
+			int terminalId = Integer.valueOf(map.get("terminal_id")+""); //终端ID（板卡ID）
+			deviceIncomeDaily.setTerminalId(terminalId);
+			deviceIncomeDaily.setPlaceId(placeId);
+			insertDeviceIncomeDaily(deviceIncomeDaily);
+		}
+		
+		
 		
 	}
 	//计算广告费用
@@ -227,9 +243,10 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		List<HashMap<String, Object>> releaserecordlist =selectreleaserecordlist(map);//广告投放设备
 		int placeId  = Integer.valueOf(map.get("place_id") + ""); //场所Id
 		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
-		//--------------------------------------客户昨日收入-----------------------------------------------
 		for(HashMap<String, Object> releaserecord : releaserecordlist) {
 			double price = Double.valueOf(releaserecord.get("price")+""); //广告价格
+			
+			//--------------------------------------客户昨日收入-----------------------------------------------
 			//获取推广计划
 			HashMap<String, Object> selecadschedule = selecadschedulelist(Integer.valueOf(releaserecord.get("schedule_id").toString()));
 			
@@ -270,11 +287,24 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				iUserIncomeService.updateUserIncome(userIncome);
 			}else{
 				iUserIncomeService.insertUserIncome(userIncome);
-			}	
+			}
+			
+			//---------------------设备昨日收入---------------------------------
+			DeviceIncomeDaily deviceIncomeDaily = new DeviceIncomeDaily();
+			deviceIncomeDaily.setDeviceId(deviceId);
+			List<DeviceIncomeDaily> deviceIncomeDailylist = deviceIncomeDailyMapper.selectDeviceIncomeDaily(deviceIncomeDaily);
+			deviceIncomeDaily.setAdIncome(price);//广告收入
+			if(deviceIncomeDailylist.size()>0){
+				DeviceIncomeDaily income = deviceIncomeDailylist.get(0);
+				deviceIncomeDaily.setIncomeId(income.getIncomeId());
+				updateDeviceIncomeDaily(deviceIncomeDaily);
+			}else{
+				int terminalId = Integer.valueOf(map.get("terminal_id")+""); //终端ID（板卡ID）
+				deviceIncomeDaily.setTerminalId(terminalId);
+				deviceIncomeDaily.setPlaceId(placeId);
+				insertDeviceIncomeDaily(deviceIncomeDaily);
+			}
 		}
-		
-		
-		//---------------------设备昨日收入---------------------------------
 	}
 	
 	

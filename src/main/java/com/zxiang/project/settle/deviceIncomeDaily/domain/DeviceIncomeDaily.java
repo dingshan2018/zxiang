@@ -17,23 +17,23 @@ public class DeviceIncomeDaily extends BaseEntity
 	
 	/**  */
 	private Integer incomeId;
-	/**  */
+	/** 设备ID */
 	private Integer deviceId;
-	/**  */
+	/** 终端ID（板卡ID） */
 	private Integer terminalId;
-	/**  */
+	/** 场所Id */
 	private Integer placeId;
-	/**  */
+	/** 销售收入 */
 	private Double sellIncome;
-	/**  */
+	/** 广告收入 */
 	private Double adIncome;
-	/**  */
+	/** 扫码收入 */
 	private Double scanIncome;
-	/**  */
+	/** 合算时间 */
 	private Date sumDate;
-	/**  */
+	/** 退款收入 */
 	private Double refundIncome;
-	/**  */
+	/** 退货数量 */
 	private Integer refundNum;
 	/**  */
 	private String createBy;
