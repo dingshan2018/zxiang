@@ -3,6 +3,7 @@ package com.zxiang.project.business.terminal.controller;
 import java.util.Date;
 import java.util.List;
 
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,8 +12,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.zxiang.common.utils.excel.ExcelServiceUtil;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -63,7 +68,7 @@ public class TerminalController extends BaseController
 	}
 	
 	/**
-	 * 新增终端管理
+	 * 新增终端管理-界面跳转
 	 */
 	@GetMapping("/add")
 	public String add()
@@ -89,7 +94,7 @@ public class TerminalController extends BaseController
 	}
 
 	/**
-	 * 修改终端管理
+	 * 修改终端管理-界面跳转
 	 */
 	@GetMapping("/edit/{terminalId}")
 	public String edit(@PathVariable("terminalId") Integer terminalId, ModelMap mmap)
@@ -170,5 +175,35 @@ public class TerminalController extends BaseController
         mmap.put("terminal", terminalService.selectTerminalById(terminalId));
         mmap.put("terminalParamList", terminalService.selectDropBoxList());
         return "business/terminalParam/terminalParam";
+    }
+    
+    /**
+	 * 批量导入终端编号-界面跳转
+	 */
+	@GetMapping("/batchImport")
+	public String batchImport()
+	{
+	    return prefix + "/batchImport";
+	}
+	
+	/**
+     * 批量导入终端保存
+     */
+    @RequestMapping(value = "/batchImport", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxResult batchImportSave(@RequestParam("fileUpload") MultipartFile file)
+    {
+    	System.out.println("保存批量导入数据");
+    	try {
+			List<Object> sheetList = ExcelServiceUtil.importData(file);
+			for (Object object : sheetList) {
+				System.out.println("sheetList:"+object.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error("导入失败！");
+		}    	
+
+        return success();
     }
 }

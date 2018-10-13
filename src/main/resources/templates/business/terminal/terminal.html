@@ -34,6 +34,9 @@
 			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="business:terminal:remove">
 				<i class="fa fa-trash-o"></i> 删除
 			</a>
+			<a class="btn btn-outline btn-success btn-rounded" onclick="batchImport()" shiro:hasPermission="business:terminal:add">
+				<i class="fa fa-plus"></i> 批量导入
+			</a>
 		</div>
 			
 		<div class="col-sm-12 select-table table-striped">
@@ -184,6 +187,12 @@
         	$.modal.open("添加定时设置", url);
 		}
         
+        
+      	//批量导入终端编号弹窗函数
+        function batchImport() {
+        	var url = ctx + "business/terminal/batchImport";
+        	$.modal.open("批量导入终端编号", url);
+		}
     </script>
 </body>
 </html>
