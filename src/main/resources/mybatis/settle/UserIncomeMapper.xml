@@ -153,18 +153,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     
     <!-- 代理商 -->
-      <select id="selectzxagentlist"  resultType="java.util.HashMap">
-	    SELECT 
-		  * 
+     <select id="selectzxagentlist"  resultType="java.util.HashMap">
+		 SELECT 
+		  t.user_id,
+		  t.leader_id,
+		  z.city,
+		  z.county,
+		  z.level,
+		  z.promotor_id,
+		  z.agency_fee,
+		  z.create_time 
 		FROM
-		  zx_agent 
-		WHERE del_flag != '0' 
-		<if test="pagentId != null and pagentId != ''">
-		    AND pagent_id= #{pagentId}
-		</if>
-		<if test="agentId != null and agentId != ''">
-		    AND agent_id = #{agentId}
-		</if>
+		  sys_user t,
+		  zx_agent z 
+		  WHERE 
+		  t.puser_id = z.agent_id
+		  AND t.del_flag = '0'
+		  and z.del_flag = '0'
+		  <if test="userId != null and userId != ''">
+		    AND t.user_id = #{userId}
+		  </if>
+		  <if test="placeId != null and placeId != ''">
+		     AND ((z.level = 1 AND z.city = #{placeId} ) OR (z.level = 2 AND z.county = #{placeId} ))
+		  </if>
+		  <if test="promotionagent != null and promotionagent != ''">
+		     AND DATE_FORMAT(z.create_time, '%Y-%m-%d') = DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 DAY),'%Y-%m-%d')
+		  </if>
     </select>
     <!-- 加盟商（机主） -->
     <select id="selectzxjoinlist"  resultType="java.util.HashMap">

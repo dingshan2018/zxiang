@@ -27,8 +27,8 @@ public class DeviceIncomeDaily extends BaseEntity
 	private Double sellIncome;
 	/** 广告收入 */
 	private Double adIncome;
-	/** 扫码收入 */
-	private Double scanIncome;
+	/** 出纸数量 */
+	private int scanIncome;
 	/** 合算时间 */
 	private Date sumDate;
 	/** 退款收入 */
@@ -98,15 +98,15 @@ public class DeviceIncomeDaily extends BaseEntity
 	{
 		return adIncome;
 	}
-	public void setScanIncome(Double scanIncome) 
-	{
+
+	public int getScanIncome() {
+		return scanIncome;
+	}
+
+	public void setScanIncome(int scanIncome) {
 		this.scanIncome = scanIncome;
 	}
 
-	public Double getScanIncome() 
-	{
-		return scanIncome;
-	}
 	public void setSumDate(Date sumDate) 
 	{
 		this.sumDate = sumDate;
