@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.druid.util.StringUtils;
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.support.Convert;
 import com.zxiang.project.settle.deviceIncomeDaily.domain.DeviceIncomeDaily;
 import com.zxiang.project.settle.deviceIncomeDaily.mapper.DeviceIncomeDailyMapper;
@@ -131,12 +132,13 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				String promotioner_id = order.get("promotioner_id")+""; //推荐人
 				String buyer_id = order.get("buyer_id")+"";//机主
 				String isincome = order.get("isincome")+""; //是否是当天售出
+				
 				List<HashMap<String, Object>> tissuelist =selectzxtissuerecordlist(device);
 				int tissuenum = tissuelist.size(); //出纸数量
 				//获取推荐人人员信息
 				HashMap<String, Object> user = iUserIncomeService.selectzxsellerlist(promotioner_id);
 				//计算每日设备推广费用
-				deviceorder(isincome,promotioner_id,user);
+				deviceorder(isincome,promotioner_id,user,device);
 				//计算每日出纸费用（二维码推广告）
 				tissuedata(device,buyer_id,tissuenum);
 				//计算广告费用
@@ -149,10 +151,14 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	}
 	
 	//计算每日设备推广费用
-	public void deviceorder(String isincome,String seller_id,HashMap<String, Object> order) {
+	public void deviceorder(String isincome,String seller_id,HashMap<String, Object> order,HashMap<String, Object> map) {
+		int placeId  = Integer.valueOf(map.get("place_id") + ""); //场所Id
+		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
+		double price = 0.0;//设备销售价格
 		//判断是否是前一天售出的，01代表是    00代表不是
 		UserIncome userIncome = new UserIncome();
 		if(isincome.equals("01")){
+			price = Double.valueOf(map.get("price")+"");
 			userIncome.setPromotionIncomeRate(1000.00);
 			if(order.get("suuser_id") !=null && order.get("suuser_id") !="" ){
 				userIncome.setPromotionIncomeRate(500.00);
@@ -170,9 +176,28 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		}else{
 			iUserIncomeService.insertUserIncome(userIncome);
 		}
+		
+		//---------------------设备昨日销售价格收入---------------------------------
+		DeviceIncomeDaily deviceIncomeDaily = new DeviceIncomeDaily();
+		deviceIncomeDaily.setDeviceId(deviceId);
+		List<DeviceIncomeDaily> deviceIncomeDailylist = deviceIncomeDailyMapper.selectDeviceIncomeDaily(deviceIncomeDaily);
+		deviceIncomeDaily.setSellIncome(price);//销售价格
+		if(deviceIncomeDailylist.size()>0){
+			DeviceIncomeDaily income = deviceIncomeDailylist.get(0);
+			deviceIncomeDaily.setIncomeId(income.getIncomeId());
+			updateDeviceIncomeDaily(deviceIncomeDaily);
+		}else{
+			int terminalId = Integer.valueOf(map.get("terminal_id")+""); //终端ID（板卡ID）
+			deviceIncomeDaily.setTerminalId(terminalId);
+			deviceIncomeDaily.setPlaceId(placeId);
+			insertDeviceIncomeDaily(deviceIncomeDaily);
+		}
+		
 	}
 	
-	//计算每日出纸费用
+	/**
+	 * 计算每日出纸费用
+	 * */
 	public void tissuedata(HashMap<String, Object> map,String buyerid,int tissuenum) {
 		//获取机主的信息
 		HashMap<String, Object> user = iUserIncomeService.selectzxsellerlist(buyerid);
@@ -224,7 +249,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		}
 		
 		
-		//---------------------设备昨日收入---------------------------------
+		//---------------------设备昨日出纸数量---------------------------------
 		DeviceIncomeDaily deviceIncomeDaily = new DeviceIncomeDaily();
 		deviceIncomeDaily.setDeviceId(deviceId);
 		List<DeviceIncomeDaily> deviceIncomeDailylist = deviceIncomeDailyMapper.selectDeviceIncomeDaily(deviceIncomeDaily);
@@ -241,7 +266,9 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		}
 		
 	}
-	//计算广告费用
+	/**
+	 * 计算广告费用
+	 * */
 	public void addata(HashMap<String, Object> map,String buyerid,int tissuenum) {
 		List<HashMap<String, Object>> releaserecordlist =selectreleaserecordlist(map);//广告投放设备
 		int placeId  = Integer.valueOf(map.get("place_id") + ""); //场所Id
@@ -251,24 +278,37 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			//--------------------------------------客户昨日收入-----------------------------------------------
 			//获取推广计划
 			HashMap<String, Object> selecadschedule = selecadschedulelist(Integer.valueOf(releaserecord.get("schedule_id").toString()));
-			String release_type = selecadschedule.get("release_type").toString(); //投放方式
+			String release_type = selecadschedule.get("release_type").toString(); //投放方式01终端轮播  02终端视频  03H5广告
 			int  advertiser = Integer.valueOf(selecadschedule.get("advertiser")+""); //广告商
 			int	 promotioner = Integer.valueOf(selecadschedule.get("promotioner")+""); //推荐人
+			HashMap<String, Object> promotionerdata = iUserIncomeService.selectzxsellerlist(promotioner+"");
+			String puser_id = selecadschedule.get("puser_id")+""; //主体ID
+			String user_type = promotionerdata.get("user_type")+""; //用户类型
+			HashMap<String, Object> puser = new HashMap<String, Object>();
+			if(user_type.equals(UserConstants.USER_TYPE_JOIN)) {
+				puser.put("joinId", puser_id);
+				iUserIncomeService.selectzxjoinlist(puser);
+			}else if(user_type.equals(UserConstants.USER_TYPE_REPAIR)) {
+				puser.put("repairId", puser_id);
+				iUserIncomeService.selectzxrepairlist(puser);
+			}else if(user_type.equals(UserConstants.USER_TYPE_AGENT)) {
+				puser.put("userId", promotioner);
+				iUserIncomeService.selectzxagentlist(puser);
+			}
 			switch (release_type) {
-			case "1":
+			case "01":
 				
 				break;
-			case "2":
+			case "02":
 							
 				break;
-			case "3":
+			case "03":
 				
 				break;
 
 			default:
 				break;
 			}
-			
 			//插入机主广告数据(视频广告投放金额40% , 轮播广告投放金额40%)和  推广视频，轮播图广告收益  15% 和(需要判断是否有广告)插入机主出纸二维码广告数据(每次出纸收益0.3元)
 			UserIncome userIncome = new UserIncome();
 			userIncome.setCoperatorId(Integer.valueOf(buyerid));
@@ -282,7 +322,6 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				iUserIncomeService.insertUserIncome(userIncome);
 			}
 			
-			userIncome.setAdIncomeRate(tissuenum*0.3);
 			
 			//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）和推广视频，轮播图广告收益  15%
 			UserIncome userIncome1 = new UserIncome();
@@ -310,7 +349,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				iUserIncomeService.insertUserIncome(userIncome);
 			}
 			
-			//---------------------设备昨日收入---------------------------------
+			//---------------------设备昨日广告收入---------------------------------
 			DeviceIncomeDaily deviceIncomeDaily = new DeviceIncomeDaily();
 			deviceIncomeDaily.setDeviceId(deviceId);
 			List<DeviceIncomeDaily> deviceIncomeDailylist = deviceIncomeDailyMapper.selectDeviceIncomeDaily(deviceIncomeDaily);
@@ -420,7 +459,11 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 }
 	
 	
-	//计算推广代理收益(直推代理分润，代理费的15%)
+	/**
+	 * 
+	 * 计算推广代理收益(直推代理分润，代理费的15%)
+	 *
+	 * */
 	public void promotionagent() {
 		//获取昨日添加得代理商
 		 HashMap<String, Object> map = new HashMap<String, Object>();
