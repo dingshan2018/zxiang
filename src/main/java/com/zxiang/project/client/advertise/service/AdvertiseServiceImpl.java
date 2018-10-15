@@ -151,10 +151,17 @@ public class AdvertiseServiceImpl implements IAdvertiseService
 	public int deleteAdvertiseByIds(String ids) {
 		String[] idList = Convert.toStrArray(ids);
 		Advertise advertise = null;
+		User user = null;
+		// 删除用户及对应的角色
 		for (String id : idList) {
 			advertise = advertiseMapper.selectAdvertiseById(Integer.valueOf(id));
 			if(advertise != null && StringUtils.isNotBlank(advertise.getManagerPhone())) {
-				userMapper.deleteUserByPhone(advertise.getManagerPhone());
+				user = userMapper.selectUserByPhoneNumber(advertise.getManagerPhone());
+				if(user == null) {
+					continue;
+				}
+				userMapper.deleteUserById(user.getUserId());
+				iroleService.deleteRoleByUserId(user.getUserId());
 			}
 		}
 		return advertiseMapper.deleteAdvertiseByIds(Convert.toStrArray(ids));

@@ -149,10 +149,16 @@ public class JoinServiceImpl implements IJoinService
 	public int deleteJoinByIds(String ids) {
 		String[] idList = Convert.toStrArray(ids);
 		Join join = null;
+		User user = null;
 		for (String id : idList) {
 			join = joinMapper.selectJoinById(Integer.valueOf(id));
 			if(join != null && StringUtils.isNotBlank(join.getManagerPhone())) {
-				userMapper.deleteUserByPhone(join.getManagerPhone());
+				user = userMapper.selectUserByPhoneNumber(join.getManagerPhone());
+				if(user == null) {
+					continue;
+				}
+				userMapper.deleteUserById(user.getUserId());
+				iroleService.deleteRoleByUserId(user.getUserId());
 			}
 		}
 		return joinMapper.deleteJoinByIds(idList);

@@ -160,10 +160,16 @@ public class AgentServiceImpl implements IAgentService
 	public int deleteAgentByIds(String ids) {
 		String[] idList = Convert.toStrArray(ids);
 		Agent agent = null;
+		User user = null;
 		for (String id : idList) {
 			agent = agentMapper.selectAgentById(Integer.valueOf(id));
 			if(agent != null && StringUtils.isNotBlank(agent.getManagerPhone())) {
-				userMapper.deleteUserByPhone(agent.getManagerPhone());
+				user = userMapper.selectUserByPhoneNumber(agent.getManagerPhone());
+				if(user == null) {
+					continue;
+				}
+				userMapper.deleteUserById(user.getUserId());
+				iroleService.deleteRoleByUserId(user.getUserId());
 			}
 		}
 		return agentMapper.deleteAgentByIds(Convert.toStrArray(ids));

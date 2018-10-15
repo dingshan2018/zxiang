@@ -147,10 +147,16 @@ public class RepairServiceImpl implements IRepairService
 	public int deleteRepairByIds(String ids) {
 		String[] idList = Convert.toStrArray(ids);
 		Repair repair = null;
+		User user = null;
 		for (String id : idList) {
 			repair = repairMapper.selectRepairById(Integer.valueOf(id));
 			if(repair != null && StringUtils.isNotBlank(repair.getManagerPhone())) {
-				userMapper.deleteUserByPhone(repair.getManagerPhone());
+				user = userMapper.selectUserByPhoneNumber(repair.getManagerPhone());
+				if(user == null) {
+					continue;
+				}
+				userMapper.deleteUserById(user.getUserId());
+				iroleService.deleteRoleByUserId(user.getUserId());
 			}
 		}
 		return repairMapper.deleteRepairByIds(idList);
