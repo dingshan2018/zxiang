@@ -59,6 +59,7 @@ public interface UserMapper
      * @return 结果
      */
     public int deleteUserById(Long userId);
+    public int deleteUserByPhone(String phone);
 
     /**
      * 批量删除用户信息

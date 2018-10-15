@@ -51,6 +51,15 @@
 	                </select>
 				</div>
 			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">上级领导：</label>
+				<div class="col-sm-8">
+					<select class="form-control" name="leaderId" id="leaderId">
+                    	<option value=""> -- 请选择 -- </option>
+	                    <option th:each="c:${userList}"  th:value="${c.userId}" th:text="${c.userName}"/>
+                    </select>
+				</div>
+			</div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label">状态：</label>
 				<div class="col-sm-8">
@@ -178,6 +187,7 @@
         function add() {
         	var userId = $("input[name='userId']").val();
         	var deptId = $("input[name='deptId']").val();
+        	var leaderId = $("#leaderId").val();
         	var loginName = $("input[name='loginName']").val();
         	var userName = $("input[name='userName']").val();
         	var password = $("input[name='password']").val();
@@ -193,6 +203,7 @@
         		url : ctx + "system/user/add",
         		data : {
         			"userId": userId,
+        			"leaderId": leaderId,
         			"deptId": deptId,
         			"loginName": loginName,
         			"userName": userName,

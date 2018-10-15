@@ -14,6 +14,7 @@ import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
 import com.zxiang.project.client.join.domain.Join;
 import com.zxiang.project.client.join.mapper.JoinMapper;
+import com.zxiang.project.client.repair.domain.Repair;
 import com.zxiang.project.system.dept.domain.Dept;
 import com.zxiang.project.system.dept.mapper.DeptMapper;
 import com.zxiang.project.system.role.service.IRoleService;
@@ -117,7 +118,7 @@ public class JoinServiceImpl implements IJoinService
      */
 	@Override
 	public int updateJoin(Join join) {
-		if(StringUtils.isNotBlank(join.getManagerPhone())) {
+		/*if(StringUtils.isNotBlank(join.getManagerPhone())) {
 			// 根据管理者新增用户
 			User user = userMapper.selectUserByPhoneNumber(join.getManagerPhone());
 			if(user == null) {
@@ -132,7 +133,7 @@ public class JoinServiceImpl implements IJoinService
 				userMapper.insertUser(user);
 				join.setJoinerId(user.getUserId().intValue());
 			}
-		}
+		}*/
 		join.setUpdateTime(new Date());
 		join.setUpdateBy(ShiroUtils.getLoginName());
 	    return joinMapper.updateJoin(join);
@@ -145,9 +146,16 @@ public class JoinServiceImpl implements IJoinService
      * @return 结果
      */
 	@Override
-	public int deleteJoinByIds(String ids)
-	{
-		return joinMapper.deleteJoinByIds(Convert.toStrArray(ids));
+	public int deleteJoinByIds(String ids) {
+		String[] idList = Convert.toStrArray(ids);
+		Join join = null;
+		for (String id : idList) {
+			join = joinMapper.selectJoinById(Integer.valueOf(id));
+			if(join != null && StringUtils.isNotBlank(join.getManagerPhone())) {
+				userMapper.deleteUserByPhone(join.getManagerPhone());
+			}
+		}
+		return joinMapper.deleteJoinByIds(idList);
 	}
 	
 }

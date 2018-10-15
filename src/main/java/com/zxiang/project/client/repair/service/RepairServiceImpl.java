@@ -3,7 +3,7 @@ package com.zxiang.project.client.repair.service;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -116,7 +116,7 @@ public class RepairServiceImpl implements IRepairService
      */
 	@Override
 	public int updateRepair(Repair repair) {
-		if(StringUtils.isNotBlank(repair.getManagerPhone())) {
+		/*if(StringUtils.isNotBlank(repair.getManagerPhone())) {
 			// 根据管理者新增用户
 			User user = userMapper.selectUserByPhoneNumber(repair.getManagerPhone());
 			if(user == null) {
@@ -131,7 +131,7 @@ public class RepairServiceImpl implements IRepairService
 		        userMapper.insertUser(user);
 		        repair.setManagerId(user.getUserId().intValue());
 			}
-		}
+		}*/
 		repair.setUpdateTime(new Date());
 		repair.setUpdateBy(ShiroUtils.getLoginName());
 	    return repairMapper.updateRepair(repair);
@@ -144,9 +144,16 @@ public class RepairServiceImpl implements IRepairService
      * @return 结果
      */
 	@Override
-	public int deleteRepairByIds(String ids)
-	{
-		return repairMapper.deleteRepairByIds(Convert.toStrArray(ids));
+	public int deleteRepairByIds(String ids) {
+		String[] idList = Convert.toStrArray(ids);
+		Repair repair = null;
+		for (String id : idList) {
+			repair = repairMapper.selectRepairById(Integer.valueOf(id));
+			if(repair != null && StringUtils.isNotBlank(repair.getManagerPhone())) {
+				userMapper.deleteUserByPhone(repair.getManagerPhone());
+			}
+		}
+		return repairMapper.deleteRepairByIds(idList);
 	}
 	
 }

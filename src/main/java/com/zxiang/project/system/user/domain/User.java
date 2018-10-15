@@ -75,6 +75,8 @@ public class User extends BaseEntity
     /** 最后登陆时间 */
     @Excel(name = "最后登陆时间")
     private Date loginDate;
+    /** 上级领导id */
+    private Long leaderId;
 
     /** 部门对象 */
     private Dept dept;
@@ -256,7 +258,15 @@ public class User extends BaseEntity
         this.loginDate = loginDate;
     }
 
-    public Dept getDept()
+    public Long getLeaderId() {
+		return leaderId;
+	}
+
+	public void setLeaderId(Long leaderId) {
+		this.leaderId = leaderId;
+	}
+
+	public Dept getDept()
     {
         return dept;
     }

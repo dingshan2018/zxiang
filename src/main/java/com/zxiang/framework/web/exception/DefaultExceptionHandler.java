@@ -41,6 +41,15 @@ public class DefaultExceptionHandler
         log.error(e.getMessage(), e);
         return AjaxResult.error("不支持' " + e.getMethod() + "'请求");
     }
+    /**
+     * 自定义异常
+     */
+    @ExceptionHandler({ RRException.class })
+    public AjaxResult definedException(RRException e)
+    {
+    	log.error(e.getMessage(), e);
+    	return AjaxResult.error(e.getMessage());
+    }
 
     /**
      * 拦截未知的运行时异常
@@ -49,9 +58,6 @@ public class DefaultExceptionHandler
     public AjaxResult notFount(RuntimeException e)
     {
         log.error("运行时异常:", e);
-        if(e instanceof RRException) {
-        	return AjaxResult.error(e.getMessage());
-        }
         return AjaxResult.error("运行时异常:" + e.getMessage());
     }
 
