@@ -87,9 +87,17 @@
 		var prefix = ctx + "client/join"
 		$("#form-join-add").validate({
 			rules:{
-				xxxx:{
-					required:true,
-				},
+				joinerName:{
+        			required:true
+        		},
+				managerPhone:{
+        			required:true,
+        			isPhone:true
+        		},
+        		managerName:{
+        			required:true,
+        			isName : true
+        		},
 			},
 			submitHandler: function(form) {
 				$.operate.save(prefix + "/add", $('#form-join-add').serialize());

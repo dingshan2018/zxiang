@@ -14,6 +14,7 @@ import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
 import com.zxiang.project.client.agent.domain.Agent;
 import com.zxiang.project.client.agent.mapper.AgentMapper;
+import com.zxiang.project.client.join.domain.Join;
 import com.zxiang.project.system.dept.domain.Dept;
 import com.zxiang.project.system.dept.mapper.DeptMapper;
 import com.zxiang.project.system.role.service.IRoleService;
@@ -128,7 +129,7 @@ public class AgentServiceImpl implements IAgentService
 		}else {
 			agent.setPagentId(null);
 		}
-		if(StringUtils.isNotBlank(agent.getManagerPhone())) {
+		/*if(StringUtils.isNotBlank(agent.getManagerPhone())) {
 			// 根据管理者新增用户
 			User user = userMapper.selectUserByPhoneNumber(agent.getManagerPhone());
 			if(user == null) {
@@ -143,7 +144,7 @@ public class AgentServiceImpl implements IAgentService
 				userMapper.insertUser(user);
 				agent.setManagerId(user.getUserId().intValue());
 			}
-		}
+		}*/
 		agent.setUpdateTime(new Date());
 		agent.setUpdateBy(ShiroUtils.getLoginName());
 	    return agentMapper.updateAgent(agent);
@@ -156,8 +157,21 @@ public class AgentServiceImpl implements IAgentService
      * @return 结果
      */
 	@Override
-	public int deleteAgentByIds(String ids)
-	{
+	public int deleteAgentByIds(String ids) {
+		String[] idList = Convert.toStrArray(ids);
+		Agent agent = null;
+		User user = null;
+		for (String id : idList) {
+			agent = agentMapper.selectAgentById(Integer.valueOf(id));
+			if(agent != null && StringUtils.isNotBlank(agent.getManagerPhone())) {
+				user = userMapper.selectUserByPhoneNumber(agent.getManagerPhone());
+				if(user == null) {
+					continue;
+				}
+				userMapper.deleteUserById(user.getUserId());
+				iroleService.deleteRoleByUserId(user.getUserId());
+			}
+		}
 		return agentMapper.deleteAgentByIds(Convert.toStrArray(ids));
 	}
 	

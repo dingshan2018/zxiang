@@ -60,6 +60,7 @@ public interface IRoleService
      * @return 结果
      */
     public boolean deleteRoleById(Long roleId);
+    public int deleteRoleByUserId(Long userId);
 
     /**
      * 批量删除角色用户信息

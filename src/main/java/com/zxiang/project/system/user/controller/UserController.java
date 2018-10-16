@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.utils.StringUtils;
 import com.zxiang.common.utils.poi.ExcelUtil;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
@@ -87,6 +88,9 @@ public class UserController extends BaseController
     {
         mmap.put("roles", roleService.selectRoleAll());
         mmap.put("posts", postService.selectPostAll());
+        List<User> userList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
+				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+		mmap.put("userList", userList);
         return prefix + "/add";
     }
 
@@ -116,6 +120,9 @@ public class UserController extends BaseController
         mmap.put("user", userService.selectUserById(userId));
         mmap.put("roles", roleService.selectRolesByUserId(userId));
         mmap.put("posts", postService.selectPostsByUserId(userId));
+        List<User> userList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
+				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+		mmap.put("userList", userList);
         return prefix + "/edit";
     }
 

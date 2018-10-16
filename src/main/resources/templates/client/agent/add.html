@@ -123,9 +123,26 @@
 		var prefix = ctx + "client/agent"
 		$("#form-agent-add").validate({
 			rules:{
-				xxxx:{
-					required:true,
-				},
+				managerPhone:{
+        			required:true,
+        			isPhone:true
+        		},
+        		agentName:{
+        			required:true
+        		},
+        		province:{
+        			required:true
+        		},
+        		city:{
+        			required:true
+        		},
+        		deviceNum:{
+        			required:true
+        		},
+        		managerName:{
+        			required:true,
+        			isName : true
+        		},
 			},
 			submitHandler: function(form) {
 				$.operate.save(prefix + "/add", $('#form-agent-add').serialize());

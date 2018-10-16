@@ -272,4 +272,9 @@ public class RoleServiceImpl implements IRoleService
 		userRoleMapper.insertUserRole(userRole);
 	}
 
+	@Override
+	public int deleteRoleByUserId(Long userId) {
+		return userRoleMapper.deleteUserRoleByUserId(userId);
+	}
+
 }

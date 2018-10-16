@@ -14,6 +14,7 @@ import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
 import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
+import com.zxiang.project.client.agent.domain.Agent;
 import com.zxiang.project.system.dept.domain.Dept;
 import com.zxiang.project.system.dept.mapper.DeptMapper;
 import com.zxiang.project.system.role.service.IRoleService;
@@ -117,7 +118,7 @@ public class AdvertiseServiceImpl implements IAdvertiseService
      */
 	@Override
 	public int updateAdvertise(Advertise advertise) {
-		if(advertise.getManagerId() == null) {
+		/*if(advertise.getManagerId() == null) {
 			if(StringUtils.isNotBlank(advertise.getManagerPhone())) {
 				// 根据管理者新增用户
 				User user = userMapper.selectUserByPhoneNumber(advertise.getManagerPhone());
@@ -134,7 +135,7 @@ public class AdvertiseServiceImpl implements IAdvertiseService
 					advertise.setManagerId(user.getUserId().intValue());
 				}
 			}
-		}
+		}*/
 		advertise.setUpdateTime(new Date());
 		advertise.setUpdateBy(ShiroUtils.getLoginName());
 	    return advertiseMapper.updateAdvertise(advertise);
@@ -147,8 +148,22 @@ public class AdvertiseServiceImpl implements IAdvertiseService
      * @return 结果
      */
 	@Override
-	public int deleteAdvertiseByIds(String ids)
-	{
+	public int deleteAdvertiseByIds(String ids) {
+		String[] idList = Convert.toStrArray(ids);
+		Advertise advertise = null;
+		User user = null;
+		// 删除用户及对应的角色
+		for (String id : idList) {
+			advertise = advertiseMapper.selectAdvertiseById(Integer.valueOf(id));
+			if(advertise != null && StringUtils.isNotBlank(advertise.getManagerPhone())) {
+				user = userMapper.selectUserByPhoneNumber(advertise.getManagerPhone());
+				if(user == null) {
+					continue;
+				}
+				userMapper.deleteUserById(user.getUserId());
+				iroleService.deleteRoleByUserId(user.getUserId());
+			}
+		}
 		return advertiseMapper.deleteAdvertiseByIds(Convert.toStrArray(ids));
 	}
 	

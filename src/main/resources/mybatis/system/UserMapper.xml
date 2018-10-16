@@ -6,9 +6,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<resultMap type="User" id="UserResult">
 		<id     property="userId"       column="user_id"      />
-		<id     property="puserId"       column="puser_id"      />
+		<id     property="puserId"      column="puser_id"      />
+		<id     property="leaderId"     column="leader_id"      />
 		<result property="deptId"       column="dept_id"      />
-		<result property="userType"       column="user_type"      />
+		<result property="userType"     column="user_type"      />
 		<result property="loginName"    column="login_name"   />
 		<result property="userName"     column="user_name"    />
 		<result property="email"        column="email"        />
@@ -38,7 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</resultMap>
 	
 	<sql id="selectUserVo">
-        select  u.user_id,u.puser_id, u.dept_id,u.user_type, u.login_name, u.user_name, u.email, u.phonenumber, u.sex, u.avatar, u.password, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_time, u.remark,
+        select  u.user_id,u.puser_id,u.leader_id, u.dept_id,u.user_type, u.login_name, u.user_name, u.email, u.phonenumber, u.sex, u.avatar, u.password, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_time, u.remark,
        		    d.dept_id, d.parent_id, d.dept_name, d.order_num, d.status as dept_status
 		from sys_user u
 			 left join sys_dept d on u.dept_id = d.dept_id
@@ -46,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 	
 	<select id="selectUserList" parameterType="User" resultMap="UserResult">
-		select u.user_id,u.puser_id, u.dept_id,u.user_type, u.login_name, u.user_name, u.email, u.phonenumber, u.password, u.sex, u.avatar, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name from sys_user u
+		select u.user_id,u.puser_id,u.leader_id, u.dept_id,u.user_type, u.login_name, u.user_name, u.email, u.phonenumber, u.password, u.sex, u.avatar, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name from sys_user u
 		left join sys_dept d on u.dept_id = d.dept_id
 		where u.del_flag = '0'
 		<if test="loginName != null and loginName != ''">
@@ -126,6 +127,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		<set>
  			<if test="deptId != null and deptId != 0">dept_id = #{deptId},</if>
  			<if test="puserId != null and puserId != 0">puser_id = #{puserId},</if>
+ 			<if test="leaderId != null and leaderId != 0">leader_id = #{leaderId},</if>
  			<if test="userType != null and userType != ''">user_type = #{userType},</if>
  			<if test="loginName != null and loginName != ''">login_name = #{loginName},</if>
  			<if test="userName != null and userName != ''">user_name = #{userName},</if>
@@ -148,7 +150,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  	<insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
  		insert into sys_user(
  			<if test="userId != null and userId != 0">user_id,</if>
- 			<if test="puserId != null and puserId != 0">puser_id = #{puserId},</if>
+ 			<if test="puserId != null and puserId != 0">puser_id,</if>
+ 			<if test="leaderId != null and leaderId != 0">leader_id,</if>
  			<if test="deptId != null and deptId != 0">dept_id,</if>
  			<if test="userType != null and userType != ''">user_type,</if>
  			<if test="loginName != null and loginName != ''">login_name,</if>
@@ -165,6 +168,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		)values(
  			<if test="userId != null and userId != ''">#{userId},</if>
  			<if test="puserId != null and puserId != 0">#{puserId},</if>
+ 			<if test="leaderId != null and leaderId != 0">#{leaderId},</if>
  			<if test="deptId != null and deptId != ''">#{deptId},</if>
  			<if test="userType != null and userType != ''">#{userType},</if>
  			<if test="loginName != null and loginName != ''">#{loginName},</if>
@@ -184,5 +188,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectDropBoxList" resultMap="UserResult">
         select user_id, user_name, login_name from sys_user where status=0 and del_flag=0
     </select>
+    <delete id="deleteUserByPhone" parameterType="String">
+ 		delete from sys_user where phonenumber = #{phone}
+ 	</delete>
     
 </mapper> 

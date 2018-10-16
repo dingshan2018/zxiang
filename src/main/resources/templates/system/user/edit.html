@@ -46,6 +46,15 @@
 	                </select>
 				</div>
 			</div>
+			<div class="form-group">	
+                <label class="col-sm-3 control-label">上级领导：</label>
+                <div class="col-sm-8">
+                    <select class="form-control" name="leaderId" id="leaderId">
+                    	<option value=""> -- 请选择 -- </option>
+	                    <option  th:selected="${user.leaderId eq c.userId}" th:each="c:${userList}"  th:value="${c.userId}" th:text="${c.userName}"/>
+                    </select>
+                </div>
+            </div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label">状态：</label>
 				<div class="col-sm-8">
@@ -153,6 +162,7 @@
         function edit() {
         	var userId = $("input[name='userId']").val();
         	var deptId = $("input[name='deptId']").val();
+        	var leaderId = $("#leaderId").val();
         	var userName = $("input[name='userName']").val();
         	var email = $("input[name='email']").val();
         	var phonenumber = $("input[name='phonenumber']").val();
@@ -166,6 +176,7 @@
         		url : ctx + "system/user/edit",
         		data : {
         			"userId": userId,
+        			"leaderId": leaderId,
         			"deptId": deptId,
         			"userName": userName,
         			"email": email,

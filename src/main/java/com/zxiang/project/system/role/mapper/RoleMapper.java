@@ -50,6 +50,7 @@ public interface RoleMapper
      * @return 结果
      */
     public int deleteRoleById(Long roleId);
+    public int deleteRoleByUserId(Long userId);
 
     /**
      * 批量角色用户信息
