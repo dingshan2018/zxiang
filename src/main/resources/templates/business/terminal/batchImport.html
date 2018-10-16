@@ -26,7 +26,7 @@
     <div th:include="include::footer"></div>
     <script type="text/javascript">
 	    function xlsTemplateUrl() {
-	    	window.location.href = ctx + "business/xlsTemplate/ImportTemplate.xls";
+	    	window.location.href = ctx + "xlsTemplate/ImportTemplate.xls";
 	    }
 	    
     	var prefix = ctx + "business/terminal"
@@ -67,11 +67,8 @@
         				alert(data.msg);
         			}
         			$.modal.close();
-        			//TODO 此处应该能够刷新终端管理页面
-        			//$.modal.msgReload("保存成功,正在刷新数据请稍后……", modal_status.SUCCESS);
-               	 	//var url = ctx + "business/terminal/list";
-             		//$.modal.open("终端管理", url);   
-        			$.operate.saveSuccess(data);
+        			//刷新终端管理页面
+        			$.modal.reload();
         		}
         	});
         }
