@@ -18,6 +18,6 @@ public class ZXiangApplication
     {
         // System.setProperty("spring.devtools.restart.enabled", "false");
         SpringApplication.run(ZXiangApplication.class, args);
-        System.out.println("(♥◠‿◠)ﾉﾞ  众享平台启动成功\n");
+        System.out.println("平台启动\n");
     }
 }
