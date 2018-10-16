@@ -193,17 +193,19 @@ public class TerminalController extends BaseController
     @ResponseBody
     public AjaxResult batchImportSave(@RequestParam("fileUpload") MultipartFile file)
     {
-    	System.out.println("保存批量导入数据");
+    	int saveCount = 0;
     	try {
+    		//解析Excel数据
 			List<Object> sheetList = ExcelServiceUtil.importData(file);
-			for (Object object : sheetList) {
-				System.out.println("sheetList:"+object.toString());
-			}
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";
+			//保存终端编号
+			saveCount = terminalService.saveBatchImport(sheetList,operatorUser);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			return error("导入失败！");
 		}    	
 
-        return success();
+        return success("成功导入 "+ saveCount +" 条数据!");
     }
 }

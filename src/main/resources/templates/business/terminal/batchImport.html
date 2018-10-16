@@ -62,11 +62,16 @@
         		},
         		success : function(data) {
         			if(data.code == 0){
-        				alert("导入成功!");
+        				alert(data.msg);
         			}else{
-        				alert("导入失败!");
+        				alert(data.msg);
         			}
         			$.modal.close();
+        			//TODO 此处应该能够刷新终端管理页面
+        			//$.modal.msgReload("保存成功,正在刷新数据请稍后……", modal_status.SUCCESS);
+               	 	//var url = ctx + "business/terminal/list";
+             		//$.modal.open("终端管理", url);   
+        			$.operate.saveSuccess(data);
         		}
         	});
         }

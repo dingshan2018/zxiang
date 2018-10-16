@@ -66,5 +66,12 @@ public interface ITerminalService
      */
 	public String checkTerminalCodeUnique(String terminalCode);
 
+	/**
+	 * 保存Excel终端数据
+	 * @param sheetList
+	 * @return
+	 */
+	public int saveBatchImport(List<Object> sheetList,String operatorUser);
+
 	
 }
