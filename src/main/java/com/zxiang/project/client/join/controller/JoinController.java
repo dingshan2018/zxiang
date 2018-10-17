@@ -107,17 +107,6 @@ public class JoinController extends BaseController
 	}
 	
 	/**
-	 * 修改保存加盟商参数配置
-	 */
-	@RequiresPermissions("client:join:editParam")
-	@Log(title = "加盟商", businessType = BusinessType.UPDATE)
-	@PostMapping("/editParam")
-	@ResponseBody
-	public AjaxResult editParamSave(Join join) {		
-		return toAjax(joinService.updateJoin(join));
-	}
-	
-	/**
 	 * 删除加盟商
 	 */
 	@RequiresPermissions("client:join:remove")
