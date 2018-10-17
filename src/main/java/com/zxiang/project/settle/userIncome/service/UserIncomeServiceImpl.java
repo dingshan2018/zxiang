@@ -115,5 +115,14 @@ public class UserIncomeServiceImpl implements IUserIncomeService
 	public List<HashMap<String, Object>> selectzxrepairarealist(HashMap<String, Object> map) {
 		return userIncomeMapper.selectzxrepairarealist(map);
 	}
+
+	@Override
+	public HashMap<String, Object> selectuserbypuserId(String sellerId) {
+		List<HashMap<String, Object>> list = userIncomeMapper.selectuserbypuserId(sellerId);
+		if(list.size()>0) {
+			return list.get(0);
+		}
+		return null;
+	}
 	
 }

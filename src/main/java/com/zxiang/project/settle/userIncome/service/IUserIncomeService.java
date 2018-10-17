@@ -74,4 +74,9 @@ public interface IUserIncomeService
 	
 	public List<HashMap<String, Object>> selectzxrepairarealist(HashMap<String, Object> map);
 	
+	/**
+	 * 通过主体获取人员信息
+	 * */
+	public HashMap<String, Object> selectuserbypuserId(String sellerId);
+	
 }
