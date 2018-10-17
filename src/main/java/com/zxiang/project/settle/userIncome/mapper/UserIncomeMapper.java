@@ -70,6 +70,11 @@ public interface UserIncomeMapper
 	 * 获取销售人员类型
 	 * */
 	public List<HashMap<String, Object>> selectzxsellerlist(String sellerId);
+	
+	/**
+	 * 通过主体获取人员信息
+	 * */
+	public List<HashMap<String, Object>> selectuserbypuserId(String sellerId);
 	/**
 	 * 代理商
 	 * */

@@ -1,5 +1,6 @@
 package com.zxiang.project.settle.deviceIncomeDaily.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -285,68 +286,172 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			String puser_id = selecadschedule.get("puser_id")+""; //主体ID
 			String user_type = promotionerdata.get("user_type")+""; //用户类型
 			HashMap<String, Object> puser = new HashMap<String, Object>();
-			if(user_type.equals(UserConstants.USER_TYPE_JOIN)) {
-				puser.put("joinId", puser_id);
-				iUserIncomeService.selectzxjoinlist(puser);
-			}else if(user_type.equals(UserConstants.USER_TYPE_REPAIR)) {
-				puser.put("repairId", puser_id);
-				iUserIncomeService.selectzxrepairlist(puser);
-			}else if(user_type.equals(UserConstants.USER_TYPE_AGENT)) {
-				puser.put("userId", promotioner);
-				iUserIncomeService.selectzxagentlist(puser);
-			}
+			List<HashMap<String, Object>> user = new ArrayList<HashMap<String, Object>>();
 			switch (release_type) {
 			case "01":
+				if(user_type.equals(UserConstants.USER_TYPE_JOIN)) {
+					puser.put("joinId", puser_id);
+					user=iUserIncomeService.selectzxjoinlist(puser);
+				}else if(user_type.equals(UserConstants.USER_TYPE_REPAIR)) {
+					puser.put("repairId", puser_id);
+					user=iUserIncomeService.selectzxrepairlist(puser);
+				}else if(user_type.equals(UserConstants.USER_TYPE_AGENT)) {
+					puser.put("userId", promotioner);
+					user=iUserIncomeService.selectzxagentlist(puser);
+				}
+				//插入机主广告数据(视频广告投放金额40% , 轮播广告投放金额40%)和  推广视频，轮播图广告收益  15% 和(需要判断是否有广告)插入机主出纸二维码广告数据(每次出纸收益0.3元)
+				UserIncome carouseluserIncome = new UserIncome();
+				carouseluserIncome.setCoperatorId(Integer.valueOf(buyerid));
+				List<UserIncome> carouseluserlist =iUserIncomeService.selectUserIncome(carouseluserIncome);
+				carouseluserIncome.setAdIncomeRate(0.4*price);
+				if(carouseluserlist.size()>0){
+					UserIncome income = carouseluserlist.get(0);
+					carouseluserIncome.setIncomeId(income.getIncomeId());
+					iUserIncomeService.updateUserIncome(carouseluserIncome);
+				}else{
+					iUserIncomeService.insertUserIncome(carouseluserIncome);
+				}
+				//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）和推广视频，轮播图广告收益  15%
+				 HashMap<String, Object> promotionagenmap = new HashMap<String, Object>();
+				 promotionagenmap.put("placeId", placeId);
+				 List<HashMap<String, Object>> promotionagentlist = iUserIncomeService.selectzxagentlist(promotionagenmap);
+				for(HashMap<String, Object> promotionagent : promotionagentlist) {
+					String level =  promotionagent.get("level") + ""; //代理等级 1 一级代理  2 二级代理
+					String promotionauser = promotionagent.get("user_id")+"";
+					UserIncome carouseluserIncome1 = new UserIncome();
+					carouseluserIncome.setCoperatorId(Integer.valueOf(promotionauser));
+					List<UserIncome> carouseluserlist1 =iUserIncomeService.selectUserIncome(carouseluserIncome);
+					carouseluserIncome.setAdIncomeRate(0.05);
+					if(carouseluserlist1.size()>0){
+						UserIncome income = carouseluserlist1.get(0);
+						carouseluserIncome.setIncomeId(income.getIncomeId());
+						iUserIncomeService.updateUserIncome(carouseluserIncome);
+					}else{
+						iUserIncomeService.insertUserIncome(carouseluserIncome);
+					}
+				}
+				//插入服务商广告数据（所服务的机子视频广告投放金额3%,所服务的机子轮播广告投放金额3%）和 推广视频，轮播图广告收益  15%
+				 HashMap<String, Object> repairmap = new HashMap<String, Object>();
+				 repairmap.put("countyId", placeId);
+				 List<HashMap<String, Object>> repairlist = iUserIncomeService.selectzxrepairarealist(repairmap);
+				 for(HashMap<String, Object> repair : repairlist) {
+					   String repairId = repair.get("repair_id")+"";
+					   HashMap<String, Object> repairusermap = iUserIncomeService.selectuserbypuserId(repairId);
+					   String repairuser = repairusermap.get("user_id")+"";
+					    UserIncome carouseluserIncome2 = new UserIncome();
+						carouseluserIncome.setCoperatorId(Integer.valueOf(repairuser));
+						List<UserIncome> carouseluserlist2 =iUserIncomeService.selectUserIncome(carouseluserIncome);
+						carouseluserIncome.setAdIncomeRate(0.05);
+						if(carouseluserlist2.size()>0){
+							UserIncome income = carouseluserlist2.get(0);
+							carouseluserIncome.setIncomeId(income.getIncomeId());
+							iUserIncomeService.updateUserIncome(carouseluserIncome);
+						}else{
+							iUserIncomeService.insertUserIncome(carouseluserIncome);
+						}
+				 }
+				
 				
 				break;
 			case "02":
-							
+				if(user_type.equals(UserConstants.USER_TYPE_JOIN)) {
+					puser.put("joinId", puser_id);
+					user=iUserIncomeService.selectzxjoinlist(puser);
+				}else if(user_type.equals(UserConstants.USER_TYPE_REPAIR)) {
+					puser.put("repairId", puser_id);
+					user=iUserIncomeService.selectzxrepairlist(puser);
+				}else if(user_type.equals(UserConstants.USER_TYPE_AGENT)) {
+					puser.put("userId", promotioner);
+					user=iUserIncomeService.selectzxagentlist(puser);
+				}
+				//插入机主广告数据(视频广告投放金额40% , 轮播广告投放金额40%)和  推广视频，轮播图广告收益  15% 和(需要判断是否有广告)插入机主出纸二维码广告数据(每次出纸收益0.3元)
+				UserIncome aduserIncome = new UserIncome();
+				aduserIncome.setCoperatorId(Integer.valueOf(buyerid));
+				List<UserIncome> aduserlist =iUserIncomeService.selectUserIncome(aduserIncome);
+				aduserIncome.setAdIncomeRate(0.4*price);
+				if(aduserlist.size()>0){
+					UserIncome income = aduserlist.get(0);
+					aduserIncome.setIncomeId(income.getIncomeId());
+					iUserIncomeService.updateUserIncome(aduserIncome);
+				}else{
+					iUserIncomeService.insertUserIncome(aduserIncome);
+				}
+				//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）和推广视频，轮播图广告收益  15%
+				UserIncome aduserIncome1 = new UserIncome();
+				aduserIncome.setCoperatorId(Integer.valueOf(buyerid));
+				List<UserIncome> aduserlist1 =iUserIncomeService.selectUserIncome(aduserIncome);
+				aduserIncome.setAdIncomeRate(0.05);
+				if(aduserlist1.size()>0){
+					UserIncome income = aduserlist1.get(0);
+					aduserIncome.setIncomeId(income.getIncomeId());
+					iUserIncomeService.updateUserIncome(aduserIncome);
+				}else{
+					iUserIncomeService.insertUserIncome(aduserIncome);
+				}
+				//插入服务商广告数据（所服务的机子视频广告投放金额3%,所服务的机子轮播广告投放金额3%）和 推广视频，轮播图广告收益  15%
+				UserIncome aduserIncome2 = new UserIncome();
+				aduserIncome.setCoperatorId(Integer.valueOf(buyerid));
+				List<UserIncome> aduserlist2 =iUserIncomeService.selectUserIncome(aduserIncome);
+				aduserIncome.setAdIncomeRate(0.05);
+				if(aduserlist2.size()>0){
+					UserIncome income = aduserlist2.get(0);
+					aduserIncome.setIncomeId(income.getIncomeId());
+					iUserIncomeService.updateUserIncome(aduserIncome);
+				}else{
+					iUserIncomeService.insertUserIncome(aduserIncome);
+				}
 				break;
 			case "03":
-				
+				if(user_type.equals(UserConstants.USER_TYPE_JOIN)) {
+					puser.put("joinId", puser_id);
+					user=iUserIncomeService.selectzxjoinlist(puser);
+				}else if(user_type.equals(UserConstants.USER_TYPE_REPAIR)) {
+					puser.put("repairId", puser_id);
+					user=iUserIncomeService.selectzxrepairlist(puser);
+				}else if(user_type.equals(UserConstants.USER_TYPE_AGENT)) {
+					puser.put("userId", promotioner);
+					user=iUserIncomeService.selectzxagentlist(puser);
+				}
+				//插入机主广告数据(视频广告投放金额40% , 轮播广告投放金额40%)和  推广视频，轮播图广告收益  15% 和(需要判断是否有广告)插入机主出纸二维码广告数据(每次出纸收益0.3元)
+				UserIncome userIncome = new UserIncome();
+				userIncome.setCoperatorId(Integer.valueOf(buyerid));
+				List<UserIncome> userlist =iUserIncomeService.selectUserIncome(userIncome);
+				userIncome.setAdIncomeRate(0.3*tissuenum);
+				if(userlist.size()>0){
+					UserIncome income = userlist.get(0);
+					userIncome.setIncomeId(income.getIncomeId());
+					iUserIncomeService.updateUserIncome(userIncome);
+				}else{
+					iUserIncomeService.insertUserIncome(userIncome);
+				}
+				//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）和推广视频，轮播图广告收益  15%
+				UserIncome userIncome1 = new UserIncome();
+				userIncome.setCoperatorId(Integer.valueOf(buyerid));
+				List<UserIncome> userlist1 =iUserIncomeService.selectUserIncome(userIncome);
+				userIncome.setAdIncomeRate(0.05);
+				if(userlist1.size()>0){
+					UserIncome income = userlist1.get(0);
+					userIncome.setIncomeId(income.getIncomeId());
+					iUserIncomeService.updateUserIncome(userIncome);
+				}else{
+					iUserIncomeService.insertUserIncome(userIncome);
+				}
+				//插入服务商广告数据（所服务的机子视频广告投放金额3%,所服务的机子轮播广告投放金额3%）和 推广视频，轮播图广告收益  15%
+				UserIncome userIncome2 = new UserIncome();
+				userIncome.setCoperatorId(Integer.valueOf(buyerid));
+				List<UserIncome> userlist2 =iUserIncomeService.selectUserIncome(userIncome);
+				userIncome.setAdIncomeRate(0.05);
+				if(userlist2.size()>0){
+					UserIncome income = userlist2.get(0);
+					userIncome.setIncomeId(income.getIncomeId());
+					iUserIncomeService.updateUserIncome(userIncome);
+				}else{
+					iUserIncomeService.insertUserIncome(userIncome);
+				}
 				break;
 
 			default:
 				break;
-			}
-			//插入机主广告数据(视频广告投放金额40% , 轮播广告投放金额40%)和  推广视频，轮播图广告收益  15% 和(需要判断是否有广告)插入机主出纸二维码广告数据(每次出纸收益0.3元)
-			UserIncome userIncome = new UserIncome();
-			userIncome.setCoperatorId(Integer.valueOf(buyerid));
-			List<UserIncome> userlist =iUserIncomeService.selectUserIncome(userIncome);
-			userIncome.setAdIncomeRate(0.3);
-			if(userlist.size()>0){
-				UserIncome income = userlist.get(0);
-				userIncome.setIncomeId(income.getIncomeId());
-				iUserIncomeService.updateUserIncome(userIncome);
-			}else{
-				iUserIncomeService.insertUserIncome(userIncome);
-			}
-			
-			
-			//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）和推广视频，轮播图广告收益  15%
-			UserIncome userIncome1 = new UserIncome();
-			userIncome.setCoperatorId(Integer.valueOf(buyerid));
-			List<UserIncome> userlist1 =iUserIncomeService.selectUserIncome(userIncome);
-			userIncome.setAdIncomeRate(0.05);
-			if(userlist1.size()>0){
-				UserIncome income = userlist1.get(0);
-				userIncome.setIncomeId(income.getIncomeId());
-				iUserIncomeService.updateUserIncome(userIncome);
-			}else{
-				iUserIncomeService.insertUserIncome(userIncome);
-			}
-			
-			//插入服务商广告数据（所服务的机子视频广告投放金额3%,所服务的机子轮播广告投放金额3%）和 推广视频，轮播图广告收益  15%
-			UserIncome userIncome2 = new UserIncome();
-			userIncome.setCoperatorId(Integer.valueOf(buyerid));
-			List<UserIncome> userlist2 =iUserIncomeService.selectUserIncome(userIncome);
-			userIncome.setAdIncomeRate(0.05);
-			if(userlist2.size()>0){
-				UserIncome income = userlist2.get(0);
-				userIncome.setIncomeId(income.getIncomeId());
-				iUserIncomeService.updateUserIncome(userIncome);
-			}else{
-				iUserIncomeService.insertUserIncome(userIncome);
 			}
 			
 			//---------------------设备昨日广告收入---------------------------------
