@@ -5,6 +5,8 @@ import com.zxiang.project.settle.deviceIncomeDaily.domain.DeviceIncomeDaily;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 /**
  * 设备收入日统计 服务层
  * 
@@ -80,5 +82,7 @@ public interface IDeviceIncomeDailyService
 	 * 广告价钱查询
 	 * */
 	public List<HashMap<String, Object>> selectreleaserecordlist(HashMap<String, Object> map);
+	
+	public HashMap<String, Object> selecadschedulelist(Integer scheduleId);
 	
 }
