@@ -109,4 +109,13 @@ public class JoinController extends BaseController
 		return toAjax(joinService.deleteJoinByIds(ids));
 	}
 	
+	/**
+	 * 查找加盟商下拉框数据
+	 */
+	@RequestMapping("/getDropBoxJoinList")
+    @ResponseBody
+    public TableDataInfo getDropBoxJoinList() {
+		List<Join> list = joinService.selectDropBoxList();
+		return getDataTable(list);
+    }
 }

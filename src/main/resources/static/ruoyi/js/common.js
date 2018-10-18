@@ -180,3 +180,60 @@ function selectAreaListByPid(parentAreaId){
     });
     return areaList;
 }
+
+/**服务商下拉框选择*/
+function selectRepairList(){
+	var repairList = [];
+	$.ajax({
+        url: ctx + "client/repair/getDropBoxRepairList",
+        type: "post",
+        dataType: "json",
+        data: 'data',
+        async:false,
+        success: function (data) {
+        	repairList = data.rows;
+        },
+        error: function (data) {
+            alert("查询服务商下拉列表失败" + data);
+        }
+    })
+    return repairList;
+}
+
+/**代理商下拉框选择*/
+function selectAgentList(){
+	var agentList = [];
+	$.ajax({
+        url: ctx + "client/agent/getDropBoxAgentList",
+        type: "post",
+        dataType: "json",
+        data: 'data',
+        async:false,
+        success: function (data) {
+        	agentList = data.rows;
+        },
+        error: function (data) {
+            alert("查询代理商下拉列表失败" + data);
+        }
+    })
+    return agentList;
+}
+
+/**加盟商下拉框选择*/
+function selectJoinList(){
+	var joinList = [];
+	$.ajax({
+        url: ctx + "client/join/getDropBoxJoinList",
+        type: "post",
+        dataType: "json",
+        data: 'data',
+        async:false,
+        success: function (data) {
+        	joinList = data.rows;
+        },
+        error: function (data) {
+            alert("查询加盟商下拉列表失败" + data);
+        }
+    })
+    return joinList;
+}

@@ -174,5 +174,10 @@ public class AgentServiceImpl implements IAgentService
 		}
 		return agentMapper.deleteAgentByIds(Convert.toStrArray(ids));
 	}
+
+	@Override
+	public List<Agent> selectDropBoxList() {
+		return agentMapper.selectDropBoxList();
+	}
 	
 }

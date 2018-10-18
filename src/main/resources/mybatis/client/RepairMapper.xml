@@ -137,4 +137,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <select id="selectDropBoxList" resultMap="RepairResult">
+         select repair_id, repair_name,manager_id,manager_name from zx_repair
+    </select>
+    
 </mapper>

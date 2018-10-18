@@ -42,6 +42,9 @@ public class TissueRecord extends BaseEntity
 	private String placeName;
 	private String deviceCode;
 	
+	private Integer agentId;//代理商查询条件
+	private Integer repairId;//代理商查询条件
+	private Integer joinId;//代理商查询条件
 	
 	public void setTissueRecordId(Integer tissueRecordId) 
 	{
@@ -156,6 +159,30 @@ public class TissueRecord extends BaseEntity
 
 	public void setDeviceCode(String deviceCode) {
 		this.deviceCode = deviceCode;
+	}
+
+	public Integer getAgentId() {
+		return agentId;
+	}
+
+	public void setAgentId(Integer agentId) {
+		this.agentId = agentId;
+	}
+
+	public Integer getRepairId() {
+		return repairId;
+	}
+
+	public void setRepairId(Integer repairId) {
+		this.repairId = repairId;
+	}
+
+	public Integer getJoinId() {
+		return joinId;
+	}
+
+	public void setJoinId(Integer joinId) {
+		this.joinId = joinId;
 	}
 
 	public String toString() {

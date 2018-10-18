@@ -174,4 +174,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="queryParentAgent" parameterType="Integer" resultMap="AgentResult">
     	select * from zx_agent  where city = #{city} and county is null limit 1
     </select>
+    
+    <select id="selectDropBoxList" resultMap="AgentResult">
+         select agent_id, agent_name,manager_id,manager_name from zx_agent
+    </select>
+    
 </mapper>

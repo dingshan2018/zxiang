@@ -50,5 +50,10 @@ public interface IAgentService
      * @return 结果
      */
 	public int deleteAgentByIds(String ids);
+
+	/**
+	 * 查找代理商下拉框数据
+	 */
+	public List<Agent> selectDropBoxList();
 	
 }

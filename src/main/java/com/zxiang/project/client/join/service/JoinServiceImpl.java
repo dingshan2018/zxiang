@@ -163,5 +163,10 @@ public class JoinServiceImpl implements IJoinService
 		}
 		return joinMapper.deleteJoinByIds(idList);
 	}
+
+	@Override
+	public List<Join> selectDropBoxList() {
+		return joinMapper.selectDropBoxList();
+	}
 	
 }

@@ -64,5 +64,10 @@ public interface AgentMapper
 	 * @return
 	 */
 	Agent queryParentAgent(Integer county);
+
+	/**
+	 * 查找代理商下拉框数据
+	 */
+	public List<Agent> selectDropBoxList();
 	
 }
