@@ -58,5 +58,10 @@ public interface JoinMapper
      * @return 结果
      */
 	public int deleteJoinByIds(String[] joinIds);
+
+	/**
+	 * 查找加盟商下拉框数据
+	 */
+	public List<Join> selectDropBoxList();
 	
 }

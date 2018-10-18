@@ -47,6 +47,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
 				AND date_format(tr.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
 			 </if>
+			 <!-- 按照代理商搜索  通过场所经办人关联-->
+             <if test="agentId != null and agentId != ''"> and tr.place_id in 
+             	( SELECT DISTINCT zp.place_id FROM zx_place zp 
+             		WHERE zp.operator_id = (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
+             			WHERE su.user_type='03' AND su.puser_id=#{agentId} AND su.user_id=p.operator_id))</if>
+           	 <!-- 按照服务商搜索  通过场所维修员关联-->
+             <if test="repairId != null and repairId != ''">  and tr.place_id in 
+             	(SELECT DISTINCT zp.place_id FROM zx_place zp 
+             		WHERE zp.repair_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
+             			WHERE su.user_type='04' AND su.puser_id=#{repairId}  AND su.user_id=p.repair_id))
+             </if>
+             <!-- 按照加盟商搜索 通过场所机主关联-->
+             <if test="joinId != null and joinId != ''">  and tr.place_id in 
+             	(SELECT DISTINCT zp.place_id FROM zx_place zp 
+             		WHERE zp.owner_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
+             			WHERE su.user_type='02' AND su.puser_id=#{joinId}  AND su.user_id=p.owner_id))
+         	 </if>
          </where>
     </select>
     

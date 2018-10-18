@@ -161,5 +161,10 @@ public class RepairServiceImpl implements IRepairService
 		}
 		return repairMapper.deleteRepairByIds(idList);
 	}
+
+	@Override
+	public List<Repair> selectDropBoxList() {
+		return repairMapper.selectDropBoxList();
+	}
 	
 }
