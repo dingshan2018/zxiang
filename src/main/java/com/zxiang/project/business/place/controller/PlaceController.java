@@ -70,9 +70,13 @@ public class PlaceController extends BaseController
 	public String add(ModelMap mmap)
 	{
 		User queryUser = new User();
+		List<User> userListAll = userService.selectUserList(queryUser);
+		mmap.put("userListAll", userListAll);
+		
 		queryUser.setUserType(TYPE_REPAIR);
-		List<User> userList = userService.selectUserList(queryUser);
-		mmap.put("userList", userList);
+		List<User> userListRepair = userService.selectUserList(queryUser);
+		
+		mmap.put("userListRepair", userListRepair);
 		
 	    return prefix + "/add";
 	}
@@ -109,9 +113,13 @@ public class PlaceController extends BaseController
 		mmap.put("countyDropBoxList", areaService.selectDropBoxList(place.getCity()));
 		
 		User queryUser = new User();
+		List<User> userListAll = userService.selectUserList(queryUser);
+		mmap.put("userListAll", userListAll);
+		
 		queryUser.setUserType(TYPE_REPAIR);
-		List<User> userList = userService.selectUserList(queryUser);
-		mmap.put("userList", userList);
+		List<User> userListRepair = userService.selectUserList(queryUser);
+		
+		mmap.put("userListRepair", userListRepair);
 		
 	    return prefix + "/edit";
 	}

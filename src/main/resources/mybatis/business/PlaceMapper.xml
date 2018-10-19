@@ -56,7 +56,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         (select distinct u.user_name from sys_user u where u.user_id =p.`repair_id` ) repairName,
         supply_id, 
         (select distinct u.user_name from sys_user u where u.user_id =p.`supply_id` ) supplyName,
-        operator_id, owner_id,
+        operator_id,
+        (select distinct u.user_name from sys_user u where u.user_id =p.`operator_id` ) operatorName,
+         owner_id,
+         (select distinct u.user_name from sys_user u where u.user_id =p.`owner_id` ) ownerName,
         device_count, ct_bank,ct_account, ct_receiver, ct_phone, ct_identity, ct_rate, status, del_flag, note, 
         create_by, create_time, update_by, update_time from zx_place p
     </sql>
