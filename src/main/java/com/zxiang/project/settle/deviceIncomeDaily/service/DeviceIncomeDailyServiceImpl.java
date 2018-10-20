@@ -106,8 +106,10 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	}
 
 	@Override
-	public List<HashMap<String, Object>> selectzxtissuerecordlist(HashMap<String, Object> map) {
-		// TODO Auto-generated method stub
+	public int selectzxtissuerecordlist(String deviceId,String scheduleId) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("deviceId", deviceId);
+		map.put("scheduleId", scheduleId);
 		return deviceIncomeDailyMapper.selectzxtissuerecordlist(map);
 	}
 
@@ -132,8 +134,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				String buyer_id = order.get("buyer_id")+"";//机主
 				String isincome = order.get("isincome")+""; //是否是当天售出
 				
-				List<HashMap<String, Object>> tissuelist =selectzxtissuerecordlist(device);
-				int tissuenum = tissuelist.size(); //出纸数量
+				int tissuenum = selectzxtissuerecordlist(device.get("device_id")+"",""); //出纸数量
 				//计算每日设备推广费用
 				deviceorder(isincome,promotioner_id,device);
 				//计算每日出纸费用（二维码推广告）
@@ -201,6 +202,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		
 		//代理商服务收益（0.025元）
 		HashMap<String, Object> promotionagenmap = new HashMap<String, Object>();
+		HashMap<String, Object> placemap =  selectzxplace(placeId+""); //获取地点
 		List<HashMap<String, Object>> promotionagentlist = new ArrayList<HashMap<String, Object>>();
 		 promotionagenmap.put("placeId", placeId);
 		 promotionagentlist = iUserIncomeService.selectzxagentlist(promotionagenmap);
@@ -235,6 +237,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		List<HashMap<String, Object>> releaserecordlist =selectreleaserecordlist(map);//广告投放设备
 		int placeId  = Integer.valueOf(map.get("place_id") + ""); //场所Id
 		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
+		HashMap<String, Object> placemap =  selectzxplace(placeId+""); //获取地点
 		for(HashMap<String, Object> releaserecord : releaserecordlist) {
 			double price = Double.valueOf(releaserecord.get("price")+""); //广告价格
 			//--------------------------------------客户昨日收入-----------------------------------------------
@@ -243,11 +246,6 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			String release_type = selecadschedule.get("release_type").toString(); //投放方式01终端轮播  02终端视频  03H5广告       (二维码广告还分公司（免费）和外部)
 			int  advertiser = Integer.valueOf(selecadschedule.get("advertiser")+""); //广告商
 			int	 promotioner = Integer.valueOf(selecadschedule.get("promotioner")+""); //推荐人
-			//HashMap<String, Object> promotionerdata = iUserIncomeService.selectzxsellerlist(promotioner+"");
-			//String puser_id = promotionerdata.get("puser_id")+""; //主体ID
-			//String user_type = promotionerdata.get("user_type")+""; //用户类型
-			//HashMap<String, Object> puser = new HashMap<String, Object>();
-			//List<HashMap<String, Object>> user = new ArrayList<HashMap<String, Object>>();
 			HashMap<String, Object> promotionagenmap = new HashMap<String, Object>();
 			HashMap<String, Object> repairmap = new HashMap<String, Object>();
 			List<HashMap<String, Object>> promotionagentlist = new ArrayList<HashMap<String, Object>>();
@@ -318,10 +316,12 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 					   String repairuser = repairusermap.get("user_id")+"";
 					   user = getusedata(repairuser);
 						rate = 0.03;
-					   insertdata(0.03*price,repairuser,"01",user);
+					   insertdata(rate*price,repairuser,"01",user);
 				 }
 				break;
 			case "03":
+				
+				 tissuenum = selectzxtissuerecordlist(deviceId+"",releaserecord.get("schedule_id").toString());
 				//--------------推广收益-----------------------
 				rate = 0.7;
 				insertdata(tissuenum*rate,promotioner+"","02",user);
@@ -330,7 +330,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				//插入机主广告数据每次出纸收益0.3元
 				user = getusedata(buyerid);
 				rate = 0.3;
-				insertdata(0.3*tissuenum,buyerid,"01",user);
+				insertdata(rate*tissuenum,buyerid,"01",user);
 	
 				//插入代理商广告数据（地级市代理地区所服务的机子每次出纸收益0.02元，县区、县级市代理地区所服务的机子每次出纸收益0.05元）
 				 promotionagenmap.put("placeId", placeId);
@@ -351,7 +351,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 					   String repairuser = repairusermap.get("user_id")+"";
 					   user = getusedata(repairuser);
 					   rate = 0.05;
-					   insertdata(0.05*price,repairuser,"01",user);
+					   insertdata(rate*price,repairuser,"01",user);
 				 }
 				break;
 
@@ -459,7 +459,9 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 
 	//场所管理
 	@Override
-	public HashMap<String, Object> selectzxplace(HashMap<String, Object> map) {
+	public HashMap<String, Object> selectzxplace(String placeId) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("placeId", placeId);
 		List<HashMap<String, Object>> zxplacelist = deviceIncomeDailyMapper.selectzxplace(map);
 		if(zxplacelist.size()>0){
 			return zxplacelist.get(0);
