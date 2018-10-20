@@ -59,6 +59,7 @@ public class DeviceIncomeDailyController extends BaseController
 	@GetMapping("/add")
 	public String add()
 	{
+		deviceIncomeDailyService.statisticaldata();
 	    return prefix + "/add";
 	}
 	
