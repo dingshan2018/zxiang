@@ -138,4 +138,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <select id="selectDropBoxList" resultMap="JoinResult">
+         select join_id, joiner_name,joiner_id,manager_name from zx_join
+    </select>
+    
 </mapper>

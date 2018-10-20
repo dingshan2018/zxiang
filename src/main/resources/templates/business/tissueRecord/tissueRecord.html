@@ -9,13 +9,22 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								代理商户：<input type="text" name="agent"/>
+								代理商户：<!-- <input type="text" name="agent"/> -->
+								<select id="agentId" name="agentId">
+									<option value="">全部</option>
+								</select>
 							</li>
 							<li>
-								服务网点：<input type="text" name="service"/>
+								服务网点：<!-- <input type="text" name="service"/> -->
+								<select id="repairId" name="repairId">
+									<option value="">全部</option>
+								</select>
 							</li>
 							<li>
-								加盟商户：<input type="text" name="joiner"/>
+								加盟商户：<!-- <input type="text" name="joiner"/> -->
+								<select id="joinId" name="joinId">
+									<option value="">全部</option>
+								</select>
 							</li>
 							<li class="select-time">
 								<label>出纸时间： </label>
@@ -52,6 +61,22 @@
         var prefix = ctx + "business/tissueRecord"
 
         $(function() {
+        	//代理商下拉框数据
+        	var agentList = selectAgentList();
+   	    	$.each(agentList, function (i) {
+               	$('#agentId').append("<option value=" + agentList[i].agentId + ">" + agentList[i].agentName + "</option>");
+            });
+   	  		//服务商下拉框数据
+        	var repairList = selectRepairList();
+   	    	$.each(repairList, function (i) {
+               	$('#repairId').append("<option value=" + repairList[i].repairId + ">" + repairList[i].repairName + "</option>");
+            });
+   	   		//加盟商下拉框数据
+        	var joinList = selectJoinList();
+   	    	$.each(joinList, function (i) {
+               	$('#joinId').append("<option value=" + joinList[i].joinId + ">" + joinList[i].joinerName + "</option>");
+            });
+        	
             var options = {
                 url: prefix + "/list",
                 createUrl: prefix + "/add",

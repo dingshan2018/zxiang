@@ -50,5 +50,10 @@ public interface IJoinService
      * @return 结果
      */
 	public int deleteJoinByIds(String ids);
+
+	/**
+	 * 查找加盟商下拉框数据
+	 */
+	public List<Join> selectDropBoxList();
 	
 }

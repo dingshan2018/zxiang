@@ -135,4 +135,14 @@ public class AgentController extends BaseController
 		return toAjax(agentService.deleteAgentByIds(ids));
 	}
 	
+	/**
+	 * 查找代理商下拉框数据
+	 */
+	@RequestMapping("/getDropBoxAgentList")
+    @ResponseBody
+    public TableDataInfo getDropBoxAgentList() {
+		List<Agent> list = agentService.selectDropBoxList();
+		return getDataTable(list);
+    }
+	
 }

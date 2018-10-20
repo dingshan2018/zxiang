@@ -160,6 +160,14 @@
 					title : '送纸员' 
 				},
 				{
+					field : 'operatorName', 
+					title : '经办人' 
+				},
+				{
+					field : 'ownerName', 
+					title : '机主' 
+				},
+				{
 					field : 'deviceCount', 
 					title : '投放设备数量' 
 				},
@@ -219,6 +227,7 @@
 	            return;
 	        }
 	        $("#city").html("");
+	        $("#county").html("<option value=''>全部</option>");
 	        var str = "<option value=''>全部</option>";
 	        
 	        var cityAreaList = selectAreaListByPid(provice);

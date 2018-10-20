@@ -50,5 +50,10 @@ public interface IRepairService
      * @return 结果
      */
 	public int deleteRepairByIds(String ids);
+
+	/**
+	 * 查找服务商下拉框数据
+	 */
+	public List<Repair> selectDropBoxList();
 	
 }

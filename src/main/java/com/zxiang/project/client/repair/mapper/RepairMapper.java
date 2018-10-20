@@ -58,5 +58,10 @@ public interface RepairMapper
      * @return 结果
      */
 	public int deleteRepairByIds(String[] repairIds);
+
+	/**
+	 * 查找服务商下拉框数据
+	 */
+	public List<Repair> selectDropBoxList();
 	
 }

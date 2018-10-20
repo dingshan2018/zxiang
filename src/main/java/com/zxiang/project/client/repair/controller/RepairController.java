@@ -109,4 +109,13 @@ public class RepairController extends BaseController
 		return toAjax(repairService.deleteRepairByIds(ids));
 	}
 	
+	/**
+	 * 查找服务商下拉框数据
+	 */
+	@RequestMapping("/getDropBoxRepairList")
+    @ResponseBody
+    public TableDataInfo getDropBoxRepairList() {
+		List<Repair> list = repairService.selectDropBoxList();
+		return getDataTable(list);
+    }
 }
