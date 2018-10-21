@@ -16,9 +16,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="bankName"    column="bank_name"    />
         <result property="status"    column="status"    />
         <result property="delFlag"    column="del_flag"    />
-        <result property="promotionRate"    column="promotion_rate"    />
         <result property="adRate"    column="ad_rate"    />
+        <result property="adCarouselRate"    column="ad_carousel_rate"    />
         <result property="scanRate"    column="scan_rate"    />
+        <result property="promDirectRate"    column="prom_direct_rate"    />
+        <result property="promIndirectRate"    column="prom_indirect_rate"    />
+        <result property="promPaperRate"    column="prom_paper_rate"    />
+        <result property="promotionRate"    column="promotion_rate"    />
+        <result property="serveRate"    column="serve_rate"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -26,8 +31,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectJoinVo">
-        select join_id, joiner_name, joiner_id, device_num, bank_account, bank_receiver, bank_name,manager_name, manager_phone,
-         status, del_flag, promotion_rate, ad_rate, scan_rate, create_by, create_time, update_by, update_time from zx_join
+        select join_id, joiner_name, joiner_id, device_num, bank_account, bank_receiver, bank_name,manager_name, manager_phone,status, del_flag,
+          ad_rate,ad_carousel_rate, scan_rate,prom_direct_rate,prom_indirect_rate,prom_paper_rate,promotion_rate,serve_rate,  
+          create_by, create_time, update_by, update_time from zx_join
     </sql>
 	
     <select id="selectJoinList" parameterType="Join" resultMap="JoinResult">
@@ -73,9 +79,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="bankName != null and bankName != '' ">bank_name,</if>
 			<if test="status != null and status != '' ">status,</if>
 			<if test="delFlag != null and delFlag != '' ">del_flag,</if>
-			<if test="promotionRate != null and promotionRate != '' ">promotion_rate,</if>
-			<if test="adRate != null and adRate != '' ">ad_rate,</if>
-			<if test="scanRate != null and scanRate != '' ">scan_rate,</if>
+			<if test="adRate != null">ad_rate,</if>
+			<if test="adCarouselRate != null">ad_carousel_rate,</if>
+			<if test="scanRate != null">scan_rate,</if>
+			<if test="promDirectRate != null">prom_direct_rate,</if>
+			<if test="promIndirectRate != null">prom_indirect_rate,</if>
+			<if test="promPaperRate != null">prom_paper_rate,</if>
+			<if test="promotionRate != null">promotion_rate,</if>
+			<if test="serveRate != null">serve_rate,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
 			<if test="createTime != null ">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
@@ -93,9 +104,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="bankName != null and bankName != ''">#{bankName},</if>
 			<if test="status != null and status != ''">#{status},</if>
 			<if test="delFlag != null and delFlag != ''">#{delFlag},</if>
-			<if test="promotionRate != null and promotionRate != ''">#{promotionRate},</if>
-			<if test="adRate != null and adRate != ''">#{adRate},</if>
-			<if test="scanRate != null and scanRate != ''">#{scanRate},</if>
+			<if test="adRate != null">#{adRate},</if>
+			<if test="adCarouselRate != null">#{adCarouselRate},</if>
+			<if test="scanRate != null">#{scanRate},</if>
+			<if test="promDirectRate != null">#{promDirectRate},</if>
+			<if test="promIndirectRate != null">#{promIndirectRate},</if>
+			<if test="promPaperRate != null">#{promPaperRate},</if>
+			<if test="promotionRate != null">#{promotionRate},</if>
+			<if test="serveRate != null">#{serveRate},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
 			<if test="createTime != null">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
@@ -116,9 +132,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="bankName != null  and bankName != ''  ">bank_name = #{bankName},</if>
             <if test="status != null  and status != ''  ">status = #{status},</if>
             <if test="delFlag != null  and delFlag != ''  ">del_flag = #{delFlag},</if>
-            <if test="promotionRate != null  ">promotion_rate = #{promotionRate},</if>
-            <if test="adRate != null  ">ad_rate = #{adRate},</if>
-            <if test="scanRate != null  ">scan_rate = #{scanRate},</if>
+            <if test="adRate != null">ad_rate = #{adRate},</if>
+			<if test="adCarouselRate != null">ad_carousel_rate = #{adCarouselRate},</if>
+			<if test="scanRate != null">scan_rate = #{scanRate},</if>
+			<if test="promDirectRate != null">prom_direct_rate = #{promDirectRate},</if>
+			<if test="promIndirectRate != null">prom_indirect_rate = #{promIndirectRate},</if>
+			<if test="promPaperRate != null">prom_paper_rate = #{promPaperRate},</if>
+			<if test="promotionRate != null">promotion_rate = #{promotionRate},</if>
+			<if test="serveRate != null">serve_rate = #{serveRate},</if>
             <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
             <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>

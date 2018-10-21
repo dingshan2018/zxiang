@@ -1,9 +1,11 @@
 package com.zxiang.project.client.repair.domain;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 import com.zxiang.framework.web.domain.BaseEntity;
-import java.util.Date;
 
 /**
  * 服务商表 zx_repair
@@ -31,12 +33,22 @@ public class Repair extends BaseEntity
 	private String bankAccount;
 	/** 开户行 */
 	private String bankName;
-	/** 推广收益 */
-	private Float promotionRate;
-	/** 广告收益 */
+	/** 视频广告系数 */
 	private Float adRate;
-	/** 扫码收益 */
+	/** 轮播广告系数 */
+	private Float adCarouselRate;
+	/** 二维码广告出纸收益 */
 	private Float scanRate;
+	/** 直推机子分润 */
+	private Float promDirectRate;
+	/** 间推机子分润 */
+	private Float promIndirectRate;
+	/** 推广出纸收益 */
+	private Float promPaperRate;
+	/** 推广广告系数 */
+	private Float promotionRate;
+	/** 办公补贴 */
+	private Float subsidyRate;
 	/** 状态 */
 	private String status;
 	/** 是否删除 */
@@ -100,6 +112,46 @@ public class Repair extends BaseEntity
 	public void setBankReceiver(String bankReceiver) 
 	{
 		this.bankReceiver = bankReceiver;
+	}
+
+	public Float getAdCarouselRate() {
+		return adCarouselRate;
+	}
+
+	public void setAdCarouselRate(Float adCarouselRate) {
+		this.adCarouselRate = adCarouselRate;
+	}
+
+	public Float getPromDirectRate() {
+		return promDirectRate;
+	}
+
+	public void setPromDirectRate(Float promDirectRate) {
+		this.promDirectRate = promDirectRate;
+	}
+
+	public Float getPromIndirectRate() {
+		return promIndirectRate;
+	}
+
+	public void setPromIndirectRate(Float promIndirectRate) {
+		this.promIndirectRate = promIndirectRate;
+	}
+
+	public Float getPromPaperRate() {
+		return promPaperRate;
+	}
+
+	public void setPromPaperRate(Float promPaperRate) {
+		this.promPaperRate = promPaperRate;
+	}
+
+	public Float getSubsidyRate() {
+		return subsidyRate;
+	}
+
+	public void setSubsidyRate(Float subsidyRate) {
+		this.subsidyRate = subsidyRate;
 	}
 
 	public String getBankReceiver() 

@@ -23,8 +23,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="bankName"    column="bank_name"    />
         <result property="promotorId"    column="promotor_id"    />
         <result property="adRate"    column="ad_rate"    />
+        <result property="adCarouselRate"    column="ad_carousel_rate"    />
         <result property="scanRate"    column="scan_rate"    />
+        <result property="promDirectRate"    column="prom_direct_rate"    />
+        <result property="promIndirectRate"    column="prom_indirect_rate"    />
+        <result property="promPaperRate"    column="prom_paper_rate"    />
         <result property="promotionRate"    column="promotion_rate"    />
+        <result property="directAgentRate"    column="direct_agent_rate"    />
+        <result property="serveRate"    column="serve_rate"    />
+        <result property="subsidyRate"    column="subsidy_rate"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -36,8 +43,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          province,(select distinct a.pname from sys_area a where a.id =a.`province` ) provinceName,
          city,(select distinct a.pname from sys_area a where a.id =a.`city` ) cityName,
          county,(select distinct a.pname from sys_area a where a.id =a.`county` ) countyName, 
-         level, device_num, del_flag, status, manager_id, manager_name, manager_phone, bank_receiver, bank_account, bank_name, promotor_id, ad_rate, scan_rate, promotion_rate, create_by, create_time, update_by, update_time
-          from zx_agent a
+         level, device_num, del_flag, status, manager_id, manager_name, manager_phone, bank_receiver, bank_account, bank_name, promotor_id,
+         ad_rate,ad_carousel_rate, scan_rate,prom_direct_rate,prom_indirect_rate,prom_paper_rate,promotion_rate,direct_agent_rate,serve_rate,subsidy_rate, 
+         create_by, create_time, update_by, update_time
+        from zx_agent a
     </sql>
 	
     <select id="selectAgentList" parameterType="Agent" resultMap="AgentResult">
@@ -95,9 +104,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="bankAccount != null and bankAccount != '' ">bank_account,</if>
 			<if test="bankName != null and bankName != '' ">bank_name,</if>
 			<if test="promotorId != null and promotorId != '' ">promotor_id,</if>
-			<if test="adRate != null and adRate != '' ">ad_rate,</if>
-			<if test="scanRate != null and scanRate != '' ">scan_rate,</if>
-			<if test="promotionRate != null and promotionRate != '' ">promotion_rate,</if>
+			<if test="adRate != null">ad_rate,</if>
+			<if test="adCarouselRate != null">ad_carousel_rate,</if>
+			<if test="scanRate != null">scan_rate,</if>
+			<if test="promDirectRate != null">prom_direct_rate,</if>
+			<if test="promIndirectRate != null">prom_indirect_rate,</if>
+			<if test="promPaperRate != null">prom_paper_rate,</if>
+			<if test="promotionRate != null">promotion_rate,</if>
+			<if test="directAgentRate != null">directAgent_rate,</if>
+			<if test="serveRate != null">serve_rate,</if>
+			<if test="subsidyRate != null">subsidy_rate,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
 			<if test="createTime != null">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
@@ -121,9 +137,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="bankAccount != null and bankAccount != ''">#{bankAccount},</if>
 			<if test="bankName != null and bankName != ''">#{bankName},</if>
 			<if test="promotorId != null and promotorId != ''">#{promotorId},</if>
-			<if test="adRate != null and adRate != ''">#{adRate},</if>
-			<if test="scanRate != null and scanRate != ''">#{scanRate},</if>
-			<if test="promotionRate != null and promotionRate != ''">#{promotionRate},</if>
+			<if test="adRate != null">#{adRate},</if>
+			<if test="adCarouselRate != null">#{adCarouselRate},</if>
+			<if test="scanRate != null">#{scanRate},</if>
+			<if test="promDirectRate != null">#{promDirectRate},</if>
+			<if test="promIndirectRate != null">#{promIndirectRate},</if>
+			<if test="promPaperRate != null">#{promPaperRate},</if>
+			<if test="promotionRate != null">#{promotionRate},</if>
+			<if test="directAgentRate != null">#{directAgentRate},</if>
+			<if test="serveRate != null">#{serveRate},</if>
+			<if test="subsidyRate != null">#{subsidyRate},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
 			<if test="createTime != null">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
@@ -150,9 +173,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="bankAccount != null  and bankAccount != ''  ">bank_account = #{bankAccount},</if>
             <if test="bankName != null  and bankName != ''  ">bank_name = #{bankName},</if>
             <if test="promotorId != null  ">promotor_id = #{promotorId},</if>
-            <if test="adRate != null  ">ad_rate = #{adRate},</if>
-            <if test="scanRate != null  ">scan_rate = #{scanRate},</if>
-            <if test="promotionRate != null  ">promotion_rate = #{promotionRate},</if>
+            <if test="adRate != null">ad_rate = #{adRate},</if>
+			<if test="adCarouselRate != null">ad_carousel_rate = #{adCarouselRate},</if>
+			<if test="scanRate != null">scan_rate = #{scanRate},</if>
+			<if test="promDirectRate != null">prom_direct_rate = #{promDirectRate},</if>
+			<if test="promIndirectRate != null">prom_indirect_rate = #{promIndirectRate},</if>
+			<if test="promPaperRate != null">prom_paper_rate = #{promPaperRate},</if>
+			<if test="promotionRate != null">promotion_rate = #{promotionRate},</if>
+			<if test="directAgentRate != null">direct_agent_rate = #{directAgentRate},</if>
+			<if test="serveRate != null">serve_rate = #{serveRate},</if>
+			<if test="subsidyRate != null">subsidy_rate = #{subsidyRate},</if>
             <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
             <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>

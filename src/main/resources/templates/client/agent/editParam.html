@@ -4,12 +4,12 @@
 <head th:include="include :: header"></head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-join-paramEdit" th:object="${join}">
-            <input id="joinId" name="joinId" th:field="*{joinId}"  type="hidden">
+        <form class="form-horizontal m" id="form-agent-paramEdit" th:object="${agent}">
+            <input id="agentId" name="agentId" th:field="*{agentId}"  type="hidden">
             <div class="form-group">	
-                <label class="col-sm-3 control-label">加盟商名称：</label>
+                <label class="col-sm-3 control-label">代理商名称：</label>
                 <div class="col-sm-8">
-                    <input id="joinerName" name="joinerName" th:field="*{joinerName}" class="form-control" type="text" disabled="disabled">
+                    <input id="agentName" name="agentName" th:field="*{agentName}" class="form-control" type="text" disabled="disabled">
                 </div>
             </div>
             <div class="form-group">	
@@ -55,9 +55,21 @@
                 </div>
             </div>
             <div class="form-group">	
+                <label class="col-sm-3 control-label">直推代理分润：</label>
+                <div class="col-sm-8">
+                    <input id="directAgentRate" name="directAgentRate" th:field="*{directAgentRate}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">	
                 <label class="col-sm-3 control-label">服务出纸收益：</label>
                 <div class="col-sm-8">
                     <input id="serveRate" name="serveRate" th:field="*{serveRate}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">办公补贴：</label>
+                <div class="col-sm-8">
+                    <input id="serveRate" name="subsidyRate" th:field="*{subsidyRate}" class="form-control" type="number">
                 </div>
             </div>
 			<div class="form-group">
@@ -70,15 +82,15 @@
     </div>
     <div th:include="include::footer"></div>
     <script type="text/javascript">
-		var prefix = ctx + "client/join"
-		$("#form-join-paramEdit").validate({
+		var prefix = ctx + "client/agent"
+		$("#form-agent-paramEdit").validate({
 			rules:{
-				joinerName:{
+				agentName:{
         			required:true
         		},
 			},
 			submitHandler: function(form) {
-				$.operate.save(prefix + "/edit", $('#form-join-paramEdit').serialize());
+				$.operate.save(prefix + "/edit", $('#form-agent-paramEdit').serialize());
 			}
 		});
 	</script>
