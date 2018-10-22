@@ -1,6 +1,7 @@
 package com.zxiang.project.system.user.controller;
 
 import java.util.List;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -115,9 +116,13 @@ public class UserController extends BaseController
      * 修改用户
      */
     @GetMapping("/edit/{userId}")
-    public String edit(@PathVariable("userId") Long userId, ModelMap mmap)
-    {
-        mmap.put("user", userService.selectUserById(userId));
+    public String edit(@PathVariable("userId") Long userId, ModelMap mmap) {
+    	User user = userService.selectUserById(userId);
+    	mmap.put("user", user);
+    	if(UserConstants.USER_TYPE_SALESMAN.equals(user.getUserType())) {
+    		
+//    		mmap.put("clientName", userList);
+    	}
         mmap.put("roles", roleService.selectRolesByUserId(userId));
         mmap.put("posts", postService.selectPostsByUserId(userId));
         List<User> userList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,

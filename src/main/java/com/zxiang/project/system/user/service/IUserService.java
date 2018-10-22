@@ -152,4 +152,11 @@ public interface IUserService
    	 * 查询用户下拉框数据列表
    	 */
 	public List<User> getDropBoxUserList();
+	
+	/**
+	 * 查询业务员的主体名称
+	 * @param user
+	 * @return
+	 */
+	public String saleManClent(User user);
 }

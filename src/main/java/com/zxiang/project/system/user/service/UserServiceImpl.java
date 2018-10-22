@@ -11,6 +11,10 @@ import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.StringUtils;
 import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
+import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
+import com.zxiang.project.client.agent.mapper.AgentMapper;
+import com.zxiang.project.client.join.mapper.JoinMapper;
+import com.zxiang.project.client.repair.mapper.RepairMapper;
 import com.zxiang.project.system.post.domain.Post;
 import com.zxiang.project.system.post.mapper.PostMapper;
 import com.zxiang.project.system.role.domain.Role;
@@ -38,6 +42,14 @@ public class UserServiceImpl implements IUserService
 
     @Autowired
     private PostMapper postMapper;
+    @Autowired
+    private AdvertiseMapper advertiseMapper;
+    @Autowired
+    private AgentMapper agentMapper;
+    @Autowired
+    private JoinMapper joinMapper;
+    @Autowired
+    private RepairMapper repairMapper;
 
     @Autowired
     private UserPostMapper userPostMapper;
@@ -363,5 +375,26 @@ public class UserServiceImpl implements IUserService
 	@Override
 	public List<User> getDropBoxUserList() {
 		return userMapper.selectDropBoxList();
+	}
+
+	@Override
+	public String saleManClent(User user) {
+		if(user == null) {
+			return null;
+		}
+		user = selectUserById(user.getPuserId().longValue());
+		if(user == null) {
+			return null;
+		}
+		if(UserConstants.USER_TYPE_AGENT.equals(user.getUserType())) {
+			
+		}else if(UserConstants.USER_TYPE_JOIN.equals(user.getUserType())) {
+			
+		}else if(UserConstants.USER_TYPE_REPAIR.equals(user.getUserType())) {
+			
+		}else if(UserConstants.USER_TYPE_ADVERTISE.equals(user.getUserType())) {
+//			advertiseMapper.selectAdvertiseById(advertiseId)
+		}
+		return null;
 	}
 }

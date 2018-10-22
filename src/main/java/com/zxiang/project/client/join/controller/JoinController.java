@@ -19,6 +19,7 @@ import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.client.join.domain.Join;
 import com.zxiang.project.client.join.service.IJoinService;
+import com.zxiang.project.system.role.service.IRoleService;
 
 /**
  * 加盟商 信息操作处理
@@ -34,6 +35,8 @@ public class JoinController extends BaseController
 	
 	@Autowired
 	private IJoinService joinService;
+	@Autowired
+    private IRoleService roleService;
 	
 	@RequiresPermissions("client:join:view")
 	@GetMapping()
@@ -113,8 +116,7 @@ public class JoinController extends BaseController
 	@Log(title = "加盟商", businessType = BusinessType.DELETE)
 	@PostMapping( "/remove")
 	@ResponseBody
-	public AjaxResult remove(String ids)
-	{		
+	public AjaxResult remove(String ids) {		
 		return toAjax(joinService.deleteJoinByIds(ids));
 	}
 	
@@ -127,4 +129,14 @@ public class JoinController extends BaseController
 		List<Join> list = joinService.selectDropBoxList();
 		return getDataTable(list);
     }
+	/**
+	 * 新增业务员
+	 */
+	@GetMapping("/toAddSalesman/{chiendType}/{cliendId}")
+	public String toAddSalesman(@PathVariable("chiendType") String chiendType,@PathVariable("cliendId") Integer cliendId, ModelMap mmap) {
+		mmap.put("chiendType", chiendType);
+		mmap.put("cliendId", cliendId);
+		mmap.put("roles", roleService.selectRoleAll());
+		return "client/addSalesman";
+	}
 }
