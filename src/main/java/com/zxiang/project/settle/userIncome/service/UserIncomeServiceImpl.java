@@ -100,6 +100,11 @@ public class UserIncomeServiceImpl implements IUserIncomeService
 	public List<HashMap<String, Object>> selectzxagentlist(HashMap<String, Object> map) {
 		return userIncomeMapper.selectzxagentlist(map);
 	}
+	
+	@Override
+	public List<HashMap<String, Object>> selectzxagent(HashMap<String, Object> map) {
+		return userIncomeMapper.selectzxagent(map);
+	}
 
 	@Override
 	public List<HashMap<String, Object>> selectzxjoinlist(HashMap<String, Object> map) {

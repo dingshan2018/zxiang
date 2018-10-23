@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.druid.util.StringUtils;
+import com.zxiang.common.constant.RateConstants;
 import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.support.Convert;
 import com.zxiang.project.settle.deviceIncomeDaily.domain.DeviceIncomeDaily;
@@ -119,7 +120,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	 * */
 	@Override
 	public void statisticaldata() {
-		//昨日设备收入计算是不是今天售出得价格    广告收益   出纸数
+		//推广出纸数 和 服务出纸数是否分开
 		//获取所有设备信息
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		List<HashMap<String, Object>> devicelist =selectzxdevicelist(map);
@@ -154,20 +155,22 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		HashMap<String, Object> user = getusedata(seller_id);
 		int placeId  = Integer.valueOf(map.get("place_id") + ""); //场所Id
 		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
-		double prom_direct_rate = 1000.00;
-		double prom_indirect_rate = 1000.00;
 		double price = 0.0;//设备销售价格
 		//判断是否是前一天售出的，01代表是    00代表不是
 		double fee = 0.0;
+		int num = 0;
+		String type = RateConstants.RATETYPE_PROMDIRECTINCOME;
 		if(isincome.equals("01")){
 			price = Double.valueOf(map.get("price")+"");
-			fee = 1000.00;
+			fee = Double.valueOf(user.get("promDirectRate")+"");
 			if(user.get("suuser_id") !=null && user.get("suuser_id") !="" ){
-				fee = 500.00;
+				fee = Double.valueOf(user.get("promIndirectRate")+"");
+				type = RateConstants.RATETYPE_PROMINDIRECTINCOME;
 			}
+			num++;
 		}
 		//插入数据
-		insertdata(fee,seller_id,"02",user);
+		insertdata(fee,seller_id,"02",type,0.0,num,user);
 		
 		//---------------------设备昨日销售价格收入---------------------------------
 		DeviceIncomeDaily deviceIncomeDaily = new DeviceIncomeDaily();
@@ -195,10 +198,10 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		HashMap<String, Object> user = getusedata(buyerid);
 		int placeId  = Integer.valueOf(map.get("place_id") + ""); //场所Id
 		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
-		double serve_rate = 0.025;
+		double serve_rate = Double.valueOf(user.get("serveRate")+"");
 		//------------------------客户昨日收入--------------------------------------------------------
 		// 机主 服务收益（0.025元）
-		insertdata(tissuenum*serve_rate,buyerid,"03",user);
+		insertdata(tissuenum*serve_rate,buyerid,"03",RateConstants.RATETYPE_PAPERINCOME,0.0,0,user);
 		
 		//代理商服务收益（0.025元）
 		HashMap<String, Object> promotionagenmap = new HashMap<String, Object>();
@@ -210,8 +213,8 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			String level =  promotionagent.get("level") + ""; //代理等级 1 一级代理  2 二级代理
 			String promotionauser = promotionagent.get("user_id")+"";
 			user = getusedata(promotionauser);
-			serve_rate = 0.025;
-			insertdata(tissuenum*serve_rate,promotionauser,"03",user);
+			serve_rate = Double.valueOf(user.get("serveRate")+"");
+			insertdata(tissuenum*serve_rate,promotionauser,"03",RateConstants.RATETYPE_PAPERINCOME,0.0,0,user);
 		}
 		//---------------------设备昨日出纸数量---------------------------------
 		DeviceIncomeDaily deviceIncomeDaily = new DeviceIncomeDaily();
@@ -255,14 +258,14 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			switch (release_type) {
 			case "01":
 				//--------------推广收益-----------------------
-				rate = 0.15;
-				insertdata(price*rate,promotioner+"","02",user);
+				rate = Double.valueOf(user.get("promotionRate")+"");
+				insertdata(price*rate,promotioner+"","02",RateConstants.RATETYPE_PROMOTIONINCOME,price,0,user);
 				
 				//-----------------------广告收益--------------
 				//插入机主广告数据(视频广告投放金额40% , 轮播广告投放金额40%)
 				user = getusedata(buyerid);
-				rate = 0.4;
-				insertdata(rate*price,buyerid,"01",user);
+				rate = Double.valueOf(user.get("adCarouselRate")+"");
+				insertdata(rate*price,buyerid,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,user);
 	
 				//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）
 				 promotionagenmap.put("placeId", placeId);
@@ -271,8 +274,8 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 					String level =  promotionagent.get("level") + ""; //代理等级 1 一级代理  2 二级代理
 					String promotionauser = promotionagent.get("user_id")+"";
 					user = getusedata(promotionauser);
-					rate = 0.03;
-					insertdata(rate*price,promotionauser,"01",user);
+					rate =  Double.valueOf(user.get("adCarouselRate")+"");
+					insertdata(rate*price,promotionauser,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,user);
 				}
 				//插入服务商广告数据（所服务的机子视频广告投放金额3%,所服务的机子轮播广告投放金额3%）
 				 repairmap.put("countyId", placeId);
@@ -282,20 +285,20 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 					   HashMap<String, Object> repairusermap = iUserIncomeService.selectuserbypuserId(repairId);
 					   String repairuser = repairusermap.get("user_id")+"";
 					   user = getusedata(repairuser);
-					   rate = 0.03;
-					   insertdata(rate*price,repairuser,"01",user);
+					   rate = Double.valueOf(user.get("adCarouselRate")+"");
+					   insertdata(rate*price,repairuser,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,user);
 				 }
 				break;
 			case "02":
 				//--------------推广收益-----------------------
-				rate = 0.15;
-				insertdata(price*rate,promotioner+"","02",user);
+				rate = Double.valueOf(user.get("promotionRate")+"");
+				insertdata(price*rate,promotioner+"","02",RateConstants.RATETYPE_PROMOTIONINCOME,price,0,user);
 				
 				//-----------------------广告收益--------------
 				//插入机主广告数据(视频广告投放金额40% , 轮播广告投放金额40%)
 				user = getusedata(buyerid);
-				rate = 0.4;
-				insertdata(rate*price,buyerid,"01",user);
+				rate =Double.valueOf(user.get("adRate")+"");
+				insertdata(rate*price,buyerid,"01",RateConstants.RATETYPE_ADINCOME,price,0,user);
 	
 				//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）
 				 promotionagenmap.put("placeId", placeId);
@@ -304,8 +307,8 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 					String level =  promotionagent.get("level") + ""; //代理等级 1 一级代理  2 二级代理
 					String promotionauser = promotionagent.get("user_id")+"";
 					user = getusedata(promotionauser);
-					rate = 0.03;
-					insertdata(rate*price,promotionauser,"01",user);
+					rate = Double.valueOf(user.get("adRate")+"");
+					insertdata(rate*price,promotionauser,"01",RateConstants.RATETYPE_ADINCOME,price,0,user);
 				}
 				//插入服务商广告数据（所服务的机子视频广告投放金额3%,所服务的机子轮播广告投放金额3%）
 				 repairmap.put("countyId", placeId);
@@ -315,22 +318,22 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 					   HashMap<String, Object> repairusermap = iUserIncomeService.selectuserbypuserId(repairId);
 					   String repairuser = repairusermap.get("user_id")+"";
 					   user = getusedata(repairuser);
-						rate = 0.03;
-					   insertdata(rate*price,repairuser,"01",user);
+						rate = Double.valueOf(user.get("adRate")+"");
+					   insertdata(rate*price,repairuser,"01",RateConstants.RATETYPE_ADINCOME,price,0,user);
 				 }
 				break;
 			case "03":
 				
 				 tissuenum = selectzxtissuerecordlist(deviceId+"",releaserecord.get("schedule_id").toString());
 				//--------------推广收益-----------------------
-				rate = 0.7;
-				insertdata(tissuenum*rate,promotioner+"","02",user);
+				rate =  Double.valueOf(user.get("promPaperRate")+"");
+				insertdata(tissuenum*rate,promotioner+"","02",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
 				
 				//-----------------------广告收益--------------
 				//插入机主广告数据每次出纸收益0.3元
 				user = getusedata(buyerid);
-				rate = 0.3;
-				insertdata(rate*tissuenum,buyerid,"01",user);
+				rate = Double.valueOf(user.get("scanRate")+"");
+				insertdata(rate*tissuenum,buyerid,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
 	
 				//插入代理商广告数据（地级市代理地区所服务的机子每次出纸收益0.02元，县区、县级市代理地区所服务的机子每次出纸收益0.05元）
 				 promotionagenmap.put("placeId", placeId);
@@ -339,8 +342,8 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 					String level =  promotionagent.get("level") + ""; //代理等级 1 一级代理  2 二级代理
 					String promotionauser = promotionagent.get("user_id")+"";
 					user = getusedata(promotionauser);
-					rate = 0.02;
-					insertdata(rate*tissuenum,promotionauser,"01",user);
+					rate = Double.valueOf(user.get("scanRate")+"");
+					insertdata(rate*tissuenum,promotionauser,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
 				}
 				//插入服务商广告数据所服务的机子每次出纸收益0.05元
 				 repairmap.put("countyId", placeId);
@@ -350,8 +353,8 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 					   HashMap<String, Object> repairusermap = iUserIncomeService.selectuserbypuserId(repairId);
 					   String repairuser = repairusermap.get("user_id")+"";
 					   user = getusedata(repairuser);
-					   rate = 0.05;
-					   insertdata(rate*price,repairuser,"01",user);
+					   rate = Double.valueOf(user.get("scanRate")+"");
+					   insertdata(rate*price,repairuser,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
 				 }
 				break;
 
@@ -390,8 +393,8 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			 if(com.zxiang.common.utils.StringUtils.isNull(promotionagent.get("promotor_id"))) {
 			   double agency_fee = Double.valueOf(promotionagent.get("agency_fee")+"");
 			   HashMap<String, Object>  user = getusedata(promotionagent.get("promotor_id")+"");
-			   double rate = 0.15;
-			   insertdata(agency_fee*rate,promotionagent.get("promotor_id")+"","02",user);
+			   double rate = Double.valueOf(user.get("directAgentRate")+"");
+			   insertdata(agency_fee*rate,promotionagent.get("promotor_id")+"","02",RateConstants.RATETYPE_DIRECTAGENTINCOME,agency_fee,0,user);
 			 }
 		 }
 		
@@ -414,8 +417,8 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			puser.put("repairId", puser_id);
 			user=iUserIncomeService.selectzxrepairlist(puser);
 		}else if(user_type.equals(UserConstants.USER_TYPE_AGENT)) {
-			puser.put("userId", buyerid);
-			user=iUserIncomeService.selectzxagentlist(puser);
+			puser.put("agentId", puser_id);
+			user=iUserIncomeService.selectzxagent(puser);
 		}
 		if(user.size()>0) {
 			HashMap<String, Object> userdata =  user.get(0);
@@ -427,33 +430,54 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	}
 	
 	
-	//收益
-	public void insertdata(double price,String buyerid,String type, HashMap<String, Object> user) {
+	//收益   price ：收益值      buyerid ：客户id   type ：收益类型     ratetype ：系数类型     incomeprice：收益基数（小数型）  incomenum ：基数数量     user：客户信息
+	public void insertdata(double price,String buyerid,String type,String ratetype,double incomeprice,int incomenum, HashMap<String, Object> user) {
 		    //投放方式01广告收益   02推广收益  03扫码服务收益
 			UserIncome userIncome = new UserIncome();
 			userIncome.setCoperatorId(Integer.valueOf(buyerid));
 			List<UserIncome> userlist =iUserIncomeService.selectUserIncome(userIncome);
 			if(type.equals("01")) {
-				userIncome.setAdIncomeRate(price);
-				userIncome.setAdIncome(0.0);//广告基数
+				userIncome.setAdIncomeRate(price);//广告收益
 			}else if(type.equals("02")) {
-				userIncome.setPromotionIncomeRate(price);
-				userIncome.setPromotionIncome(0.0);//推广基数
+				userIncome.setPromotionIncomeRate(price);//推广收益
 			}else {
-				userIncome.setScanIncomeRate(price);
-				userIncome.setScanIncome(0.0);//扫码基数
+				userIncome.setScanIncomeRate(price);//扫码服务收益
 			}
+			
+			if(ratetype.equals(RateConstants.RATETYPE_ADINCOME)) {
+				userIncome.setAdIncome(incomeprice); //视频广告基数
+			}else if(ratetype.equals(RateConstants.RATETYPE_ADCAROUSELINCOME)) {
+				userIncome.setAdCarouselIncome(incomeprice);//轮播广告基数
+			}else if(ratetype.equals(RateConstants.RATETYPE_PROMDIRECTINCOME)) {
+				userIncome.setPromDirectIncome(incomenum);//直推机子数量
+			}else if(ratetype.equals(RateConstants.RATETYPE_PROMINDIRECTINCOME)) {
+				userIncome.setPromIndirectIncome(incomenum);//间推机子数量
+			}else if(ratetype.equals(RateConstants.RATETYPE_PAPERINCOME)) {
+				userIncome.setPaperIncome(incomenum);//出纸数量
+			}else if(ratetype.equals(RateConstants.RATETYPE_DIRECTAGENTINCOME)) {
+				userIncome.setDirectAgentIncome(incomeprice);//直推代理基数
+			}else if(ratetype.equals(RateConstants.RATETYPE_SUBSIDYINCOME)){
+				userIncome.setSubsidyIncome(incomeprice);//招商金额
+			}
+			
 			if(userlist.size()>0){
 				UserIncome income = userlist.get(0);
 				userIncome.setIncomeId(income.getIncomeId());
 				iUserIncomeService.updateUserIncome(userIncome);
 			}else{
 				userIncome.setCoperatorType(user.get("coperatorType")+"");//合作类型 
-				userIncome.setAdRate(Float.valueOf("")); //广告收入系数
-				userIncome.setPromotionRate(Float.valueOf(""));//推广收入系数
-				userIncome.setScanRate(Float.valueOf(""));//扫码收入系数
+				userIncome.setAdRate(Float.valueOf(user.get("adRate")+"")); //视频广告系数
+				userIncome.setAdCarouselRate(Float.valueOf(user.get("adCarouselRate")+""));//轮播广告系数
+				userIncome.setScanRate(Float.valueOf(user.get("scanRate")+""));//二维码广告系数
+				userIncome.setPromDirectRate(Float.valueOf(user.get("promDirectRate")+""));//直推机子分润
+				userIncome.setPromIndirectRate(Float.valueOf(user.get("promIndirectRate")+""));//间推机子分润
+				userIncome.setPromPaperRate(Float.valueOf(user.get("promPaperRate")+""));//推广出纸收益
+				userIncome.setPromotionRate(Float.valueOf(user.get("promotionRate")+""));//推广广告系数
+				userIncome.setDirectAgentRate(Float.valueOf(user.get("directAgentRate")+""));//直推代理分润系数
+				userIncome.setServeRate(Float.valueOf(user.get("serveRate")+""));//服务出纸收益
+				userIncome.setSubsidyRate(Float.valueOf(user.get("subsidyRate")+""));//办公补贴
 				iUserIncomeService.insertUserIncome(userIncome);
-			}
+			}		
 			
 	}
 
