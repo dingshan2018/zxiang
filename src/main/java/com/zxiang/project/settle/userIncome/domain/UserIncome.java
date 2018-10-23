@@ -81,10 +81,6 @@ public class UserIncome extends BaseEntity
 
 	    private Date updateTime;
 	    
-	    private String beginTime;
-	    
-	    private String endTime;
-
 	    public Integer getIncomeId() {
 	        return incomeId;
 	    }
@@ -343,20 +339,4 @@ public class UserIncome extends BaseEntity
 			this.promotionIncome = promotionIncome;
 		}
 
-		public String getBeginTime() {
-			return beginTime;
-		}
-
-		public void setBeginTime(String beginTime) {
-			this.beginTime = beginTime;
-		}
-
-		public String getEndTime() {
-			return endTime;
-		}
-
-		public void setEndTime(String endTime) {
-			this.endTime = endTime;
-		}
-	    
 }
