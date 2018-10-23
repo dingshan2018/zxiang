@@ -11,14 +11,21 @@ import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.StringUtils;
 import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
+import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
+import com.zxiang.project.client.agent.domain.Agent;
 import com.zxiang.project.client.agent.mapper.AgentMapper;
+import com.zxiang.project.client.join.domain.Join;
 import com.zxiang.project.client.join.mapper.JoinMapper;
+import com.zxiang.project.client.repair.domain.Repair;
 import com.zxiang.project.client.repair.mapper.RepairMapper;
+import com.zxiang.project.system.dept.domain.Dept;
+import com.zxiang.project.system.dept.mapper.DeptMapper;
 import com.zxiang.project.system.post.domain.Post;
 import com.zxiang.project.system.post.mapper.PostMapper;
 import com.zxiang.project.system.role.domain.Role;
 import com.zxiang.project.system.role.mapper.RoleMapper;
+import com.zxiang.project.system.role.service.IRoleService;
 import com.zxiang.project.system.user.domain.User;
 import com.zxiang.project.system.user.domain.UserPost;
 import com.zxiang.project.system.user.domain.UserRole;
@@ -36,7 +43,10 @@ public class UserServiceImpl implements IUserService
 {
     @Autowired
     private UserMapper userMapper;
-
+    @Autowired
+	private DeptMapper deptMapper;
+    @Autowired
+	private IRoleService iroleService;
     @Autowired
     private RoleMapper roleMapper;
 
@@ -169,12 +179,26 @@ public class UserServiceImpl implements IUserService
         user.randomSalt();
         user.setPassword(passwordService.encryptPassword(user.getLoginName(), user.getPassword(), user.getSalt()));
         user.setCreateBy(ShiroUtils.getLoginName());
-        // 新增用户信息
-        int rows = userMapper.insertUser(user);
-        // 新增用户岗位关联
-        insertUserPost(user);
-        // 新增用户与角色管理
-        insertUserRole(user);
+        int rows = 0;
+        if(user.getUserType().startsWith("1")) {
+        	Dept dept = new Dept();
+			dept.setDeptName(UserConstants.DEPT_NAME);
+			List<Dept> depts = deptMapper.selectDeptList(dept);
+			if(depts != null && depts.size() > 0) {
+				user.setDeptId(depts.get(0).getDeptId());
+			}
+			// 新增用户信息
+			rows = userMapper.insertUser(user);
+			// 设置默认角色
+			iroleService.setDefaultRole(user, UserConstants.clientMap.get(user.getUserType()));
+        }else{
+        	// 新增用户信息
+        	rows = userMapper.insertUser(user);
+        	// 新增用户岗位关联
+        	insertUserPost(user);
+        	// 新增用户与角色管理
+        	insertUserRole(user);
+        }
         return rows;
     }
 
@@ -378,23 +402,21 @@ public class UserServiceImpl implements IUserService
 	}
 
 	@Override
-	public String saleManClent(User user) {
-		if(user == null) {
-			return null;
+	public String saleManClent(String userType,Integer cliendId) {
+		String client = null;
+		if(UserConstants.USER_TYPE_JOIN_SALESMAN.equals(userType)) {
+			Join join = joinMapper.selectJoinById(cliendId);
+			client = join == null ? null : join.getJoinerName();
+		}else if(UserConstants.USER_TYPE_AGENT_SALESMAN.equals(userType)) {
+			Agent agent = agentMapper.selectAgentById(cliendId);
+			client = agent == null ? null : agent.getAgentName();
+		}else if(UserConstants.USER_TYPE_REPAIR_SALESMAN.equals(userType)) {
+			 Repair repair = repairMapper.selectRepairById(cliendId);
+			 client = repair == null ? null : repair.getRepairName();
+		}else if(UserConstants.USER_TYPE_ADVERTISE_SALESMAN.equals(userType)) {
+			Advertise advertise = advertiseMapper.selectAdvertiseById(cliendId);
+			client = advertise == null ? null : advertise.getAdvertisorName();
 		}
-		user = selectUserById(user.getPuserId().longValue());
-		if(user == null) {
-			return null;
-		}
-		if(UserConstants.USER_TYPE_AGENT.equals(user.getUserType())) {
-			
-		}else if(UserConstants.USER_TYPE_JOIN.equals(user.getUserType())) {
-			
-		}else if(UserConstants.USER_TYPE_REPAIR.equals(user.getUserType())) {
-			
-		}else if(UserConstants.USER_TYPE_ADVERTISE.equals(user.getUserType())) {
-//			advertiseMapper.selectAdvertiseById(advertiseId)
-		}
-		return null;
+		return client;
 	}
 }

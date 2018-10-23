@@ -108,94 +108,92 @@
       queryDeptTreeDaTa();
     });
 
-    function queryUserList () {
-      var options = {
-        url       : prefix + '/list',
-        createUrl : prefix + '/add',
-        updateUrl : prefix + '/edit/{id}',
-        removeUrl : prefix + '/remove',
-        exportUrl : prefix + '/export',
-        sortName  : 'createTime',
-        sortOrder : 'desc',
-        modalName : '用户',
-        search    : false,
-        showExport: false,
-        columns   : [
-          {
-            checkbox: true
-          },
-          {
-            field  : 'userId',
-            title  : '用户ID',
-            visible: false
-          },
-          {
-            field   : 'loginName',
-            title   : '登录名称',
-            sortable: true
-          },
-          {
-            field: 'userName',
-            title: '用户名称'
-          },
-          {
-            field: 'dept.deptName',
-            title: '部门'
-          },
-          {
-            field    : 'userType',
-            title    : '用户类型',
-            formatter: function (value, row, index) {
-              if (value == '00') {return '系统用户';}
-              if (value == '02') {return '加盟商';}
-              if (value == '03') {return '代理商';}
-              if (value == '04') {return '服务商';}
-              if (value == '05') {return '广告商';}
-              if (value == '06') {return '业务员';}
-            }
-          },
-          {
-            field  : 'email',
-            title  : '邮箱',
-            visible: false
-          },
-          {
-            field: 'phonenumber',
-            title: '手机'
-          },
-          {
-            field    : 'status',
-            title    : '状态',
-            align    : 'center',
-            formatter: function (value, row, index) {
-              return $.table.selectDictLabel(datas, value);
-            }
-          },
-          {
-            field   : 'createTime',
-            title   : '创建时间',
-            sortable: true
-          },
-          {
-            title    : '操作',
-            align    : 'center',
-            formatter: function (value, row, index) {
-              var actions = [];
-              actions.push(
-                '<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.userId +
-                '\')"><i class="fa fa-edit"></i>编辑</a> ');
-              actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' +
-                row.userId + '\')"><i class="fa fa-remove"></i>删除</a> ');
-              actions.push(
-                '<a class="btn btn-info btn-xs ' + resetPwdFlag + '" href="#" onclick="resetPwd(\'' + row.userId +
-                '\')"><i class="fa fa-key"></i>重置</a>');
-              return actions.join('');
-            }
-          }]
-      };
-      $.table.init(options);
-    }
 
+    function queryUserList() {
+	    var options = {
+	        url: prefix + "/list",
+	        createUrl: prefix + "/add",
+	        updateUrl: prefix + "/edit/{id}",
+	        removeUrl: prefix + "/remove",
+	        exportUrl: prefix + "/export",
+	        sortName: "createTime",
+	        sortOrder: "desc",
+	        modalName: "用户",
+	        search: false,
+	        showExport: false,
+	        columns: [{
+	            checkbox: true
+	        },
+	        {
+	            field: 'userId',
+	            title: '用户ID',
+	            visible: false
+	        },
+	        {
+	            field: 'loginName',
+	            title: '登录名称',
+	            sortable: true
+	        },
+	        {
+	            field: 'userName',
+	            title: '用户名称'
+	        },
+	        {
+	            field: 'dept.deptName',
+	            title: '部门'
+	        },
+	        {
+	            field: 'userType',
+	            title: '用户类型',
+	            formatter: function(value, row, index) {
+	            	if(value == '00') {return "系统用户"}
+					if(value == '02') {return "加盟商"}
+					if(value == '03') {return "代理商"}
+					if(value == '04') {return "服务商"}
+					if(value == '05') {return "广告商"}
+					if(value == '12') {return "加盟商业务员"}
+					if(value == '13') {return "代理商业务员"}
+					if(value == '14') {return "服务业务员"}
+					if(value == '15') {return "广告商业务员"}
+	            }
+	        },
+	        {
+	            field: 'email',
+	            title: '邮箱',
+	            visible: false
+	        },
+	        {
+	            field: 'phonenumber',
+	            title: '手机'
+	        },
+	        {
+	            field: 'status',
+	            title: '状态',
+	            align: 'center',
+	            formatter: function(value, row, index) {
+	            	return $.table.selectDictLabel(datas, value);
+	            }
+	        },
+	        {
+	            field: 'createTime',
+	            title: '创建时间',
+	            sortable: true
+	        },
+	        {
+	            title: '操作',
+	            align: 'center',
+	            formatter: function(value, row, index) {
+	                var actions = [];
+	                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.userId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+	                actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.userId + '\')"><i class="fa fa-remove"></i>删除</a> ');
+	                actions.push('<a class="btn btn-info btn-xs ' + resetPwdFlag + '" href="#" onclick="resetPwd(\'' + row.userId + '\')"><i class="fa fa-key"></i>重置</a>');
+	                return actions.join('');
+	            }
+	        }]
+	    };
+	    $.table.init(options);
+	}
+    
     function queryDeptTreeDaTa () {
       // 树结构初始化加载
       var setting       = {

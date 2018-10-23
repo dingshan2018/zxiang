@@ -48,116 +48,109 @@
     var removeFlag = [[${@permission.hasPermi('client:advertise:remove')}]];
     var prefix = ctx + 'client/advertise';
 
-    $(function () {
-      var options = {
-        url      : prefix + '/list',
-        createUrl: prefix + '/add',
-        updateUrl: prefix + '/edit/{id}',
-        removeUrl: prefix + '/remove',
-        modalName: '广告商',
-        search   : false,
-        columns  : [
-          {
-            checkbox: true
-          },
-          {
-            field: 'advertiseId',
-            title: '广告商id'
-          },
-          {
-            field: 'advertisorName',
-            title: '广告商名称'
-          },
-          {
-            field: 'managerId',
-            title: '管理者'
-          },
-          {
-            field: 'managerName',
-            title: '管理者名字'
-          },
-          {
-            field: 'managerPhone',
-            title: '管理者电话'
-          },
-          {
-            field: 'business',
-            title: ''
-          },
-          {
-            field: 'releaseNum',
-            title: '累计投放广告次数'
-          },
-          {
-            field: 'lastScheduler',
-            title: '上次投放ID'
-          },
-          {
-            field: 'status', title: '状态', formatter: function (value, row, index) {
-              if (value == 0) {return '无效';}
-              if (value == 1) {return '有效';}
-              return '-';
-            }
-          },
-          {
-            field: 'grade',
-            title: '广告商等级'
-          },
-          {
-            field: 'cutOff',
-            title: '投放广告折扣'
-          },
-          {
-            field: 'createBy',
-            title: '创建者'
-          },
-          {
-            field: 'createTime',
-            title: '创建时间'
-          },
-          {
-            field: 'updateBy',
-            title: '更新者'
-          },
-          {
-            field: 'updateTime',
-            title: '更新时间'
-          },
-          {
-            title    : '操作',
-            align    : 'center',
-            formatter: function (value, row, index) {
-              var actions = [];
-              actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' +
-                row.advertiseId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-              actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' +
-                row.advertiseId + '\')"><i class="fa fa-remove"></i>删除</a>');
-              return actions.join('');
-            }
-          }]
-      };
-      $.table.init(options);
-      $('#bootstrap-table').bootstrapTable('hideColumn', 'advertiseId');
-      $('#bootstrap-table').bootstrapTable('hideColumn', 'business');
-      $('#bootstrap-table').bootstrapTable('hideColumn', 'cutOff');
-      $('#bootstrap-table').bootstrapTable('hideColumn', 'managerId');
-      $('#bootstrap-table').bootstrapTable('hideColumn', 'lastScheduler');
-      $('#bootstrap-table').bootstrapTable('hideColumn', 'createBy');
-      $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
-      $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
-      $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
-    });
-
-    function salesman () {
-      var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns(
-        $.table._option.id);
-      if (rows.length == 0 || rows.length > 1) {
-        $.modal.alertWarning('请选择一条记录');
-        return;
-      }
-      var url = ctx + 'client/join/toAddSalesman/06/' + rows;
-      $.modal.open($.table._option.modalName + '新增业务员', url, 800, 500);
-    }
-  </script>
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "广告商",
+                search: false,
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'advertiseId', 
+					title : '广告商id' 
+				},
+				{
+					field : 'advertisorName', 
+					title : '广告商名称' 
+				},
+				{
+					field : 'managerId', 
+					title : '管理者' 
+				},
+				{
+					field : 'managerName', 
+					title : '管理者名字' 
+				},
+				{
+					field : 'managerPhone', 
+					title : '管理者电话' 
+				},
+				{
+					field : 'business', 
+					title : '' 
+				},
+				{
+					field : 'releaseNum', 
+					title : '累计投放广告次数' 
+				},
+				{
+					field : 'lastScheduler', 
+					title : '上次投放ID' 
+				},
+				{field : 'status',title : '状态',formatter: function(value, row, index) {
+					if(value == 0) {return "无效"}
+					if(value == 1) {return "有效"}
+					return "-";
+	            } },
+				{
+					field : 'grade', 
+					title : '广告商等级' 
+				},
+				{
+					field : 'cutOff', 
+					title : '投放广告折扣' 
+				},
+				{
+					field : 'createBy', 
+					title : '创建者' 
+				},
+				{
+					field : 'createTime', 
+					title : '创建时间' 
+				},
+				{
+					field : 'updateBy', 
+					title : '更新者' 
+				},
+				{
+					field : 'updateTime', 
+					title : '更新时间' 
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.advertiseId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.advertiseId + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'advertiseId');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'business');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'cutOff');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'managerId');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'lastScheduler');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'createBy');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
+        });
+        function salesman() {
+        	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+    		if (rows.length == 0 || rows.length > 1) {
+    			$.modal.alertWarning("请选择一条记录");
+    			return;
+    		}
+    		var url = ctx + "client/join/toAddSalesman/15/"+rows;
+    		$.modal.open($.table._option.modalName + "新增业务员", url,800,500);
+        }
+    </script>
 </body>
 </html>
