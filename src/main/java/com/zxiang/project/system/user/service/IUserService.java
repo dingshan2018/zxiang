@@ -158,5 +158,5 @@ public interface IUserService
 	 * @param user
 	 * @return
 	 */
-	public String saleManClent(User user);
+	public String saleManClent(String userType,Integer cliendId);
 }

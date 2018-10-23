@@ -20,6 +20,7 @@ import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.client.join.domain.Join;
 import com.zxiang.project.client.join.service.IJoinService;
 import com.zxiang.project.system.role.service.IRoleService;
+import com.zxiang.project.system.user.service.IUserService;
 
 /**
  * 加盟商 信息操作处理
@@ -37,6 +38,8 @@ public class JoinController extends BaseController
 	private IJoinService joinService;
 	@Autowired
     private IRoleService roleService;
+	@Autowired
+	private IUserService iuserService;
 	
 	@RequiresPermissions("client:join:view")
 	@GetMapping()
@@ -136,6 +139,7 @@ public class JoinController extends BaseController
 	public String toAddSalesman(@PathVariable("chiendType") String chiendType,@PathVariable("cliendId") Integer cliendId, ModelMap mmap) {
 		mmap.put("chiendType", chiendType);
 		mmap.put("cliendId", cliendId);
+		mmap.put("cliendName", iuserService.saleManClent(chiendType, cliendId));
 		mmap.put("roles", roleService.selectRoleAll());
 		return "client/addSalesman";
 	}
