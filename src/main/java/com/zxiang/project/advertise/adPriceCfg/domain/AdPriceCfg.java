@@ -25,6 +25,8 @@ public class AdPriceCfg extends BaseEntity
 	private String dailyGrade;
 	/** 地区等级 */
 	private String areaGrade;
+	/** 广告类型 */
+	private String adType;
 	/** 投放位置 */
 	private String position;
 	/** 日价格 */
@@ -42,6 +44,13 @@ public class AdPriceCfg extends BaseEntity
 	/**  */
 	private Date updateTime;
 
+	private String priceTypeName;
+	private String placeGradeName;
+	private String dailyGradeName;
+	private String areaGradeName;
+	private String adTypeName;
+	private String positionName;
+	
 	public void setPriceCfgId(Integer priceCfgId) 
 	{
 		this.priceCfgId = priceCfgId;
@@ -159,14 +168,72 @@ public class AdPriceCfg extends BaseEntity
 	{
 		return updateTime;
 	}
+	
 
-    public String toString() {
+    public String getAdType() {
+		return adType;
+	}
+
+	public void setAdType(String adType) {
+		this.adType = adType;
+	}
+
+	public String getPriceTypeName() {
+		return priceTypeName;
+	}
+
+	public void setPriceTypeName(String priceTypeName) {
+		this.priceTypeName = priceTypeName;
+	}
+
+	public String getPlaceGradeName() {
+		return placeGradeName;
+	}
+
+	public void setPlaceGradeName(String placeGradeName) {
+		this.placeGradeName = placeGradeName;
+	}
+
+	public String getDailyGradeName() {
+		return dailyGradeName;
+	}
+
+	public void setDailyGradeName(String dailyGradeName) {
+		this.dailyGradeName = dailyGradeName;
+	}
+
+	public String getAreaGradeName() {
+		return areaGradeName;
+	}
+
+	public void setAreaGradeName(String areaGradeName) {
+		this.areaGradeName = areaGradeName;
+	}
+
+	public String getAdTypeName() {
+		return adTypeName;
+	}
+
+	public void setAdTypeName(String adTypeName) {
+		this.adTypeName = adTypeName;
+	}
+
+	public String getPositionName() {
+		return positionName;
+	}
+
+	public void setPositionName(String positionName) {
+		this.positionName = positionName;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("priceCfgId", getPriceCfgId())
             .append("priceType", getPriceType())
             .append("placeGrade", getPlaceGrade())
             .append("dailyGrade", getDailyGrade())
             .append("areaGrade", getAreaGrade())
+            .append("areaType", getAdType())
             .append("position", getPosition())
             .append("dailyPrice", getDailyPrice())
             .append("timeCnt", getTimeCnt())

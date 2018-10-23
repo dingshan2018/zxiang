@@ -15,7 +15,7 @@
 								</select>
 							</li>
 							<li>
-								投放位置：<select name="priceType" th:with="type=${@dict.getType('release_position')}">
+								投放位置：<select name="position" th:with="type=${@dict.getType('release_position')}">
 									<option value="">所有</option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
@@ -65,18 +65,30 @@
 		        },
 				{
 					field : 'priceCfgId', 
-					title : '' 
+					title : 'ID' 
 				},
 				{
-					field : 'priceType', 
+					field : 'priceTypeName', 
 					title : '计费类型' 
 				},
 				{
-					field : 'position', 
+					field : 'placeGradeName', 
+					title : '场所类型' 
+				},
+				{
+					field : 'dailyGradeName', 
+					title : '时段类型' 
+				},
+				{
+					field : 'areaGradeName', 
+					title : '地区' 
+				},
+				{
+					field : 'positionName', 
 					title : '投放位置' 
 				},
 				{
-					field : 'adType', 
+					field : 'adTypeName', 
 					title : '广告类型' 
 				},
 				{
@@ -89,7 +101,7 @@
 				},
 				{
 					field : 'isDel', 
-					title : '' 
+					title : '是否删除' 
 				},
 				{
 					field : 'createBy', 
@@ -101,11 +113,11 @@
 				},
 				{
 					field : 'updateBy', 
-					title : '' 
+					title : '修改者' 
 				},
 				{
 					field : 'updateTime', 
-					title : '' 
+					title : '修改时间' 
 				},
 		        {
 		            title: '操作',
@@ -119,6 +131,7 @@
 		        }]
             };
             $.table.init(options);
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'isDel');
         });
     </script>
 </body>

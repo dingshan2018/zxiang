@@ -10,6 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="placeGrade"    column="place_grade"    />
         <result property="dailyGrade"    column="daily_grade"    />
         <result property="areaGrade"    column="area_grade"    />
+        <result property="adType"    column="ad_type"    />
         <result property="position"    column="position"    />
         <result property="dailyPrice"    column="daily_price"    />
         <result property="timeCnt"    column="time_cnt"    />
@@ -21,7 +22,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectAdPriceCfgVo">
-        select price_cfg_id, price_type, place_grade, daily_grade, area_grade, position, daily_price, time_cnt, is_del, create_by, create_time, update_by, update_time from zx_ad_price_cfg
+        select price_cfg_id, price_type, 
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='release_type' AND sdd.dict_value=adpc.`price_type` ) priceTypeName,
+        place_grade, 
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='place_type' AND sdd.dict_value=adpc.`place_grade` ) placeGradeName,
+        daily_grade, 
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='daily_grade' AND sdd.dict_value=adpc.`daily_grade` ) dailyGradeName,
+        area_grade,
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='area_grade' AND sdd.dict_value=adpc.`area_grade` ) areaGradeName,
+        ad_type,
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='ad_type' AND sdd.dict_value=adpc.`ad_type` ) adTypeName, 
+        position,
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='release_position' AND sdd.dict_value=adpc.`position` ) positionName, 
+        daily_price, time_cnt, is_del, create_by, create_time, update_by, update_time from zx_ad_price_cfg adpc
     </sql>
 	
     <select id="selectAdPriceCfgList" parameterType="AdPriceCfg" resultMap="AdPriceCfgResult">
@@ -32,14 +45,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="placeGrade != null and placeGrade != ''"> and place_grade = #{placeGrade}</if>
              <if test="dailyGrade != null and dailyGrade != ''"> and daily_grade = #{dailyGrade}</if>
              <if test="areaGrade != null and areaGrade != ''"> and area_grade = #{areaGrade}</if>
+             <if test="adType != null and adType != ''"> and ad_type = #{adType}</if>
              <if test="position != null and position != ''"> and position = #{position}</if>
              <if test="dailyPrice != null and dailyPrice != ''"> and daily_price = #{dailyPrice}</if>
              <if test="timeCnt != null and timeCnt != ''"> and time_cnt = #{timeCnt}</if>
              <if test="isDel != null and isDel != ''"> and is_del = #{isDel}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
-             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
          </where>
     </select>
     
@@ -56,14 +70,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="placeGrade != null and placeGrade != '' ">place_grade,</if>
 			<if test="dailyGrade != null and dailyGrade != '' ">daily_grade,</if>
 			<if test="areaGrade != null and areaGrade != '' ">area_grade,</if>
+			<if test="adType != null and adType != '' ">ad_type,</if>
 			<if test="position != null and position != '' ">position,</if>
 			<if test="dailyPrice != null and dailyPrice != '' ">daily_price,</if>
 			<if test="timeCnt != null and timeCnt != '' ">time_cnt,</if>
 			<if test="isDel != null and isDel != '' ">is_del,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
-			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="createTime != null  ">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
-			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+			<if test="updateTime != null  ">update_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="priceCfgId != null and priceCfgId != ''">#{priceCfgId},</if>
@@ -71,14 +86,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="placeGrade != null and placeGrade != ''">#{placeGrade},</if>
 			<if test="dailyGrade != null and dailyGrade != ''">#{dailyGrade},</if>
 			<if test="areaGrade != null and areaGrade != ''">#{areaGrade},</if>
+			<if test="adType != null and adType != '' ">#{adType},</if>
 			<if test="position != null and position != ''">#{position},</if>
 			<if test="dailyPrice != null and dailyPrice != ''">#{dailyPrice},</if>
 			<if test="timeCnt != null and timeCnt != ''">#{timeCnt},</if>
 			<if test="isDel != null and isDel != ''">#{isDel},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
-			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="createTime != null ">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
-			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+			<if test="updateTime != null ">#{updateTime},</if>
          </trim>
     </insert>
 	 
@@ -89,12 +105,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="placeGrade != null  and placeGrade != ''  ">place_grade = #{placeGrade},</if>
             <if test="dailyGrade != null  and dailyGrade != ''  ">daily_grade = #{dailyGrade},</if>
             <if test="areaGrade != null  and areaGrade != ''  ">area_grade = #{areaGrade},</if>
+            <if test="adType != null  and adType != ''  ">ad_type = #{adType},</if>
             <if test="position != null  and position != ''  ">position = #{position},</if>
             <if test="dailyPrice != null  ">daily_price = #{dailyPrice},</if>
             <if test="timeCnt != null  ">time_cnt = #{timeCnt},</if>
             <if test="isDel != null  and isDel != ''  ">is_del = #{isDel},</if>
             <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
-            <if test="createTime != null  and createTime != ''  ">create_time = #{createTime},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
         </trim>

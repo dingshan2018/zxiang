@@ -1,5 +1,6 @@
 package com.zxiang.project.advertise.adPriceCfg.controller;
 
+import java.util.Date;
 import java.util.List;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,12 @@ public class AdPriceCfgController extends BaseController
 	@PostMapping("/add")
 	@ResponseBody
 	public AjaxResult addSave(AdPriceCfg adPriceCfg)
-	{		
+	{	
+		String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+		adPriceCfg.setCreateBy(operatorUser);
+		adPriceCfg.setCreateTime(new Date());
+		adPriceCfg.setIsDel("0");
+		
 		return toAjax(adPriceCfgService.insertAdPriceCfg(adPriceCfg));
 	}
 
@@ -94,6 +100,10 @@ public class AdPriceCfgController extends BaseController
 	@ResponseBody
 	public AjaxResult editSave(AdPriceCfg adPriceCfg)
 	{		
+		String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+		adPriceCfg.setUpdateBy(operatorUser);
+		adPriceCfg.setUpdateTime(new Date());
+		
 		return toAjax(adPriceCfgService.updateAdPriceCfg(adPriceCfg));
 	}
 	
