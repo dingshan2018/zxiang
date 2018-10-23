@@ -8,7 +8,7 @@
 				<form id="price-form">
 					<div class="select-list">
 						<ul>
-							<li>
+							<!-- <li>
 								计费类型：<select name="priceType" th:with="type=${@dict.getType('release_type')}">
 									<option value="">所有</option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
@@ -19,7 +19,7 @@
 									<option value="">所有</option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
-							</li>
+							</li> -->
 							<li>
 								广告类型：<select name="adType" th:with="type=${@dict.getType('ad_type')}">
 									<option value="">所有</option>
@@ -67,7 +67,7 @@
 					field : 'priceCfgId', 
 					title : 'ID' 
 				},
-				{
+				/* {
 					field : 'priceTypeName', 
 					title : '计费类型' 
 				},
@@ -82,11 +82,11 @@
 				{
 					field : 'areaGradeName', 
 					title : '地区' 
-				},
-				{
+				}, */
+				/* {
 					field : 'positionName', 
 					title : '投放位置' 
-				},
+				}, */
 				{
 					field : 'adTypeName', 
 					title : '广告类型' 
@@ -95,10 +95,10 @@
 					field : 'dailyPrice', 
 					title : '日价格' 
 				},
-				{
+				/* {
 					field : 'timeCnt', 
 					title : '时段' 
-				},
+				}, */
 				{
 					field : 'isDel', 
 					title : '是否删除' 
@@ -132,6 +132,8 @@
             };
             $.table.init(options);
             $('#bootstrap-table').bootstrapTable('hideColumn', 'isDel');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
         });
     </script>
 </body>
