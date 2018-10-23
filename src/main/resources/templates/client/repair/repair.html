@@ -29,6 +29,9 @@
 			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="client:repair:remove">
 				<i class="fa fa-trash-o"></i> 删除
 			</a>
+			<a class="btn btn-outline btn-success btn-rounded" onclick="salesman()" shiro:hasPermission="client:repair:salesman">
+				<i class="fa fa-plus"></i> 新增业务员
+			</a>
 		</div>
 			
 		<div class="col-sm-12 select-table table-striped">
@@ -144,6 +147,15 @@
         function editParam(id) {
         	var url = $.table._option.editParamUrl.replace("{id}", id);
         	$.modal.open($.table._option.modalName + "参数配置", url,800,500);
+        }
+        function salesman() {
+        	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+    		if (rows.length == 0 || rows.length > 1) {
+    			$.modal.alertWarning("请选择一条记录");
+    			return;
+    		}
+    		var url = ctx + "client/join/toAddSalesman/06/"+rows;
+    		$.modal.open($.table._option.modalName + "新增业务员", url,800,500);
         }
     </script>
 </body>
