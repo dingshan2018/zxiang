@@ -71,12 +71,12 @@ public interface IDeviceIncomeDailyService
 	/** 
 	 * 出纸记录表查询
 	 * */
-	public List<HashMap<String, Object>> selectzxtissuerecordlist(HashMap<String, Object> map);
+	public int selectzxtissuerecordlist(String deviceId,String scheduleId);
 	
 	/** 
 	 * 场所管理表
 	 * */
-	public HashMap<String, Object> selectzxplace(HashMap<String, Object> map);
+	public HashMap<String, Object> selectzxplace(String placeId);
 	
 	/** 
 	 * 广告价钱查询

@@ -124,7 +124,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <select id="selectzxdevicelist"  resultType="java.util.HashMap">
-        select * from zx_device where del_flag !='0'
+        select * from zx_device 
     </select>
     
      <select id="selectzxdeviceorderlist"  resultType="java.util.HashMap">
@@ -161,19 +161,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		AND (DATE_FORMAT(down_time, '%Y-%m-%d') = DATE_FORMAT( DATE_SUB(CURDATE(), INTERVAL 1 DAY), '%Y-%m-%d') OR DATE_FORMAT(play_time, '%Y-%m-%d') = DATE_FORMAT( DATE_SUB(CURDATE(), INTERVAL 1 DAY), '%Y-%m-%d'))
     </select>
     
-      <select id="selectzxtissuerecordlist"  resultType="java.util.HashMap">
-      
+      <select id="selectzxtissuerecordlist"  resultType="int">
 	        SELECT 
-			  device_id,
-			  schedule_id,
-			  terminal_id,
-			  place_id,
-			  tissue_channel 
+			  COUNT(1) 
 			FROM
-			  zx_tissue_record  
+			  zx_tissue_record z, zx_ad_schedule s
 			  WHERE 
-			   device_id = #{deviceId}
-			AND DATE_FORMAT(create_time, '%Y-%m-%d') = DATE_FORMAT(
+			   z.device_id = #{deviceId}
+			   and  z.`schedule_id` = s.`ad_schedule_id`
+			   AND s.releaser !='0'
+			   <if test="scheduleId != null and scheduleId != ''"> and z.schedule_id = #{scheduleId}</if>
+			AND DATE_FORMAT(z.create_time, '%Y-%m-%d') = DATE_FORMAT(
 			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
 			    '%Y-%m-%d'
 			  )
