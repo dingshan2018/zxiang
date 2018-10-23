@@ -1,5 +1,8 @@
 package com.zxiang.common.constant;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 用户常量信息
  * 
@@ -99,8 +102,14 @@ public class UserConstants
     public static final String USER_TYPE_REPAIR = "04";
     /** 用户类型：广告商 * */
     public static final String USER_TYPE_ADVERTISE = "05";
-    /** 用户类型：业务员 * */
-    public static final String USER_TYPE_SALESMAN = "06";
+    /** 用户类型：加盟商业务员 * */
+    public static final String USER_TYPE_JOIN_SALESMAN = "12";
+    /** 用户类型：代理商业务员 * */
+    public static final String USER_TYPE_AGENT_SALESMAN = "13";
+    /** 用户类型：服务商业务员 * */
+    public static final String USER_TYPE_REPAIR_SALESMAN = "14";
+    /** 用户类型：广告商业务员 * */
+    public static final String USER_TYPE_ADVERTISE_SALESMAN = "15";
     
     public static final String DEPT_NAME = "合作伙伴";
     public static final String ROLE_NAME_AGENT = "代理商";
@@ -111,4 +120,18 @@ public class UserConstants
     public static final String ROLE_NAME_REPAIR_SALESMAN = "服务商业务员";
     public static final String ROLE_NAME_AD = "广告商";
     public static final String ROLE_NAME_AD_SALESMAN = "广告商业务员";
+    
+    public static Map<String,String> clientMap = new HashMap<String,String>();
+    static {
+    	clientMap.put(USER_TYPE_JOIN, ROLE_NAME_JOIN);
+    	clientMap.put(USER_TYPE_AGENT, ROLE_NAME_AGENT);
+    	clientMap.put(USER_TYPE_REPAIR, ROLE_NAME_REPAIR);
+    	clientMap.put(USER_TYPE_ADVERTISE, ROLE_NAME_AD);
+    	
+    	clientMap.put(USER_TYPE_JOIN_SALESMAN, ROLE_NAME_JOIN_SALESMAN);
+    	clientMap.put(USER_TYPE_AGENT_SALESMAN, ROLE_NAME_AGENT_SALESMAN);
+    	clientMap.put(USER_TYPE_REPAIR_SALESMAN, ROLE_NAME_REPAIR_SALESMAN);
+    	clientMap.put(USER_TYPE_ADVERTISE_SALESMAN, ROLE_NAME_AD_SALESMAN);
+    	
+    }
 }

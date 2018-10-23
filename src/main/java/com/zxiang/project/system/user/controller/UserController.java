@@ -119,9 +119,8 @@ public class UserController extends BaseController
     public String edit(@PathVariable("userId") Long userId, ModelMap mmap) {
     	User user = userService.selectUserById(userId);
     	mmap.put("user", user);
-    	if(UserConstants.USER_TYPE_SALESMAN.equals(user.getUserType())) {
-    		
-//    		mmap.put("clientName", userList);
+    	if(user.getUserType().startsWith("1")) { // 1开头表示业务员
+    		mmap.put("clientName", userService.saleManClent(user.getUserType(), user.getPuserId()));
     	}
         mmap.put("roles", roleService.selectRolesByUserId(userId));
         mmap.put("posts", postService.selectPostsByUserId(userId));
@@ -139,10 +138,8 @@ public class UserController extends BaseController
     @PostMapping("/edit")
     @Transactional(rollbackFor = Exception.class)
     @ResponseBody
-    public AjaxResult editSave(User user)
-    {
-        if (StringUtils.isNotNull(user.getUserId()) && User.isAdmin(user.getUserId()))
-        {
+    public AjaxResult editSave(User user)  {
+        if (StringUtils.isNotNull(user.getUserId()) && User.isAdmin(user.getUserId())) {
             return error("不允许修改超级管理员用户");
         }
         return toAjax(userService.updateUser(user));
