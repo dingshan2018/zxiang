@@ -95,6 +95,7 @@ public class Place extends BaseEntity
 	private String supplyName;
 	private String operatorName;
 	private String ownerName;
+	private String sceneName;
 	
 	public void setPlaceId(Integer placeId) 
 	{
@@ -465,6 +466,14 @@ public class Place extends BaseEntity
 
 	public void setOwnerName(String ownerName) {
 		this.ownerName = ownerName;
+	}
+
+	public String getSceneName() {
+		return sceneName;
+	}
+
+	public void setSceneName(String sceneName) {
+		this.sceneName = sceneName;
 	}
 
 	public String toString() {

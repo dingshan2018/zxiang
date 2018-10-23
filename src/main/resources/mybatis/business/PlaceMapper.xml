@@ -44,7 +44,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<sql id="selectPlaceVo">
         select place_id, parent_place_id,
         (select distinct pp.name from zx_place pp where pp.place_id =p.`parent_place_id` ) parentPlaceName,
-        place_code, place_type, scene, name, sname, address, 
+        place_code, place_type, scene,
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='place_type' AND sdd.dict_value=p.`scene` ) sceneName,
+        name, sname, address, 
         province, 
         (select distinct a.pname from sys_area a where a.id =p.`province` ) provinceName,
         city, 
