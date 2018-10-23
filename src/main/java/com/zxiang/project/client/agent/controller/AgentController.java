@@ -122,7 +122,16 @@ public class AgentController extends BaseController
 	{		
 		return toAjax(agentService.updateAgent(agent));
 	}
-	
+	/**
+	 * 修改代理商参数配置
+	 */
+	@GetMapping("/editParam/{agentId}")
+	public String editParam(@PathVariable("agentId") Integer agentId, ModelMap mmap)
+	{
+		Agent agent = agentService.selectAgentById(agentId);
+		mmap.put("agent", agent);
+	    return prefix + "/editParam";
+	}
 	/**
 	 * 删除代理商
 	 */

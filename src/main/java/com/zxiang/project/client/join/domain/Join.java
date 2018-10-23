@@ -39,12 +39,23 @@ public class Join extends BaseEntity
 	private String status;
 	/** 是否删除 */
 	private String delFlag;
-	/** 推广收益 */
-	private Float promotionRate;
-	/** 广告收益 */
+	/** 视频广告系数 */
 	private Float adRate;
-	/** 扫码收益 */
+	/** 轮播广告系数 */
+	private Float adCarouselRate;
+	/** 二维码广告出纸收益 */
 	private Float scanRate;
+	/** 直推机子分润 */
+	private Float promDirectRate;
+	/** 间推机子分润 */
+	private Float promIndirectRate;
+	/** 推广出纸收益 */
+	private Float promPaperRate;
+	/** 推广广告系数 */
+	private Float promotionRate;
+	/** 服务出纸收益 */
+	private Float serveRate;
+	
 	/**  */
 	private String createBy;
 	/**  */
@@ -93,6 +104,46 @@ public class Join extends BaseEntity
 	public void setBankAccount(String bankAccount) 
 	{
 		this.bankAccount = bankAccount;
+	}
+
+	public Float getAdCarouselRate() {
+		return adCarouselRate;
+	}
+
+	public void setAdCarouselRate(Float adCarouselRate) {
+		this.adCarouselRate = adCarouselRate;
+	}
+
+	public Float getPromDirectRate() {
+		return promDirectRate;
+	}
+
+	public void setPromDirectRate(Float promDirectRate) {
+		this.promDirectRate = promDirectRate;
+	}
+
+	public Float getPromIndirectRate() {
+		return promIndirectRate;
+	}
+
+	public void setPromIndirectRate(Float promIndirectRate) {
+		this.promIndirectRate = promIndirectRate;
+	}
+
+	public Float getPromPaperRate() {
+		return promPaperRate;
+	}
+
+	public void setPromPaperRate(Float promPaperRate) {
+		this.promPaperRate = promPaperRate;
+	}
+
+	public Float getServeRate() {
+		return serveRate;
+	}
+
+	public void setServeRate(Float serveRate) {
+		this.serveRate = serveRate;
 	}
 
 	public String getBankAccount() 

@@ -1,6 +1,8 @@
 package com.zxiang.project.advertise.adSchedule.controller;
-
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,14 +11,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
+import com.zxiang.framework.web.controller.BaseController;
+import com.zxiang.framework.web.domain.AjaxResult;
+import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
 import com.zxiang.project.advertise.adSchedule.service.IAdScheduleService;
-import com.zxiang.framework.web.controller.BaseController;
-import com.zxiang.framework.web.page.TableDataInfo;
-import com.zxiang.framework.web.domain.AjaxResult;
 
 /**
  * 广告投放 信息操作处理
@@ -108,5 +114,40 @@ public class AdScheduleController extends BaseController
 	{		
 		return toAjax(adScheduleService.deleteAdScheduleByIds(ids));
 	}
+	
+	/**
+	 * 素材上传
+	 */
+	@GetMapping("/materialUpload")
+	public String materialUpload()
+	{
+	    return prefix + "/materialUpload";
+	}
+	
+	/**
+     * 素材上传保存
+     */
+	@RequestMapping(value = "/materialUploadSave", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxResult materialUploadSave(HttpServletRequest request)
+    {
+    	int saveCount = 0;
+    	
+    	 List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("fileUpload");
+         MultipartFile file = null;
+         for (int i = 0; i < files.size(); ++i) {
+        	 saveCount++;
+             file = files.get(i);
+             System.out.println("file:"+file.getOriginalFilename());
+             //TODO 保存文件动作
+             if (!file.isEmpty()) {
+            	 
+             } else {
+                 System.out.println("文件不能为空!");
+             }
+         }
+        
+        return success("成功上传 "+ saveCount +" 份文件!");
+    }
 	
 }

@@ -1,6 +1,7 @@
 package com.zxiang.project.client.repair.controller;
 
 import java.util.List;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,13 +11,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
+import com.zxiang.framework.web.controller.BaseController;
+import com.zxiang.framework.web.domain.AjaxResult;
+import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.client.repair.domain.Repair;
 import com.zxiang.project.client.repair.service.IRepairService;
-import com.zxiang.framework.web.controller.BaseController;
-import com.zxiang.framework.web.page.TableDataInfo;
-import com.zxiang.framework.web.domain.AjaxResult;
 
 /**
  * 服务商 信息操作处理
@@ -96,7 +98,16 @@ public class RepairController extends BaseController
 	{		
 		return toAjax(repairService.updateRepair(repair));
 	}
-	
+	/**
+	 * 修改服务商参数配置
+	 */
+	@GetMapping("/editParam/{repairId}")
+	public String editParam(@PathVariable("repairId") Integer repairId, ModelMap mmap)
+	{
+		Repair repair = repairService.selectRepairById(repairId);
+		mmap.put("repair", repair);
+	    return prefix + "/editParam";
+	}
 	/**
 	 * 删除服务商
 	 */

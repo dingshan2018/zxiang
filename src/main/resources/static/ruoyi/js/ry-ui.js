@@ -401,6 +401,7 @@
             },
             // 修改信息
             edit: function(id) {
+            	debugger;
             	var url = $.table._option.updateUrl.replace("{id}", id);
             	$.modal.open("修改" + $.table._option.modalName, url);
             },

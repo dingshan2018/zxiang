@@ -1,6 +1,7 @@
 package com.zxiang.project.client.join.controller;
 
 import java.util.List;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,13 +11,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
+import com.zxiang.framework.web.controller.BaseController;
+import com.zxiang.framework.web.domain.AjaxResult;
+import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.client.join.domain.Join;
 import com.zxiang.project.client.join.service.IJoinService;
-import com.zxiang.framework.web.controller.BaseController;
-import com.zxiang.framework.web.page.TableDataInfo;
-import com.zxiang.framework.web.domain.AjaxResult;
+import com.zxiang.project.system.role.service.IRoleService;
 
 /**
  * 加盟商 信息操作处理
@@ -32,6 +35,8 @@ public class JoinController extends BaseController
 	
 	@Autowired
 	private IJoinService joinService;
+	@Autowired
+    private IRoleService roleService;
 	
 	@RequiresPermissions("client:join:view")
 	@GetMapping()
@@ -57,8 +62,7 @@ public class JoinController extends BaseController
 	 * 新增加盟商
 	 */
 	@GetMapping("/add")
-	public String add()
-	{
+	public String add() {
 	    return prefix + "/add";
 	}
 	
@@ -69,8 +73,7 @@ public class JoinController extends BaseController
 	@Log(title = "加盟商", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(Join join)
-	{		
+	public AjaxResult addSave(Join join) {		
 		return toAjax(joinService.insertJoin(join));
 	}
 
@@ -92,9 +95,18 @@ public class JoinController extends BaseController
 	@Log(title = "加盟商", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
-	public AjaxResult editSave(Join join)
-	{		
+	public AjaxResult editSave(Join join) {		
 		return toAjax(joinService.updateJoin(join));
+	}
+	/**
+	 * 修改加盟商参数配置
+	 */
+	@GetMapping("/editParam/{joinId}")
+	public String editParam(@PathVariable("joinId") Integer joinId, ModelMap mmap)
+	{
+		Join join = joinService.selectJoinById(joinId);
+		mmap.put("join", join);
+		return prefix + "/editParam";
 	}
 	
 	/**
@@ -104,8 +116,7 @@ public class JoinController extends BaseController
 	@Log(title = "加盟商", businessType = BusinessType.DELETE)
 	@PostMapping( "/remove")
 	@ResponseBody
-	public AjaxResult remove(String ids)
-	{		
+	public AjaxResult remove(String ids) {		
 		return toAjax(joinService.deleteJoinByIds(ids));
 	}
 	
@@ -118,4 +129,14 @@ public class JoinController extends BaseController
 		List<Join> list = joinService.selectDropBoxList();
 		return getDataTable(list);
     }
+	/**
+	 * 新增业务员
+	 */
+	@GetMapping("/toAddSalesman/{chiendType}/{cliendId}")
+	public String toAddSalesman(@PathVariable("chiendType") String chiendType,@PathVariable("cliendId") Integer cliendId, ModelMap mmap) {
+		mmap.put("chiendType", chiendType);
+		mmap.put("cliendId", cliendId);
+		mmap.put("roles", roleService.selectRoleAll());
+		return "client/addSalesman";
+	}
 }

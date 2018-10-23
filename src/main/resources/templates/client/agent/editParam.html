@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-agent-paramEdit" th:object="${agent}">
+            <input id="agentId" name="agentId" th:field="*{agentId}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">代理商名称：</label>
+                <div class="col-sm-8">
+                    <input id="agentName" name="agentName" th:field="*{agentName}" class="form-control" type="text" disabled="disabled">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">视频广告系数：</label>
+                <div class="col-sm-8">
+                    <input id="adRate" name="adRate" th:field="*{adRate}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">轮播广告系数：</label>
+                <div class="col-sm-8">
+                    <input id="adCarouselRate" name="adCarouselRate" th:field="*{adCarouselRate}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">二维码广告出纸收益：</label>
+                <div class="col-sm-8">
+                    <input id="scanRate" name="scanRate" th:field="*{scanRate}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">直推机子分润：</label>
+                <div class="col-sm-8">
+                    <input id="promDirectRate" name="promDirectRate" th:field="*{promDirectRate}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">间推机子分润：</label>
+                <div class="col-sm-8">
+                    <input id="promIndirectRate" name="promIndirectRate" th:field="*{promIndirectRate}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">推广出纸收益：</label>
+                <div class="col-sm-8">
+                    <input id="promPaperRate" name="promPaperRate" th:field="*{promPaperRate}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">推广广告系数：</label>
+                <div class="col-sm-8">
+                    <input id="promotionRate" name="promotionRate" th:field="*{promotionRate}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">直推代理分润：</label>
+                <div class="col-sm-8">
+                    <input id="directAgentRate" name="directAgentRate" th:field="*{directAgentRate}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">服务出纸收益：</label>
+                <div class="col-sm-8">
+                    <input id="serveRate" name="serveRate" th:field="*{serveRate}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">办公补贴：</label>
+                <div class="col-sm-8">
+                    <input id="serveRate" name="subsidyRate" th:field="*{subsidyRate}" class="form-control" type="number">
+                </div>
+            </div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "client/agent"
+		$("#form-agent-paramEdit").validate({
+			rules:{
+				agentName:{
+        			required:true
+        		},
+			},
+			submitHandler: function(form) {
+				$.operate.save(prefix + "/edit", $('#form-agent-paramEdit').serialize());
+			}
+		});
+	</script>
+</body>
+</html>
