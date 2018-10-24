@@ -6,21 +6,27 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-adSchedule-add">
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">投放名称：</label>
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放名称：</label>
 				<div class="col-sm-8">
 					<input id="scheduleName" name="scheduleName" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">投放方式：</label>
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放方式：</label>
 				<div class="col-sm-8">
-					<input id="releaseType" name="releaseType" class="form-control" type="text">
+					<select id="releaseType" name="releaseType" class="form-control" th:with="type=${@dict.getType('release_type')}">
+						<option value="">---请选择---</option>
+						<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+					</select>
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">投放位置：</label>
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放位置：</label>
 				<div class="col-sm-8">
-					<input id="releasePosition" name="releasePosition" class="form-control" type="text">
+					<select id="releasePosition" name="releasePosition" th:with="type=${@dict.getType('release_position')}" class="form-control">
+						<option value="">---请选择---</option> 
+						<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+					</select>
 				</div>
 			</div>
 			<div class="form-group">	
@@ -30,9 +36,12 @@
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
+				<label class="col-sm-3 control-label">投放状态：</label>
 				<div class="col-sm-8">
-					<input id="status" name="status" class="form-control" type="text">
+					<select id="status" name="status" th:with="type=${@dict.getType('schedule_status')}" class="form-control">
+						<option value="">---请选择---</option>
+						<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+					</select>
 				</div>
 			</div>
 			<div class="form-group">	
@@ -54,39 +63,9 @@
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
-				<div class="col-sm-8">
-					<input id="isDel" name="isDel" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
 				<label class="col-sm-3 control-label">投放备注：</label>
 				<div class="col-sm-8">
 					<input id="releaseNote" name="releaseNote" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
-				<div class="col-sm-8">
-					<input id="createBy" name="createBy" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
-				<div class="col-sm-8">
-					<input id="createTime" name="createTime" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
-				<div class="col-sm-8">
-					<input id="updateBy" name="updateBy" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">：</label>
-				<div class="col-sm-8">
-					<input id="updateTime" name="updateTime" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">
@@ -102,7 +81,13 @@
 		var prefix = ctx + "advertise/adSchedule"
 		$("#form-adSchedule-add").validate({
 			rules:{
-				xxxx:{
+				scheduleName:{
+					required:true,
+				},
+				releaseType:{
+					required:true,
+				},
+				releasePosition:{
 					required:true,
 				},
 			},

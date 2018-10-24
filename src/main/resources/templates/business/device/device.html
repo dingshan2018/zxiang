@@ -273,7 +273,7 @@
       var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns(
         $.table._option.id);
       if (rows.length == 0) {
-        $.modal.alertWarning('请至少选择一条记录');
+        $.modal.alertWarning('请选择一条记录');
         return;
       }
       if (rows.length > 1) {
@@ -296,7 +296,7 @@
       var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns(
         $.table._option.id);
       if (rows.length == 0) {
-        $.modal.alertWarning('请至少选择一条记录');
+        $.modal.alertWarning('请选择一条记录');
         return;
       }
       if (rows.length > 1) {
@@ -325,7 +325,7 @@
       var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns(
         $.table._option.id);
       if (rows.length == 0) {
-        $.modal.alertWarning('请至少选择一条记录');
+        $.modal.alertWarning('请选择一条记录');
         return;
       }
       if (rows.length > 1) {
@@ -337,12 +337,12 @@
       $.modal.open('设备换板', url);
     }
 
-    //打开设备补纸弹窗
+  	//打开设备补纸弹窗
     function supplyTissue () {
       var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns(
         $.table._option.id);
       if (rows.length == 0) {
-        $.modal.alertWarning('请至少选择一条记录');
+        $.modal.alertWarning('请选择一条记录');
         return;
       }
       if (rows.length > 1) {

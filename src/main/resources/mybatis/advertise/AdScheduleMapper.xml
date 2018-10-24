@@ -23,14 +23,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectAdScheduleVo">
-        select ad_schedule_id, schedule_name, release_type, release_position, sx_schedule_id, status, total_pay, prepay, release_term_num, is_del, release_note, create_by, create_time, update_by, update_time from zx_ad_schedule
+        select ad_schedule_id, schedule_name, 
+        release_type,
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='release_type' AND sdd.dict_value=zas.`release_type` ) releaseTypeName,
+        release_position,
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='release_position' AND sdd.dict_value=zas.`release_position` ) releasePositionName, 
+        sx_schedule_id, 
+        status, 
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='schedule_status' AND sdd.dict_value=zas.`status` ) statusName,
+        total_pay, prepay, release_term_num, is_del, release_note, create_by, create_time, update_by, update_time from zx_ad_schedule zas
     </sql>
 	
     <select id="selectAdScheduleList" parameterType="AdSchedule" resultMap="AdScheduleResult">
         <include refid="selectAdScheduleVo"/>
         <where>  
             <if test="adScheduleId != null and adScheduleId != ''"> and ad_schedule_id = #{adScheduleId}</if>
-             <if test="scheduleName != null and scheduleName != ''"> and schedule_name = #{scheduleName}</if>
+             <if test="scheduleName != null and scheduleName != ''">
+              	and schedule_name like concat('%', #{scheduleName}, '%')
+             </if>
              <if test="releaseType != null and releaseType != ''"> and release_type = #{releaseType}</if>
              <if test="releasePosition != null and releasePosition != ''"> and release_position = #{releasePosition}</if>
              <if test="sxScheduleId != null and sxScheduleId != ''"> and sx_schedule_id = #{sxScheduleId}</if>
@@ -41,9 +51,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="isDel != null and isDel != ''"> and is_del = #{isDel}</if>
              <if test="releaseNote != null and releaseNote != ''"> and release_note = #{releaseNote}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
-             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
          </where>
     </select>
     
@@ -67,9 +77,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="isDel != null and isDel != '' ">is_del,</if>
 			<if test="releaseNote != null and releaseNote != '' ">release_note,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
-			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="createTime != null  ">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
-			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+			<if test="updateTime != null ">update_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="adScheduleId != null and adScheduleId != ''">#{adScheduleId},</if>
@@ -84,9 +94,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="isDel != null and isDel != ''">#{isDel},</if>
 			<if test="releaseNote != null and releaseNote != ''">#{releaseNote},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
-			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="createTime != null ">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
-			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+			<if test="updateTime != null ">#{updateTime},</if>
          </trim>
     </insert>
 	 
