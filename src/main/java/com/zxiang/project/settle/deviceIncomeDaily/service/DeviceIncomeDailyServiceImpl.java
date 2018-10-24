@@ -328,7 +328,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				 tissuenum = selectzxtissuerecordlist(deviceId+"",releaserecord.get("schedule_id").toString());
 				//--------------推广收益-----------------------
 				rate =  Double.valueOf(user.get("promPaperRate")+"");
-				insertdata(tissuenum*rate,promotioner+"","02",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
+				insertdata(-tissuenum*rate,promotioner+"","02",RateConstants.RATETYPE_PROMPAPERINCOME,0.0,tissuenum,user);
 				
 				//-----------------------广告收益--------------
 				//插入机主广告数据每次出纸收益0.3元

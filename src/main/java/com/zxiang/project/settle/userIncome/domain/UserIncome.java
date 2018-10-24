@@ -38,6 +38,8 @@ public class UserIncome extends BaseEntity
 	    
 	    /** 出纸数量 */
 	    private Integer paperIncome;
+	    /** 推广二维码广告基数 */
+	    private Integer promPaperIncome;
 	    /** 直推代理基数 */
 	    private Double directAgentIncome;
 	    /** 招商金额 */
@@ -48,6 +50,8 @@ public class UserIncome extends BaseEntity
 	    private Double promotionIncomeRate;
 	    /** 扫码收入值 */
 	    private Double scanIncomeRate;
+	    /** 办公补贴值 */
+	    private Double subsidyIncomeRate;
 	    /** 视频广告系数 */
 	    private Float adRate;
 	    /** 轮播广告系数 */
@@ -338,5 +342,23 @@ public class UserIncome extends BaseEntity
 		public void setPromotionIncome(Double promotionIncome) {
 			this.promotionIncome = promotionIncome;
 		}
+
+		public Integer getPromPaperIncome() {
+			return promPaperIncome;
+		}
+
+		public void setPromPaperIncome(Integer promPaperIncome) {
+			this.promPaperIncome = promPaperIncome;
+		}
+
+		public Double getSubsidyIncomeRate() {
+			return subsidyIncomeRate;
+		}
+
+		public void setSubsidyIncomeRate(Double subsidyIncomeRate) {
+			this.subsidyIncomeRate = subsidyIncomeRate;
+		}
+		
+		
 
 }

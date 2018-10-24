@@ -41,11 +41,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<sql id="selectUserIncomeVo">
 	select income_id, coperator_id, coperator_type, sum_date, ad_income, ad_carousel_income, 
-    scan_income, prom_direct_income, prom_indirect_income, promotion_income, paper_income, 
+    scan_income, prom_direct_income, prom_indirect_income, paper_income, prom_paper_income, 
     direct_agent_income, subsidy_income, ad_income_rate, promotion_income_rate, scan_income_rate, 
-    ad_rate, ad_carousel_rate, scan_rate, prom_direct_rate, prom_indirect_rate, prom_paper_rate, 
-    promotion_rate, direct_agent_rate, serve_rate, subsidy_rate, refund_income, refund_income_rate, 
-    create_by, create_time, update_by, update_time from zx_user_income
+    subsidy_income_rate, ad_rate, ad_carousel_rate, scan_rate, prom_direct_rate, prom_indirect_rate, 
+    prom_paper_rate, promotion_rate, direct_agent_rate, serve_rate, subsidy_rate, refund_income, 
+    refund_income_rate, create_by, create_time, update_by, update_time from zx_user_income
     </sql>
 	
     <select id="selectUserIncomeList" parameterType="UserIncome" resultMap="UserIncomeResult">
@@ -99,6 +99,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	      <if test="paperIncome != null" >
 	        paper_income,
 	      </if>
+	      <if test="promPaperIncome != null" >
+	        prom_paper_income,
+	      </if>
 	      <if test="directAgentIncome != null" >
 	        direct_agent_income,
 	      </if>
@@ -113,6 +116,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	      </if>
 	      <if test="scanIncomeRate != null" >
 	        scan_income_rate,
+	      </if>
+	      <if test="subsidyIncomeRate != null" >
+	        subsidy_income_rate,
 	      </if>
 	      <if test="adRate != null" >
 	        ad_rate,
@@ -181,6 +187,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	      <if test="paperIncome != null" >
 	        #{paperIncome,jdbcType=INTEGER},
 	      </if>
+	     <if test="promPaperIncome != null" >
+	        #{promPaperIncome,jdbcType=INTEGER},
+	      </if>
 	      <if test="directAgentIncome != null" >
 	        #{directAgentIncome,jdbcType=DOUBLE},
 	      </if>
@@ -195,6 +204,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	      </if>
 	      <if test="scanIncomeRate != null" >
 	        #{scanIncomeRate,jdbcType=DOUBLE},
+	      </if>
+	      <if test="subsidyIncomeRate != null" >
+	        #{subsidyIncomeRate,jdbcType=DOUBLE},
 	      </if>
 	      <if test="adRate != null" >
 	        #{adRate,jdbcType=REAL},
