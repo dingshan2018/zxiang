@@ -120,7 +120,8 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	 * */
 	@Override
 	public void statisticaldata() {
-		//推广出纸数 和 服务出纸数是否分开
+		//推广出纸数 得收益是公司得所以减去
+		// 办公费用就是代理费得*系数
 		//获取所有设备信息
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		List<HashMap<String, Object>> devicelist =selectzxdevicelist(map);
