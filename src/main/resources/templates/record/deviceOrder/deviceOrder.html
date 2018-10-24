@@ -4,14 +4,32 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
-		<div class="btn-group hidden-xs" id="toolbar" role="group">
+		<div class="col-sm-12 select-info">
+			<form id="change-form">
+				<div class="select-list">
+					<ul>
+						<li>
+							设备编码： <input type="text" name="deviceCode" id="deviceCode"/>
+						</li>
+						<li>
+							终端编码： <input type="text" name="terminalCode" id="terminalCode"/>
+						</li>
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+		<!-- <div class="btn-group hidden-xs" id="toolbar" role="group">
 			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="record:deviceOrder:add">
 				<i class="fa fa-plus"></i> 新增
 			</a>
 			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="record:deviceOrder:remove">
 				<i class="fa fa-trash-o"></i> 删除
 			</a>
-		</div>
+		</div> -->
 			
 		<div class="col-sm-12 select-table table-striped">
 			<table id="bootstrap-table" data-mobile-responsive="true"></table>
@@ -30,24 +48,26 @@
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "设备销售订单",
+                search: false,
                 columns: [{
 		            checkbox: true
 		        },
 				{
 					field : 'deviceOrderId', 
-					title : '' 
+					title : '订单ID'  ,
+					visible: false
 				},
 				{
-					field : 'deviceId', 
-					title : '设备ID' 
+					field : 'deviceCode', 
+					title : '设备编码' 
 				},
 				{
-					field : 'terminalId', 
-					title : '终端ID' 
+					field : 'terminalCode', 
+					title : '终端编码' 
 				},
 				{
-					field : 'promotionerId', 
-					title : '推荐人ID' 
+					field : 'promotionerName', 
+					title : '推荐人' 
 				},
 				{
 					field : 'price', 
@@ -58,8 +78,8 @@
 					title : '折扣' 
 				},
 				{
-					field : 'sellerId', 
-					title : '销售员ID' 
+					field : 'sellerName', 
+					title : '销售员' 
 				},
 				{
 					field : 'status', 
@@ -79,19 +99,22 @@
 				},
 				{
 					field : 'createBy', 
-					title : '' 
+					title : '' ,
+					visible: false
 				},
 				{
 					field : 'createTime', 
-					title : '' 
+					title : '创建时间' 
 				},
 				{
 					field : 'updateBy', 
-					title : '' 
+					title : '' ,
+					visible: false
 				},
 				{
 					field : 'updateTime', 
-					title : '' 
+					title : '更新时间' ,
+					visible: false
 				},
 		        {
 		            title: '操作',
@@ -101,7 +124,8 @@
 		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.deviceOrderId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.deviceOrderId + '\')"><i class="fa fa-remove"></i>删除</a>');
 						return actions.join('');
-		            }
+		            },
+					visible: false
 		        }]
             };
             $.table.init(options);
