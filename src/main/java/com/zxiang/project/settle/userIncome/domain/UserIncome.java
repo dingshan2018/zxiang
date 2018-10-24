@@ -64,7 +64,7 @@ public class UserIncome extends BaseEntity
 	    private Float promotionRate;
 	    /** 直推代理分润系数 */
 	    private Float directAgentRate;
-	    /** 服务出纸收益 */
+	    /** 服务出纸系数 */
 	    private Float serveRate;
 	    /** 办公补贴 */
 	    private Float subsidyRate;
@@ -80,7 +80,7 @@ public class UserIncome extends BaseEntity
 	    private String updateBy;
 
 	    private Date updateTime;
-
+	    
 	    public Integer getIncomeId() {
 	        return incomeId;
 	    }
@@ -338,5 +338,5 @@ public class UserIncome extends BaseEntity
 		public void setPromotionIncome(Double promotionIncome) {
 			this.promotionIncome = promotionIncome;
 		}
-	    
+
 }
