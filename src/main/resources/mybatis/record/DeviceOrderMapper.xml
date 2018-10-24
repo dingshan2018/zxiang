@@ -23,15 +23,41 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectDeviceOrderVo">
-        select device_order_id, device_id, terminal_id, promotioner_id, price, cut_off, seller_id, status, buyer_id, buyer_name, buyer_open_id, create_by, create_time, update_by, update_time from zx_device_order
+        select d.device_order_id, 
+        d.device_id, 
+        (select v.device_code from zx_device v where v.device_id = d.device_id) as deviceCode, 
+        d.terminal_id,
+        (select t.terminal_code from zx_terminal t where t.terminal_id = d.terminal_id) as terminalCode,
+         d.promotioner_id,
+         (select u.user_name from sys_user u where u.user_id = d.promotioner_id) as promotionerName,
+          d.price, d.cut_off, 
+          d.seller_id, 
+          (select u.user_name from sys_user u where u.user_id = d.seller_id) as sellerName, 
+          d.status, d.buyer_id, d.buyer_name, 
+        d.buyer_open_id, d.create_by, d.create_time, d.update_by, d.update_time from zx_device_order d
     </sql>
 	
     <select id="selectDeviceOrderList" parameterType="DeviceOrder" resultMap="DeviceOrderResult">
-        <include refid="selectDeviceOrderVo"/>
+        select d.device_order_id, 
+        d.device_id, 
+        v.device_code as deviceCode, 
+        d.terminal_id,
+        t.terminal_code as terminalCode,
+         d.promotioner_id,
+         (select u.user_name from sys_user u where u.user_id = d.promotioner_id) as promotionerName,
+          d.price, d.cut_off, 
+          d.seller_id, 
+          (select u.user_name from sys_user u where u.user_id = d.seller_id) as sellerName, 
+          d.status, d.buyer_id, d.buyer_name, 
+        d.buyer_open_id, d.create_by, d.create_time, d.update_by, d.update_time from zx_device_order d 
+        left join zx_device v on v.device_id = d.device_id 
+        left join zx_terminal t on t.terminal_id = d.terminal_id
         <where>  
             <if test="deviceOrderId != null and deviceOrderId != ''"> and device_order_id = #{deviceOrderId}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="deviceCode != null and deviceCode != ''"> and v.device_code like concat('%', #{deviceCode}, '%')</if>
              <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
+             <if test="terminalCode != null and terminalCode != ''"> and t.terminal_code  like concat('%', #{terminalCode}, '%')</if>
              <if test="promotionerId != null and promotionerId != ''"> and promotioner_id = #{promotionerId}</if>
              <if test="price != null and price != ''"> and price = #{price}</if>
              <if test="cutOff != null and cutOff != ''"> and cut_off = #{cutOff}</if>
