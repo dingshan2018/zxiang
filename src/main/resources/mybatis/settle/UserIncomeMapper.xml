@@ -274,6 +274,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	      <if test="paperIncome != null" >
 	        paper_income = paper_income+#{paperIncome,jdbcType=INTEGER},
 	      </if>
+	      <if test="promPaperIncome != null" >
+	        prom_paper_income = prom_paper_income+ #{promPaperIncome,jdbcType=INTEGER},
+	      </if>
 	      <if test="directAgentIncome != null" >
 	        direct_agent_income =direct_agent_income+ #{directAgentIncome,jdbcType=DOUBLE},
 	      </if>
@@ -283,7 +286,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	       <if test="adIncomeRate != null  ">ad_income_rate =ad_income_rate+ #{adIncomeRate},</if>
 	       <if test="promotionIncomeRate != null  ">promotion_income_rate =promotion_income_rate+ #{promotionIncomeRate},</if>
 	       <if test="scanIncomeRate != null  ">scan_income_rate =scan_income_rate+#{scanIncomeRate},</if>
-	      <if test="refundIncome != null" >
+	       <if test="subsidyIncomeRate != null" >
+	          subsidy_income_rate = subsidy_income_rate+#{subsidyIncomeRate,jdbcType=DOUBLE},
+	      </if>
+	       <if test="refundIncome != null" >
 	        refund_income = refund_income+#{refundIncome,jdbcType=DOUBLE},
 	      </if>
 	      <if test="refundIncomeRate != null" >
