@@ -79,6 +79,7 @@ public class AdScheduleController extends BaseController
 	public AjaxResult addSave(AdSchedule adSchedule)
 	{		
 		String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+		adSchedule.setStatus("01");//待预约
 		adSchedule.setCreateBy(operatorUser);
 		adSchedule.setCreateTime(new Date());
 		adSchedule.setIsDel("0");
