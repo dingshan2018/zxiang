@@ -1,4 +1,5 @@
 package com.zxiang.project.advertise.adSchedule.controller;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -77,6 +78,11 @@ public class AdScheduleController extends BaseController
 	@ResponseBody
 	public AjaxResult addSave(AdSchedule adSchedule)
 	{		
+		String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+		adSchedule.setCreateBy(operatorUser);
+		adSchedule.setCreateTime(new Date());
+		adSchedule.setIsDel("0");
+		
 		return toAjax(adScheduleService.insertAdSchedule(adSchedule));
 	}
 
@@ -100,6 +106,10 @@ public class AdScheduleController extends BaseController
 	@ResponseBody
 	public AjaxResult editSave(AdSchedule adSchedule)
 	{		
+		String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+		adSchedule.setUpdateBy(operatorUser);
+		adSchedule.setUpdateTime(new Date());
+		
 		return toAjax(adScheduleService.updateAdSchedule(adSchedule));
 	}
 	

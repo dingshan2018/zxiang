@@ -35,11 +35,11 @@
 							</li>
 							<li>
 								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
-							    <a class="btn btn-success btn-rounded btn-sm" onclick="$.table.exportExcel()"><i class="fa fa-download"></i>&nbsp;导出</a>
+							    <a class="btn btn-success btn-rounded btn-sm" onclick="exportModule()"><i class="fa fa-download"></i>&nbsp;导出</a>
 								<a class="btn btn-success btn-rounded btn-sm" onclick="materialUpload()"><i class="fa fa-download"></i>&nbsp;素材上传</a>
-								<a class="btn btn-success btn-rounded btn-sm" onclick="commitSchedule()"><i class="fa fa-download"></i>&nbsp;预约</a>
-								<a class="btn btn-success btn-rounded btn-sm" onclick="releaseSchedule()"><i class="fa fa-download"></i>&nbsp;审核</a>
-								<a class="btn btn-success btn-rounded btn-sm" onclick="releaseSchedule()"><i class="fa fa-download"></i>&nbsp;发布</a>
+								<a class="btn btn-success btn-rounded btn-sm" onclick="order()"><i class="fa fa-download"></i>&nbsp;预约</a>
+								<a class="btn btn-success btn-rounded btn-sm" onclick="audit()"><i class="fa fa-download"></i>&nbsp;审核</a>
+								<a class="btn btn-success btn-rounded btn-sm" onclick="releaseOnline()"><i class="fa fa-download"></i>&nbsp;发布</a>
 							</li>
 						</ul>
 					</div>
@@ -57,6 +57,7 @@
 		<div class="col-sm-12 select-table table-striped">
 			<table id="bootstrap-table" data-mobile-responsive="true" class="layui-table" lay-even="" lay-skin="row"></table>
 		</div>
+    </div>
     </div>
     <div th:include="include :: footer"></div>
     <script th:inline="javascript">
@@ -76,22 +77,22 @@
 		        },
 				{
 					field : 'adScheduleId', 
-					title : '' 
+					title : 'ID' 
 				},
 				{
 					field : 'scheduleName', 
 					title : '投放名称' 
 				},
 				{
-					field : 'releaseType', 
+					field : 'releaseTypeName', 
 					title : '投放方式' 
 				},
 				{
-					field : 'releasePosition', 
+					field : 'releasePositionName', 
 					title : '投放位置' 
 				},
 				{
-					field : 'status', 
+					field : 'statusName', 
 					title : '投放状态' 
 				},
 				{
@@ -112,11 +113,19 @@
 				},
 				{
 					field : 'createBy', 
-					title : '创建用户' 
+					title : '创建者' 
 				},
 				{
 					field : 'createTime', 
 					title : '创建时间' 
+				},
+				{
+					field : 'updateBy', 
+					title : '修改者' 
+				},
+				{
+					field : 'updateTime', 
+					title : '修改时间' 
 				},
 		        {
 		            title: '操作',
@@ -132,11 +141,59 @@
             $.table.init(options);
         });
         
+        //必须选择一行并且返回该行元素
+        function checkSelectRows() {
+	       	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+	   		if (rows.length == 0) {
+	   			$.modal.alertWarning("请至少选择一条记录");
+	   			return;
+	   		}
+	   		if (rows.length > 1){
+	   			$.modal.alertWarning("只能选择一条记录");
+	   			return;
+	   		}
+		}
+        
+      	//导出
+        function exportModule() {
+			//TODO 
+        	console.log("TODO exportModule");
+      	}
+      
       	//素材上传弹窗函数
         function materialUpload() {
+        	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+	   		if (rows.length == 0) {
+	   			$.modal.alertWarning("请选择一条记录");
+	   			return;
+	   		}
+	   		if (rows.length > 1){
+	   			$.modal.alertWarning("只能选择一条记录");
+	   			return;
+	   		}
+	   		
         	var url = ctx + "advertise/adSchedule/materialUpload";
         	$.modal.open("素材上传", url);
 		}
+      	
+      	//预约
+        function order() {
+			//TODO 
+			console.log("TODO order");
+      	}
+      	
+      	//审核
+        function audit() {
+			//TODO 
+        	console.log("TODO audit");
+      	}
+      
+      	//发布
+        function releaseOnline() {
+			//TODO 
+        	console.log("TODO releaseOnline");
+      	}
+      	
     </script>
 </body>
 </html>

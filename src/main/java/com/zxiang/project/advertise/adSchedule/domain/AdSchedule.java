@@ -46,6 +46,10 @@ public class AdSchedule extends BaseEntity
 	/**  */
 	private Date updateTime;
 
+	private String releaseTypeName;
+	private String releasePositionName;
+	private String statusName;
+	
 	public void setAdScheduleId(Integer adScheduleId) 
 	{
 		this.adScheduleId = adScheduleId;
@@ -182,7 +186,31 @@ public class AdSchedule extends BaseEntity
 		return updateTime;
 	}
 
-    public String toString() {
+    public String getReleaseTypeName() {
+		return releaseTypeName;
+	}
+
+	public void setReleaseTypeName(String releaseTypeName) {
+		this.releaseTypeName = releaseTypeName;
+	}
+
+	public String getReleasePositionName() {
+		return releasePositionName;
+	}
+
+	public void setReleasePositionName(String releasePositionName) {
+		this.releasePositionName = releasePositionName;
+	}
+
+	public String getStatusName() {
+		return statusName;
+	}
+
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("adScheduleId", getAdScheduleId())
             .append("scheduleName", getScheduleName())
