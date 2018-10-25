@@ -97,8 +97,20 @@
 					title : '投放位置' 
 				},
 				{
+					field : 'status', 
+					title : '投放状态ID'
+				},
+				{
 					field : 'statusName', 
 					title : '投放状态' 
+				},
+				{
+					field : 'sxScheduleId', 
+					title : '视讯排期ID' 
+				},
+				{
+					field : 'pId', 
+					title : '节目单ID' 
 				},
 				{
 					field : 'totalPay', 
@@ -144,20 +156,16 @@
 		        }]
             };
             $.table.init(options);
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'status');
         });
         
-        //必须选择一行并且返回该行元素
-        function checkSelectRows() {
-	       	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
-	   		if (rows.length == 0) {
-	   			$.modal.alertWarning("请至少选择一条记录");
-	   			return;
-	   		}
-	   		if (rows.length > 1){
-	   			$.modal.alertWarning("只能选择一条记录");
-	   			return;
-	   		}
-		}
+        //
+        var selectOneRecord= "请选择一条记录";
+        var onlyOneRecord= "只能选择一条记录";
+        var toAudit= "02";//待审核
+        var toBeReleased= "03";//待发布
+        var hasMaterial = "该广告已上传过素材!";
+        var noMaterial = "该广告无素材,请先上传素材!";
         
       	//导出
         function exportModule() {
@@ -169,32 +177,96 @@
         function materialUpload() {
         	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
 	   		if (rows.length == 0) {
-	   			$.modal.alertWarning("请选择一条记录");
+	   			$.modal.alertWarning(selectOneRecord);
 	   			return;
 	   		}
 	   		if (rows.length > 1){
-	   			$.modal.alertWarning("只能选择一条记录");
+	   			$.modal.alertWarning(onlyOneRecord);
 	   			return;
 	   		}
+	   	 	
+	   		var pId = $.table.selectColumns($.table._option.columns[8].field);
+	   		if (pId != '') {
+	   	        $.modal.alertWarning(hasMaterial);
+	   	        return;
+   	      	}
 	   		
+        	//var url = ctx + "advertise/adSchedule/materialUpload";
+        	///ZXiang/src/main/resources/templates/advertise/adSchedule/fileUploadTest.html
         	var url = ctx + "advertise/adSchedule/materialUpload";
         	$.modal.open("素材上传", url);
 		}
       	
       	//预约
         function order() {
-			//TODO 
+			var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+	   		if (rows.length == 0) {
+	   			$.modal.alertWarning(selectOneRecord);
+	   			return;
+	   		}
+	   		if (rows.length > 1){
+	   			$.modal.alertWarning(onlyOneRecord);
+	   			return;
+	   		}
+	   	 	
+	   		var pId = $.table.selectColumns($.table._option.columns[8].field);
+	   		if (pId == '') {
+	   	        $.modal.alertWarning(noMaterial);
+	   	        return;
+   	      	}
+	   		
+	   		//TODO 
 			console.log("TODO order");
       	}
       	
       	//审核
         function audit() {
+        	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+	   		if (rows.length == 0) {
+	   			$.modal.alertWarning(selectOneRecord);
+	   			return;
+	   		}
+	   		if (rows.length > 1){
+	   			$.modal.alertWarning(onlyOneRecord);
+	   			return;
+	   		}
+	   		var status = $.table.selectColumns($.table._option.columns[5].field);
+	   		var pId = $.table.selectColumns($.table._option.columns[8].field);
+	   		if (pId == '') {
+	   	        $.modal.alertWarning(noMaterial);
+	   	        return;
+   	      	}
+	   		if (status != toAudit) {
+	   	        $.modal.alertWarning('当前非待审核状态,只有投放状态为待审核的广告才能审核!');
+	   	        return;
+   	      	}
+	   		
 			//TODO 
         	console.log("TODO audit");
       	}
       
       	//发布
         function releaseOnline() {
+        	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+	   		if (rows.length == 0) {
+	   			$.modal.alertWarning(selectOneRecord);
+	   			return;
+	   		}
+	   		if (rows.length > 1){
+	   			$.modal.alertWarning(onlyOneRecord);
+	   			return;
+	   		}
+	   		var status = $.table.selectColumns($.table._option.columns[5].field);
+	   		var pId = $.table.selectColumns($.table._option.columns[8].field);
+	   		if (pId == '') {
+	   	        $.modal.alertWarning(noMaterial);
+	   	        return;
+   	      	}
+	   		if (status != toBeReleased) {
+	   	        $.modal.alertWarning('当前非待发布状态,只有投放状态为待发布的广告才能发布!');
+	   	        return;
+   	      	}
+	   		
 			//TODO 
         	console.log("TODO releaseOnline");
       	}

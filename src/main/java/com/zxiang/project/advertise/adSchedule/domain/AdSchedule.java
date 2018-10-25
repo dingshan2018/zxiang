@@ -45,6 +45,8 @@ public class AdSchedule extends BaseEntity
 	private String updateBy;
 	/**  */
 	private Date updateTime;
+	/**节目单ID  */
+	private String pId;
 
 	private String releaseTypeName;
 	private String releasePositionName;
@@ -208,6 +210,14 @@ public class AdSchedule extends BaseEntity
 
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
+	}
+
+	public String getpId() {
+		return pId;
+	}
+
+	public void setpId(String pId) {
+		this.pId = pId;
 	}
 
 	public String toString() {
