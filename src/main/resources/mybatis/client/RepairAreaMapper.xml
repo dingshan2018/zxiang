@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.client.repair.mapper.RepairAreaMapper">
+    
+    <select id="selectRepairAreaList" parameterType="Integer" resultType="RepairArea">
+      select r.repair_area_id as repairAreaId,
+      r.repair_id as repairId,
+      r.province_id as provinceId,
+      (select a.pname from sys_area a where a.id = r.province_id) as provinceName,
+      r.city_id as cityId,
+      (select a.pname from sys_area a where a.id = r.city_id) as cityName,
+      r.county_id as countyId,
+      (select a.pname from sys_area a where a.id = r.county_id) as countyName 
+      from zx_repair_area r where r.`repair_id` = #{repairId}
+    </select>
+   
+</mapper>

@@ -13,6 +13,8 @@ import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
 import com.zxiang.project.client.repair.domain.Repair;
+import com.zxiang.project.client.repair.domain.RepairArea;
+import com.zxiang.project.client.repair.mapper.RepairAreaMapper;
 import com.zxiang.project.client.repair.mapper.RepairMapper;
 import com.zxiang.project.system.dept.domain.Dept;
 import com.zxiang.project.system.dept.mapper.DeptMapper;
@@ -37,6 +39,8 @@ public class RepairServiceImpl implements IRepairService
     private PasswordService passwordService;
 	@Autowired
 	private DeptMapper deptMapper;
+	@Autowired
+	private RepairAreaMapper repairAreaMapper;
 	@Autowired
 	private IRoleService iroleService;
 
@@ -165,6 +169,11 @@ public class RepairServiceImpl implements IRepairService
 	@Override
 	public List<Repair> selectDropBoxList() {
 		return repairMapper.selectDropBoxList();
+	}
+
+	@Override
+	public List<RepairArea> selectrepairAreasById(Integer repairId) {
+		return repairAreaMapper.selectRepairAreaList(repairId);
 	}
 	
 }

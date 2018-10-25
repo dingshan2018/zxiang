@@ -18,6 +18,7 @@ import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.client.repair.domain.Repair;
+import com.zxiang.project.client.repair.domain.RepairArea;
 import com.zxiang.project.client.repair.service.IRepairService;
 
 /**
@@ -102,8 +103,7 @@ public class RepairController extends BaseController
 	 * 修改服务商参数配置
 	 */
 	@GetMapping("/editParam/{repairId}")
-	public String editParam(@PathVariable("repairId") Integer repairId, ModelMap mmap)
-	{
+	public String editParam(@PathVariable("repairId") Integer repairId, ModelMap mmap) {
 		Repair repair = repairService.selectRepairById(repairId);
 		mmap.put("repair", repair);
 	    return prefix + "/editParam";
@@ -129,4 +129,13 @@ public class RepairController extends BaseController
 		List<Repair> list = repairService.selectDropBoxList();
 		return getDataTable(list);
     }
+	/**
+	 * 修改服务商参数配置
+	 */
+	@GetMapping("/repairArea/{repairId}")
+	public String repairArea(@PathVariable("repairId") Integer repairId, ModelMap mmap) {
+		List<RepairArea> repairAreaList = repairService.selectrepairAreasById(repairId);
+		mmap.put("repairAreaList", repairAreaList);
+	    return prefix + "/repairArea";
+	}
 }
