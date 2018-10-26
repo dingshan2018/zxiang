@@ -1,23 +1,23 @@
 <!DOCTYPE HTML>
-<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <meta charset="utf-8">
 <head th:include="include :: header">
-	<style>
+  <!--<style>
         img {
             width: 100%;
             max-height: 150px;
         }
-        
+
         div.pre-item {
             width: 200px;
             padding: 20px 0;
         }
-        
+
         .pre-item {
             cursor: pointer;
             position: relative;
         }
-        
+
         .pre-item:hover::after {
             content: '点击删除';
             padding: 10px 0px;
@@ -33,14 +33,14 @@
             color: #FFF;
             transform: translate(-50%, -50%);
         }
-        
+
         input[type="file"] {
             position: relative;
             width: 0;
             height: 0;
             margin-bottom: 40px;
         }
-        
+
         input[type="file"]::after {
             content: '选择要上传的文件';
             background-color: rgb(12, 150, 229);
@@ -55,185 +55,249 @@
             left: 0;
             text-align: center;
         }
-    </style>
+    </style>-->
 </head>
 <body class="white-bg">
-    <!-- <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-		<form class="form-horizontal m" id="form-adSchedule-materialUpload" method="post" enctype="multipart/form-data">
-			<div>
-				<h3>选择素材文件：</h3>
-				<input type="file" name="fileUpload" id ="fileUpload" multiple="multiple" />
-			</div>
-			<div class="form-group">
-				<div class="form-control-static col-sm-offset-9">
-					<button type="submit" class="btn btn-primary">提交</button>
-					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
-				</div>
-			</div> 
-		</form>
-	</div> -->
-	
-	<input type="file" id="fileUpload" multiple>
+
+  <!-- <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+  <form class="form-horizontal m" id="form-adSchedule-materialUpload" method="post" enctype="multipart/form-data">
+    <div>
+      <h3>选择素材文件：</h3>
+      <input type="file" name="fileUpload" id ="fileUpload" multiple="multiple" />
+    </div>
+    <div class="form-group">
+      <div class="form-control-static col-sm-offset-9">
+        <button type="submit" class="btn btn-primary">提交</button>
+        <button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+      </div>
+    </div>
+  </form>
+</div> -->
+
+  <!--  <input type="file" id="fileUpload" multiple>
     <div id="file-list-dom"></div>
     <div onclick="uploadfile();" style="background-color: rgb(12, 150, 229);float:left;
-            border-radius: 5px;
-            width: 200px;
-            color: #FFF;
-            line-height: 30px;
-            font-size: 14px;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            text-align: center;">上传</div>
-	
-    <div th:include="include::footer"></div>
-    <script type="text/javascript">
-	    
-    	var prefix = ctx + "advertise/adSchedule"
-    	$("#form-adSchedule-materialUpload").validate({
-			rules:{
-				fileUpload:{
-					required: true,
-				},
-			},
-			messages: {  
-                "fileUpload": {  
-                    required: "请选择上传文件",
-                }  
-            }, 
-			submitHandler: function(form) {
-				materialUploadSubmit();
-			}
-		});
-    	
-    	//提交请求
-		function materialUploadSubmit() {
-    		var formdata = new FormData();
-    		//formdata.append("fileUpload", document.getElementById("fileUpload").files[0]);
-    		for(var i=0;i<$("#fileUpload")[0].files.length;i++){
-    			formdata.append("fileUpload", $("#fileUpload")[0].files[i]);
-    		}
-    		//formdata.append("fileUpload", document.getElementById("fileUpload").files);  
-        	$.ajax({
-        		url : prefix + "/materialUploadSave",
-        		type:"post",  
-        		contentType: false,  
-                processData: false, 
-                data: formdata,
-        		async : false,
-        		error : function(request) {
-        			$.modal.alertError("系统错误");
-        		},
-        		success : function(data) {
-        			if(data.code == 0){
-        				alert(data.msg);
-        				$.modal.close();
-            			//刷新管理页面
-            			$.modal.reload();
-            			
-        			}else{
-        				alert(data.msg);
-        			}
-        		}
-        	});
+              border-radius: 5px;
+              width: 200px;
+              color: #fff;
+              line-height: 30px;
+              font-size: 14px;
+              cursor: pointer;
+              top: 0;
+              left: 0;
+              text-align: center;">上传-->
+  <!--</div>-->
+  <div id="fileUploadContent" class="fileUploadContent"></div>
+  <br>
+  <button onclick="submitUpload()">函数提交</button>
+  <button onclick="showUpError()">显示错误</button>
+
+  <div th:include="include::footer"></div>
+  <link th:href="@{/css/iconfont.css}" rel="stylesheet"/>
+  <link th:href="@{/css/fileUpload.css}" rel="stylesheet"/>
+  <script th:src="@{/js/fileUpload.js}"></script>
+  <script>
+    $('#fileUploadContent').initUpload({
+      'uploadUrl'       : ctx + 'advertise/adSchedule/materialUploadSave',//上传文件信息地址
+      //'progressUrl'     : '#',//获取进度信息地址，可选，注意需要返回的data格式如下（{bytesRead: 102516060, contentLength: 102516060, items: 1, percent: 100, startTime: 1489223136317, useTime: 2767}）
+      //'selfUploadBtId'  : 'selfUploadBt',//自定义文件上传按钮id
+      'isHiddenUploadBt': false,//是否隐藏上传按钮
+      'isHiddenCleanBt' : false,//是否隐藏清除按钮
+      'isAutoClean'     : false,//是否上传完成后自动清除
+      'velocity'        : 10//模拟进度上传数据
+      //"showSummerProgress":false,//总进度条，默认限制
+      //"scheduleStandard":true,//模拟进度的方式，设置为true是按总进度，用于控制上传时间，如果设置为false,按照文件数据的总量,默认为false
+      //"size":350,//文件大小限制，单位kb,默认不限制
+      //"maxFileNumber":3,//文件个数限制，为整数
+      //"filelSavePath":"",//文件上传地址，后台设置的根目录
+      //"beforeUpload":beforeUploadFun,//在上传前执行的函数
+      //"onUpload":onUploadFun，//在上传后执行的函数
+      // autoCommit:true,//文件是否自动上传
+      //"fileType":['png','jpg','docx','doc']，//文件类型限制，默认不限制，注意写的是文件后缀
+    });
+
+    function beforeUploadFun (opt) {
+      opt.otherData = [
+        {
+          'name' : '你要上传的参数',
+          'value': '你要上传的值'
+        }];
+    }
+
+    function onUploadFun (opt, data) {
+      alert(data);
+      uploadTools.uploadError(opt); //显示上传错误
+    }
+
+    function submitUpload () {
+      var opt = uploadTools.getOpt('fileUploadContent');
+      uploadEvent.uploadFileEvent(opt);
+    }
+
+    function showUpError () {
+      var opt = uploadTools.getOpt('fileUploadContent');
+      uploadTools.uploadError(opt); //显示上传错误
+    }
+
+    //显示文件，设置删除事件
+    // uploadTools.showFileResult('fileUploadContent', 'https://ps.ssl.qhmsg.com/t01e39e571b0b9b9867.jpg', '1', true, deleteFileByMySelf);
+
+    //如果不需要删除
+    // uploadTools.showFileResult('fileUploadContent', 'https://ps.ssl.qhmsg.com/t01e39e571b0b9b9867.jpg', '1', false);
+
+    //多文件需要自己进行循环
+    function deleteFileByMySelf (fileId) {
+      alert('要删除文件了：' + fileId);
+    }
+  </script>
+  <!--<script type="text/javascript">
+
+    var prefix = ctx + 'advertise/adSchedule';
+    $('#form-adSchedule-materialUpload').validate({
+      rules        : {
+        fileUpload: {
+          required: true
         }
-    	
-    	//=================上传文件控件函数开始=======================
-    	var ctp = '${ctx.contextPath}';
-        let upload = document.querySelector('#fileUpload');
-        let fileListDom = document.querySelector('#file-list-dom');
+      },
+      messages     : {
+        'fileUpload': {
+          required: '请选择上传文件'
+        }
+      },
+      submitHandler: function (form) {
+        materialUploadSubmit();
+      }
+    });
 
-        let fileList = {};
-        let formData = new FormData();
-        upload.addEventListener('change', function() {
-            for (let i = this.files.length - 1; i >= 0; i--) {
-                let file = this.files[i];
-                let key = file.name;
-                let fileItem = {
-                    'file': file,
-                    'cover': ''
-                }
+    //提交请求
+    function materialUploadSubmit () {
+      var formdata = new FormData();
+      //formdata.append("fileUpload", document.getElementById("fileUpload").files[0]);
+      for (var i = 0; i < $("#fileUpload")[0].files.length; i++) {
+        formdata.append('fileUpload', $('#fileUpload')[0].files[i]);
+      }
+      //formdata.append("fileUpload", document.getElementById("fileUpload").files);
+      $.ajax({
+        url        : prefix + '/materialUploadSave',
+        type       : 'post',
+        contentType: false,
+        processData: false,
+        data       : formdata,
+        async      : false,
+        error      : function (request) {
+          $.modal.alertError('系统错误');
+        },
+        success    : function (data) {
+          if (data.code == 0) {
+            alert(data.msg);
+            $.modal.close();
+            //刷新管理页面
+            $.modal.reload();
 
-                if (/(image\/)/.test(file.type)) {
-                    let reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = function() {
-                        fileItem.cover = this.result;
-                        fileList[key] = fileItem;
-                        formData.append(key, file);
-                        showFile(key, true);
-                    }
-                } else {
-                    fileList[key] = fileItem;
-                    formData.append(key, file);
-                    showFile(key, false);
-                }
+          } else {
+            alert(data.msg);
+          }
+        }
+      });
+    }
 
-            }
-        });
+    //=================上传文件控件函数开始=======================
+    var ctp = '${ctx.contextPath}';
+    let upload = document.querySelector('#fileUpload');
+    let fileListDom = document.querySelector('#file-list-dom');
 
-        // 触发删除事件
-        fileListDom.addEventListener('click', function(e) {
-            let target = e.target || e.srcElement;
-            if (target.classList.contains('pre-item')) {
-                delFile(target.getAttribute('key'));
-            }
-        });
+    let fileList = {};
+    let formData = new FormData();
+    upload.addEventListener('change', function () {
+      for (let i = this.files.length - 1; i >= 0; i&#45;&#45;) {
+        let file = this.files[i];
+        let key = file.name;
+        let fileItem = {
+          'file' : file,
+          'cover': ''
+        };
 
-        // 显示图片
-        function showFile(key, isImg) {
-            let file = document.querySelector('[key="'+key+'"]');
-            if (file === null) {
-                if (isImg) {
-                    fileListDom.innerHTML += '<div key="' + key + '" class="pre-item"><img src="' + fileList[key].cover + '"/></div>';
-                } else {
-                    fileListDom.innerHTML += '<div key="' + key + '" class="pre-item">' + key + '</div>';
-                }
-            } else {
-                file.style.display = 'block';
-            }
+        if (/(image\/)/.test(file.type)) {
+          let reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = function () {
+            fileItem.cover = this.result;
+            fileList[key] = fileItem;
+            formData.append(key, file);
+            showFile(key, true);
+          };
+        } else {
+          fileList[key] = fileItem;
+          formData.append(key, file);
+          showFile(key, false);
         }
 
-        // 删除图片
-        function delFile(key) {
-            let file = document.querySelector('[key="'+key+'"]');
-            if (file !== null) {
-                delete fileList[key];
-                formData.delete(key);
-                file.style.display = 'none';
-            }
+      }
+    });
+
+    // 触发删除事件
+    fileListDom.addEventListener('click', function (e) {
+      let target = e.target || e.srcElement;
+      if (target.classList.contains('pre-item')) {
+        delFile(target.getAttribute('key'));
+      }
+    });
+
+    // 显示图片
+    function showFile (key, isImg) {
+      let file = document.querySelector('[key="' + key + '"]');
+      if (file === null) {
+        if (isImg) {
+          fileListDom.innerHTML += '<div key="' + key + '" class="pre-item"><img src="' + fileList[key].cover +
+            '"/></div>';
+        } else {
+          fileListDom.innerHTML += '<div key="' + key + '" class="pre-item">' + key + '</div>';
         }
-        
-        function uploadfile(){
-        	
-        	var formdata = new FormData();
-    		for(var i=0;i<$("#fileUpload")[0].files.length;i++){
-    			formdata.append("fileUpload", $("#fileUpload")[0].files[i]);
-    		}
-        	$.ajax({
-        		url : prefix + "/materialUploadSave",
-        		type:"post",  
-        		contentType: false,  
-                processData: false, 
-                data: formdata,
-        		async : false,
-        		error : function(request) {
-        			$.modal.alertError("系统错误");
-        		},
-        		success : function(data) {
-        			if(data.code == 0){
-        				alert(data.msg);
-        				$.modal.close();
-            			//刷新管理页面
-            			$.modal.reload();
-            			
-        			}else{
-        				alert(data.msg);
-        			}
-        		}
-        	});
+      } else {
+        file.style.display = 'block';
+      }
+    }
+
+    // 删除图片
+    function delFile (key) {
+      let file = document.querySelector('[key="' + key + '"]');
+      if (file !== null) {
+        delete fileList[key];
+        formData.delete(key);
+        file.style.display = 'none';
+      }
+    }
+
+    function uploadfile () {
+
+      var formdata = new FormData();
+      for (var i = 0; i < $("#fileUpload")[0].files.length; i++) {
+        formdata.append('fileUpload', $('#fileUpload')[0].files[i]);
+      }
+      $.ajax({
+        url        : prefix + '/materialUploadSave',
+        type       : 'post',
+        contentType: false,
+        processData: false,
+        data       : formdata,
+        async      : false,
+        error      : function (request) {
+          $.modal.alertError('系统错误');
+        },
+        success    : function (data) {
+          if (data.code == 0) {
+            alert(data.msg);
+            $.modal.close();
+            //刷新管理页面
+            $.modal.reload();
+
+          } else {
+            alert(data.msg);
+          }
         }
-    	
-	</script>
+      });
+    }
+
+  </script>-->
 </body>
 </html>
