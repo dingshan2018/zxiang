@@ -28,9 +28,9 @@
               <li>
                 <span class="select-item-name">投放状态：</span>
                 <select name="status" th:with="type=${@dict.getType('schedule_status')}">
-                <option value="">所有</option>
-                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-              </select>
+                  <option value="">所有</option>
+                  <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
               </li>
               <li class="select-time">
                 <label class="select-item-name">投放时间： </label>
@@ -39,12 +39,18 @@
                 <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
               </li>
               <li class="select-btns">
-				<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
-			    <a class="btn btn-success btn-rounded btn-sm" onclick="exportModule()"><i class="fa fa-download"></i>&nbsp;导出</a>
-				<a class="btn btn-success btn-rounded btn-sm" onclick="materialUpload()"><i class="fa fa-download"></i>&nbsp;素材上传</a>
-				<a class="btn btn-success btn-rounded btn-sm" onclick="order()"><i class="fa fa-download"></i>&nbsp;预约</a>
-				<a class="btn btn-success btn-rounded btn-sm" onclick="audit()"><i class="fa fa-download"></i>&nbsp;审核</a>
-				<a class="btn btn-success btn-rounded btn-sm" onclick="releaseOnline()"><i class="fa fa-download"></i>&nbsp;发布</a>
+                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
+                </a>
+                <a class="btn btn-success btn-rounded btn-sm" onclick="exportModule()"><i class="fa fa-download"></i>&nbsp;导出
+                </a>
+                <a class="btn btn-success btn-rounded btn-sm" onclick="materialUpload()"><i class="fa fa-download"></i>&nbsp;素材上传
+                </a>
+                <a class="btn btn-success btn-rounded btn-sm" onclick="order()"><i class="fa fa-download"></i>&nbsp;预约
+                </a>
+                <a class="btn btn-success btn-rounded btn-sm" onclick="audit()"><i class="fa fa-download"></i>&nbsp;审核
+                </a>
+                <a class="btn btn-success btn-rounded btn-sm" onclick="releaseOnline()"><i class="fa fa-download"></i>&nbsp;发布
+                </a>
               </li>
             </ul>
           </div>
@@ -63,211 +69,211 @@
         <table id="bootstrap-table" data-mobile-responsive="true" class="layui-table" lay-even="" lay-skin="row"></table>
       </div>
     </div>
-    </div>
-    <div th:include="include :: footer"></div>
-    <script th:inline="javascript">
-      var editFlag = [[${@permission.hasPermi('advertise:adSchedule:edit')}]];
-      var removeFlag = [[${@permission.hasPermi('advertise:adSchedule:remove')}]];
-      var prefix = ctx + 'advertise/adSchedule';
+  </div>
+  <div th:include="include::footer"></div>
+  <script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('advertise:adSchedule:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('advertise:adSchedule:remove')}]];
+    var prefix = ctx + 'advertise/adSchedule';
 
-        $(function() {
-            var options = {
-                url: prefix + "/list",
-                createUrl: prefix + "/add",
-                updateUrl: prefix + "/edit/{id}",
-                removeUrl: prefix + "/remove",
-                modalName: "广告投放",
-                columns: [{
-		            checkbox: true
-		        },
-				{
-					field : 'adScheduleId', 
-					title : 'ID' 
-				},
-				{
-					field : 'scheduleName', 
-					title : '投放名称' 
-				},
-				{
-					field : 'releaseTypeName', 
-					title : '投放方式' 
-				},
-				{
-					field : 'releasePositionName', 
-					title : '投放位置' 
-				},
-				{
-					field : 'status', 
-					title : '投放状态ID'
-				},
-				{
-					field : 'statusName', 
-					title : '投放状态' 
-				},
-				{
-					field : 'sxScheduleId', 
-					title : '视讯排期ID' 
-				},
-				{
-					field : 'pId', 
-					title : '节目单ID' 
-				},
-				{
-					field : 'totalPay', 
-					title : '总价' 
-				},
-				{
-					field : 'prepay', 
-					title : '押金' 
-				},
-				{
-					field : 'releaseTermNum', 
-					title : '投放终端数' 
-				},
-				{
-					field : 'releaseNote', 
-					title : '投放备注' 
-				},
-				{
-					field : 'createBy', 
-					title : '创建者' 
-				},
-				{
-					field : 'createTime', 
-					title : '创建时间' 
-				},
-				{
-					field : 'updateBy', 
-					title : '修改者' 
-				},
-				{
-					field : 'updateTime', 
-					title : '修改时间' 
-				},
-		        {
-		            title: '操作',
-		            align: 'center',
-		            formatter: function(value, row, index) {
-		            	var actions = [];
-		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.adScheduleId + '\')"><i class="fa fa-remove"></i>删除</a>');
-						return actions.join('');
-		            }
-		        }]
-            };
-            $.table.init(options);
-            $('#bootstrap-table').bootstrapTable('hideColumn', 'status');
-        });
-        
-        //
-        var selectOneRecord= "请选择一条记录";
-        var onlyOneRecord= "只能选择一条记录";
-        var toAudit= "02";//待审核
-        var toBeReleased= "03";//待发布
-        var hasMaterial = "该广告已上传过素材!";
-        var noMaterial = "该广告无素材,请先上传素材!";
-        
-      	//导出
-        function exportModule() {
-			//TODO 
-        	console.log("TODO exportModule");
-      	}
-      
-      	//素材上传弹窗函数
-        function materialUpload() {
-        	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
-	   		if (rows.length == 0) {
-	   			$.modal.alertWarning(selectOneRecord);
-	   			return;
-	   		}
-	   		if (rows.length > 1){
-	   			$.modal.alertWarning(onlyOneRecord);
-	   			return;
-	   		}
-	   	 	
-	   		var pId = $.table.selectColumns($.table._option.columns[8].field);
-	   		if (pId != '') {
-	   	        $.modal.alertWarning(hasMaterial);
-	   	        return;
-   	      	}
-	   		
-        	var url = ctx + "advertise/adSchedule/materialUpload/" + rows;
-        	$.modal.open("素材上传", url);
-		}
-      	
-      	//预约
-        function order() {
-			var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
-	   		if (rows.length == 0) {
-	   			$.modal.alertWarning(selectOneRecord);
-	   			return;
-	   		}
-	   		if (rows.length > 1){
-	   			$.modal.alertWarning(onlyOneRecord);
-	   			return;
-	   		}
-	   	 	
-	   		var pId = $.table.selectColumns($.table._option.columns[8].field);
-	   		if (pId == '') {
-	   	        $.modal.alertWarning(noMaterial);
-	   	        return;
-   	      	}
-	   		
-	   		var url = ctx + "advertise/adSchedule/order/" + rows;
-        	$.modal.open("广告投放预约", url);
-      	}
-      	
-      	//审核
-        function audit() {
-        	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
-	   		if (rows.length == 0) {
-	   			$.modal.alertWarning(selectOneRecord);
-	   			return;
-	   		}
-	   		if (rows.length > 1){
-	   			$.modal.alertWarning(onlyOneRecord);
-	   			return;
-	   		}
-	   		var status = $.table.selectColumns($.table._option.columns[5].field);
-	   		var pId = $.table.selectColumns($.table._option.columns[8].field);
-	   		if (pId == '') {
-	   	        $.modal.alertWarning(noMaterial);
-	   	        return;
-   	      	}
-	   		if (status != toAudit) {
-	   	        $.modal.alertWarning('当前非待审核状态,只有投放状态为待审核的广告才能审核!');
-	   	        return;
-   	      	}
-	   		
-			//TODO 
-        	console.log("TODO audit");
-      	}
-      
-      	//发布
-        function releaseOnline() {
-        	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
-	   		if (rows.length == 0) {
-	   			$.modal.alertWarning(selectOneRecord);
-	   			return;
-	   		}
-	   		if (rows.length > 1){
-	   			$.modal.alertWarning(onlyOneRecord);
-	   			return;
-	   		}
-	   		var status = $.table.selectColumns($.table._option.columns[5].field);
-	   		var pId = $.table.selectColumns($.table._option.columns[8].field);
-	   		if (pId == '') {
-	   	        $.modal.alertWarning(noMaterial);
-	   	        return;
-   	      	}
-	   		if (status != toBeReleased) {
-	   	        $.modal.alertWarning('当前非待发布状态,只有投放状态为待发布的广告才能发布!');
-	   	        return;
-   	      	}
-	   		
-			//TODO 
-        	console.log("TODO releaseOnline");
-      	}
-    </script>
+    $(function() {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            modalName: "广告投放",
+            columns: [{
+	            checkbox: true
+	        },
+			{
+				field : 'adScheduleId', 
+				title : 'ID' 
+			},
+			{
+				field : 'scheduleName', 
+				title : '投放名称' 
+			},
+			{
+				field : 'releaseTypeName', 
+				title : '投放方式' 
+			},
+			{
+				field : 'releasePositionName', 
+				title : '投放位置' 
+			},
+			{
+				field : 'status', 
+				title : '投放状态ID'
+			},
+			{
+				field : 'statusName', 
+				title : '投放状态' 
+			},
+			{
+				field : 'sxScheduleId', 
+				title : '视讯排期ID' 
+			},
+			{
+				field : 'pId', 
+				title : '节目单ID' 
+			},
+			{
+				field : 'totalPay', 
+				title : '总价' 
+			},
+			{
+				field : 'prepay', 
+				title : '押金' 
+			},
+			{
+				field : 'releaseTermNum', 
+				title : '投放终端数' 
+			},
+			{
+				field : 'releaseNote', 
+				title : '投放备注' 
+			},
+			{
+				field : 'createBy', 
+				title : '创建者' 
+			},
+			{
+				field : 'createTime', 
+				title : '创建时间' 
+			},
+			{
+				field : 'updateBy', 
+				title : '修改者' 
+			},
+			{
+				field : 'updateTime', 
+				title : '修改时间' 
+			},
+	        {
+	            title: '操作',
+	            align: 'center',
+	            formatter: function(value, row, index) {
+	            	var actions = [];
+	            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                    actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.adScheduleId + '\')"><i class="fa fa-remove"></i>删除</a>');
+					return actions.join('');
+	            }
+	        }]
+        };
+        $.table.init(options);
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'status');
+    });
+    
+    //
+    var selectOneRecord= "请选择一条记录";
+    var onlyOneRecord= "只能选择一条记录";
+    var toAudit= "02";//待审核
+    var toBeReleased= "03";//待发布
+    var hasMaterial = "该广告已上传过素材!";
+    var noMaterial = "该广告无素材,请先上传素材!";
+    
+  	//导出
+    function exportModule() {
+		//TODO 
+    	console.log("TODO exportModule");
+  	}
+  
+  	//素材上传弹窗函数
+    function materialUpload() {
+    	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+   		if (rows.length == 0) {
+   			$.modal.alertWarning(selectOneRecord);
+   			return;
+   		}
+   		if (rows.length > 1){
+   			$.modal.alertWarning(onlyOneRecord);
+   			return;
+   		}
+   	 	
+   		var pId = $.table.selectColumns($.table._option.columns[8].field);
+   		if (pId != '') {
+   	        $.modal.alertWarning(hasMaterial);
+   	        return;
+	      	}
+   		
+    	var url = ctx + "advertise/adSchedule/materialUpload/" + rows;
+    	$.modal.open("素材上传", url);
+	}
+  	
+  	//预约
+    function order() {
+		var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+   		if (rows.length == 0) {
+   			$.modal.alertWarning(selectOneRecord);
+   			return;
+   		}
+   		if (rows.length > 1){
+   			$.modal.alertWarning(onlyOneRecord);
+   			return;
+   		}
+   	 	
+   		var pId = $.table.selectColumns($.table._option.columns[8].field);
+   		if (pId == '') {
+   	        $.modal.alertWarning(noMaterial);
+   	        return;
+	      	}
+   		
+   		var url = ctx + "advertise/adSchedule/order/" + rows;
+    	$.modal.open("广告投放预约", url);
+  	}
+  	
+  	//审核
+    function audit() {
+    	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+   		if (rows.length == 0) {
+   			$.modal.alertWarning(selectOneRecord);
+   			return;
+   		}
+   		if (rows.length > 1){
+   			$.modal.alertWarning(onlyOneRecord);
+   			return;
+   		}
+   		var status = $.table.selectColumns($.table._option.columns[5].field);
+   		var pId = $.table.selectColumns($.table._option.columns[8].field);
+   		if (pId == '') {
+   	        $.modal.alertWarning(noMaterial);
+   	        return;
+	      	}
+   		if (status != toAudit) {
+   	        $.modal.alertWarning('当前非待审核状态,只有投放状态为待审核的广告才能审核!');
+   	        return;
+	      	}
+   		
+		//TODO 
+    	console.log("TODO audit");
+  	}
+  
+  	//发布
+    function releaseOnline() {
+    	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+   		if (rows.length == 0) {
+   			$.modal.alertWarning(selectOneRecord);
+   			return;
+   		}
+   		if (rows.length > 1){
+   			$.modal.alertWarning(onlyOneRecord);
+   			return;
+   		}
+   		var status = $.table.selectColumns($.table._option.columns[5].field);
+   		var pId = $.table.selectColumns($.table._option.columns[8].field);
+   		if (pId == '') {
+   	        $.modal.alertWarning(noMaterial);
+   	        return;
+	      	}
+   		if (status != toBeReleased) {
+   	        $.modal.alertWarning('当前非待发布状态,只有投放状态为待发布的广告才能发布!');
+   	        return;
+	      	}
+   		
+		//TODO 
+    	console.log("TODO releaseOnline");
+  	}
+</script>
 </body>
 </html>
