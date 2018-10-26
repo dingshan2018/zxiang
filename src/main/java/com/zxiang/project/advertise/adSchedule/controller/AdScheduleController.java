@@ -149,10 +149,11 @@ public class AdScheduleController extends BaseController
     @ResponseBody
     public AjaxResult materialUploadSave(HttpServletRequest request)
     {
-    	int saveCount = 0;
-    	String adScheduleId = request.getParameter("adScheduleId");
-    	System.out.println("adScheduleId:"+adScheduleId );
-    	 List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("fileUpload");
+		 int saveCount = 0;
+    	 String adScheduleId = request.getParameter("adScheduleId");
+    	 String scheduleName = request.getParameter("scheduleName");
+    	
+    	 List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
          MultipartFile file = null;
          for (int i = 0; i < files.size(); ++i) {
         	 saveCount++;
