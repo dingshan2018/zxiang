@@ -191,9 +191,7 @@
 	   	        return;
    	      	}
 	   		
-        	//var url = ctx + "advertise/adSchedule/materialUpload";
-        	///ZXiang/src/main/resources/templates/advertise/adSchedule/fileUploadTest.html
-        	var url = ctx + "advertise/adSchedule/materialUpload";
+        	var url = ctx + "advertise/adSchedule/materialUpload/" + rows;
         	$.modal.open("素材上传", url);
 		}
       	
@@ -215,8 +213,8 @@
 	   	        return;
    	      	}
 	   		
-	   		//TODO 
-			console.log("TODO order");
+	   		var url = ctx + "advertise/adSchedule/order/" + rows;
+        	$.modal.open("广告投放预约", url);
       	}
       	
       	//审核

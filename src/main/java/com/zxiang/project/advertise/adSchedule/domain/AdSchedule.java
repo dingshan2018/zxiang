@@ -47,6 +47,8 @@ public class AdSchedule extends BaseEntity
 	private Date updateTime;
 	/**节目单ID  */
 	private String pId;
+	
+	private Long[] deviceIds;
 
 	private String releaseTypeName;
 	private String releasePositionName;
@@ -218,6 +220,14 @@ public class AdSchedule extends BaseEntity
 
 	public void setpId(String pId) {
 		this.pId = pId;
+	}
+
+	public Long[] getDeviceIds() {
+		return deviceIds;
+	}
+
+	public void setDeviceIds(Long[] deviceIds) {
+		this.deviceIds = deviceIds;
 	}
 
 	public String toString() {

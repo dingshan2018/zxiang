@@ -24,6 +24,8 @@ import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
 import com.zxiang.project.advertise.adSchedule.service.IAdScheduleService;
+import com.zxiang.project.business.device.domain.Device;
+import com.zxiang.project.business.device.mapper.DeviceMapper;
 
 /**
  * 广告投放 信息操作处理
@@ -39,6 +41,8 @@ public class AdScheduleController extends BaseController
 	
 	@Autowired
 	private IAdScheduleService adScheduleService;
+	@Autowired
+	private DeviceMapper deviceMapper;
 	
 	@RequiresPermissions("advertise:adSchedule:view")
 	@GetMapping()
@@ -129,9 +133,12 @@ public class AdScheduleController extends BaseController
 	/**
 	 * 素材上传
 	 */
-	@GetMapping("/materialUpload")
-	public String materialUpload()
+	@GetMapping("/materialUpload/{adScheduleId}")
+	public String materialUpload(@PathVariable("adScheduleId") Integer adScheduleId, ModelMap mmap)
 	{
+		AdSchedule adSchedule = adScheduleService.selectAdScheduleById(adScheduleId);
+		mmap.put("adSchedule", adSchedule);
+		
 	    return prefix + "/materialUpload";
 	}
 	
@@ -143,7 +150,8 @@ public class AdScheduleController extends BaseController
     public AjaxResult materialUploadSave(HttpServletRequest request)
     {
     	int saveCount = 0;
-    	
+    	String adScheduleId = request.getParameter("adScheduleId");
+    	System.out.println("adScheduleId:"+adScheduleId );
     	 List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("fileUpload");
          MultipartFile file = null;
          for (int i = 0; i < files.size(); ++i) {
@@ -161,4 +169,33 @@ public class AdScheduleController extends BaseController
         return success("成功上传 "+ saveCount +" 份文件!");
     }
 	
+	/**
+	 * 广告投放预约
+	 */
+	@GetMapping("/order/{adScheduleId}")
+	public String order(@PathVariable("adScheduleId") Integer adScheduleId, ModelMap mmap)
+	{
+		AdSchedule adSchedule = adScheduleService.selectAdScheduleById(adScheduleId);
+		mmap.put("adSchedule", adSchedule);
+		mmap.put("devices", deviceMapper.selectDeviceList(new Device()));
+		
+	    return prefix + "/order";
+	}
+	
+	/**
+	 * 广告投放预约保存
+	 */
+	@RequiresPermissions("advertise:adSchedule:edit")
+	@Log(title = "广告投放预约保存", businessType = BusinessType.UPDATE)
+	@PostMapping("/orderSave")
+	@ResponseBody
+	public AjaxResult orderSave(AdSchedule adSchedule)
+	{
+		//TODO 广告投放预约保存
+		Long[] deviceIds = adSchedule.getDeviceIds();
+		for (int i = 0; i < deviceIds.length; i++) {
+			System.out.println("deviceIds:"+deviceIds[i]);
+		}
+		return success("成功:"+adSchedule.getDeviceIds().length);
+	}
 }
