@@ -15,5 +15,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       (select a.pname from sys_area a where a.id = r.county_id) as countyName 
       from zx_repair_area r where r.`repair_id` = #{repairId}
     </select>
-   
+    <insert id="saveRepairArea" parameterType="RepairArea"  useGeneratedKeys="true" keyProperty="repairAreaId">
+        insert into zx_repair_area (repair_id,province_id, city_id,county_id) values(#{repairId},#{provinceId},#{cityId},#{countyId})
+    </insert>
+    <delete id="deleteRepairArea">
+		delete from zx_repair_area where repair_area_id = #{repairAreaId}
+	</delete>
 </mapper>

@@ -175,5 +175,16 @@ public class RepairServiceImpl implements IRepairService
 	public List<RepairArea> selectrepairAreasById(Integer repairId) {
 		return repairAreaMapper.selectRepairAreaList(repairId);
 	}
+
+	@Override
+	public RepairArea saveRepairArea(RepairArea repairArea) {
+		repairAreaMapper.saveRepairArea(repairArea);
+		return repairArea;
+	}
+
+	@Override
+	public void deleteRepairArea(Integer repairAreaId) {
+		repairAreaMapper.deleteRepairArea(repairAreaId);
+	}
 	
 }

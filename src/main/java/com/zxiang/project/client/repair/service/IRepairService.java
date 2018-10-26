@@ -58,5 +58,9 @@ public interface IRepairService
 	 * 查找服务商下拉框数据
 	 */
 	public List<Repair> selectDropBoxList();
+	/** 新增服务商网点区域**/
+	public RepairArea saveRepairArea(RepairArea repairArea);
+	/** 删除服务商网点区域**/
+	public void deleteRepairArea(Integer repairAreaId);
 	
 }

@@ -9,6 +9,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -136,6 +137,34 @@ public class RepairController extends BaseController
 	public String repairArea(@PathVariable("repairId") Integer repairId, ModelMap mmap) {
 		List<RepairArea> repairAreaList = repairService.selectrepairAreasById(repairId);
 		mmap.put("repairAreaList", repairAreaList);
+		mmap.put("repairId", repairId);
 	    return prefix + "/repairArea";
+	}
+	/**
+	 * 新增服务商网点区域
+	 */
+	@PostMapping( "/saveRepairArea")
+	@ResponseBody
+	public AjaxResult saveRepairArea(@RequestBody RepairArea repairArea,ModelMap mmap) {
+		try {
+			repairArea = repairService.saveRepairArea(repairArea);
+			mmap.put("repairArea", repairArea);
+			return toAjax(repairArea.getRepairAreaId());
+		} catch (Exception e) {
+			return AjaxResult.error();
+		}
+	}
+	/**
+	 * 新增服务商网点区域
+	 */
+	@PostMapping( "/deleteRepairArea/{repairAreaId}")
+	@ResponseBody
+	public AjaxResult deleteRepairArea(@PathVariable("repairAreaId") Integer repairAreaId,ModelMap mmap) {
+		try {
+			repairService.deleteRepairArea(repairAreaId);
+			return AjaxResult.success();
+		} catch (Exception e) {
+			return AjaxResult.error();
+		}
 	}
 }

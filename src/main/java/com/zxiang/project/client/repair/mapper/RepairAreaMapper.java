@@ -18,5 +18,9 @@ public interface RepairAreaMapper  {
      * 查询服务网点地区列表
      */
 	public List<RepairArea> selectRepairAreaList(@Param("repairId")Integer repairId);
+
+	public int saveRepairArea(RepairArea repairArea);
+
+	public void deleteRepairArea(@Param("repairAreaId")Integer repairAreaId);
 	
 }
