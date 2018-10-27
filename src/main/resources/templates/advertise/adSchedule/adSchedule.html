@@ -47,7 +47,7 @@
                 </a>
                 <a class="btn btn-success btn-rounded btn-sm" onclick="order()"><i class="fa fa-download"></i>&nbsp;预约
                 </a>
-                <a class="btn btn-success btn-rounded btn-sm" onclick="audit()"><i class="fa fa-download"></i>&nbsp;审核
+                <a class="btn btn-success btn-rounded btn-sm" onclick="audit()" shiro:hasPermission="advertise:adSchedule:audit"><i class="fa fa-download"></i>&nbsp;审核
                 </a>
                 <a class="btn btn-success btn-rounded btn-sm" onclick="releaseOnline()"><i class="fa fa-download"></i>&nbsp;发布
                 </a>
@@ -168,6 +168,7 @@
     //
     var selectOneRecord= "请选择一条记录";
     var onlyOneRecord= "只能选择一条记录";
+    //01待预约；02待审核；03待发布；04待播放；05已播放；06审核失败；07排期失败
     var toAudit= "02";//待审核
     var toBeReleased= "03";//待发布
     var hasMaterial = "该广告已上传过素材!";
@@ -217,7 +218,7 @@
    		if (pId == '') {
    	        $.modal.alertWarning(noMaterial);
    	        return;
-	      	}
+      	}
    		
    		var url = ctx + "advertise/adSchedule/order/" + rows;
     	$.modal.open("广告投放预约", url);
@@ -239,14 +240,14 @@
    		if (pId == '') {
    	        $.modal.alertWarning(noMaterial);
    	        return;
-	      	}
+      	}
    		if (status != toAudit) {
    	        $.modal.alertWarning('当前非待审核状态,只有投放状态为待审核的广告才能审核!');
    	        return;
-	      	}
+      	}
    		
-		//TODO 
-    	console.log("TODO audit");
+   		var url = ctx + "advertise/adSchedule/audit/" + rows;
+    	$.modal.open("广告投放审核", url);
   	}
   
   	//发布
@@ -265,11 +266,11 @@
    		if (pId == '') {
    	        $.modal.alertWarning(noMaterial);
    	        return;
-	      	}
+      	}
    		if (status != toBeReleased) {
    	        $.modal.alertWarning('当前非待发布状态,只有投放状态为待发布的广告才能发布!');
    	        return;
-	      	}
+      	}
    		
 		//TODO 
     	console.log("TODO releaseOnline");

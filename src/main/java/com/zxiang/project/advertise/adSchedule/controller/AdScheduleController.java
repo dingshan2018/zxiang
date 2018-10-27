@@ -199,4 +199,30 @@ public class AdScheduleController extends BaseController
 		}
 		return success("成功:"+adSchedule.getDeviceIds().length);
 	}
+	
+	/**
+	 * 广告投放审核
+	 */
+	@GetMapping("/audit/{adScheduleId}")
+	public String audit(@PathVariable("adScheduleId") Integer adScheduleId, ModelMap mmap)
+	{
+		AdSchedule adSchedule = adScheduleService.selectAdScheduleById(adScheduleId);
+		mmap.put("adSchedule", adSchedule);
+		
+	    return prefix + "/audit";
+	}
+	
+	/**
+	 * 广告投放审核保存
+	 */
+	@RequiresPermissions("advertise:adSchedule:audit")
+	@Log(title = "广告投放审核保存", businessType = BusinessType.UPDATE)
+	@PostMapping("/auditSave")
+	@ResponseBody
+	public AjaxResult auditSave(AdSchedule adSchedule)
+	{
+		//TODO 广告投放审核保存
+		System.out.println("TODO 广告投放审核保存");
+		return success();
+	}
 }
