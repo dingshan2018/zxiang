@@ -145,17 +145,19 @@ public class RepairController extends BaseController
 	 */
 	@PostMapping( "/saveRepairArea")
 	@ResponseBody
-	public AjaxResult saveRepairArea(@RequestBody RepairArea repairArea,ModelMap mmap) {
+	public AjaxResult saveRepairArea(@RequestBody RepairArea repairArea) {
 		try {
 			repairArea = repairService.saveRepairArea(repairArea);
-			mmap.put("repairArea", repairArea);
-			return toAjax(repairArea.getRepairAreaId());
+			AjaxResult json = new AjaxResult();
+			json.put("repairArea", repairArea);
+			json.put("code", 0);
+			return json;
 		} catch (Exception e) {
 			return AjaxResult.error();
 		}
 	}
 	/**
-	 * 新增服务商网点区域
+	 * 删除服务商网点区域
 	 */
 	@PostMapping( "/deleteRepairArea/{repairAreaId}")
 	@ResponseBody

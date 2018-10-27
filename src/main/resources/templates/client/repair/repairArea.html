@@ -16,8 +16,8 @@
 				 <label class="col-sm-2 control-label" th:text="${repairArea.cityName}"></label>
 				 <label class="col-sm-2 control-label" th:text="${repairArea.countyName}"></label>
 				 <label class="col-sm-3" style="font-size: 0;">
-					 <a class="btn btn-info btn-xs" style="margin-right: 5px;" href="javascript:void(0)" th:onclick="'javascript:repairAreaUpdate('+${repairArea.repairAreaId}+')'"><i class="fa fa-edit"></i>修改</a>
-					 <a class="btn btn-danger btn-xs" href="javascript:void(0)" th:onclick="'javascript:repairAreaDelete('+${repairArea.repairAreaId}+')'"><i class="fa fa-edit"></i>删除</a>
+					 <a class="btn btn-info btn-xs" style="margin-right: 5px;" href="javascript:void(0)" th:onclick="'javascript:repairAreaUpdate('+${repairArea.repairAreaId}+','+this+')'"><i class="fa fa-edit"></i>修改</a>
+					 <a class="btn btn-danger btn-xs" href="javascript:void(0)" th:onclick="'javascript:repairAreaDelete('+${repairArea.repairAreaId}+','+this+')'"><i class="fa fa-edit"></i>删除</a>
 				 </label>
 			  </div>
 			</div>
@@ -49,26 +49,18 @@
 			$("#repairAreaInfo").append($("#addDiv").html());
 			
 		}
-		function repairAreaUpdate(id){ // 更新按钮
+		function repairAreaUpdate(id,_this){ // 更新按钮
 			$.modal.alertWarning("修改按钮"+id);
 		}
-		function repairAreaDelete(id){
-			$.ajax({
-	        	type: "post",
-	        	contentType:"application/json",
-	            dataType: "json",
-	            url: ctx + 'client/repair/deleteRepairArea/'+id,
-	            data: JSON.stringify({}),
-	            async: false,
-	            success: function (data) {
-	            	if(data.code != 0){
-	            		$.modal.alertError("删除失败");
-	            	}else{
-	            		$.modal.alertSuccess("删除成功");
-	            	}
-	            },
-	            error: function () { alert("Error:获取省份信息失败"); }
-	        });
+		function repairAreaDelete(id,_this){
+			$.post(ctx + 'client/repair/deleteRepairArea/'+id, function(data) {
+				if(data.code != 0){
+            		$.modal.alertError("删除失败");
+            	}else{
+            		$(_this).parent().parent().parent(".form-group").remove();
+            		$.modal.alertSuccess("删除成功");
+            	}
+			});
 		}
 		function repairAreaSure(_this){ // 确定按钮
 			var province = $(_this).parent().siblings("select[name='province']").val();
@@ -98,8 +90,10 @@
 	            success: function (data) {
 	            	if(data.code != 0){
 	            		$.modal.alertError("新增失败");
+	            	}else{
+	            		$.modal.alertSuccess("新增成功");
 	            	}
-	            	var id = 1;
+	            	var id = data.repairArea.repairAreaId;
 	    			var ht = '<div class="form-group">'+
 			    				'<div class="row" >'+
 					    			 '<label class="col-sm-2 control-label">区域</label>'+
@@ -108,14 +102,14 @@
 					    			 '<label class="col-sm-2 control-label">'+countyText+'</label>'+
 					    			 '<label class="col-sm-3" style="font-size: 0;">'+
 					    				 '<a class="btn btn-info btn-xs" style="margin-right: 5px;" href="javascript:void(0)" onclick="repairAreaUpdate('+id+')\'"><i class="fa fa-edit"></i>修改</a>'+
-					    				 '<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="repairAreaDelete('+id+')\'"><i class="fa fa-edit"></i>删除</a>'+
+					    				 '<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="repairAreaDelete('+id+',this)"><i class="fa fa-edit"></i>删除</a>'+
 					    			' </label>'+
 				    		  '</div>'+
 				    		'</div>';
 	    			$(_this).parent().parent().parent(".form-group").remove();
 	    			$("#repairAreaInfo").append(ht);
 	            },
-	            error: function () { alert("Error:获取省份信息失败"); }
+	            error: function () { $.modal.alertError("新增失败");}
 	        });
 			
 		}
