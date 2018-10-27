@@ -16,7 +16,11 @@
             <div class="form-group">	
                 <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>终端参数KEY：</label>
                 <div class="col-sm-8">
-                    <input id="paramKey" name="paramKey" th:field="*{paramKey}" class="form-control" type="text">
+                    <!-- <select id="paramKey" name="paramKey" class="form-control m-b" th:with="type=${@dict.getType('terminal_param')}">
+	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{paramKey}"></option>
+	                </select> -->
+	                <input id="paramKey" name="paramKey" th:field="*{paramKey}"  type="hidden">
+                    <input id="paramKeyName" name="paramKeyName" th:field="*{paramKeyName}" class="form-control" type="text" readonly="readonly">
                 </div>
             </div>
             <div class="form-group">	
