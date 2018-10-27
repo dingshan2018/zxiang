@@ -20,6 +20,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	@Autowired
 	private AdScheduleMapper adScheduleMapper;
 
+	private final static String WAIT_PLAY = "04";
 	/**
      * 查询广告投放信息
      * 
@@ -78,6 +79,19 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	public int deleteAdScheduleByIds(String ids)
 	{
 		return adScheduleMapper.deleteAdScheduleByIds(Convert.toStrArray(ids));
+	}
+
+	@Override
+	public int releaseOnlineSave(AdSchedule adSchedule) {
+		//若广告的status已经为04则已经发布过不再更新，若没有发布则进行发布操作
+		AdSchedule ad  = adScheduleMapper.selectAdScheduleById(adSchedule.getAdScheduleId());
+		if(WAIT_PLAY.equals(ad.getStatus())){
+			return 0;
+		}else{
+			adSchedule.setStatus(WAIT_PLAY);
+			return adScheduleMapper.updateAdSchedule(adSchedule);
+		}
+		
 	}
 	
 }

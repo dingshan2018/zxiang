@@ -44,6 +44,9 @@ public class AdScheduleController extends BaseController
 	@Autowired
 	private DeviceMapper deviceMapper;
 	
+	 //01待预约；02待审核；03待发布；04待播放；05已播放；06审核失败；07排期失败
+    
+	
 	@RequiresPermissions("advertise:adSchedule:view")
 	@GetMapping()
 	public String adSchedule()
@@ -224,5 +227,22 @@ public class AdScheduleController extends BaseController
 		//TODO 广告投放审核保存
 		System.out.println("TODO 广告投放审核保存");
 		return success();
+	}
+	
+	/**
+	 * 广告投放发布保存
+	 */
+	@RequiresPermissions("advertise:adSchedule:releaseOnline")
+	@Log(title = "广告投放发布保存", businessType = BusinessType.UPDATE)
+	@PostMapping("/releaseOnlineSave")
+	@ResponseBody
+	public AjaxResult releaseOnlineSave(AdSchedule adSchedule)
+	{
+		String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+		adSchedule.setUpdateBy(operatorUser);
+		adSchedule.setUpdateTime(new Date());
+		
+		int releaseNumber = adScheduleService.releaseOnlineSave(adSchedule);
+		return success("成功发布 "+ releaseNumber + " 条广告");
 	}
 }

@@ -49,7 +49,7 @@
                 </a>
                 <a class="btn btn-success btn-rounded btn-sm" onclick="audit()" shiro:hasPermission="advertise:adSchedule:audit"><i class="fa fa-download"></i>&nbsp;审核
                 </a>
-                <a class="btn btn-success btn-rounded btn-sm" onclick="releaseOnline()"><i class="fa fa-download"></i>&nbsp;发布
+                <a class="btn btn-success btn-rounded btn-sm" onclick="releaseOnline()" shiro:hasPermission="advertise:adSchedule:releaseOnline"><i class="fa fa-download"></i>&nbsp;发布
                 </a>
               </li>
             </ul>
@@ -273,8 +273,24 @@
       	}
    		
    		$.modal.confirm("确定发布该条" + $.table._option.modalName + "信息吗？", function() {
-        	//TODO 发布请求
-        	console.log("TODO 发布请求");
+        	
+        	$.ajax({
+        		cache : true,
+        		type : "POST",
+        		url : prefix + "/releaseOnlineSave",
+        		data : {
+        			"adScheduleId": rows[0]
+        		},
+        		async : false,
+        		error : function(request) {
+        			$.modal.alertError("系统错误");
+        		},
+        		success : function(data) {
+        			$.modal.msgSuccess(data.msg);
+        			$.table.search();
+        		}
+        	});
+        	
     	});
   	}
 </script>
