@@ -139,7 +139,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				
 				int tissuenum = selectzxtissuerecordlist(device.get("device_id")+"",""); //出纸数量
 				//计算每日设备推广费用
-				deviceorder(isincome,promotioner_id,device);
+				deviceorder(isincome,promotioner_id,device,order);
 				//计算每日出纸费用（二维码推广告）
 				tissuedata(device,buyer_id,tissuenum);
 				//计算广告费用
@@ -152,27 +152,29 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	}
 	
 	//计算每日设备推广费用
-	public void deviceorder(String isincome,String seller_id,HashMap<String, Object> map) {
+	public void deviceorder(String isincome,String seller_id,HashMap<String, Object> map,HashMap<String, Object> order) {
 		//获取推荐人人员信息
 		HashMap<String, Object> user = getusedata(seller_id);
 		int placeId  = Integer.valueOf(map.get("place_id") + ""); //场所Id
 		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
-		double price = 0.0;//设备销售价格
 		//判断是否是前一天售出的，01代表是    00代表不是
 		double fee = 0.0;
-		int num = 0;
-		String type = RateConstants.RATETYPE_PROMDIRECTINCOME;
-		if(isincome.equals("01")){
-			price = Double.valueOf(map.get("price")+"");
-			fee = Double.valueOf(user.get("promDirectRate")+"");
-			if(user.get("suuser_id") !=null && user.get("suuser_id") !="" ){
-				fee = Double.valueOf(user.get("promIndirectRate")+"");
-				type = RateConstants.RATETYPE_PROMINDIRECTINCOME;
+		double price = 0.0;//设备销售价格
+		if(com.zxiang.common.utils.StringUtils.isNotNull(user)){
+			int num = 0;
+			String type = RateConstants.RATETYPE_PROMDIRECTINCOME;
+			if(isincome.equals("01")){
+				price = Double.valueOf(order.get("price")+"");
+				fee = Double.valueOf(user.get("promDirectRate")+"");
+				if(user.get("suuser_id") !=null && user.get("suuser_id") !="" ){
+					fee = Double.valueOf(user.get("promIndirectRate")+"");
+					type = RateConstants.RATETYPE_PROMINDIRECTINCOME;
+				}
+				num++;
 			}
-			num++;
+			//插入数据
+			insertdata(fee,seller_id,"02",type,0.0,num,user);
 		}
-		//插入数据
-		insertdata(fee,seller_id,"02",type,0.0,num,user);
 		
 		//---------------------设备昨日销售价格收入---------------------------------
 		DeviceIncomeDaily deviceIncomeDaily = new DeviceIncomeDaily();
