@@ -157,7 +157,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM
 		  zx_ad_release_record 
 		WHERE 
-		device_id = #{deviceId}
+		device_id = #{device_id}
 		<if test="scheduleId != null and scheduleId != ''"> and schedule_id = #{scheduleId}</if>
 		AND (DATE_FORMAT(down_time, '%Y-%m-%d') = DATE_FORMAT( DATE_SUB(CURDATE(), INTERVAL 1 DAY), '%Y-%m-%d') OR DATE_FORMAT(play_time, '%Y-%m-%d') = DATE_FORMAT( DATE_SUB(CURDATE(), INTERVAL 1 DAY), '%Y-%m-%d'))
     </select>

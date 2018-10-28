@@ -143,7 +143,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				//计算每日出纸费用（二维码推广告）
 				tissuedata(device,buyer_id,tissuenum);
 				//计算广告费用
-				addata(map,buyer_id,tissuenum);
+				addata(device,buyer_id,tissuenum);
 			}
 		}
 		
@@ -242,6 +242,9 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	 * */
 	public void addata(HashMap<String, Object> map,String buyerid,int tissuenum) {
 		List<HashMap<String, Object>> releaserecordlist =selectreleaserecordlist(map);//广告投放设备
+		if(releaserecordlist.size()==0){
+			return;
+		}
 		int placeId  = Integer.valueOf(map.get("place_id") + ""); //场所Id
 		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
 		HashMap<String, Object> placemap =  selectzxplace(placeId+""); //获取地点
@@ -251,7 +254,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			//获取推广计划
 			HashMap<String, Object> selecadschedule = selecadschedulelist(Integer.valueOf(releaserecord.get("schedule_id").toString()));
 			String release_type = selecadschedule.get("release_type").toString(); //投放方式01终端轮播  02终端视频  03H5广告       (二维码广告还分公司（免费）和外部)
-			int  advertiser = Integer.valueOf(selecadschedule.get("advertiser")+""); //广告商
+			//int  advertiser = Integer.valueOf(selecadschedule.get("advertiser")+""); //广告商
 			int	 promotioner = Integer.valueOf(selecadschedule.get("promotioner")+""); //推荐人
 			HashMap<String, Object> promotionagenmap = new HashMap<String, Object>();
 			HashMap<String, Object> repairmap = new HashMap<String, Object>();
@@ -466,6 +469,8 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				userIncome.setSubsidyIncome(incomeprice);//招商金额
 			}else if(ratetype.equals(RateConstants.RATETYPE_PROMPAPERINCOME)){
 				userIncome.setPromPaperIncome(incomenum);//推广二维码广告
+			}else if(ratetype.equals(RateConstants.RATETYPE_PROMOTIONINCOME)){
+				userIncome.setPromotionIncome(incomeprice);//推广广告基数
 			}
 			
 			if(userlist.size()>0){
