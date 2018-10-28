@@ -16,8 +16,8 @@
 				 <label class="col-sm-2 control-label" th:text="${repairArea.cityName}"></label>
 				 <label class="col-sm-2 control-label" th:text="${repairArea.countyName}"></label>
 				 <label class="col-sm-3" style="font-size: 0;">
-					 <a class="btn btn-info btn-xs" style="margin-right: 5px;" href="javascript:void(0)" th:onclick="'javascript:repairAreaUpdate('+${repairArea.repairAreaId}+','+this+')'"><i class="fa fa-edit"></i>修改</a>
-					 <a class="btn btn-danger btn-xs" href="javascript:void(0)" th:onclick="'javascript:repairAreaDelete('+${repairArea.repairAreaId}+','+this+')'"><i class="fa fa-edit"></i>删除</a>
+					 <a class="btn btn-info btn-xs" style="margin-right: 5px;display: none;" href="javascript:void(0)" th:onclick="'javascript:repairAreaUpdate('+${repairArea.repairAreaId}+','+this+')'"><i class="fa fa-edit"></i>修改</a>
+					 <a class="btn btn-danger btn-xs" href="javascript:void(0)" th:onclick="'javascript:repairAreaDelete('+${repairArea.repairAreaId}+','+this+')'"><i class="fa fa-remove"></i>删除</a>
 				 </label>
 			  </div>
 			</div>
@@ -25,12 +25,12 @@
 				<div class="form-group">
 				  <div class="row" >
 				  	 <label class="col-sm-2 control-label" th:text="区域"></label>
-					 <select class="col-sm-2 control-label province" name="province" onchange="cityBind(this)"><option value="-1">---请选择---</option></select>
-					 <select class="col-sm-2 control-label" name="city" onchange="countyBind(this)"><option value="-1">---请选择---</option></select>
-					 <select class="col-sm-2 control-label" name="county" ><option value="-1">---请选择---</option></select>
+					 <select class="col-sm-2 control-label province" name="province" onchange="cityBind(this)"><option value="-1">---请选择省---</option></select>
+					 <select class="col-sm-2 control-label" name="city" onchange="countyBind(this)"><option value="-1">---请选择市---</option></select>
+					 <select class="col-sm-2 control-label" name="county" ><option value="-1">---请选择县---</option></select>
 					 <label class="col-sm-3" style="font-size: 0;">
 						 <a class="btn btn-info btn-xs" style="margin-right: 5px;" href="javascript:void(0)" th:onclick="'javascript:repairAreaSure(this)'"><i class="fa fa-edit"></i>确定</a>
-						 <a class="btn btn-danger btn-xs" href="javascript:void(0)" th:onclick="'javascript:repairAreaCancel(this)'"><i class="fa fa-edit"></i>取消</a>
+						 <a class="btn btn-danger btn-xs" href="javascript:void(0)" th:onclick="'javascript:repairAreaCancel(this)'"><i class="fa fa-remove"></i>取消</a>
 					 </label>
 				  </div>
 				</div>
@@ -101,8 +101,8 @@
 					    			 '<label class="col-sm-2 control-label">'+cityText+'</label>'+
 					    			 '<label class="col-sm-2 control-label">'+countyText+'</label>'+
 					    			 '<label class="col-sm-3" style="font-size: 0;">'+
-					    				 '<a class="btn btn-info btn-xs" style="margin-right: 5px;" href="javascript:void(0)" onclick="repairAreaUpdate('+id+')\'"><i class="fa fa-edit"></i>修改</a>'+
-					    				 '<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="repairAreaDelete('+id+',this)"><i class="fa fa-edit"></i>删除</a>'+
+					    				 '<a class="btn btn-info btn-xs" style="margin-right: 5px;display: none;" href="javascript:void(0)" onclick="repairAreaUpdate('+id+')\'"><i class="fa fa-edit"></i>修改</a>'+
+					    				 '<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="repairAreaDelete('+id+',this)"><i class="fa fa-remove"></i>删除</a>'+
 					    			' </label>'+
 				    		  '</div>'+
 				    		'</div>';
@@ -146,9 +146,9 @@
 		        if (provice == "") {
 		            return;
 		        }
-		        var str = "<option value='-1'>---请选择---</option>";
+		        var str = "<option value='-1'>---请选择市---</option>";
 		        $(_this).siblings("select[name='city']").html("").append(str);
-		        $(_this).siblings("select[name='county']").html("").append("<option value=''>---请选择---</option>");
+		        $(_this).siblings("select[name='county']").html("").append("<option value=''>---请选择县---</option>");
 		        $.ajax({
 		        	type: "post",
 		        	contentType:"application/json",
@@ -170,13 +170,10 @@
 		    }
 		    function countyBind(_this) {
 		        var city = $(_this).val();
-		        var str = "<option value='-1'>---请选择---</option>";
-		        //判断市这个下拉框选中的值是否为空
-		        $("#county").html(str);
 		        if (city == "") {
 		            return;
 		        }
-		        var str = "<option value='-1'>---请选择---</option>";
+		        var str = "<option value='-1'>---请选择县---</option>";
 		        $(_this).siblings("select[name='county']").html("").append(str);
 		        //将市的ID拿到数据库进行查询，查询出他的下级进行绑定 
 		        $.ajax({
