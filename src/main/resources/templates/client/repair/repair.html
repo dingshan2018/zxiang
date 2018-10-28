@@ -36,6 +36,9 @@
       <a class="btn btn-outline btn-success btn-rounded" onclick="salesman()" shiro:hasPermission="client:repair:salesman">
         <i class="fa fa-plus"></i> 新增业务员
       </a>
+      <a class="btn btn-outline btn-success btn-rounded" onclick="repairArea()" shiro:hasPermission="client:repair:area">
+        <i class="fa fa-plus"></i> 服务地区管理
+      </a>
     </div>
 
     <div class="col-sm-12 select-table table-striped">
@@ -160,6 +163,15 @@
     		}
     		var url = ctx + "client/join/toAddSalesman/14/"+rows;
     		$.modal.open($.table._option.modalName + "新增业务员", url,800,500);
+        }
+        function repairArea() {
+        	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+    		if (rows.length == 0 || rows.length > 1) {
+    			$.modal.alertWarning("请选择一条记录");
+    			return;
+    		}
+    		var url = prefix + "/repairArea/"+rows;
+    		$.modal.open("服务地区管理", url,800,500);
         }
     </script>
 </body>

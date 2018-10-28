@@ -1,7 +1,9 @@
 package com.zxiang.project.client.repair.service;
 
-import com.zxiang.project.client.repair.domain.Repair;
 import java.util.List;
+
+import com.zxiang.project.client.repair.domain.Repair;
+import com.zxiang.project.client.repair.domain.RepairArea;
 
 /**
  * 服务商 服务层
@@ -18,6 +20,7 @@ public interface IRepairService
      * @return 服务商信息
      */
 	public Repair selectRepairById(Integer repairId);
+	public List<RepairArea> selectrepairAreasById(Integer repairId);
 	
 	/**
      * 查询服务商列表
@@ -55,5 +58,9 @@ public interface IRepairService
 	 * 查找服务商下拉框数据
 	 */
 	public List<Repair> selectDropBoxList();
+	/** 新增服务商网点区域**/
+	public RepairArea saveRepairArea(RepairArea repairArea);
+	/** 删除服务商网点区域**/
+	public void deleteRepairArea(Integer repairAreaId);
 	
 }
