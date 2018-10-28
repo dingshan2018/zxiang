@@ -50,5 +50,11 @@ public interface IAdScheduleService
      * @return 结果
      */
 	public int deleteAdScheduleByIds(String ids);
+
+	/**
+	 * 广告投放发布
+	 * @param adSchedule
+	 */
+	public int releaseOnlineSave(AdSchedule adSchedule);
 	
 }

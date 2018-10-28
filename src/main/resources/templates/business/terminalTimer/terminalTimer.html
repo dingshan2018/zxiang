@@ -3,164 +3,170 @@
 <meta charset="utf-8">
 <head th:include="include :: header"></head>
 <body class="gray-bg">
-    <div class="container-div">
-    	<div class="col-sm-12 select-info">
-			<form id="terminal-form">
-				<div class="select-list">
-					<ul>
-						<li>
-							终端：
-							<select id="terminalId" name="terminalId" >
-								<option value="">全部</option>
-							</select>
-						</li>
-						<li>
-							定时类型：
-							<select id="timerType" name="timerType" >
-								<option value="">全部</option>
-								<option value="1">一次</option>
-								<option value="2">按天</option>
-								<option value="3">按周</option>
-								<option value="4">按月</option>
-							</select>
-						</li>
-						<li class="select-time">
-							<label>创建时间： </label>
-							<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
-							<span>-</span>
-							<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
-						</li>
-						<li>
-							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
-							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
-						</li>
-					</ul>
-				</div>
-			</form>
-		</div>
-		<div class="btn-group hidden-xs" id="toolbar" role="group">
-			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:terminalTimer:add">
-				<i class="fa fa-plus"></i> 新增
-			</a>
-			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="business:terminalTimer:remove">
-				<i class="fa fa-trash-o"></i> 删除
-			</a>
-		</div>
-			
-		<div class="col-sm-12 select-table table-striped">
-			<table id="bootstrap-table" data-mobile-responsive="true"></table>
-		</div>
+  <div class="container-div">
+    <div class="col-sm-12 select-info">
+      <form id="terminal-form">
+        <div class="select-list">
+          <ul>
+            <li>
+              <span class="select-item-name">终端：</span>
+              <select id="terminalId" name="terminalId">
+                <option value="">全部</option>
+              </select>
+            </li>
+            <li>
+              <span class="select-item-name">定时类型：</span>
+              <select id="timerType" name="timerType">
+                <option value="">全部</option>
+                <option value="1">一次</option>
+                <option value="2">按天</option>
+                <option value="3">按周</option>
+                <option value="4">按月</option>
+              </select>
+            </li>
+            <li class="select-time">
+              <label class="select-item-name">创建时间： </label>
+              <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+              <span>-</span>
+              <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+            </li>
+            <li class="select-btns">
+              <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
+              </a>
+              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
+              </a>
+            </li>
+          </ul>
+        </div>
+      </form>
     </div>
-    <div th:include="include :: footer"></div>
-    <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('business:terminalTimer:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('business:terminalTimer:remove')}]];
-        var prefix = ctx + "business/terminalTimer"
+    <div class="btn-group hidden-xs" id="toolbar" role="group">
+      <a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:terminalTimer:add">
+        <i class="fa fa-plus"></i> 新增
+      </a>
+      <a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="business:terminalTimer:remove">
+        <i class="fa fa-trash-o"></i> 删除
+      </a>
+    </div>
 
-        $(function() {
-        	var terminalList = selectTerminalList();
-	    	$.each(terminalList, function (i) {
-	        	$('#terminalId').append("<option value=" + terminalList[i].terminalId + ">" + terminalList[i].terminalCode + "</option>");
-	        });
-        	
-            var options = {
-                url: prefix + "/list",
-                createUrl: prefix + "/add",
-                updateUrl: prefix + "/edit/{id}",
-                removeUrl: prefix + "/remove",
-                modalName: "定时设置",
-                search: false,
-                columns: [{
-		            checkbox: true
-		        },
-				{
-					field : 'teminalTimerId', 
-					title : '定时ID' 
-				},
-				{
-					field : 'terminalCode', 
-					title : '终端' 
-				},
-				{
-					field : 'timerType', 
-					title : '定时类型' ,
-					formatter : function(value) {
-						if(value==='1'){
-							return "一次";
-						}else if(value==='2'){
-							return "按天";
-						}else if(value==='3'){
-							return "按周";
-						}else if(value==='4'){
-							return "按月";
-						}else{
-							return "-";
-						}
-					}
-				},
-				{
-					field : 'powerOnTime', 
-					title : '开机时间' 
-				},
-				{
-					field : 'powerOffTime', 
-					title : '关机时间' 
-				},
-				{
-					field : 'status', 
-					title : '状态 ' ,
-					formatter : function(value) {
-						if(value==='1'){
-							return "生效";
-						}else if(value==='2'){
-							return "禁用";
-						}else{
-							return "-";
-						}
-					}
-				},
-				{
-					field : 'delFlag', 
-					title : '是否删除',
-					formatter : function(value) {
-						if(value==='0'){
-							return "否";
-						}else if(value==='1'){
-							return "是";
-						}else{
-							return "-";
-						}
-					}
-				},
-				{
-					field : 'createBy', 
-					title : '创建者' 
-				},
-				{
-					field : 'createTime', 
-					title : '创建时间' 
-				},
-				{
-					field : 'updateBy', 
-					title : '修改者' 
-				},
-				{
-					field : 'updateTime', 
-					title : '修改时间' 
-				},
-		        {
-		            title: '操作',
-		            align: 'center',
-		            formatter: function(value, row, index) {
-		            	var actions = [];
-		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.teminalTimerId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.teminalTimerId + '\')"><i class="fa fa-remove"></i>删除</a>');
-						return actions.join('');
-		            }
-		        }]
-            };
-            $.table.init(options);
-        });
-    </script>
+    <div class="col-sm-12 select-table table-striped">
+      <table id="bootstrap-table" data-mobile-responsive="true"></table>
+    </div>
+  </div>
+  <div th:include="include :: footer"></div>
+  <script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('business:terminalTimer:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('business:terminalTimer:remove')}]];
+    var prefix = ctx + 'business/terminalTimer';
+
+    $(function () {
+      var terminalList = selectTerminalList();
+      $.each(terminalList, function (i) {
+        $('#terminalId').
+          append('<option value=' + terminalList[i].terminalId + '>' + terminalList[i].terminalCode + '</option>');
+      });
+
+      var options = {
+        url      : prefix + '/list',
+        createUrl: prefix + '/add',
+        updateUrl: prefix + '/edit/{id}',
+        removeUrl: prefix + '/remove',
+        modalName: '定时设置',
+        search   : false,
+        columns  : [
+          {
+            checkbox: true
+          },
+          {
+            field: 'teminalTimerId',
+            title: '定时ID'
+          },
+          {
+            field: 'terminalCode',
+            title: '终端'
+          },
+          {
+            field    : 'timerType',
+            title    : '定时类型',
+            formatter: function (value) {
+              if (value === '1') {
+                return '一次';
+              } else if (value === '2') {
+                return '按天';
+              } else if (value === '3') {
+                return '按周';
+              } else if (value === '4') {
+                return '按月';
+              } else {
+                return '-';
+              }
+            }
+          },
+          {
+            field: 'powerOnTime',
+            title: '开机时间'
+          },
+          {
+            field: 'powerOffTime',
+            title: '关机时间'
+          },
+          {
+            field    : 'status',
+            title    : '状态 ',
+            formatter: function (value) {
+              if (value === '1') {
+                return '生效';
+              } else if (value === '2') {
+                return '禁用';
+              } else {
+                return '-';
+              }
+            }
+          },
+          {
+            field    : 'delFlag',
+            title    : '是否删除',
+            formatter: function (value) {
+              if (value === '0') {
+                return '否';
+              } else if (value === '1') {
+                return '是';
+              } else {
+                return '-';
+              }
+            }
+          },
+          {
+            field: 'createBy',
+            title: '创建者'
+          },
+          {
+            field: 'createTime',
+            title: '创建时间'
+          },
+          {
+            field: 'updateBy',
+            title: '修改者'
+          },
+          {
+            field: 'updateTime',
+            title: '修改时间'
+          },
+          {
+            title    : '操作',
+            align    : 'center',
+            formatter: function (value, row, index) {
+              var actions = [];
+              actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' +
+                row.teminalTimerId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+              actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' +
+                row.teminalTimerId + '\')"><i class="fa fa-remove"></i>删除</a>');
+              return actions.join('');
+            }
+          }]
+      };
+      $.table.init(options);
+    });
+  </script>
 </body>
 </html>

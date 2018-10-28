@@ -19,7 +19,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<sql id="selectTerminalParamVo">
         select id, terminal_id,
         (select distinct t.terminal_code from zx_terminal t where t.terminal_id =tp.`terminal_id` ) terminalCode,
-        param_key, param_value1, param_value2, param_value3, param_value4, 
+        param_key,
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='terminal_param' AND sdd.dict_value=tp.`param_key`) paramKeyName,
+        param_value1, param_value2, param_value3, param_value4, 
         create_by, create_time from zx_terminal_param tp
     </sql>
 	

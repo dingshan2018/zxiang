@@ -3,47 +3,51 @@
 <meta charset="utf-8">
 <head th:include="include :: header"></head>
 <body class="gray-bg">
-    <div class="container-div">
-		<div class="col-sm-12 select-info">
-			<form id="change-form">
-				<div class="select-list">
-					<ul>
-						<li>
-							加盟商名称： <input type="text" name="joinerName" id="joinerName"/>
-						</li>
-						<li>
-							管理者电话： <input type="text" name="managerPhone" id="managerPhone"/>
-						</li>
-						<li>
-							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
-							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
-						</li>
-					</ul>
-				</div>
-			</form>
-		</div>
-		<div class="btn-group hidden-xs" id="toolbar" role="group">
-			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="client:join:add">
-				<i class="fa fa-plus"></i> 新增
-			</a>
-			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="client:join:remove">
-				<i class="fa fa-trash-o"></i> 删除
-			</a>
-			<a class="btn btn-outline btn-success btn-rounded" onclick="salesman()" shiro:hasPermission="client:join:salesman">
-				<i class="fa fa-plus"></i> 新增业务员
-			</a>
-		</div>
-			
-		<div class="col-sm-12 select-table table-striped">
-			<table id="bootstrap-table" data-mobile-responsive="true"></table>
-		</div>
+  <div class="container-div">
+    <div class="col-sm-12 select-info">
+      <form id="change-form">
+        <div class="select-list">
+          <ul>
+            <li>
+              <span class="select-item-name">加盟商名称：</span>
+              <input type="text" name="joinerName" id="joinerName"/>
+            </li>
+            <li>
+              <span class="select-item-name">管理者电话：</span>
+              <input type="text" name="managerPhone" id="managerPhone"/>
+            </li>
+            <li class="select-btns">
+              <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
+              </a>
+              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
+              </a>
+            </li>
+          </ul>
+        </div>
+      </form>
     </div>
-    <div th:include="include :: footer"></div>
-    <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('client:join:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('client:join:remove')}]];
-        var editParamFlag = [[${@permission.hasPermi('client:join:params')}]];
-        var prefix = ctx + "client/join"
+    <div class="btn-group hidden-xs" id="toolbar" role="group">
+      <a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="client:join:add">
+        <i class="fa fa-plus"></i> 新增
+      </a>
+      <a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="client:join:remove">
+        <i class="fa fa-trash-o"></i> 删除
+      </a>
+      <a class="btn btn-outline btn-success btn-rounded" onclick="salesman()" shiro:hasPermission="client:join:salesman">
+        <i class="fa fa-plus"></i> 新增业务员
+      </a>
+    </div>
+
+    <div class="col-sm-12 select-table table-striped">
+      <table id="bootstrap-table" data-mobile-responsive="true"></table>
+    </div>
+  </div>
+  <div th:include="include :: footer"></div>
+  <script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('client:join:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('client:join:remove')}]];
+    var editParamFlag = [[${@permission.hasPermi('client:join:params')}]];
+    var prefix = ctx + 'client/join';
 
         $(function() {
             var options = {
@@ -135,7 +139,7 @@
     			$.modal.alertWarning("请选择一条记录");
     			return;
     		}
-    		var url = ctx + "client/join/toAddSalesman/06/"+rows;
+    		var url = ctx + "client/join/toAddSalesman/12/"+rows;
     		$.modal.open($.table._option.modalName + "新增业务员", url,800,500);
         }
     </script>

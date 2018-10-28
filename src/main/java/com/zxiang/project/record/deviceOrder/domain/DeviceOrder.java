@@ -1,9 +1,11 @@
 package com.zxiang.project.record.deviceOrder.domain;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 import com.zxiang.framework.web.domain.BaseEntity;
-import java.util.Date;
 
 /**
  * 设备销售订单表 zx_device_order
@@ -19,16 +21,24 @@ public class DeviceOrder extends BaseEntity
 	private Integer deviceOrderId;
 	/** 设备ID */
 	private Integer deviceId;
+	/** 设备编码 */
+	private String deviceCode;
 	/** 终端ID */
 	private Integer terminalId;
+	/** 终端编码 */
+	private String terminalCode;
 	/** 推荐人ID */
 	private Integer promotionerId;
+	/** 推荐人m名字 */
+	private String promotionerName;
 	/** 售价 */
 	private Double price;
 	/** 折扣 */
 	private Float cutOff;
 	/** 销售员ID */
 	private Integer sellerId;
+	/** 销售员 */
+	private String sellerName;
 	/** 状态 */
 	private String status;
 	/** 机主ID */
@@ -182,7 +192,39 @@ public class DeviceOrder extends BaseEntity
 		return updateTime;
 	}
 
-    public String toString() {
+    public String getDeviceCode() {
+		return deviceCode;
+	}
+
+	public void setDeviceCode(String deviceCode) {
+		this.deviceCode = deviceCode;
+	}
+
+	public String getTerminalCode() {
+		return terminalCode;
+	}
+
+	public void setTerminalCode(String terminalCode) {
+		this.terminalCode = terminalCode;
+	}
+
+	public String getPromotionerName() {
+		return promotionerName;
+	}
+
+	public void setPromotionerName(String promotionerName) {
+		this.promotionerName = promotionerName;
+	}
+
+	public String getSellerName() {
+		return sellerName;
+	}
+
+	public void setSellerName(String sellerName) {
+		this.sellerName = sellerName;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("deviceOrderId", getDeviceOrderId())
             .append("deviceId", getDeviceId())

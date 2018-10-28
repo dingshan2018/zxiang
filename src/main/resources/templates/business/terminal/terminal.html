@@ -3,196 +3,205 @@
 <meta charset="utf-8">
 <head th:include="include :: header"></head>
 <body class="gray-bg">
-    <div class="container-div">
-    	<div class="col-sm-12 select-info">
-			<form id="terminal-form">
-				<div class="select-list">
-					<ul>
-						<li>
-							终端编号：<input type="text" name="terminalCode"/>
-						</li>
-						<li class="select-time">
-							<label>创建时间： </label>
-							<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
-							<span>-</span>
-							<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
-						</li>
-						<li>
-							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
-							<a class="btn btn-primary btn-rounded btn-sm" onclick="addTerminalParam()" shiro:hasPermission="business:terminalParam:add"><i class="fa fa-search"></i>&nbsp;参数设置</a>
-							<a class="btn btn-primary btn-rounded btn-sm" onclick="addTerminalTimer()" shiro:hasPermission="business:terminalTimer:add"><i class="fa fa-search"></i>&nbsp;定时设置</a>							
-						</li>
-					</ul>
-				</div>
-			</form>
-		</div>
-    	
-		<div class="btn-group hidden-xs" id="toolbar" role="group">
-			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:terminal:add">
-				<i class="fa fa-plus"></i> 新增
-			</a>
-			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="business:terminal:remove">
-				<i class="fa fa-trash-o"></i> 删除
-			</a>
-			<a class="btn btn-outline btn-success btn-rounded" onclick="batchImport()" shiro:hasPermission="business:terminal:add">
-				<i class="fa fa-plus"></i> 批量导入
-			</a>
-		</div>
-			
-		<div class="col-sm-12 select-table table-striped">
-			<table id="bootstrap-table" data-mobile-responsive="true"></table>
-		</div>
+  <div class="container-div">
+    <div class="col-sm-12 select-info">
+      <form id="terminal-form">
+        <div class="select-list">
+          <ul>
+            <li>
+              <span class="select-item-name">终端编号：</span>
+              <input type="text" name="terminalCode"/>
+            </li>
+            <li class="select-time">
+              <label class="select-item-name">创建时间： </label>
+              <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+              <span>-</span>
+              <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+            </li>
+            <li class="select-btns">
+              <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
+              </a>
+              <a class="btn btn-primary btn-rounded btn-sm" onclick="addTerminalParam()" shiro:hasPermission="business:terminalParam:add">
+                <i class="fa fa-search"></i>&nbsp;参数设置
+              </a>
+              <a class="btn btn-primary btn-rounded btn-sm" onclick="addTerminalTimer()" shiro:hasPermission="business:terminalTimer:add">
+                <i class="fa fa-search"></i>&nbsp;定时设置
+              </a>
+            </li>
+          </ul>
+        </div>
+      </form>
     </div>
-    <div th:include="include :: footer"></div>
-    <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('business:terminal:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('business:terminal:remove')}]];
-        var prefix = ctx + "business/terminal"
 
-        $(function() {
-            var options = {
-                url: prefix + "/list",
-                createUrl: prefix + "/add",
-                updateUrl: prefix + "/edit/{id}",
-                removeUrl: prefix + "/remove",
-                modalName: "终端管理",
-                search: false,
-                showExport: false,
-                columns: [{
-		            checkbox: true
-		        },
-				{
-					field : 'terminalId', 
-					title : '终端ID' 
-				},
-				{
-					field : 'terminalCode', 
-					title : '终端编号' 
-				},
-				{
-					field : 'deviceCode', 
-					title : '绑定设备编号' 
-				},
-				{
-					field : 'placeName', 
-					title : '场所名称' 
-				},
-				{
-					field : 'rssi', 
-					title : '终端信号强度' 
-				},
-				{
-					field : 'lastHeartTime', 
-					title : '最后心跳时间' 
-				},
-				{
-					field : 'lastLoginTime', 
-					title : '最后登陆时间' 
-				},
-				{
-					field : 'volumn', 
-					title : '终端音量' 
-				},
-				{
-					field : 'status', 
-					title : '终端状态' ,
-					formatter : function(value) {
-						if(value==='1'){
-							return "生效";
-						}else if(value==='2'){
-							return "禁用";
-						}else{
-							return "-";
-						}
-					}
-				},
-				{
-					field : 'delFlag', 
-					title : '是否删除',
-					formatter : function(value) {
-						if(value==='0'){
-							return "否";
-						}else if(value==='1'){
-							return "是";
-						}else{
-							return "-";
-						}
-					}
-				},
-				{
-					field : 'lon', 
-					title : '经度' 
-				},
-				{
-					field : 'lat', 
-					title : '纬度' 
-				},
-				{
-					field : 'version', 
-					title : '终端版本' 
-				},
-				{
-					field : 'createBy', 
-					title : '创建者' 
-				},
-				{
-					field : 'createTime', 
-					title : '创建时间' 
-				},
-				{
-					field : 'updateBy', 
-					title : '修改者' 
-				},
-				{
-					field : 'updateTime', 
-					title : '修改时间' 
-				},
-		        {
-		            title: '操作',
-		            align: 'center',
-		            formatter: function(value, row, index) {
-		            	var actions = [];
-		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.terminalId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.terminalId + '\')"><i class="fa fa-remove"></i>删除</a>');
-						return actions.join('');
-		            }
-		        }]
-            };
-            $.table.init(options);
-        });
-        
-        //添加终端参数弹窗函数
-        function addTerminalParam(id) {
-        	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
-    		if (rows.length == 0) {
-    			$.modal.alertWarning("请至少选择一条记录");
-    			return;
-    		}
-    		if (rows.length > 1){
-    			$.modal.alertWarning("只能选择一条记录");
-    			return;
-    		}
-    		
-        	//var url = ctx + "business/terminalParam/add";
-        	//$.modal.open("添加终端参数", url);
-        	//采用列表的形式处理
-        	var terminaId = $.table.selectColumns($.table._option.columns[1].field);
-    		var url = prefix + '/terminalParamDetail/' + terminaId;
- 		    createMenuItem(url, "终端参数");
-		}
-        
-      	//添加终端定时弹窗函数
-        function addTerminalTimer(id) {
-        	var url = ctx + "business/terminalTimer/add";
-        	$.modal.open("添加定时设置", url);
-		}
-        
-        
-      	//批量导入终端编号弹窗函数
-        function batchImport() {
-        	var url = ctx + "business/terminal/batchImport";
-        	$.modal.open("批量导入终端编号", url);
-		}
-    </script>
+    <div class="btn-group hidden-xs" id="toolbar" role="group">
+      <a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:terminal:add">
+        <i class="fa fa-plus"></i> 新增
+      </a>
+      <a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="business:terminal:remove">
+        <i class="fa fa-trash-o"></i> 删除
+      </a>
+      <a class="btn btn-outline btn-success btn-rounded" onclick="batchImport()" shiro:hasPermission="business:terminal:add">
+        <i class="fa fa-plus"></i> 批量导入
+      </a>
+    </div>
+
+    <div class="col-sm-12 select-table table-striped">
+      <table id="bootstrap-table" data-mobile-responsive="true"></table>
+    </div>
+  </div>
+  <div th:include="include :: footer"></div>
+  <script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('business:terminal:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('business:terminal:remove')}]];
+    var prefix = ctx + 'business/terminal';
+
+    $(function () {
+      var options = {
+        url       : prefix + '/list',
+        createUrl : prefix + '/add',
+        updateUrl : prefix + '/edit/{id}',
+        removeUrl : prefix + '/remove',
+        modalName : '终端管理',
+        search    : false,
+        showExport: false,
+        columns   : [
+          {
+            checkbox: true
+          },
+          {
+            field: 'terminalId',
+            title: '终端ID'
+          },
+          {
+            field: 'terminalCode',
+            title: '终端编号'
+          },
+          {
+            field: 'deviceCode',
+            title: '绑定设备编号'
+          },
+          {
+            field: 'placeName',
+            title: '场所名称'
+          },
+          {
+            field: 'rssi',
+            title: '终端信号强度'
+          },
+          {
+            field: 'lastHeartTime',
+            title: '最后心跳时间'
+          },
+          {
+            field: 'lastLoginTime',
+            title: '最后登陆时间'
+          },
+          {
+            field: 'volumn',
+            title: '终端音量'
+          },
+          {
+            field    : 'status',
+            title    : '终端状态',
+            formatter: function (value) {
+              if (value === '1') {
+                return '生效';
+              } else if (value === '2') {
+                return '禁用';
+              } else {
+                return '-';
+              }
+            }
+          },
+          {
+            field    : 'delFlag',
+            title    : '是否删除',
+            formatter: function (value) {
+              if (value === '0') {
+                return '否';
+              } else if (value === '1') {
+                return '是';
+              } else {
+                return '-';
+              }
+            }
+          },
+          {
+            field: 'lon',
+            title: '经度'
+          },
+          {
+            field: 'lat',
+            title: '纬度'
+          },
+          {
+            field: 'version',
+            title: '终端版本'
+          },
+          {
+            field: 'createBy',
+            title: '创建者'
+          },
+          {
+            field: 'createTime',
+            title: '创建时间'
+          },
+          {
+            field: 'updateBy',
+            title: '修改者'
+          },
+          {
+            field: 'updateTime',
+            title: '修改时间'
+          },
+          {
+            title    : '操作',
+            align    : 'center',
+            formatter: function (value, row, index) {
+              var actions = [];
+              actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' +
+                row.terminalId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+              actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' +
+                row.terminalId + '\')"><i class="fa fa-remove"></i>删除</a>');
+              return actions.join('');
+            }
+          }]
+      };
+      $.table.init(options);
+    });
+
+    //添加终端参数弹窗函数
+    function addTerminalParam (id) {
+      var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns(
+        $.table._option.id);
+      if (rows.length == 0) {
+        $.modal.alertWarning('请至少选择一条记录');
+        return;
+      }
+      if (rows.length > 1) {
+        $.modal.alertWarning('只能选择一条记录');
+        return;
+      }
+
+      //var url = ctx + "business/terminalParam/add";
+      //$.modal.open("添加终端参数", url);
+      //采用列表的形式处理
+      var terminaId = $.table.selectColumns($.table._option.columns[1].field);
+      var url = prefix + '/terminalParamDetail/' + terminaId;
+      createMenuItem(url, '终端参数');
+    }
+
+    //添加终端定时弹窗函数
+    function addTerminalTimer (id) {
+      var url = ctx + 'business/terminalTimer/add';
+      $.modal.open('添加定时设置', url);
+    }
+
+    //批量导入终端编号弹窗函数
+    function batchImport () {
+      var url = ctx + 'business/terminal/batchImport';
+      $.modal.open('批量导入终端编号', url);
+    }
+  </script>
 </body>
 </html>

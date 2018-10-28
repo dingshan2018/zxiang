@@ -1,0 +1,200 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    	<input type="hidden" th:value="${repairId}" id="repairId"/>
+		<a class="btn btn-outline btn-success btn-rounded" onclick="repairAreaAdd()" style="margin-bottom: 16px;">
+	        <i class="fa fa-plus"></i> 新增
+	    </a>
+		<div id="repairAreaInfo">
+			<div class="form-group" th:each="repairArea,repairStat : ${repairAreaList}">
+			  <div class="row" >
+				 <label class="col-sm-2 control-label" th:text="'区域'+${repairStat.count}+' :'"></label>
+				 <label class="col-sm-2 control-label" th:text="${repairArea.provinceName}"></label>
+				 <label class="col-sm-2 control-label" th:text="${repairArea.cityName}"></label>
+				 <label class="col-sm-2 control-label" th:text="${repairArea.countyName}"></label>
+				 <label class="col-sm-3" style="font-size: 0;">
+					 <a class="btn btn-info btn-xs" style="margin-right: 5px;display: none;" href="javascript:void(0)" th:onclick="'javascript:repairAreaUpdate('+${repairArea.repairAreaId}+','+this+')'"><i class="fa fa-edit"></i>修改</a>
+					 <a class="btn btn-danger btn-xs" href="javascript:void(0)" th:onclick="'javascript:repairAreaDelete('+${repairArea.repairAreaId}+','+this+')'"><i class="fa fa-remove"></i>删除</a>
+				 </label>
+			  </div>
+			</div>
+			<div style="display: none;"  id="addDiv">
+				<div class="form-group">
+				  <div class="row" >
+				  	 <label class="col-sm-2 control-label" th:text="区域"></label>
+					 <select class="col-sm-2 control-label province" name="province" onchange="cityBind(this)"><option value="-1">---请选择省---</option></select>
+					 <select class="col-sm-2 control-label" name="city" onchange="countyBind(this)"><option value="-1">---请选择市---</option></select>
+					 <select class="col-sm-2 control-label" name="county" ><option value="-1">---请选择县---</option></select>
+					 <label class="col-sm-3" style="font-size: 0;">
+						 <a class="btn btn-info btn-xs" style="margin-right: 5px;" href="javascript:void(0)" th:onclick="'javascript:repairAreaSure(this)'"><i class="fa fa-edit"></i>确定</a>
+						 <a class="btn btn-danger btn-xs" href="javascript:void(0)" th:onclick="'javascript:repairAreaCancel(this)'"><i class="fa fa-remove"></i>取消</a>
+					 </label>
+				  </div>
+				</div>
+			</div>
+		</div>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "client/repair";
+		function repairAreaAdd(){ // 新增按钮
+			var selectSize = $("select").length;
+			if(selectSize > 3){
+				$.modal.alertWarning("请先完成当前添加或修改");
+				return;
+			}
+			$("#repairAreaInfo").append($("#addDiv").html());
+			
+		}
+		function repairAreaUpdate(id,_this){ // 更新按钮
+			$.modal.alertWarning("修改按钮"+id);
+		}
+		function repairAreaDelete(id,_this){
+			$.post(ctx + 'client/repair/deleteRepairArea/'+id, function(data) {
+				if(data.code != 0){
+            		$.modal.alertError("删除失败");
+            	}else{
+            		$(_this).parent().parent().parent(".form-group").remove();
+            		$.modal.alertSuccess("删除成功");
+            	}
+			});
+		}
+		function repairAreaSure(_this){ // 确定按钮
+			var province = $(_this).parent().siblings("select[name='province']").val();
+			var city = $(_this).parent().siblings("select[name='city']").val();
+			var county = $(_this).parent().siblings("select[name='county']").val();
+			var provinceText = $(_this).parent().siblings("select[name='province']").find("option:selected").text();
+			var cityText = $(_this).parent().siblings("select[name='city']").find("option:selected").text();
+			if(province == '-1'){
+				$.modal.alertWarning("请选择省份");
+				return;
+			}
+			if(city == '-1'){
+				$.modal.alertWarning("请选择市区");
+				return;
+			}
+			var countyText = '';
+			if(county != '-1'){
+				countyText = $(_this).parent().siblings("select[name='county']").find("option:selected").text();
+			}
+			$.ajax({
+	        	type: "post",
+	        	contentType:"application/json",
+	            dataType: "json",
+	            url: ctx + 'client/repair/saveRepairArea',
+	            data: JSON.stringify({ "provinceId": province,"cityId": city,"countyId": county,"repairId": $("#repairId").val()}),
+	            async: false,
+	            success: function (data) {
+	            	if(data.code != 0){
+	            		$.modal.alertError("新增失败");
+	            	}else{
+	            		$.modal.alertSuccess("新增成功");
+	            	}
+	            	var id = data.repairArea.repairAreaId;
+	    			var ht = '<div class="form-group">'+
+			    				'<div class="row" >'+
+					    			 '<label class="col-sm-2 control-label">区域</label>'+
+					    			 '<label class="col-sm-2 control-label">'+provinceText+'</label>'+
+					    			 '<label class="col-sm-2 control-label">'+cityText+'</label>'+
+					    			 '<label class="col-sm-2 control-label">'+countyText+'</label>'+
+					    			 '<label class="col-sm-3" style="font-size: 0;">'+
+					    				 '<a class="btn btn-info btn-xs" style="margin-right: 5px;display: none;" href="javascript:void(0)" onclick="repairAreaUpdate('+id+')\'"><i class="fa fa-edit"></i>修改</a>'+
+					    				 '<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="repairAreaDelete('+id+',this)"><i class="fa fa-remove"></i>删除</a>'+
+					    			' </label>'+
+				    		  '</div>'+
+				    		'</div>';
+	    			$(_this).parent().parent().parent(".form-group").remove();
+	    			$("#repairAreaInfo").append(ht);
+	            },
+	            error: function () { $.modal.alertError("新增失败");}
+	        });
+			
+		}
+		function repairAreaCancel(_this){ // 取消按钮
+			$(_this).parent().parent().parent(".form-group").remove();
+		}
+		$(function(){
+			proviceBind();
+		});
+		 function proviceBind() {
+		        //清空下拉数据
+		        $.ajax({
+		        	type: "post",
+		        	contentType:"application/json",
+		            dataType: "json",
+		            url: ctx + "system/area/getDropBoxAreaList",
+		            data: JSON.stringify({ "parentId": "0"}),
+		            async: false,
+		            success: function (data) {
+		                //从服务器获取数据进行绑定
+		                var strData = "";
+		                $.each(data.rows, function (i, item) {
+		                	strData += "<option value=" + item.id + ">" + item.pname + "</option>";
+		                })
+		                //将数据添加到省份这个下拉框里面
+		                $(".province").append(strData);
+		            },
+		            error: function () { alert("Error:获取省份信息失败"); }
+		        });
+		    }
+		    function cityBind(_this) {
+		        var provice = $(_this).val();
+		        //判断省份这个下拉框选中的值是否为空
+		        if (provice == "") {
+		            return;
+		        }
+		        var str = "<option value='-1'>---请选择市---</option>";
+		        $(_this).siblings("select[name='city']").html("").append(str);
+		        $(_this).siblings("select[name='county']").html("").append("<option value=''>---请选择县---</option>");
+		        $.ajax({
+		        	type: "post",
+		        	contentType:"application/json",
+		            dataType: "json",
+		            url: ctx + "system/area/getDropBoxAreaList",
+		            data: JSON.stringify({ "parentId": provice}),
+		            async: false,
+		            success: function (data) {
+		                //从服务器获取数据进行绑定
+		                var strData = "";
+		                $.each(data.rows, function (i, item) {
+		                	strData += "<option value=" + item.id + ">" + item.pname + "</option>";
+		                })
+		                //将数据添加到市这个下拉框里面
+		                $(_this).siblings("select[name='city']").append(strData);
+		            },
+		            error: function () { alert("Error:获取城市信息失败"); }
+		        });
+		    }
+		    function countyBind(_this) {
+		        var city = $(_this).val();
+		        if (city == "") {
+		            return;
+		        }
+		        var str = "<option value='-1'>---请选择县---</option>";
+		        $(_this).siblings("select[name='county']").html("").append(str);
+		        //将市的ID拿到数据库进行查询，查询出他的下级进行绑定 
+		        $.ajax({
+		        	type: "post",
+		        	contentType:"application/json",
+		            dataType: "json",
+		            url: ctx + "system/area/getDropBoxAreaList",
+		            data: JSON.stringify({ "parentId": city}),
+		            async: false,
+		            success: function (data) {
+		                //从服务器获取数据进行绑定  
+		                var strData = "";
+		                $.each(data.rows, function (i, item) {
+		                	strData += "<option value=" + item.id + ">" + item.pname + "</option>";
+		                });
+		                //将数据添加到区县这个下拉框里面 
+		                $(_this).siblings("select[name='county']").append(strData);
+		            },
+		            error: function () { alert("Error:获取地区信息失败"); }
+		        });
+		    }
+	</script>
+</body>
+</html>

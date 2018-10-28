@@ -45,7 +45,15 @@ public class AdSchedule extends BaseEntity
 	private String updateBy;
 	/**  */
 	private Date updateTime;
+	/**节目单ID  */
+	private String pId;
+	
+	private Long[] deviceIds;
 
+	private String releaseTypeName;
+	private String releasePositionName;
+	private String statusName;
+	
 	public void setAdScheduleId(Integer adScheduleId) 
 	{
 		this.adScheduleId = adScheduleId;
@@ -182,7 +190,47 @@ public class AdSchedule extends BaseEntity
 		return updateTime;
 	}
 
-    public String toString() {
+    public String getReleaseTypeName() {
+		return releaseTypeName;
+	}
+
+	public void setReleaseTypeName(String releaseTypeName) {
+		this.releaseTypeName = releaseTypeName;
+	}
+
+	public String getReleasePositionName() {
+		return releasePositionName;
+	}
+
+	public void setReleasePositionName(String releasePositionName) {
+		this.releasePositionName = releasePositionName;
+	}
+
+	public String getStatusName() {
+		return statusName;
+	}
+
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
+
+	public String getpId() {
+		return pId;
+	}
+
+	public void setpId(String pId) {
+		this.pId = pId;
+	}
+
+	public Long[] getDeviceIds() {
+		return deviceIds;
+	}
+
+	public void setDeviceIds(Long[] deviceIds) {
+		this.deviceIds = deviceIds;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("adScheduleId", getAdScheduleId())
             .append("scheduleName", getScheduleName())

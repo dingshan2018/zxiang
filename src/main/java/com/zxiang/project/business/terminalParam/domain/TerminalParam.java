@@ -37,6 +37,7 @@ public class TerminalParam extends BaseEntity
 	private Date createTime;
 
 	private String terminalCode;
+	private String paramKeyName;
 	
 	public void setId(Integer id) 
 	{
@@ -126,6 +127,14 @@ public class TerminalParam extends BaseEntity
 
 	public void setTerminalCode(String terminalCode) {
 		this.terminalCode = terminalCode;
+	}
+
+	public String getParamKeyName() {
+		return paramKeyName;
+	}
+
+	public void setParamKeyName(String paramKeyName) {
+		this.paramKeyName = paramKeyName;
 	}
 
 	public String toString() {
