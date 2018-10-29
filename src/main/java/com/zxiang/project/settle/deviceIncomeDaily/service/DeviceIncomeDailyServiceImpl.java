@@ -1,5 +1,6 @@
 package com.zxiang.project.settle.deviceIncomeDaily.service;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -397,7 +398,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		 map.put("promotionagent", "1");
 		 List<HashMap<String, Object>> promotionagentlist = iUserIncomeService.selectzxagentlist(map);
 		 for(HashMap<String, Object> promotionagent : promotionagentlist) {
-			 if(com.zxiang.common.utils.StringUtils.isNull(promotionagent.get("promotor_id"))) {
+			 if(com.zxiang.common.utils.StringUtils.isNotNull(promotionagent.get("promotor_id"))) {
 			   double agency_fee = Double.valueOf(promotionagent.get("agency_fee")+"");
 			   HashMap<String, Object>  user = getusedata(promotionagent.get("promotor_id")+"");
 			   double rate = Double.valueOf(user.get("directAgentRate")+"");
@@ -519,4 +520,17 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		}
 		return null;
 	}
+	
+	public float datatofloat(double num) {
+		DecimalFormat   df   =     new   DecimalFormat( "########0.00 ");// 
+		String   temp     =   df.format(num); 
+		return Float.valueOf(temp);
+		
+	}
+	public double datatodouble(double num) {
+		DecimalFormat   df   =     new   DecimalFormat( "###########0.00 ");//   16位整数位，两小数位
+		String   temp     =   df.format(num); 
+		return Double.valueOf(temp);
+	}
+	
 }
