@@ -35,13 +35,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="sellIncome != null and sellIncome != ''"> and sell_income = #{sellIncome}</if>
              <if test="adIncome != null and adIncome != ''"> and ad_income = #{adIncome}</if>
              <if test="scanIncome != null and scanIncome != ''"> and scan_income = #{scanIncome}</if>
-             <if test="sumDate != null and sumDate != ''"> and sum_date = #{sumDate}</if>
              <if test="refundIncome != null and refundIncome != ''"> and refund_income = #{refundIncome}</if>
              <if test="refundNum != null and refundNum != ''"> and refund_num = #{refundNum}</if>
-             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
-             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
-             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+              <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				AND date_format(sum_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			 </if>
+			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				AND date_format(sum_date,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+			 </if>
          </where>
     </select>
     
@@ -156,7 +157,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM
 		  zx_ad_release_record 
 		WHERE 
-		device_id = #{deviceId}
+		device_id = #{device_id}
 		<if test="scheduleId != null and scheduleId != ''"> and schedule_id = #{scheduleId}</if>
 		AND (DATE_FORMAT(down_time, '%Y-%m-%d') = DATE_FORMAT( DATE_SUB(CURDATE(), INTERVAL 1 DAY), '%Y-%m-%d') OR DATE_FORMAT(play_time, '%Y-%m-%d') = DATE_FORMAT( DATE_SUB(CURDATE(), INTERVAL 1 DAY), '%Y-%m-%d'))
     </select>
@@ -169,7 +170,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			  WHERE 
 			   z.device_id = #{deviceId}
 			   and  z.`schedule_id` = s.`ad_schedule_id`
-			   AND s.releaser !='0'
 			   <if test="scheduleId != null and scheduleId != ''"> and z.schedule_id = #{scheduleId}</if>
 			AND DATE_FORMAT(z.create_time, '%Y-%m-%d') = DATE_FORMAT(
 			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
@@ -179,7 +179,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
       
     <select id="selectzxplace"  resultType="java.util.HashMap">
-        select * from zx_place where del_flag !='0' and place_id = #{placeId}
+        select * from zx_place where  place_id = #{placeId}
     </select>
     
     <select id="selectsysarea"  resultType="java.util.HashMap">

@@ -3,129 +3,104 @@
 <meta charset="utf-8">
 <head th:include="include :: header"></head>
 <body class="gray-bg">
-  <div class="container-div">
-    <div class="col-sm-12 select-info">
-      <form id="user-form">
-        <div class="select-list">
-          <ul>
-            <li>
-              <span class="select-item-name">用户类型：</span>
-              <input type="text" name="coperatorType"/>
-            </li>
-            <li>
-              <span class="select-item-name">结算用户：</span>
-              <input type="text" name="settlementer"/>
-            </li>
-            <li>
-              <span class="select-item-name">结算地区：</span>
-              <input type="text" name="areaId"/>
-            </li>
-            <li class="select-time">
-              <label class="select-item-name">结算日期： </label>
-              <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
-              <span>-</span>
-              <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
-            </li>
-            <li class="select-btns">
-              <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
-              </a>
-              <a class="btn btn-success btn-rounded btn-sm" onclick="$.table.exportExcel()">
-                <i class="fa fa-download"></i>&nbsp;导出
-              </a>
-            </li>
-          </ul>
-        </div>
-      </form>
+    <div class="container-div">
+	    <div class="col-sm-12 select-info">
+					<form id="user-form">
+						<div class="select-list">
+							<ul>
+								<li>
+									用户类型：<input type="text" name="coperatorType"/>
+								</li>
+								<li>
+									结算用户：<input type="text" name="coperatorId"/>
+								</li>
+								<li>
+									结算地区：<input type="text" name="areaId"/>
+								</li>
+								<li class="select-time">
+									<label>结算日期： </label>
+									<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+									<span>-</span>
+									<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+								</li>
+								<li>
+									<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							    	<a class="btn btn-success btn-rounded btn-sm" onclick="$.table.exportExcel()"><i class="fa fa-download"></i>&nbsp;导出</a>
+								</li>
+							</ul>
+						</div>
+					</form>
+		</div>
+		<div class="btn-group hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="settle:userIncome:remove">
+				<i class="fa fa-trash-o"></i> 删除
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
     </div>
-    <div class="btn-group hidden-xs" id="toolbar" role="group">
-      <a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="settle:userIncome:add">
-        <i class="fa fa-plus"></i> 新增
-      </a>
-      <a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="settle:userIncome:remove">
-        <i class="fa fa-trash-o"></i> 删除
-      </a>
-    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('settle:userIncome:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('settle:userIncome:remove')}]];
+        var prefix = ctx + "settle/userIncome"
 
-    <div class="col-sm-12 select-table table-striped">
-      <table id="bootstrap-table" data-mobile-responsive="true"></table>
-    </div>
-  </div>
-  <div th:include="include :: footer"></div>
-  <script th:inline="javascript">
-    var editFlag = [[${@permission.hasPermi('settle:userIncome:edit')}]];
-    var removeFlag = [[${@permission.hasPermi('settle:userIncome:remove')}]];
-    var prefix = ctx + 'settle/userIncome';
-
-    $(function () {
-      var options = {
-        url: prefix + '/list',
-        createUrl: prefix + '/add',
-        updateUrl: prefix + '/edit/{id}',
-        removeUrl: prefix + '/remove',
-        modalName: '客户收入日统计',
-        columns: [
-          {
-            checkbox: true
-          },
-          {
-            field: 'sumDate',
-            title: '统计日期'
-          },
-          {
-            field: 'coperatorType',
-            title: '合作类型'
-          },
-          {
-            field: 'coperatorId',
-            title: '合作客户'
-          },
-          {
-            field: 'adIncome',
-            title: '今日广告'
-          },
-          {
-            field: 'adRate',
-            title: '广告分润系数'
-          },
-          {
-            field: 'adIncomeRate',
-            title: '广告分润'
-          },
-          {
-            field: 'promotionIncome',
-            title: '今日推广'
-          },
-          {
-            field: 'promotionRate',
-            title: '推广分润系数'
-          },
-          {
-            field: 'promotionIncomeRate',
-            title: '推广分润'
-          },
-          {
-            field: 'scanIncome',
-            title: '今日扫码'
-          },
-          {
-            field: 'scanRate',
-            title: '扫码分润系数'
-          },
-          {
-            field: 'scanIncomeRate',
-            title: '扫码分润'
-          },
-          {
-            field: 'refundIncome',
-            title: '今日退款'
-          },
-          {
-            field: 'refundIncomeRate',
-            title: '今日分润退款'
-          }]
-      };
-      $.table.init(options);
-    });
-  </script>
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "客户收入日统计",
+                columns: [{
+		            checkbox: true
+		        },
+		        {
+					field : 'sumDate', 
+					title : '统计日期' 
+				},
+				{
+					field : 'coperatorType', 
+					title : '合作类型' 
+				},
+				{
+					field : 'coperatorId', 
+					title : '合作客户' 
+				},
+				{
+					field : 'adIncomeRate', 
+					title : '广告分润' 
+				}
+			    ,
+				{
+					field : 'promotionIncomeRate', 
+					title : '推广分润' 
+				},
+				{
+					field : 'scanIncomeRate', 
+					title : '扫码分润' 
+				},
+				{
+					field : 'refundIncome', 
+					title : '今日退款' 
+				},
+				{
+					field : 'refundIncomeRate', 
+					title : '今日分润退款' 
+				},{
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.incomeId + '\')"><i class="fa fa-edit"></i>详情</a> ');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
 </body>
 </html>

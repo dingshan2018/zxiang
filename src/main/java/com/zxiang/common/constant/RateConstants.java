@@ -43,6 +43,11 @@ public class RateConstants
 	 public static final String RATETYPE_PAPERINCOME = "paperIncome";
 	 
 	 /**
+     * 推广二维码广告基数
+     */
+	 public static final String RATETYPE_PROMPAPERINCOME = "prompaperIncome";
+	 
+	 /**
      * 直推代理
      */
 	 public static final String RATETYPE_DIRECTAGENTINCOME = "directAgentIncome";
