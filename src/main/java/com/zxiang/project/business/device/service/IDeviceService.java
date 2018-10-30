@@ -84,4 +84,21 @@ public interface IDeviceService
 	 * @return
 	 */
 	public int supplyTissueAdd(Device device, String operatorUser);
+
+	/**
+	 * 根据场所ID查询设备列表
+	 * @param placeId
+	 * @return
+	 */
+	public List<Device> getDeviceByPlaceId(String placeId);
+
+	/**
+	 * 通过地区ID查询设备列表
+	 * @param province
+	 * @param city
+	 * @param county
+	 * @return
+	 */
+	public List<Device> getDeviceByareaId(String province, String city, String county);
+	
 }

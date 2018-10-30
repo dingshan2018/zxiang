@@ -167,7 +167,13 @@
 			<artifactId>fastjson</artifactId>
 			<version>${fastjson.version}</version>
 		</dependency>
-
+		<!-- 引入org.json依赖 -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20160810</version>
+        </dependency>
+		        
 		<!-- 解析客户端操作系统、浏览器等 -->
 		<dependency>
 			<groupId>eu.bitwalker</groupId>

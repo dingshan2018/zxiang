@@ -24,7 +24,8 @@
             
 			<br><br>
 			<div id="fileUploadContent" class="fileUploadContent"></div>
-		  	<br>
+			<span style="color: red;">*&nbsp;最多上传50个图片/视频文件;每个文件最大50M</span>
+		  	<br><br>
 		  	<button onclick="submitUpload()" class="btn btn-primary">上传</button>
 		  	<!-- <button onclick="showUpError()" class="btn btn-primary">显示错误</button> -->
 		</form>
@@ -62,13 +63,14 @@
       //'velocity'        : 10,//模拟进度上传数据
       //"showSummerProgress":false,//总进度条，默认限制
       //"scheduleStandard":true,//模拟进度的方式，设置为true是按总进度，用于控制上传时间，如果设置为false,按照文件数据的总量,默认为false
-      "size":10240,//文件大小限制，单位kb,默认不限制
-      "maxFileNumber":3,//文件个数限制，为整数
+      "size":51200,//文件大小限制，单位kb,默认不限制
+      "maxFileNumber":50,//文件个数限制，为整数
       //"filelSavePath":"",//文件上传地址，后台设置的根目录
       "beforeUpload":beforeUploadFun,//在上传前执行的函数
       "onUpload":onUploadFun,//在上传后执行的函数
       // autoCommit:true,//文件是否自动上传
-      //"fileType":['png','jpg','docx','doc']，//文件类型限制，默认不限制，注意写的是文件后缀
+      "fileType":['png','jpg','jpeg','gif','bmp','avi','rmvb',
+                  'rm','asf','divx','mpg','mpg','mpeg','mpe','wmv','mp4','mkv','vob'],//文件类型限制，默认不限制，注意写的是文件后缀
     });
 
     function beforeUploadFun (opt) {
@@ -87,11 +89,11 @@
     function onUploadFun (opt, data) {
       //alert(data);
       //uploadTools.uploadError(opt); //显示上传错误
-      
-    	 alert(data.msg);
-         $.modal.close();
-         //刷新管理页面
-         $.modal.reload();
+     	$(".subberProgress").css("display","none");
+    	alert(data.msg);
+        $.modal.close();
+        //刷新管理页面
+        $.modal.reload();
     }
 
     function submitUpload () {

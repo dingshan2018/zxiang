@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.StringUtils;
 import com.zxiang.project.business.changeTerminal.domain.ChangeTerminal;
 import com.zxiang.project.business.changeTerminal.mapper.ChangeTerminalMapper;
 import com.zxiang.project.business.device.domain.Device;
@@ -228,6 +229,19 @@ public class DeviceServiceImpl implements IDeviceService
 		supplyTissue.setCreateBy(operatorUser);
 		supplyTissue.setCreateTime(new Date());
 		return supplyTissueMapper.insertSupplyTissue(supplyTissue );
+	}
+
+	@Override
+	public List<Device> getDeviceByPlaceId(String placeId) {
+		return deviceMapper.getDeviceByPlaceId(placeId);
+	}
+
+	@Override
+	public List<Device> getDeviceByareaId(String province, String city, String county) {
+		if(StringUtils.isEmpty(province) && StringUtils.isEmpty(city) && StringUtils.isEmpty(county)){
+			return null;
+		}
+		return deviceMapper.getDeviceByareaId(province, city, county);
 	}
 
 }

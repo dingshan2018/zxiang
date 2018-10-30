@@ -1,7 +1,9 @@
 package com.zxiang.project.business.device.mapper;
 
 import com.zxiang.project.business.device.domain.Device;
-import java.util.List;	
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;	
 
 /**
  * 共享设备 数据层
@@ -68,5 +70,15 @@ public interface DeviceMapper
 	 * 获取设备当前最大编号
 	 */
 	public String getMaxDeviceCode(String placeId);
+
+	/**
+	 * 根据场所ID查询设备列表
+	 */
+	public List<Device> getDeviceByPlaceId(String placeId);
+
+	/**
+	 * 通过地区ID查询设备列表
+	 */
+	public List<Device> getDeviceByareaId(@Param("province")String province,@Param("city") String city, @Param("county")String county);
 	
 }

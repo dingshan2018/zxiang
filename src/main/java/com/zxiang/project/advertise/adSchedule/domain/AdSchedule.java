@@ -49,6 +49,7 @@ public class AdSchedule extends BaseEntity
 	private String pId;
 	
 	private Long[] deviceIds;
+	private String timeSlotArr;
 
 	private String releaseTypeName;
 	private String releasePositionName;
@@ -228,6 +229,14 @@ public class AdSchedule extends BaseEntity
 
 	public void setDeviceIds(Long[] deviceIds) {
 		this.deviceIds = deviceIds;
+	}
+
+	public String getTimeSlotArr() {
+		return timeSlotArr;
+	}
+
+	public void setTimeSlotArr(String timeSlotArr) {
+		this.timeSlotArr = timeSlotArr;
 	}
 
 	public String toString() {

@@ -22,9 +22,46 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放方式：</label>
 				<div class="col-sm-8">
-					<select id="releaseType" name="releaseType" class="form-control" th:with="type=${@dict.getType('release_type')}">
+					<select id="releaseType" name="releaseType" class="form-control" 
+					onchange="showSelectTyte(this.options[this.options.selectedIndex].value)"> 
+						<option value="">---请选择---</option>
+						<option value="0">全部</option>
+						<option value="1">按地区投放</option>
+						<option value="2">按场所投放</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group" id="areaDiv" style="display: none;">	
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>地区：</label>
+				<div class="col-sm-8">
+					<!-- <select id="areaGrade" name="areaGrade" class="form-control" th:with="type=${@dict.getType('area_grade')}">
 						<option value="">---请选择---</option>
 						<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+					</select> -->
+					<div class="select-list">
+						<label >省份：</label>
+						<select name="province" id="province" onchange="getDeviceByareaId(this.options[this.options.selectedIndex].value)">
+	                       	<option value="">---请选择---</option>
+	                    </select>
+	                    <label >&nbsp;城市：</label>
+						<select name="city" id="city" onchange="getDeviceByareaId(this.options[this.options.selectedIndex].value)">
+	                        <option value="">---请选择---</option>
+	                    </select>
+	                    <label >&nbsp;区县：</label>
+						<select name="county" id="county" onchange="getDeviceByareaId(this.options[this.options.selectedIndex].value)">
+	                        <option value="">---请选择---</option>
+	                    </select>
+					</div>
+					
+				</div>
+			</div>
+			<div class="form-group" id="placeDiv" style="display: none;">	
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>场所：</label>
+				<div class="col-sm-8">
+					<select id="placeGrade" name="placeGrade" class="form-control" 
+					onchange="getDeviceByPlaceId(this.options[this.options.selectedIndex].value)">
+						<option value="">---请选择---</option>
+						<option th:each="place:${placeDropBoxList}" th:value="${place.placeId}" th:text="${place.name}"></option>
 					</select>
 				</div>
 			</div>
@@ -53,12 +90,13 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label">投放设备：</label>
 				<div class="col-sm-8">
-					<label class="checkbox-inline i-checks">
-						<input name="checkAll" id="checkAll" type="checkbox" >全选
+					<label class="checkbox-inline i-checks" >
+						<input name="checkAll" id="checkAll" type="checkbox" onclick="checkAllFun()">全选
 					</label><br/>
-					<label th:each="device:${devices}" class="checkbox-inline i-checks">
+					<div id="loadDeviceDiv"></div>
+					<!-- <label th:each="device:${devices}" class="checkbox-inline i-checks">
 						<input name="device" type="checkbox" th:value="${device.deviceId}" th:text="${device.deviceCode}" th:disabled="${device.delFlag == '1'}">
-					</label>
+					</label> -->
 				</div>
 			</div>
 			<div class="form-group">
@@ -127,7 +165,7 @@
         	var scheduleName = $("#scheduleName").val();
         	var releaseType = $.form.selectSelects("releaseType");
         	var deviceIds = $.form.selectCheckeds("device");
-
+        	
         	$.ajax({
         		cache : true,
         		type : "POST",
@@ -137,7 +175,7 @@
         			"scheduleName" : scheduleName,
         			"releaseType" : releaseType,
         			"deviceIds" : deviceIds,
-              "timeSlotArr": JSON.stringify(timeSlotArr)
+              		"timeSlotArr": JSON.stringify(timeSlotArr)
         		},
         		async : false,
         		error : function(request) {
@@ -151,6 +189,7 @@
 
 		//设备全选事件
 		function checkAllFun(){
+			
         	var devices = document.getElementsByName("device");
 			if($("#checkAll:checked").length){
        			//全选
@@ -169,7 +208,145 @@
 				}
        		}
 		}
-
+	
+		//投放方式onchange事件
+		function showSelectTyte(value){   
+			//先设备列表
+			$('#loadDeviceDiv').html('');
+			$("#province").html("<option value=''>---请选择---</option>");
+			$("#city").html("<option value=''>---请选择---</option>");
+			$("#county").html("<option value=''>---请选择---</option>");
+	        if(value=="0"){
+	        	$("#areaDiv").hide();
+	        	$("#placeDiv").hide();
+	        	$("#areaGrade").val("");
+	        	$("#placeGrade").val("");
+	        	//投放方式选择全部的时候加载全部设备
+	        	loadDevices(selectDeviceList());
+	        	
+	        } else if(value=="1"){
+	        	proviceBind();
+	        	$("#areaDiv").show();
+	        	$("#placeDiv").hide();
+	        	$("#areaGrade").val("");
+	        	$("#placeGrade").val("");
+	        } else if(value=="2"){
+	        	$("#areaDiv").hide();
+	        	$("#placeDiv").show();
+	        	$("#areaGrade").val("");
+	        	$("#placeGrade").val("");
+	        }else{
+	        	$("#areaDiv").hide();
+	        	$("#placeDiv").hide();
+	        	$("#areaGrade").val("");
+	        	$("#placeGrade").val("");
+	        }
+	    } 
+		
+		//选择场所加载设备事件
+		function getDeviceByPlaceId(value){
+			var deviceList = [];
+			$.ajax({
+		         url: ctx + "business/device/getDeviceByPlaceId",
+		         type: "post",
+		         contentType:"application/json",
+		         dataType: "json",
+		         data: JSON.stringify({ "placeId": value}),
+		         async:false,
+		         success: function (data) {
+		        	 deviceList = data.rows;
+		         },
+		         error: function (data) {
+		             alert("查询设备失败" + data);
+		         }
+		    })
+		   	loadDevices(deviceList);
+		}
+		
+		//选择地区加载设备事件
+		function getDeviceByareaId(value){
+			var deviceList = [];
+			var province = $("#province").val();
+			var city = $("#city").val();
+			var county = $("#county").val();
+			
+			$.ajax({
+		         url: ctx + "business/device/getDeviceByareaId",
+		         type: "post",
+		         contentType:"application/json",
+		         dataType: "json",
+		         data: JSON.stringify({ "province": province,"city": city,"county": county}),
+		         async:false,
+		         success: function (data) {
+		        	 deviceList = data.rows;
+		         },
+		         error: function (data) {
+		             alert("查询设备失败" + data);
+		         }
+		    })
+		   	loadDevices(deviceList);
+		}
+		
+		//渲染设备数据
+		function loadDevices(deviceList){
+			$('#loadDeviceDiv').html('');
+			/* $.each(deviceList, function (i) {
+	        	$('#loadDeviceDiv').append("<label class='checkbox-inline i-checks'><div class='icheckbox_square-green' style='position: relative;'>"+
+	        	"<input name='device' type='checkbox' value="+deviceList[i].deviceId+" style='position: absolute; opacity: 0;'><ins class='iCheck-helper' style='position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;'>"+
+	        	"</ins></div>"+deviceList[i].deviceCode+"</label>");
+	        }); */
+	        
+			$.each(deviceList, function (i) {
+	        	$('#loadDeviceDiv').append("<label class='checkbox-inline i-checks'><div class='icheckbox_square-green' style='position: relative;'><input name='device' type='checkbox' value="+deviceList[i].deviceId+" style='position: absolute; opacity: 0;'><ins class='iCheck-helper' style='position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;'></ins></div>"+deviceList[i].deviceCode+"</label>");
+	        });
+		}
+		
+		function proviceBind() {
+	        //清空下拉数据
+	        $("#province").html("");
+	        var str = "<option value=''>---请选择---</option>";
+	       
+	        var provinceAreaList = selectAreaListByPid("0");
+	        $.each(provinceAreaList, function (i, item) {
+                str += "<option value=" + item.id + ">" + item.pname + "</option>";
+            })
+            //将数据添加到省份这个下拉框里面
+            $("#province").append(str);
+	    }
+	    function cityBind() {
+	        var provice = $("#province option:selected").val();
+	        //判断省份这个下拉框选中的值是否为空
+	        if (provice == "") {
+	            return;
+	        }
+	        $("#city").html("");
+	        $("#county").html("<option value=''>---请选择---</option>");
+	        var str = "<option value=''>---请选择---</option>";
+	       
+	        var cityAreaList = selectAreaListByPid(provice);
+	        $.each(cityAreaList, function (i, item) {
+                str += "<option value=" + item.id + ">" + item.pname + "</option>";
+            })
+            //将数据添加到市这个下拉框里面
+            $("#city").append(str);
+	    }
+	    function countyBind() {
+	        var provice = $("#city option:selected").val();
+	        //判断市这个下拉框选中的值是否为空
+	        if (provice == "") {
+	            return;
+	        }
+	        $("#county").html("");
+	        var str = "<option value=''>---请选择---</option>";
+	        
+	        var countyAreaList = selectAreaListByPid(provice);
+	        $.each(countyAreaList, function (i, item) {
+                str += "<option value=" + item.id + ">" + item.pname + "</option>";
+            })
+            //将数据添加到区县这个下拉框里面
+            $("#county").append(str);
+	    }
+	    
 		$(function() {
 		    // S 全选
 			var $subBox = $("input[name='device']");
@@ -180,6 +357,17 @@
 			            $subBox.iCheck("uncheck");
 			        }
 			});
+			
+			//默认绑定省
+	        proviceBind();
+	        //绑定事件
+	        $("#province").change( function () {
+	            cityBind();
+	        })
+	        
+	        $("#city").change(function () {
+	        	countyBind();
+	        })
 		});
 		// E 全选
 

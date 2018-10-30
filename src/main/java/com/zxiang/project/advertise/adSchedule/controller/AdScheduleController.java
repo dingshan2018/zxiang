@@ -1,10 +1,11 @@
 package com.zxiang.project.advertise.adSchedule.controller;
 import java.util.Date;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -26,6 +27,7 @@ import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
 import com.zxiang.project.advertise.adSchedule.service.IAdScheduleService;
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.mapper.DeviceMapper;
+import com.zxiang.project.business.place.service.IPlaceService;
 
 /**
  * 广告投放 信息操作处理
@@ -43,6 +45,8 @@ public class AdScheduleController extends BaseController
 	private IAdScheduleService adScheduleService;
 	@Autowired
 	private DeviceMapper deviceMapper;
+	@Autowired 
+	private IPlaceService placeService;
 	
 	 //01待预约；02待审核；03待发布；04待播放；05已播放；06审核失败；07排期失败
     
@@ -182,6 +186,7 @@ public class AdScheduleController extends BaseController
 		AdSchedule adSchedule = adScheduleService.selectAdScheduleById(adScheduleId);
 		mmap.put("adSchedule", adSchedule);
 		mmap.put("devices", deviceMapper.selectDeviceList(new Device()));
+		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 		
 	    return prefix + "/order";
 	}
@@ -200,6 +205,22 @@ public class AdScheduleController extends BaseController
 		for (int i = 0; i < deviceIds.length; i++) {
 			System.out.println("deviceIds:"+deviceIds[i]);
 		}
+		
+		String timeSlotArr = adSchedule.getTimeSlotArr();
+
+		try {
+			JSONArray timeSlotJsonArray = new JSONArray(timeSlotArr);
+			for(int i=0 ; i < timeSlotJsonArray.length() ;i++)
+			{
+				JSONObject time = timeSlotJsonArray.getJSONObject(i);
+				System.out.println("beginTime="+time.getString("beginTime"));
+				System.out.println("endTime="+time.getString("endTime"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		};
+		
+		
 		return success("成功:"+adSchedule.getDeviceIds().length);
 	}
 	

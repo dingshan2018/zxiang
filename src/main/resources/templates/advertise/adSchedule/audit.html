@@ -29,7 +29,7 @@
             <div class="form-group">	
                 <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>预览素材：</label>
                 <div class="col-sm-8">
-                	<textarea type="text" name="approvedRemark" class="form-control" placeholder="此处展示预览素材，暂留div占位"></textarea>
+                	<a class="btn btn-success btn-rounded btn-sm" href="http://www.baidu.com/" target="_blank"><i class="fa fa-download"></i>&nbsp;预览广告素材 </a>
                 </div>
             </div>            
             <div class="form-group">	
@@ -70,7 +70,11 @@
 				},
 			},
 			submitHandler: function(form) {
-				$.operate.save(prefix + "/auditSave", $('#form-adSchedule-audit').serialize());
+				var scheduleName = $("#scheduleName").val();
+				var aduitResult = $("input[name='approved']:checked").val()=="1"?'通过':'不通过';
+				$.modal.confirm("确定对广告 "+ scheduleName + " 审核 " + aduitResult + " ?", function() {
+					$.operate.save(prefix + "/auditSave", $('#form-adSchedule-audit').serialize());
+		    	});
 			}
 		});
 	</script>

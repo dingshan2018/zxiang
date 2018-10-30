@@ -290,4 +290,29 @@ public class DeviceController extends BaseController
 		list.add(device);
 		return getDataTable(list);
     }
+	
+	/**
+	 * 根据场所ID查找设备
+	 */
+	@RequestMapping("/getDeviceByPlaceId")
+    @ResponseBody
+    public TableDataInfo getDeviceByPlaceId(@RequestBody Map<String, Object> params) {
+		String placeId = (String) params.get("placeId");
+		List<Device> list = deviceService.getDeviceByPlaceId(placeId);
+		return getDataTable(list);
+    }
+	
+	/**
+	 * 根据地区ID查找设备
+	 */
+	@RequestMapping("/getDeviceByareaId")
+    @ResponseBody
+    public TableDataInfo getDeviceByareaId(@RequestBody Map<String, Object> params) {
+		String province = (String) params.get("province");
+		String city = (String) params.get("city");
+		String county = (String) params.get("county");
+		
+		List<Device> list = deviceService.getDeviceByareaId(province,city,county);
+		return getDataTable(list);
+    }
 }
