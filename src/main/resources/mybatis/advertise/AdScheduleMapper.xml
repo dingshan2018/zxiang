@@ -15,6 +15,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="totalPay"    column="total_pay"    />
         <result property="prepay"    column="prepay"    />
         <result property="releaseTermNum"    column="release_term_num"    />
+        <result property="approved"    column="approved"    />
+        <result property="approvedRemark"    column="approved_remark"    />
+        <result property="approvedUser"    column="approved_user"    />
         <result property="isDel"    column="is_del"    />
         <result property="releaseNote"    column="release_note"    />
         <result property="createBy"    column="create_by"    />
@@ -32,7 +35,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         sx_schedule_id, pid,
         status, 
         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='schedule_status' AND sdd.dict_value=zas.`status` ) statusName,
-        total_pay, prepay, release_term_num, is_del, release_note, create_by, create_time, update_by, update_time from zx_ad_schedule zas
+        total_pay, prepay, release_term_num,approved,approved_remark,approved_user, 
+        is_del, release_note, create_by, create_time, update_by, update_time from zx_ad_schedule zas
     </sql>
 	
     <select id="selectAdScheduleList" parameterType="AdSchedule" resultMap="AdScheduleResult">
@@ -50,6 +54,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="totalPay != null and totalPay != ''"> and total_pay = #{totalPay}</if>
              <if test="prepay != null and prepay != ''"> and prepay = #{prepay}</if>
              <if test="releaseTermNum != null and releaseTermNum != ''"> and release_term_num = #{releaseTermNum}</if>
+             <if test="approved != null and approved != ''"> and approved = #{approved}</if>
+             <if test="approvedRemark != null and approvedRemark != ''"> and approved_remark = #{approvedRemark}</if>
+             <if test="approvedUser != null and approvedUser != ''"> and approved_user = #{approvedUser}</if>
              <if test="isDel != null and isDel != ''"> and is_del = #{isDel}</if>
              <if test="releaseNote != null and releaseNote != ''"> and release_note = #{releaseNote}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
@@ -77,6 +84,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="totalPay != null and totalPay != '' ">total_pay,</if>
 			<if test="prepay != null and prepay != '' ">prepay,</if>
 			<if test="releaseTermNum != null and releaseTermNum != '' ">release_term_num,</if>
+			<if test="approved != null and approved != '' ">approved,</if>
+			<if test="approvedRemark != null and approvedRemark != '' ">approved_remark,</if>
+			<if test="approvedUser != null and approvedUser != '' ">approved_user,</if>
 			<if test="isDel != null and isDel != '' ">is_del,</if>
 			<if test="releaseNote != null and releaseNote != '' ">release_note,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
@@ -95,6 +105,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="totalPay != null and totalPay != ''">#{totalPay},</if>
 			<if test="prepay != null and prepay != ''">#{prepay},</if>
 			<if test="releaseTermNum != null and releaseTermNum != ''">#{releaseTermNum},</if>
+			<if test="approved != null and approved != ''">#{approved},</if>
+			<if test="approvedRemark != null and approvedRemark != ''">#{approvedRemark},</if>
+			<if test="approvedUser != null and approvedUser != ''">#{approvedUser},</if>
 			<if test="isDel != null and isDel != ''">#{isDel},</if>
 			<if test="releaseNote != null and releaseNote != ''">#{releaseNote},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
@@ -116,6 +129,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totalPay != null  ">total_pay = #{totalPay},</if>
             <if test="prepay != null  ">prepay = #{prepay},</if>
             <if test="releaseTermNum != null  ">release_term_num = #{releaseTermNum},</if>
+            <if test="approved != null  and approved != ''  ">approved = #{approved},</if>
+            <if test="approvedRemark != null  and approvedRemark != ''  ">approved_remark = #{approvedRemark},</if>
+            <if test="approvedUser != null  and approvedUser != ''  ">approved_user = #{approvedUser},</if>
             <if test="isDel != null  and isDel != ''  ">is_del = #{isDel},</if>
             <if test="releaseNote != null  and releaseNote != ''  ">release_note = #{releaseNote},</if>
             <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>

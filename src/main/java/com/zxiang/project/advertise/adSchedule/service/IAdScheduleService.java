@@ -52,9 +52,23 @@ public interface IAdScheduleService
 	public int deleteAdScheduleByIds(String ids);
 
 	/**
+	 * 广告投放预约保存
+	 * @param adSchedule
+	 */
+	public int orderSave(AdSchedule adSchedule);
+	
+	/**
+	 * 广告投放审核
+	 * @param adSchedule
+	 * @param operatorUser 
+	 */
+	public int auditSave(AdSchedule adSchedule, String operatorUser);
+
+	
+	/**
 	 * 广告投放发布
 	 * @param adSchedule
 	 */
 	public int releaseOnlineSave(AdSchedule adSchedule);
-	
+
 }

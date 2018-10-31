@@ -135,6 +135,27 @@
 				title : '投放备注' 
 			},
 			{
+				field : 'approved', 
+				title : '审核结果' ,
+				formatter: function (value) {
+	              if (value === '1') {
+	                return '通过';
+	              } else if (value === '0') {
+	                return '不通过';
+	              } else {
+	                return '-';
+	              }
+	            }
+			},
+			{
+				field : 'approvedRemark', 
+				title : '审核意见' 
+			},
+			{
+				field : 'approvedUser', 
+				title : '审核人员' 
+			},
+			{
 				field : 'createBy', 
 				title : '创建者' 
 			},

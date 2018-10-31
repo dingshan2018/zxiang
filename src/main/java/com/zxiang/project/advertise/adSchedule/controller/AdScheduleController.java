@@ -4,8 +4,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -201,27 +199,7 @@ public class AdScheduleController extends BaseController
 	public AjaxResult orderSave(AdSchedule adSchedule)
 	{
 		//TODO 广告投放预约保存
-		Long[] deviceIds = adSchedule.getDeviceIds();
-		for (int i = 0; i < deviceIds.length; i++) {
-			System.out.println("deviceIds:"+deviceIds[i]);
-		}
-		
-		String timeSlotArr = adSchedule.getTimeSlotArr();
-
-		try {
-			JSONArray timeSlotJsonArray = new JSONArray(timeSlotArr);
-			for(int i=0 ; i < timeSlotJsonArray.length() ;i++)
-			{
-				JSONObject time = timeSlotJsonArray.getJSONObject(i);
-				System.out.println("beginTime="+time.getString("beginTime"));
-				System.out.println("endTime="+time.getString("endTime"));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		};
-		
-		
-		return success("成功:"+adSchedule.getDeviceIds().length);
+		return toAjax(adScheduleService.orderSave(adSchedule));
 	}
 	
 	/**
@@ -246,8 +224,8 @@ public class AdScheduleController extends BaseController
 	public AjaxResult auditSave(AdSchedule adSchedule)
 	{
 		//TODO 广告投放审核保存
-		System.out.println("TODO 广告投放审核保存");
-		return success();
+		String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+		return toAjax(adScheduleService.auditSave(adSchedule,operatorUser));
 	}
 	
 	/**

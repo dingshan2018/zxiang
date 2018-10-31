@@ -131,12 +131,6 @@
 				releaseType:{
 					required:true,
 				},
-        /*'params[beginTime]':{
-          required:true,
-        },
-        'params[endTime]':{
-          required:true,
-        }*/
 			},
 			submitHandler: function(form) {
 			  var dateTimeValidate = true;
@@ -160,12 +154,16 @@
 			}
 		});
 
-    function orderSaveFun(timeSlotArr) {
+	    function orderSaveFun(timeSlotArr) {
         	var adScheduleId = $("#adScheduleId").val();
         	var scheduleName = $("#scheduleName").val();
         	var releaseType = $.form.selectSelects("releaseType");
         	var deviceIds = $.form.selectCheckeds("device");
-
+        	if(deviceIds.length <= 0){
+	       		alert("没有选择可投放的设备!");
+				return;
+	       	}
+        	
         	$.ajax({
         		cache : true,
         		type : "POST",
@@ -175,7 +173,7 @@
         			"scheduleName" : scheduleName,
         			"releaseType" : releaseType,
         			"deviceIds" : deviceIds,
-              "timeSlotArr": JSON.stringify(timeSlotArr)
+              		"timeSlotArr": JSON.stringify(timeSlotArr)
         		},
         		async : false,
         		error : function(request) {
@@ -189,8 +187,10 @@
 
 		//投放方式onchange事件
 		function showSelectTyte(value){
-			//先设备列表
+			//清空设备列表和全选选择
 			$('#loadDeviceDiv').html('');
+			$("#checkAll").iCheck("uncheck");
+			
 			$("#province").html("<option value=''>---请选择---</option>");
 			$("#city").html("<option value=''>---请选择---</option>");
 			$("#county").html("<option value=''>---请选择---</option>");
@@ -267,41 +267,41 @@
 
 		//渲染设备数据
 		function loadDevices(deviceList){
-      var html          = '',
-          $checkAll     = $('#checkAll'),
-          $deviceChecks = undefined;
-
-      // 取消全选状态
-      $checkAll.iCheck('uncheck');
-
-      for (var i = 0; i < deviceList.length; i++) {
-        html += `<label class="checkbox-inline i-checks">
-          <input name="device" type="checkbox" value="${deviceList[i].deviceId}" >${deviceList[i].deviceCode}
-          </label>`;
-      }
-
-      $('#loadDeviceDiv').html(html);
-
-      $deviceChecks = $('#loadDeviceDiv input[name="device"]');
-
-      // deviceChecks初始化
-      $deviceChecks.iCheck({
-        checkboxClass : 'icheckbox_square-green',
-        radioClass: "iradio_square-green"
-      });
-
-      // deviceChecks事件改变全选checkAll状态.
-      $deviceChecks.on('ifChanged', function(event){
-        if($deviceChecks.filter(':checked').length === $deviceChecks.length) {
-          $checkAll.prop('checked', true);
-        } else {
-          $checkAll.prop('checked', false);
-        }
-        $checkAll.iCheck('update');
-      });
-
-    }
-
+      		var html          = '',
+          	$checkAll     = $('#checkAll'),
+          	$deviceChecks = undefined;
+	
+	      	// 取消全选状态
+	      	$checkAll.iCheck('uncheck');
+	
+	      	for (var i = 0; i < deviceList.length; i++) {
+	       	 html += `<label class="checkbox-inline i-checks">
+	         	<input name="device" type="checkbox" value="${deviceList[i].deviceId}" >${deviceList[i].deviceCode}
+	          	</label>`;
+	      	}
+	
+	      	$('#loadDeviceDiv').html(html);
+	
+	      	$deviceChecks = $('#loadDeviceDiv input[name="device"]');
+	
+	      	// deviceChecks初始化
+	     	 $deviceChecks.iCheck({
+	        	checkboxClass : 'icheckbox_square-green',
+	        	radioClass: "iradio_square-green"
+	      	});
+	
+	      	// deviceChecks事件改变全选checkAll状态.
+	      	$deviceChecks.on('ifChanged', function(event){
+		        if($deviceChecks.filter(':checked').length === $deviceChecks.length) {
+		          $checkAll.prop('checked', true);
+		        } else {
+		          $checkAll.prop('checked', false);
+		        }
+		        $checkAll.iCheck('update');
+	      	});
+	
+    	}
+	
 		function proviceBind() {
 	        //清空下拉数据
 	        $("#province").html("");
@@ -347,106 +347,105 @@
             //将数据添加到区县这个下拉框里面
             $("#county").append(str);
 	    }
-
-    $(function () {
-      // 设备全选或不选.
-      $('#checkAll').on('ifChecked ifUnchecked', function(event) {
-        var deviceChecks = $('#loadDeviceDiv input[name="device"]');
-        if (event.type === 'ifChecked') {
-          deviceChecks.iCheck('check');
-        } else {
-          deviceChecks.iCheck('uncheck');
-        }
-      });
-
-      //默认绑定省
-      proviceBind();
-      //绑定事件
-      $('#province').change(function () {
-        cityBind();
-      });
-
-      $('#city').change(function () {
-        countyBind();
-      });
-    });
-    // E 全选
-
-    // 日期选择器初始化
-    function initDateTimePicker (select) {
-      $(select || '.date-time-picker').datetimepicker({
-        language:  'zh-CN',
-        format: 'hh:ii:ss',
-        todayBtn:  1,
-        autoclose: true,
-        todayHighlight: 1,
-        startView: 0,
-        showMeridian: 1,
-        minuteStep: 1
-      }).on('changeDate', function(ev){
-        $(ev.target).parents('.control-time-slot').find('.date-time-picker:last').eq(0).datetimepicker('setStartDate', ev.date);
-      });
-    }
-    initDateTimePicker();
-
-    var addTimeSlotTemplate = `<div class="col-sm-8 control-time-slot col-sm-offset-3" style="margin-top: 15px;display: none;">
-        <div class="col-sm-4" style="padding: 0;">
-        <input type="text" class="time-input form-control date-time-picker" placeholder="开始时间" name="params[beginTime]" readonly/>
-        <label class="time-error" style="display: none;"><i class="fa fa-times-circle"></i>  必填</label>
-      </div>
-      <div class="col-sm-1" style="padding: 0;line-height: 34px;text-align: center">
-        <span>-</span>
-        </div>
-        <div class="col-sm-4" style="padding: 0;">
-        <input type="text" class="time-input form-control date-time-picker" placeholder="结束时间" name="params[endTime]" readonly/>
-        <label class="time-error" style="display: none;"><i class="fa fa-times-circle"></i>  必填</label>
-      </div>
-      <div class="col-sm-3 time-slot-btns" style="padding: 0 4px;">
-        <button class="btn btn-primary btn-add-time-slot" type="button" onclick="addTimeSlot(this)">添加</button>
-        <button class="btn btn-danger" type="button" onclick="deleteTimeSlot(this)">删除</button>
-        </div>
-        </div>`;
-
-    // 添加时间段
-    function addTimeSlot (_this) {
-      $(_this).parents('.form-group').append(addTimeSlotTemplate);
-      $(_this).remove();
-      initDateTimePicker('.control-time-slot:last .date-time-picker');
-      $('.control-time-slot:last').css('display', 'block');
-    }
-
-    var removeTimeSlotTemplate = `<div class="col-sm-8 control-time-slot">
-        <div class="col-sm-4" style="padding: 0;">
-        <input type="text" class="time-input form-control date-time-picker" placeholder="开始时间" name="params[beginTime]" readonly/>
-        <label class="time-error" style="display: none;"><i class="fa fa-times-circle"></i>  必填</label>
-      </div>
-      <div class="col-sm-1" style="padding: 0;line-height: 34px;text-align: center">
-        <span>-</span>
-        </div>
-        <div class="col-sm-4" style="padding: 0;">
-        <input type="text" class="time-input form-control date-time-picker" placeholder="结束时间" name="params[endTime]" readonly/>
-        <label class="time-error" style="display: none;"><i class="fa fa-times-circle"></i>  必填</label>
-      </div>
-      <div class="col-sm-3 time-slot-btns" style="padding: 0 4px;">
-        <button class="btn btn-primary btn-add-time-slot" type="button" onclick="addTimeSlot(this)">添加</button>
-        <button class="btn btn-danger" type="button" onclick="deleteTimeSlot(this)">删除</button>
-        </div>
-      </div>`;
-    var timeSlotBtnAdd = `<button class="btn btn-primary btn-add-time-slot" type="button" onclick="addTimeSlot(this)">添加</button>`;
-
-    // 删除时间段
-    function deleteTimeSlot (_this) {
-      var formGroup = $(_this).parents('.form-group');
-      $(_this).parents('.control-time-slot').remove();
-      if ($('.control-time-slot').length <= 0) {
-        formGroup.append(removeTimeSlotTemplate);
-        initDateTimePicker('.control-time-slot:first .date-time-picker')
-      }
-      if ($('.btn-add-time-slot').length <= 0){
-        $('.time-slot-btns:last').prepend(timeSlotBtnAdd);
-      }
-      $('.control-time-slot:first').removeClass('col-sm-offset-3').css('margin-top', '0');
-    }
+	
+	    $(function () {
+	      // 设备全选或不选.
+	      $('#checkAll').on('ifChecked ifUnchecked', function(event) {
+	        var deviceChecks = $('#loadDeviceDiv input[name="device"]');
+	        if (event.type === 'ifChecked') {
+	          deviceChecks.iCheck('check');
+	        } else {
+	          deviceChecks.iCheck('uncheck');
+	        }
+	      });
+	
+	      //默认绑定省
+	      proviceBind();
+	      //绑定事件
+	      $('#province').change(function () {
+	        cityBind();
+	      });
+	
+	      $('#city').change(function () {
+	        countyBind();
+	      });
+	    });
+	
+	    // 日期选择器初始化
+	    function initDateTimePicker (select) {
+	      $(select || '.date-time-picker').datetimepicker({
+	        language:  'zh-CN',
+	        format: 'hh:ii:ss',
+	        todayBtn:  1,
+	        autoclose: true,
+	        todayHighlight: 1,
+	        startView: 0,
+	        showMeridian: 1,
+	        minuteStep: 1
+	      }).on('changeDate', function(ev){
+	        $(ev.target).parents('.control-time-slot').find('.date-time-picker:last').eq(0).datetimepicker('setStartDate', ev.date);
+	      });
+	    }
+	    initDateTimePicker();
+	
+	    var addTimeSlotTemplate = `<div class="col-sm-8 control-time-slot col-sm-offset-3" style="margin-top: 15px;display: none;">
+	        <div class="col-sm-4" style="padding: 0;">
+	        <input type="text" class="time-input form-control date-time-picker" placeholder="开始时间" name="params[beginTime]" readonly/>
+	        <label class="time-error" style="display: none;"><i class="fa fa-times-circle"></i>  必填</label>
+	      </div>
+	      <div class="col-sm-1" style="padding: 0;line-height: 34px;text-align: center">
+	        <span>-</span>
+	        </div>
+	        <div class="col-sm-4" style="padding: 0;">
+	        <input type="text" class="time-input form-control date-time-picker" placeholder="结束时间" name="params[endTime]" readonly/>
+	        <label class="time-error" style="display: none;"><i class="fa fa-times-circle"></i>  必填</label>
+	      </div>
+	      <div class="col-sm-3 time-slot-btns" style="padding: 0 4px;">
+	        <button class="btn btn-primary btn-add-time-slot" type="button" onclick="addTimeSlot(this)">添加</button>
+	        <button class="btn btn-danger" type="button" onclick="deleteTimeSlot(this)">删除</button>
+	        </div>
+	        </div>`;
+	
+	    // 添加时间段
+	    function addTimeSlot (_this) {
+	      $(_this).parents('.form-group').append(addTimeSlotTemplate);
+	      $(_this).remove();
+	      initDateTimePicker('.control-time-slot:last .date-time-picker');
+	      $('.control-time-slot:last').css('display', 'block');
+	    }
+	
+	    var removeTimeSlotTemplate = `<div class="col-sm-8 control-time-slot">
+	        <div class="col-sm-4" style="padding: 0;">
+	        <input type="text" class="time-input form-control date-time-picker" placeholder="开始时间" name="params[beginTime]" readonly/>
+	        <label class="time-error" style="display: none;"><i class="fa fa-times-circle"></i>  必填</label>
+	      </div>
+	      <div class="col-sm-1" style="padding: 0;line-height: 34px;text-align: center">
+	        <span>-</span>
+	        </div>
+	        <div class="col-sm-4" style="padding: 0;">
+	        <input type="text" class="time-input form-control date-time-picker" placeholder="结束时间" name="params[endTime]" readonly/>
+	        <label class="time-error" style="display: none;"><i class="fa fa-times-circle"></i>  必填</label>
+	      </div>
+	      <div class="col-sm-3 time-slot-btns" style="padding: 0 4px;">
+	        <button class="btn btn-primary btn-add-time-slot" type="button" onclick="addTimeSlot(this)">添加</button>
+	        <button class="btn btn-danger" type="button" onclick="deleteTimeSlot(this)">删除</button>
+	        </div>
+	      </div>`;
+	    var timeSlotBtnAdd = `<button class="btn btn-primary btn-add-time-slot" type="button" onclick="addTimeSlot(this)">添加</button>`;
+	
+	    // 删除时间段
+	    function deleteTimeSlot (_this) {
+	      var formGroup = $(_this).parents('.form-group');
+	      $(_this).parents('.control-time-slot').remove();
+	      if ($('.control-time-slot').length <= 0) {
+	        formGroup.append(removeTimeSlotTemplate);
+	        initDateTimePicker('.control-time-slot:first .date-time-picker')
+	      }
+	      if ($('.btn-add-time-slot').length <= 0){
+	        $('.time-slot-btns:last').prepend(timeSlotBtnAdd);
+	      }
+	      $('.control-time-slot:first').removeClass('col-sm-offset-3').css('margin-top', '0');
+	    }
 
 	</script>
 </body>
