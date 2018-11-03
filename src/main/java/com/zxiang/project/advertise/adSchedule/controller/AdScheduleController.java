@@ -22,6 +22,7 @@ import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
+import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
 import com.zxiang.project.advertise.adSchedule.service.IAdScheduleService;
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.mapper.DeviceMapper;
@@ -73,8 +74,11 @@ public class AdScheduleController extends BaseController
 	 * 新增广告投放
 	 */
 	@GetMapping("/add")
-	public String add()
+	public String add(ModelMap mmap)
 	{
+		List<ThemeTemplate> ThemeTemplateList = adScheduleService.getThemeList();
+		mmap.put("ThemeTemplateList", ThemeTemplateList);
+		
 	    return prefix + "/add";
 	}
 	
@@ -104,6 +108,9 @@ public class AdScheduleController extends BaseController
 	{
 		AdSchedule adSchedule = adScheduleService.selectAdScheduleById(adScheduleId);
 		mmap.put("adSchedule", adSchedule);
+		List<ThemeTemplate> ThemeTemplateList = adScheduleService.getThemeList();
+		mmap.put("ThemeTemplateList", ThemeTemplateList);
+		
 	    return prefix + "/edit";
 	}
 	

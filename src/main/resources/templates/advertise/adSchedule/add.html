@@ -29,6 +29,15 @@
 					</select>
 				</div>
 			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>模板主题名称：</label>
+				<div class="col-sm-8">
+					<select id="themeTemplateId" name="themeTemplateId" class="form-control">
+						<option value="">---请选择---</option>
+						<option th:each="c:${ThemeTemplateList}"  th:value="${c.themeTemplateId}" th:text="${c.themeName}"/>
+					</select>
+				</div>
+			</div>
 			<!-- <div class="form-group">	
 				<label class="col-sm-3 control-label">视讯排期ID：</label>
 				<div class="col-sm-8">
@@ -88,6 +97,9 @@
 					required:true,
 				},
 				releasePosition:{
+					required:true,
+				},
+				themeTemplateId:{
 					required:true,
 				},
 			},

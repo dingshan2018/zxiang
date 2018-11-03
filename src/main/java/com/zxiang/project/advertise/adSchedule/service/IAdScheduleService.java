@@ -1,7 +1,10 @@
 package com.zxiang.project.advertise.adSchedule.service;
 
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
+import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * 广告投放 服务层
@@ -70,5 +73,12 @@ public interface IAdScheduleService
 	 * @param adSchedule
 	 */
 	public int releaseOnlineSave(AdSchedule adSchedule);
+
+	
+	/**
+	 * 获取模板详细信息列表
+	 */
+	public List<ThemeTemplate> getThemeList();
+	
 
 }

@@ -47,6 +47,8 @@ public class AdSchedule extends BaseEntity
 	private Date updateTime;
 	/**节目单ID  */
 	private String pId;
+	/**模板主题ID  */
+	private String themeTemplateId;
 	/**审核结果  */
 	private String approved;
 	/**审核意见  */
@@ -267,6 +269,14 @@ public class AdSchedule extends BaseEntity
 
 	public void setApprovedUser(String approvedUser) {
 		this.approvedUser = approvedUser;
+	}
+
+	public String getThemeTemplateId() {
+		return themeTemplateId;
+	}
+
+	public void setThemeTemplateId(String themeTemplateId) {
+		this.themeTemplateId = themeTemplateId;
 	}
 
 	public String toString() {
