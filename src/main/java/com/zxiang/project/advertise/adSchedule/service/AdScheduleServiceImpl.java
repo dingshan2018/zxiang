@@ -1,18 +1,22 @@
 package com.zxiang.project.advertise.adSchedule.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zxiang.project.advertise.adSchedule.mapper.AdScheduleMapper;
-import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
-import com.zxiang.project.advertise.adSchedule.service.IAdScheduleService;
-import com.zxiang.project.advertise.constant.AdConstant;
 import com.zxiang.common.support.Convert;
+import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
+import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
+import com.zxiang.project.advertise.adSchedule.mapper.AdScheduleMapper;
+import com.zxiang.project.advertise.utils.AdHttpResult;
+import com.zxiang.project.advertise.utils.Tools;
+import com.zxiang.project.advertise.utils.constant.AdConstant;
 
 /**
  * 广告投放 服务层实现
@@ -106,7 +110,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			JSONArray timeSlotJsonArray = new JSONArray(timeSlotArr);
 			for(int i=0 ; i < timeSlotJsonArray.length() ;i++)
 			{
-				JSONObject time = timeSlotJsonArray.getJSONObject(i);
+				org.json.JSONObject time = timeSlotJsonArray.getJSONObject(i);
 				System.out.println("beginTime="+time.getString("beginTime"));
 				System.out.println("endTime="+time.getString("endTime"));
 			}
@@ -147,6 +151,41 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			return adScheduleMapper.updateAdSchedule(adSchedule);
 		}
 		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ThemeTemplate> getThemeList() {
+		
+		List<ThemeTemplate> ThemeTemplateList = new ArrayList<ThemeTemplate>();
+		
+		Map<String, String> paramsMap = new HashMap<String, String>();
+		//请求参数封装
+		//paramsMap.put("isLayout", "0");
+		
+		String param = Tools.paramsToString(paramsMap);
+		String result = null;
+		try {
+			result = Tools.doPost(AdConstant.AD_URL_GETTHEMELIST, param);
+			//返回结果封装
+			AdHttpResult adHttp = Tools.analysisResult(result);
+			if("0000".equals(adHttp.getCode())){
+				List<HashMap<String, Object>> data = (List<HashMap<String, Object>>) adHttp.get("data");
+				for (HashMap<String, Object> themebject : data) {
+					String themeTemplateId = (String) themebject.get("THEMETEMPLATEID");
+					String themeName = (String) themebject.get("THEMENAME");
+					
+					ThemeTemplate theme = new ThemeTemplate();
+					theme.setThemeTemplateId(themeTemplateId);
+					theme.setThemeName(themeName);
+					ThemeTemplateList.add(theme);
+				}
+			} 
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ThemeTemplateList;
 	}
 
 }

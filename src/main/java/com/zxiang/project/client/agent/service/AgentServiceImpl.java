@@ -107,6 +107,25 @@ public class AgentServiceImpl implements IAgentService
 		}
 		agent.setCreateTime(new Date());
 		agent.setCreateBy(ShiroUtils.getLoginName());
+		// 设置默认参数
+		if(agent.getLevel() == 1) {
+			agent.setAdRate(0.02f);
+			agent.setAdCarouselRate(0.02f);
+			agent.setScanRate(0.025f);
+			agent.setSubsidyRate(0.03f);
+		}
+		if(agent.getLevel() == 2) {
+			agent.setAdRate(0.03f);
+			agent.setAdCarouselRate(0.03f);
+			agent.setScanRate(0.05f);
+			agent.setSubsidyRate(0.07f);
+		}
+		agent.setPromDirectRate(1000f);
+		agent.setPromIndirectRate(500f);
+		agent.setPromPaperRate(0.7f);
+		agent.setPromotionRate(0.15f);
+		agent.setDirectAgentRate(0.15f);
+		agent.setServeRate(0.025f);
 		int i = agentMapper.insertAgent(agent);
 	    if(user != null) {
 	    	user.setPuserId(agent.getAgentId());
