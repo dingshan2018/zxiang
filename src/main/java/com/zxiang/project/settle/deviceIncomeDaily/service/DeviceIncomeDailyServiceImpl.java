@@ -141,7 +141,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				int tissuenum = selectzxtissuerecordlist(device.get("device_id")+"",""); //出纸数量
 				//计算每日设备推广费用
 				deviceorder(isincome,promotioner_id,device,order);
-				//计算每日出纸费用（二维码推广告）
+				//计算每日出纸费用
 				tissuedata(device,buyer_id,tissuenum);
 				//计算广告费用
 				addata(device,buyer_id,tissuenum);
@@ -331,8 +331,6 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				 }
 				break;
 			case "03":
-				
-				 tissuenum = selectzxtissuerecordlist(deviceId+"",releaserecord.get("schedule_id").toString());
 				//--------------推广收益-----------------------
 				rate =  Double.valueOf(user.get("promPaperRate")+"");
 				insertdata(-tissuenum*rate,promotioner+"","02",RateConstants.RATETYPE_PROMPAPERINCOME,0.0,tissuenum,user);
