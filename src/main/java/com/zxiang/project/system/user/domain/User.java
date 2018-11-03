@@ -77,6 +77,12 @@ public class User extends BaseEntity
     private Date loginDate;
     /** 上级领导id */
     private Long leaderId;
+    
+    private String openId;
+    
+    private String nickName;
+    
+    private String headImgUrl;
 
     /** 部门对象 */
     private Dept dept;
@@ -310,6 +316,30 @@ public class User extends BaseEntity
 
 	public void setPuserId(Integer puserId) {
 		this.puserId = puserId;
+	}
+
+	public String getOpenId() {
+		return openId;
+	}
+
+	public void setOpenId(String openId) {
+		this.openId = openId;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public String getHeadImgUrl() {
+		return headImgUrl;
+	}
+
+	public void setHeadImgUrl(String headImgUrl) {
+		this.headImgUrl = headImgUrl;
 	}
 
 	@Override

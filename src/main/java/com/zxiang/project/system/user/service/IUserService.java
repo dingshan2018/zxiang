@@ -159,4 +159,11 @@ public interface IUserService
 	 * @return
 	 */
 	public String saleManClent(String userType,Integer cliendId);
+
+	/**
+	 * 根据公众号来获取用户信息
+	 * @param openId
+	 * @return
+	 */
+	public User selectUserByOpenId(String openId);
 }

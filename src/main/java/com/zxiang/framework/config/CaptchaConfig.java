@@ -28,7 +28,7 @@ public class CaptchaConfig
         properties.setProperty("kaptcha.session.key", "kaptchaCode");
         properties.setProperty("kaptcha.textproducer.char.spac", "35");
         properties.setProperty("kaptcha.textproducer.char.length", "5");
-        properties.setProperty("kaptcha.textproducer.font.names", "Arial,Courier");
+        properties.setProperty("kaptcha.textproducer.font.names", "Times New Roman");
         properties.setProperty("kaptcha.noise.color", "white");
         Config config = new Config(properties);
         defaultKaptcha.setConfig(config);
@@ -50,12 +50,14 @@ public class CaptchaConfig
         properties.setProperty("kaptcha.textproducer.impl", "com.zxiang.framework.config.KaptchaTextCreator");
         properties.setProperty("kaptcha.textproducer.char.spac", "5");
         properties.setProperty("kaptcha.textproducer.char.length", "6");
-        properties.setProperty("kaptcha.textproducer.font.names", "Arial,Courier");
+        properties.setProperty("kaptcha.textproducer.font.names", "Times New Roman");
         properties.setProperty("kaptcha.noise.color", "white");
         properties.setProperty("kaptcha.noise.impl", "com.google.code.kaptcha.impl.NoNoise");
         properties.setProperty("kaptcha.obscurificator.impl", "com.google.code.kaptcha.impl.ShadowGimpy");
         Config config = new Config(properties);
         defaultKaptcha.setConfig(config);
+        
+        
         return defaultKaptcha;
     }
 }

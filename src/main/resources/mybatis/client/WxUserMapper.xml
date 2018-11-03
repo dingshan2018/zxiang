@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.client.wxuser.mapper.WxUserMapper">
+    
+    <resultMap type="WxUser" id="WxUserResult">
+        <result property="wxUserId"    column="wx_user_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="subscribe"    column="subscribe"    />
+        <result property="openId"    column="open_id"    />
+        <result property="nickname"    column="nickname"    />
+        <result property="sexDesc"    column="sex_desc"    />
+        <result property="sex"    column="sex"    />
+        <result property="language"    column="language"    />
+        <result property="city"    column="city"    />
+        <result property="province"    column="province"    />
+        <result property="country"    column="country"    />
+        <result property="headImgUrl"    column="head_img_url"    />
+        <result property="subscribeTime"    column="subscribe_time"    />
+        <result property="unionId"    column="union_id"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectWxUserVo">
+        select wx_user_id, user_id, subscribe, open_id, nickname, sex_desc, sex, language, city, province, country, head_img_url, subscribe_time, union_id, remark, create_by, create_time, update_by, update_time from zx_wx_user
+    </sql>
+	
+    <select id="selectWxUserList" parameterType="WxUser" resultMap="WxUserResult">
+        <include refid="selectWxUserVo"/>
+        <where>  
+            <if test="wxUserId != null and wxUserId != ''"> and wx_user_id = #{wxUserId}</if>
+             <if test="userId != null and userId != ''"> and user_id = #{userId}</if>
+             <if test="subscribe != null and subscribe != ''"> and subscribe = #{subscribe}</if>
+             <if test="openId != null and openId != ''"> and open_id = #{openId}</if>
+             <if test="nickname != null and nickname != ''"> and nickname = #{nickname}</if>
+             <if test="sexDesc != null and sexDesc != ''"> and sex_desc = #{sexDesc}</if>
+             <if test="sex != null and sex != ''"> and sex = #{sex}</if>
+             <if test="language != null and language != ''"> and language = #{language}</if>
+             <if test="city != null and city != ''"> and city = #{city}</if>
+             <if test="province != null and province != ''"> and province = #{province}</if>
+             <if test="country != null and country != ''"> and country = #{country}</if>
+             <if test="headImgUrl != null and headImgUrl != ''"> and head_img_url = #{headImgUrl}</if>
+             <if test="subscribeTime != null and subscribeTime != ''"> and subscribe_time = #{subscribeTime}</if>
+             <if test="unionId != null and unionId != ''"> and union_id = #{unionId}</if>
+             <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectWxUserById" parameterType="Integer" resultMap="WxUserResult">
+        <include refid="selectWxUserVo"/>
+        where wx_user_id = #{wxUserId}
+    </select>
+        
+    <insert id="insertWxUser" parameterType="WxUser">
+        insert into zx_wx_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="wxUserId != null and wxUserId != '' ">wx_user_id,</if>
+			<if test="userId != null and userId != '' ">user_id,</if>
+			<if test="subscribe != null and subscribe != '' ">subscribe,</if>
+			<if test="openId != null and openId != '' ">open_id,</if>
+			<if test="nickname != null and nickname != '' ">nickname,</if>
+			<if test="sexDesc != null and sexDesc != '' ">sex_desc,</if>
+			<if test="sex != null and sex != '' ">sex,</if>
+			<if test="language != null and language != '' ">language,</if>
+			<if test="city != null and city != '' ">city,</if>
+			<if test="province != null and province != '' ">province,</if>
+			<if test="country != null and country != '' ">country,</if>
+			<if test="headImgUrl != null and headImgUrl != '' ">head_img_url,</if>
+			<if test="subscribeTime != null and subscribeTime != '' ">subscribe_time,</if>
+			<if test="unionId != null and unionId != '' ">union_id,</if>
+			<if test="remark != null and remark != '' ">remark,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="updateBy != null and updateBy != '' ">update_by,</if>
+			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="wxUserId != null and wxUserId != ''">#{wxUserId},</if>
+			<if test="userId != null and userId != ''">#{userId},</if>
+			<if test="subscribe != null and subscribe != ''">#{subscribe},</if>
+			<if test="openId != null and openId != ''">#{openId},</if>
+			<if test="nickname != null and nickname != ''">#{nickname},</if>
+			<if test="sexDesc != null and sexDesc != ''">#{sexDesc},</if>
+			<if test="sex != null and sex != ''">#{sex},</if>
+			<if test="language != null and language != ''">#{language},</if>
+			<if test="city != null and city != ''">#{city},</if>
+			<if test="province != null and province != ''">#{province},</if>
+			<if test="country != null and country != ''">#{country},</if>
+			<if test="headImgUrl != null and headImgUrl != ''">#{headImgUrl},</if>
+			<if test="subscribeTime != null and subscribeTime != ''">#{subscribeTime},</if>
+			<if test="unionId != null and unionId != ''">#{unionId},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateWxUser" parameterType="WxUser">
+        update zx_wx_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null  ">user_id = #{userId},</if>
+            <if test="subscribe != null  ">subscribe = #{subscribe},</if>
+            <if test="openId != null  and openId != ''  ">open_id = #{openId},</if>
+            <if test="nickname != null  and nickname != ''  ">nickname = #{nickname},</if>
+            <if test="sexDesc != null  and sexDesc != ''  ">sex_desc = #{sexDesc},</if>
+            <if test="sex != null  ">sex = #{sex},</if>
+            <if test="language != null  and language != ''  ">language = #{language},</if>
+            <if test="city != null  and city != ''  ">city = #{city},</if>
+            <if test="province != null  and province != ''  ">province = #{province},</if>
+            <if test="country != null  and country != ''  ">country = #{country},</if>
+            <if test="headImgUrl != null  and headImgUrl != ''  ">head_img_url = #{headImgUrl},</if>
+            <if test="subscribeTime != null  ">subscribe_time = #{subscribeTime},</if>
+            <if test="unionId != null  and unionId != ''  ">union_id = #{unionId},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where wx_user_id = #{wxUserId}
+    </update>
+
+	<delete id="deleteWxUserById" parameterType="Integer">
+        delete from zx_wx_user where wx_user_id = #{wxUserId}
+    </delete>
+	
+    <delete id="deleteWxUserByIds" parameterType="String">
+        delete from zx_wx_user where wx_user_id in 
+        <foreach item="wxUserId" collection="array" open="(" separator="," close=")">
+            #{wxUserId}
+        </foreach>
+    </delete>
+    
+</mapper>

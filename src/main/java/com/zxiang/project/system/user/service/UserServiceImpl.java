@@ -419,4 +419,12 @@ public class UserServiceImpl implements IUserService
 		}
 		return client;
 	}
+
+	/**
+	 *	根据公众号来获取用户
+	 */
+	@Override
+	public User selectUserByOpenId(String openId) {
+		return userMapper.selectUserByOpenId(openId);
+	}
 }

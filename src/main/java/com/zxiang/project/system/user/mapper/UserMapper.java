@@ -120,4 +120,12 @@ public interface UserMapper
 	 * 查询用户下拉框数据列表
 	 */
 	public List<User> selectDropBoxList();
+	
+	 /**
+     * 通过openId查询用户
+     * 
+     * @param openId 公众号账号
+     * @return 用户对象信息
+     */
+    public User selectUserByOpenId(String openId);
 }

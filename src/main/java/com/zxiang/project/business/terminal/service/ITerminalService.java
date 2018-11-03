@@ -50,6 +50,15 @@ public interface ITerminalService
      * @return 结果
      */
 	public int deleteTerminalByIds(String ids);
+	
+	
+	/**
+     * 删除终端管理信息
+     * 
+     * @param ids 需要删除的数据ID
+     * @return 结果
+     */
+	public int deleteTerminals(String ids);
 
 	/**
 	 * 查询终端设备下拉列表

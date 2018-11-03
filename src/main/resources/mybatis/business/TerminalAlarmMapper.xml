@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.business.terminalalarm.mapper.TerminalAlarmMapper">
+    
+    <resultMap type="TerminalAlarm" id="TerminalAlarmResult">
+        <result property="alarmId"    column="alarm_id"    />
+        <result property="terminalId"    column="terminal_id"    />
+        <result property="alarmType"    column="alarm_type"    />
+        <result property="alarmLevel"    column="alarm_level"    />
+        <result property="alarmDesc"    column="alarm_desc"    />
+        <result property="status"    column="status"    />
+        <result property="operator"    column="operator"    />
+        <result property="dealNote"    column="deal_note"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectTerminalAlarmVo">
+        select alarm_id, terminal_id, alarm_type, alarm_level, alarm_desc, status, operator, deal_note, create_time, update_time from zx_terminal_alarm
+    </sql>
+	
+    <select id="selectTerminalAlarmList" parameterType="TerminalAlarm" resultMap="TerminalAlarmResult">
+        <include refid="selectTerminalAlarmVo"/>
+        <where>  
+            <if test="alarmId != null and alarmId != ''"> and alarm_id = #{alarmId}</if>
+             <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
+             <if test="alarmType != null and alarmType != ''"> and alarm_type = #{alarmType}</if>
+             <if test="alarmLevel != null and alarmLevel != ''"> and alarm_level = #{alarmLevel}</if>
+             <if test="alarmDesc != null and alarmDesc != ''"> and alarm_desc = #{alarmDesc}</if>
+             <if test="status != null and status != ''"> and status = #{status}</if>
+             <if test="operator != null and operator != ''"> and operator = #{operator}</if>
+             <if test="dealNote != null and dealNote != ''"> and deal_note = #{dealNote}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectTerminalAlarmById" parameterType="Integer" resultMap="TerminalAlarmResult">
+        <include refid="selectTerminalAlarmVo"/>
+        where alarm_id = #{alarmId}
+    </select>
+        
+    <insert id="insertTerminalAlarm" parameterType="TerminalAlarm">
+        insert into zx_terminal_alarm
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="alarmId != null and alarmId != '' ">alarm_id,</if>
+			<if test="terminalId != null and terminalId != '' ">terminal_id,</if>
+			<if test="alarmType != null and alarmType != '' ">alarm_type,</if>
+			<if test="alarmLevel != null and alarmLevel != '' ">alarm_level,</if>
+			<if test="alarmDesc != null and alarmDesc != '' ">alarm_desc,</if>
+			<if test="status != null and status != '' ">status,</if>
+			<if test="operator != null and operator != '' ">operator,</if>
+			<if test="dealNote != null and dealNote != '' ">deal_note,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="alarmId != null and alarmId != ''">#{alarmId},</if>
+			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
+			<if test="alarmType != null and alarmType != ''">#{alarmType},</if>
+			<if test="alarmLevel != null and alarmLevel != ''">#{alarmLevel},</if>
+			<if test="alarmDesc != null and alarmDesc != ''">#{alarmDesc},</if>
+			<if test="status != null and status != ''">#{status},</if>
+			<if test="operator != null and operator != ''">#{operator},</if>
+			<if test="dealNote != null and dealNote != ''">#{dealNote},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateTerminalAlarm" parameterType="TerminalAlarm">
+        update zx_terminal_alarm
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="terminalId != null  ">terminal_id = #{terminalId},</if>
+            <if test="alarmType != null  and alarmType != ''  ">alarm_type = #{alarmType},</if>
+            <if test="alarmLevel != null  and alarmLevel != ''  ">alarm_level = #{alarmLevel},</if>
+            <if test="alarmDesc != null  and alarmDesc != ''  ">alarm_desc = #{alarmDesc},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="operator != null  ">operator = #{operator},</if>
+            <if test="dealNote != null  and dealNote != ''  ">deal_note = #{dealNote},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where alarm_id = #{alarmId}
+    </update>
+
+	<delete id="deleteTerminalAlarmById" parameterType="Integer">
+        delete from zx_terminal_alarm where alarm_id = #{alarmId}
+    </delete>
+	
+    <delete id="deleteTerminalAlarmByIds" parameterType="String">
+        delete from zx_terminal_alarm where alarm_id in 
+        <foreach item="alarmId" collection="array" open="(" separator="," close=")">
+            #{alarmId}
+        </foreach>
+    </delete>
+    
+</mapper>

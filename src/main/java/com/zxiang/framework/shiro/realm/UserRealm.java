@@ -26,6 +26,7 @@ import com.zxiang.common.exception.user.UserPasswordNotMatchException;
 import com.zxiang.common.exception.user.UserPasswordRetryLimitExceedException;
 import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.LoginService;
+import com.zxiang.framework.shiro.token.UsernamePasswordOauthToken;
 import com.zxiang.project.system.menu.service.IMenuService;
 import com.zxiang.project.system.role.service.IRoleService;
 import com.zxiang.project.system.user.domain.User;
@@ -69,9 +70,10 @@ public class UserRealm extends AuthorizingRealm
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException
     {
-        UsernamePasswordToken upToken = (UsernamePasswordToken) token;
+    	UsernamePasswordOauthToken upToken = (UsernamePasswordOauthToken) token;
         String username = upToken.getUsername();
         String password = "";
+        String openId = upToken.getOpenId();
         if (upToken.getPassword() != null)
         {
             password = new String(upToken.getPassword());
@@ -80,7 +82,7 @@ public class UserRealm extends AuthorizingRealm
         User user = null;
         try
         {
-            user = loginService.login(username, password);
+            user = loginService.login(username, password, openId);
         }
         catch (CaptchaException e)
         {

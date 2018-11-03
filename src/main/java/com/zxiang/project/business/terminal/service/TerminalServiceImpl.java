@@ -148,4 +148,10 @@ public class TerminalServiceImpl implements ITerminalService
 		return 0;
 	}
 
+	@Override
+	public int deleteTerminals(String ids) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

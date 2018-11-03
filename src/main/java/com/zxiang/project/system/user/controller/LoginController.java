@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zxiang.common.utils.ServletUtils;
 import com.zxiang.common.utils.StringUtils;
+import com.zxiang.framework.shiro.token.UsernamePasswordOauthToken;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 
@@ -41,8 +42,8 @@ public class LoginController extends BaseController
     @ResponseBody
     public AjaxResult ajaxLogin(String username, String password, Boolean rememberMe)
     {
-        UsernamePasswordToken token = new UsernamePasswordToken(username, password, rememberMe);
-        Subject subject = SecurityUtils.getSubject();
+    	UsernamePasswordOauthToken token = new UsernamePasswordOauthToken(username, password, rememberMe,null);
+    	Subject subject = SecurityUtils.getSubject();
         try
         {
             subject.login(token);
@@ -51,6 +52,28 @@ public class LoginController extends BaseController
         catch (AuthenticationException e)
         {
             String msg = "用户或密码错误";
+            if (StringUtils.isNotEmpty(e.getMessage()))
+            {
+                msg = e.getMessage();
+            }
+            return error(msg);
+        }
+    }
+    
+    @PostMapping("/wxLogin")
+    @ResponseBody
+    public AjaxResult ajaxLogin(String openId)
+    {
+    	UsernamePasswordOauthToken token = new UsernamePasswordOauthToken(null, null, null,openId);
+    	Subject subject = SecurityUtils.getSubject();
+        try
+        {
+            subject.login(token);
+            return success();
+        }
+        catch (AuthenticationException e)
+        {
+            String msg = "该微信用户未绑定";
             if (StringUtils.isNotEmpty(e.getMessage()))
             {
                 msg = e.getMessage();
