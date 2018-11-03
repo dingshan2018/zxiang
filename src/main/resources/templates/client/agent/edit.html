@@ -75,6 +75,15 @@
                 </div>
             </div>
             <div class="form-group">	
+                <label class="col-sm-3 control-label">直推人：</label>
+                <div class="col-sm-8">
+                    <select class="form-control" name="promotorId" id="promotorId">
+                    	<option value=""> -- 请选择 -- </option>
+	                    <option  th:selected="${agent.promotorId eq c.userId}" th:each="c:${userList}"  th:value="${c.userId}" th:text="${c.userName}"/>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">	
                 <label class="col-sm-3 control-label">收款人：</label>
                 <div class="col-sm-8">
                     <input id="bankReceiver" name="bankReceiver" th:field="*{bankReceiver}" class="form-control" type="text">
@@ -90,15 +99,6 @@
                 <label class="col-sm-3 control-label">开户行：</label>
                 <div class="col-sm-8">
                     <input id="bankName" name="bankName" th:field="*{bankName}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">直推人：</label>
-                <div class="col-sm-8">
-                    <select class="form-control" name="promotorId" id="promotorId">
-                    	<option value=""> -- 请选择 -- </option>
-	                    <option  th:selected="${agent.promotorId eq c.userId}" th:each="c:${userList}"  th:value="${c.userId}" th:text="${c.userName}"/>
-                    </select>
                 </div>
             </div>
 			<div class="form-group">

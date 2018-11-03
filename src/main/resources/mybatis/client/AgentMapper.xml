@@ -111,7 +111,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="promIndirectRate != null">prom_indirect_rate,</if>
 			<if test="promPaperRate != null">prom_paper_rate,</if>
 			<if test="promotionRate != null">promotion_rate,</if>
-			<if test="directAgentRate != null">directAgent_rate,</if>
+			<if test="directAgentRate != null">direct_agent_rate,</if>
 			<if test="serveRate != null">serve_rate,</if>
 			<if test="subsidyRate != null">subsidy_rate,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>

@@ -104,6 +104,15 @@ public class RepairServiceImpl implements IRepairService
 		}
 		repair.setCreateTime(new Date());
 		repair.setCreateBy(ShiroUtils.getLoginName());
+		// 设置默认参数
+		repair.setAdRate(0.03f);
+		repair.setAdCarouselRate(0.03f);
+		repair.setScanRate(0.05f);
+		repair.setPromDirectRate(1000f);
+		repair.setPromIndirectRate(500f);
+		repair.setPromPaperRate(0.7f);
+		repair.setPromotionRate(0.15f);
+		repair.setSubsidyRate(0.05f);
 		int i =  repairMapper.insertRepair(repair);
 	    if(user != null) {
 	    	user.setPuserId(repair.getRepairId());
