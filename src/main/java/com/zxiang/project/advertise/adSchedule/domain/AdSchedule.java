@@ -47,8 +47,15 @@ public class AdSchedule extends BaseEntity
 	private Date updateTime;
 	/**节目单ID  */
 	private String pId;
+	/**审核结果  */
+	private String approved;
+	/**审核意见  */
+	private String approvedRemark;
+	/**审核人员  */
+	private String approvedUser;
 	
 	private Long[] deviceIds;
+	private String timeSlotArr;
 
 	private String releaseTypeName;
 	private String releasePositionName;
@@ -228,6 +235,38 @@ public class AdSchedule extends BaseEntity
 
 	public void setDeviceIds(Long[] deviceIds) {
 		this.deviceIds = deviceIds;
+	}
+
+	public String getTimeSlotArr() {
+		return timeSlotArr;
+	}
+
+	public void setTimeSlotArr(String timeSlotArr) {
+		this.timeSlotArr = timeSlotArr;
+	}
+
+	public String getApproved() {
+		return approved;
+	}
+
+	public void setApproved(String approved) {
+		this.approved = approved;
+	}
+
+	public String getApprovedRemark() {
+		return approvedRemark;
+	}
+
+	public void setApprovedRemark(String approvedRemark) {
+		this.approvedRemark = approvedRemark;
+	}
+
+	public String getApprovedUser() {
+		return approvedUser;
+	}
+
+	public void setApprovedUser(String approvedUser) {
+		this.approvedUser = approvedUser;
 	}
 
 	public String toString() {

@@ -188,4 +188,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT device_code FROM zx_device WHERE place_id=#{placeId} ORDER BY device_id DESC LIMIT 1
 	</select>
 	
+	<select id="getDeviceByPlaceId" parameterType="String" resultMap="DeviceResult">
+         select * from zx_device WHERE place_id=#{placeId}
+    </select>
+	
+	<select id="getDeviceByareaId" resultMap="DeviceResult">
+         SELECT * FROM `zx_device` WHERE place_id IN(SELECT place_id FROM `zx_place` WHERE 1=1 
+         <if test="province != null and province.trim() != ''">
+			AND province=#{province} 
+		 </if>
+		 <if test="city != null and city.trim() != ''">
+			AND city=#{city}
+		 </if>
+		 <if test="county != null and county.trim() != ''">
+			AND county=#{county}
+		 </if>
+         )
+    </select>
+    
 </mapper>

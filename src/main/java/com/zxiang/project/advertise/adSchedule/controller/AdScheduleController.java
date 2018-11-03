@@ -1,7 +1,6 @@
 package com.zxiang.project.advertise.adSchedule.controller;
 import java.util.Date;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -26,6 +25,7 @@ import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
 import com.zxiang.project.advertise.adSchedule.service.IAdScheduleService;
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.mapper.DeviceMapper;
+import com.zxiang.project.business.place.service.IPlaceService;
 
 /**
  * 广告投放 信息操作处理
@@ -43,6 +43,8 @@ public class AdScheduleController extends BaseController
 	private IAdScheduleService adScheduleService;
 	@Autowired
 	private DeviceMapper deviceMapper;
+	@Autowired 
+	private IPlaceService placeService;
 	
 	 //01待预约；02待审核；03待发布；04待播放；05已播放；06审核失败；07排期失败
     
@@ -182,6 +184,7 @@ public class AdScheduleController extends BaseController
 		AdSchedule adSchedule = adScheduleService.selectAdScheduleById(adScheduleId);
 		mmap.put("adSchedule", adSchedule);
 		mmap.put("devices", deviceMapper.selectDeviceList(new Device()));
+		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 		
 	    return prefix + "/order";
 	}
@@ -196,11 +199,7 @@ public class AdScheduleController extends BaseController
 	public AjaxResult orderSave(AdSchedule adSchedule)
 	{
 		//TODO 广告投放预约保存
-		Long[] deviceIds = adSchedule.getDeviceIds();
-		for (int i = 0; i < deviceIds.length; i++) {
-			System.out.println("deviceIds:"+deviceIds[i]);
-		}
-		return success("成功:"+adSchedule.getDeviceIds().length);
+		return toAjax(adScheduleService.orderSave(adSchedule));
 	}
 	
 	/**
@@ -225,8 +224,8 @@ public class AdScheduleController extends BaseController
 	public AjaxResult auditSave(AdSchedule adSchedule)
 	{
 		//TODO 广告投放审核保存
-		System.out.println("TODO 广告投放审核保存");
-		return success();
+		String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+		return toAjax(adScheduleService.auditSave(adSchedule,operatorUser));
 	}
 	
 	/**
