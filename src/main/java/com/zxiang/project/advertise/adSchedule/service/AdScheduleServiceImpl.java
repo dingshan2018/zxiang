@@ -130,20 +130,66 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	}
 	
 	@Override
+	@Transactional
 	public int auditSave(AdSchedule adSchedule,String operatorUser) {
-		if(AdConstant.AD_ADUIT_PASS.equals(adSchedule.getApproved())){
-			adSchedule.setStatus(AdConstant.AD_WAIT_PUBLISH);
-		}else if(AdConstant.AD_ADUIT_NO_PASS.equals(adSchedule.getApproved())){
-			adSchedule.setStatus(AdConstant.AD_ADUIT_FAIL);
-		}else{
-			return 0;//必须有审核结果,否则视为异常
+		try {
+			//审核通过下发排期计划
+			if(AdConstant.AD_ADUIT_PASS.equals(adSchedule.getApproved())){
+				adSchedule.setStatus(AdConstant.AD_WAIT_PUBLISH);
+				String result = publishSchedule(adSchedule.getAdScheduleId());
+				//返回结果封装
+				AdHttpResult adHttp = Tools.analysisResult(result);
+				if("0000".equals(adHttp.getCode())){
+					JSONObject data = (JSONObject) adHttp.get("data");
+					List<JSONObject> adUrls = (List<JSONObject>) data.get("adUrls");
+					for (JSONObject jsonObject : adUrls) {
+						String addUrl = jsonObject.getString("adUrl");
+						String terminalId = jsonObject.getString("terminalId");
+						//TODO 保存广告URL链接
+						logger.info("addUrl:"+addUrl+",terminalId:"+terminalId);
+						
+					}
+				} 
+				
+			}else if(AdConstant.AD_ADUIT_NO_PASS.equals(adSchedule.getApproved())){
+				//审核不通过则不下发排期计划
+				adSchedule.setStatus(AdConstant.AD_ADUIT_FAIL);
+			}else{
+				return 0;//必须有审核结果,否则视为异常
+			}
+			
+			adSchedule.setApprovedUser(operatorUser);
+			
+			return updateAdSchedule(adSchedule);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("auditSave error:"+e.getMessage());
+			return 0;
 		}
-		
-		adSchedule.setApprovedUser(operatorUser);
-		
-		return updateAdSchedule(adSchedule);
 	}
 	
+	/**
+	 * 审核通过下发排期计划
+	 * @param adScheduleId 排期计划ID
+	 */
+	private String publishSchedule(Integer adScheduleId) {
+		// TODO 调用下发排期计划接口
+
+		Map<String, String> paramsMap = new HashMap<String, String>();
+		//请求参数封装
+		paramsMap.put("scheduleId", adScheduleId.toString());
+		String param = Tools.paramsToString(paramsMap);
+		String result = null;
+		try {
+			result = Tools.doPostForm(AdConstant.AD_URL_PUBLISHSCHEDULE, param);
+			logger.info("result:"+result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("publishSchedule error:"+e.getMessage());
+		}
+		return result;
+	}
+
 	@Override
 	public int releaseOnlineSave(AdSchedule adSchedule) {
 		//若广告的status已经为04则已经发布过不再更新，若没有发布则进行发布操作
