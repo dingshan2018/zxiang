@@ -38,6 +38,21 @@
 					</select>
 				</div>
 			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>广告商：</label>
+				<div class="col-sm-8">
+					<select id="advertiseId" name="advertiseId" class="form-control">
+						<option value="">---请选择---</option>
+						<option th:each="c:${advertiserList}"  th:value="${c.advertiseId}" th:text="${c.advertisorName}"/>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">总播放时长：</label>
+				<div class="col-sm-8">
+					<input id="totalTime" name="totalTime" class="form-control" type="text">
+				</div>
+			</div>
 			<!-- <div class="form-group">	
 				<label class="col-sm-3 control-label">视讯排期ID：</label>
 				<div class="col-sm-8">

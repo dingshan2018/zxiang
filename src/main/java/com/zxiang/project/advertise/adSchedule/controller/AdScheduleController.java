@@ -1,6 +1,7 @@
 package com.zxiang.project.advertise.adSchedule.controller;
 import java.util.Date;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -27,6 +28,8 @@ import com.zxiang.project.advertise.adSchedule.service.IAdScheduleService;
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.mapper.DeviceMapper;
 import com.zxiang.project.business.place.service.IPlaceService;
+import com.zxiang.project.client.advertise.domain.Advertise;
+import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
 
 /**
  * 广告投放 信息操作处理
@@ -46,6 +49,8 @@ public class AdScheduleController extends BaseController
 	private DeviceMapper deviceMapper;
 	@Autowired 
 	private IPlaceService placeService;
+	@Autowired
+	private AdvertiseMapper advertiseMapper;
 	
 	 //01待预约；02待审核；03待发布；04待播放；05已播放；06审核失败；07排期失败
     
@@ -78,6 +83,7 @@ public class AdScheduleController extends BaseController
 	{
 		List<ThemeTemplate> ThemeTemplateList = adScheduleService.getThemeList();
 		mmap.put("ThemeTemplateList", ThemeTemplateList);
+		mmap.put("advertiserList", advertiseMapper.selectAdvertiseList(new Advertise()));
 		
 	    return prefix + "/add";
 	}
@@ -97,7 +103,7 @@ public class AdScheduleController extends BaseController
 		adSchedule.setCreateTime(new Date());
 		adSchedule.setIsDel("0");
 		
-		return toAjax(adScheduleService.insertAdSchedule(adSchedule));
+		return toAjax(adScheduleService.saveAdTemplates(adSchedule));
 	}
 
 	/**

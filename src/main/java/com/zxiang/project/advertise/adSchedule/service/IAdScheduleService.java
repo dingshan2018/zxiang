@@ -79,6 +79,13 @@ public interface IAdScheduleService
 	 * 获取模板详细信息列表
 	 */
 	public List<ThemeTemplate> getThemeList();
+
+	/**
+	 * 新增广告并且保存推广计划
+	 * @param adSchedule
+	 * @return
+	 */
+	public int saveAdTemplates(AdSchedule adSchedule);
 	
 
 }

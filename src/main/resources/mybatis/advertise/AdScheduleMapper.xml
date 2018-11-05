@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="releasePosition"    column="release_position"    />
         <result property="sxScheduleId"    column="sx_schedule_id"    />
         <result property="pId"    column="pid"    />
+        <result property="tId"    column="tid"    />
         <result property="themeTemplateId"    column="theme_template_id"    />
         <result property="status"    column="status"    />
         <result property="totalPay"    column="total_pay"    />
@@ -25,6 +26,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="advertiseId"    column="advertise_id"    />
+        <result property="totalTime"    column="total_time"    />
     </resultMap>
 	
 	<sql id="selectAdScheduleVo">
@@ -33,11 +36,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='release_type' AND sdd.dict_value=zas.`release_type` ) releaseTypeName,
         release_position,
         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='release_position' AND sdd.dict_value=zas.`release_position` ) releasePositionName, 
-        sx_schedule_id, pid,theme_template_id,
+        sx_schedule_id, pid,tid,theme_template_id,
         status, 
         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='schedule_status' AND sdd.dict_value=zas.`status` ) statusName,
         total_pay, prepay, release_term_num,approved,approved_remark,approved_user, 
-        is_del, release_note, create_by, create_time, update_by, update_time from zx_ad_schedule zas
+        is_del, release_note, create_by, create_time, update_by, update_time,advertise_id,total_time from zx_ad_schedule zas
     </sql>
 	
     <select id="selectAdScheduleList" parameterType="AdSchedule" resultMap="AdScheduleResult">
@@ -51,6 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="releasePosition != null and releasePosition != ''"> and release_position = #{releasePosition}</if>
              <if test="sxScheduleId != null and sxScheduleId != ''"> and sx_schedule_id = #{sxScheduleId}</if>
              <if test="pId != null and pId != ''"> and pid = #{pId}</if>
+             <if test="tId != null and tId != ''"> and tid = #{tId}</if>
              <if test="themeTemplateId != null and themeTemplateId != ''"> and theme_template_id = #{themeTemplateId}</if>
              <if test="status != null and status != ''"> and status = #{status}</if>
              <if test="totalPay != null and totalPay != ''"> and total_pay = #{totalPay}</if>
@@ -65,6 +69,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="createTime != null "> and create_time = #{createTime}</if>
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
              <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="advertiseId != null and advertiseId != ''"> and advertise_id = #{advertiseId}</if>
+             <if test="totalTime != null and totalTime != ''"> and total_time = #{totalTime}</if>
          </where>
     </select>
     
@@ -82,6 +88,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="releasePosition != null and releasePosition != '' ">release_position,</if>
 			<if test="sxScheduleId != null and sxScheduleId != '' ">sx_schedule_id,</if>
 			<if test="pId != null and pId != '' ">pid,</if>
+			<if test="tId != null and tId != '' ">tid,</if>
 			<if test="themeTemplateId != null and themeTemplateId != '' ">theme_template_id,</if>
 			<if test="status != null and status != '' ">status,</if>
 			<if test="totalPay != null and totalPay != '' ">total_pay,</if>
@@ -96,6 +103,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createTime != null  ">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
 			<if test="updateTime != null ">update_time,</if>
+			<if test="advertiseId != null ">advertise_id,</if>
+			<if test="totalTime != null ">total_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="adScheduleId != null and adScheduleId != ''">#{adScheduleId},</if>
@@ -104,6 +113,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="releasePosition != null and releasePosition != ''">#{releasePosition},</if>
 			<if test="sxScheduleId != null and sxScheduleId != ''">#{sxScheduleId},</if>
 			<if test="pId != null and pId != ''">#{pId},</if>
+			<if test="tId != null and tId != ''">#{tId},</if>
 			<if test="themeTemplateId != null and themeTemplateId != ''">#{themeTemplateId},</if>
 			<if test="status != null and status != ''">#{status},</if>
 			<if test="totalPay != null and totalPay != ''">#{totalPay},</if>
@@ -118,6 +128,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createTime != null ">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
 			<if test="updateTime != null ">#{updateTime},</if>
+			<if test="advertiseId != null ">#{advertiseId},</if>
+			<if test="totalTime != null ">#{totalTime},</if>
          </trim>
     </insert>
 	 
@@ -129,6 +141,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="releasePosition != null  and releasePosition != ''  ">release_position = #{releasePosition},</if>
             <if test="sxScheduleId != null  ">sx_schedule_id = #{sxScheduleId},</if>
             <if test="pId != null  ">pid = #{pId},</if>
+            <if test="tId != null  ">tid = #{tId},</if>
              <if test="themeTemplateId != null  ">theme_template_id = #{themeTemplateId},</if>
             <if test="status != null  and status != ''  ">status = #{status},</if>
             <if test="totalPay != null  ">total_pay = #{totalPay},</if>
@@ -143,6 +156,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="advertiseId != null  ">advertise_id = #{advertiseId},</if>
+            <if test="totalTime != null  ">total_time = #{totalTime},</if>
         </trim>
         where ad_schedule_id = #{adScheduleId}
     </update>

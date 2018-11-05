@@ -5,11 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.logging.Logger;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.support.Convert;
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
 import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
@@ -27,6 +29,8 @@ import com.zxiang.project.advertise.utils.constant.AdConstant;
 @Service
 public class AdScheduleServiceImpl implements IAdScheduleService 
 {
+	Logger logger = Logger.getLogger(AdScheduleServiceImpl.class);
+			
 	@Autowired
 	private AdScheduleMapper adScheduleMapper;
 
@@ -186,6 +190,42 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			e.printStackTrace();
 		}
 		return ThemeTemplateList;
+	}
+
+	@Override
+	public int saveAdTemplates(AdSchedule adSchedule) {
+		
+		logger.info("adSchedule:"+adSchedule.toString());
+		//1.调用接口参数
+		Map<String, String> paramsMap = new HashMap<String, String>();
+		//请求参数封装
+		paramsMap.put("scheduleName", adSchedule.getScheduleName());
+		paramsMap.put("templateId", adSchedule.getThemeTemplateId());
+		paramsMap.put("advertiser", adSchedule.getAdvertiseId().toString());
+		paramsMap.put("totalTime", adSchedule.getTotalTime());
+		
+		String param = Tools.paramsToString(paramsMap);
+		String result = null;
+		try {
+			result = Tools.doPostForm(AdConstant.AD_URL_SAVEPLAYBILL, param);
+			//返回结果封装
+			AdHttpResult adHttp = Tools.analysisResult(result);
+			if("0000".equals(adHttp.getCode())){
+				JSONObject jsonResult =  (JSONObject) adHttp.get("data");
+				String pId = jsonResult.getString("pid");
+				String tId = jsonResult.getString("tid");
+
+				adSchedule.setpId(pId);
+				adSchedule.settId(tId);
+			} 
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("saveAdTemplates error:"+e.getMessage());
+		}
+		
+		//2.保存Advertise表数据
+		return adScheduleMapper.insertAdSchedule(adSchedule);
 	}
 
 }

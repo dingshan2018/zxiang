@@ -55,6 +55,12 @@ public class AdSchedule extends BaseEntity
 	private String approvedRemark;
 	/**审核人员  */
 	private String approvedUser;
+	/**广告主体名称  */
+	private Integer advertiseId;
+	/**总共播放时长  */
+	private String totalTime;
+	/**HTTP接口返回的tid  */
+	private String tId;
 	
 	private Long[] deviceIds;
 	private String timeSlotArr;
@@ -277,6 +283,30 @@ public class AdSchedule extends BaseEntity
 
 	public void setThemeTemplateId(String themeTemplateId) {
 		this.themeTemplateId = themeTemplateId;
+	}
+
+	public Integer getAdvertiseId() {
+		return advertiseId;
+	}
+
+	public void setAdvertiseId(Integer advertiseId) {
+		this.advertiseId = advertiseId;
+	}
+
+	public String getTotalTime() {
+		return totalTime;
+	}
+
+	public void setTotalTime(String playTotalTime) {
+		this.totalTime = playTotalTime;
+	}
+
+	public String gettId() {
+		return tId;
+	}
+
+	public void settId(String tId) {
+		this.tId = tId;
 	}
 
 	public String toString() {
