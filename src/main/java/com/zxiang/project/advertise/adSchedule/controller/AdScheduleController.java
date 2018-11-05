@@ -116,6 +116,7 @@ public class AdScheduleController extends BaseController
 		mmap.put("adSchedule", adSchedule);
 		List<ThemeTemplate> ThemeTemplateList = adScheduleService.getThemeList();
 		mmap.put("ThemeTemplateList", ThemeTemplateList);
+		mmap.put("advertiserList", advertiseMapper.selectAdvertiseList(new Advertise()));
 		
 	    return prefix + "/edit";
 	}

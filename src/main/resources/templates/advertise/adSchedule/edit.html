@@ -15,16 +15,20 @@
             <div class="form-group">	
                 <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放方式：</label>
                 <div class="col-sm-8">
-                    <select id="releaseType" name="releaseType" class="form-control m-b" th:with="type=${@dict.getType('release_type')}">
-	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{releaseType}"></option>
+                    <select id="releaseType" name="releaseType" class="form-control m-b" 
+                    th:with="type=${@dict.getType('release_type')}">
+	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" 
+	                    th:value="${dict.dictValue}" th:field="*{releaseType}"></option>
 	                </select>
                 </div>
             </div>
             <div class="form-group">	
                 <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放位置：</label>
                 <div class="col-sm-8">
-                    <select id="releasePosition"  name="releasePosition" class="form-control m-b" th:with="type=${@dict.getType('release_position')}">
-	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{releasePosition}"></option>
+                    <select id="releasePosition"  name="releasePosition" class="form-control m-b" 
+                    th:with="type=${@dict.getType('release_position')}">
+	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" 
+	                    th:value="${dict.dictValue}" th:field="*{releasePosition}"></option>
 	                </select>
                 </div>
             </div>
@@ -33,10 +37,27 @@
                 <div class="col-sm-8">
                     <select id="themeTemplateId" name="themeTemplateId" class="form-control">
 						<option value=""></option>
-						<option th:each="c:${ThemeTemplateList}"  th:value="${c.themeTemplateId}" th:text="${c.themeName}" th:field="*{themeTemplateId}"/>
+						<option th:each="c:${ThemeTemplateList}"  th:value="${c.themeTemplateId}" 
+						th:text="${c.themeName}" th:field="*{themeTemplateId}"/>
 					</select>
                 </div>
             </div>
+            <div class="form-group">	
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>广告商：</label>
+				<div class="col-sm-8">
+					<select id="advertiseId" name="advertiseId" class="form-control">
+						<option value=""></option>
+						<option th:each="c:${advertiserList}"  th:value="${c.advertiseId}" 
+						th:text="${c.advertisorName}" th:field="*{advertiseId}"/>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">总播放时长：</label>
+				<div class="col-sm-8">
+					<input id="totalTime" name="totalTime" th:field="*{totalTime}" class="form-control" type="text">
+				</div>
+			</div>
            <!--  <div class="form-group">	
                 <label class="col-sm-3 control-label">视讯排期ID：</label>
                 <div class="col-sm-8">
@@ -98,6 +119,12 @@
 					required:true,
 				},
 				themeTemplateId:{
+					required:true,
+				},
+				advertiseId:{
+					required:true,
+				},
+				totalTime:{
 					required:true,
 				},
 			},

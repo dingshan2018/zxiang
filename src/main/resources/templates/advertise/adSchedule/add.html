@@ -117,6 +117,12 @@
 				themeTemplateId:{
 					required:true,
 				},
+				advertiseId:{
+					required:true,
+				},
+				totalTime:{
+					required:true,
+				},
 			},
 			submitHandler: function(form) {
 				$.operate.save(prefix + "/add", $('#form-adSchedule-add').serialize());

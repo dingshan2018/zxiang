@@ -40,7 +40,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         status, 
         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='schedule_status' AND sdd.dict_value=zas.`status` ) statusName,
         total_pay, prepay, release_term_num,approved,approved_remark,approved_user, 
-        is_del, release_note, create_by, create_time, update_by, update_time,advertise_id,total_time from zx_ad_schedule zas
+        is_del, release_note, create_by, create_time, update_by, update_time,
+        advertise_id,
+        (SELECT DISTINCT za.advertisor_name FROM zx_advertise za WHERE za.advertise_id =zas.`advertise_id`) advertiseName,
+        total_time from zx_ad_schedule zas
     </sql>
 	
     <select id="selectAdScheduleList" parameterType="AdSchedule" resultMap="AdScheduleResult">

@@ -119,6 +119,14 @@
 				title : '节目单ID' 
 			},
 			{
+				field : 'advertiseName', 
+				title : '广告商' 
+			},
+			{
+				field : 'totalTime', 
+				title : '总播放时长' 
+			},
+			{
 				field : 'totalPay', 
 				title : '总价' 
 			},
@@ -184,6 +192,11 @@
         };
         $.table.init(options);
         $('#bootstrap-table').bootstrapTable('hideColumn', 'status');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'sxScheduleId');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'createBy');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
     });
     
     //
