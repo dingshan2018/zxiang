@@ -48,6 +48,12 @@ public class AdConstant {
 	public final static String 	AD_URL_PUBLISHSCHEDULE = "http://ad.bp.zcloudtechs.cn/web-doorplate/adpublish/api/publishSchedule.action";
 	
 	
+	/******************** 广告HTTP接口返回状态	*******************/
+	
+	/** 审核通过下发排期计划URL	 */
+	public final static String 	RESPONSE_CODE_SUCCESS = "0000";
+	
+	
 	
 	
 }

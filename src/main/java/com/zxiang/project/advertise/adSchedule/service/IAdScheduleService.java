@@ -6,6 +6,8 @@ import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.multipart.MultipartFile;
+
 /**
  * 广告投放 服务层
  * 
@@ -86,6 +88,15 @@ public interface IAdScheduleService
 	 * @return
 	 */
 	public int saveAdTemplates(AdSchedule adSchedule);
+
+	/**
+	 * 素材上传调用HTTP接口保存文件
+	 * 
+	 * @param files
+	 * @param adScheduleId
+	 * @return
+	 */
+	public int materialUpload(List<MultipartFile> files, String adScheduleId);
 	
 
 }

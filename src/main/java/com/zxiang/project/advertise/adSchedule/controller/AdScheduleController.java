@@ -168,25 +168,11 @@ public class AdScheduleController extends BaseController
     @ResponseBody
     public AjaxResult materialUploadSave(HttpServletRequest request)
     {
-		 int saveCount = 0;
     	 String adScheduleId = request.getParameter("adScheduleId");
-    	 String scheduleName = request.getParameter("scheduleName");
+    	 //String scheduleName = request.getParameter("scheduleName");
     	
     	 List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
-         MultipartFile file = null;
-         for (int i = 0; i < files.size(); ++i) {
-        	 saveCount++;
-             file = files.get(i);
-             System.out.println("file:"+file.getOriginalFilename());
-             //TODO 保存文件动作
-             if (!file.isEmpty()) {
-            	 
-             } else {
-                 System.out.println("文件不能为空!");
-             }
-         }
-        
-        return success("成功上传 "+ saveCount +" 份文件!");
+    	 return toAjax(adScheduleService.materialUpload(files,adScheduleId));
     }
 	
 	/**
@@ -212,7 +198,6 @@ public class AdScheduleController extends BaseController
 	@ResponseBody
 	public AjaxResult orderSave(AdSchedule adSchedule)
 	{
-		//TODO 广告投放预约保存
 		return toAjax(adScheduleService.orderSave(adSchedule));
 	}
 	
@@ -237,7 +222,6 @@ public class AdScheduleController extends BaseController
 	@ResponseBody
 	public AjaxResult auditSave(AdSchedule adSchedule)
 	{
-		//TODO 广告投放审核保存
 		String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
 		return toAjax(adScheduleService.auditSave(adSchedule,operatorUser));
 	}
