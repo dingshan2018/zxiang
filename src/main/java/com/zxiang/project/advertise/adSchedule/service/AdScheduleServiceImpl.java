@@ -3,7 +3,9 @@ package com.zxiang.project.advertise.adSchedule.service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +41,8 @@ import com.zxiang.project.advertise.utils.constant.AdConstant;
 public class AdScheduleServiceImpl implements IAdScheduleService 
 {
 	Logger logger = Logger.getLogger(AdScheduleServiceImpl.class);
+	private SimpleDateFormat yyyyMMddHHmmSFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	private SimpleDateFormat yyyyMMddSFormat = new SimpleDateFormat("yyyy-MM-dd");
 			
 	@Autowired
 	private AdScheduleMapper adScheduleMapper;
@@ -107,35 +111,69 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	@Transactional
 	public int orderSave(AdSchedule adSchedule) {
 		
-		// TODO 预约设备后广告状态变为待审核
-		adSchedule.setStatus(AdConstant.AD_WAIT_ADUIT);
-		
-		//插入广告与设备关系表 一对多
-		Long[] deviceIds = adSchedule.getDeviceIds();
-		for (int i = 0; i < deviceIds.length; i++) {
-			System.out.println("deviceIds:"+deviceIds[i]);
-		}
-		
-		//插入广告与时间范围关系表 一对多
-		String timeSlotArr = adSchedule.getTimeSlotArr();
-
 		try {
+			//1.预约设备后广告状态变为待审核
+			adSchedule.setStatus(AdConstant.AD_WAIT_ADUIT);
+			
+			//TODO 2.插入广告与设备关系表 一对多
+			Long[] deviceIds = adSchedule.getDeviceIds();
+			for (int i = 0; i < deviceIds.length; i++) {
+				System.out.println("deviceIds:"+deviceIds[i]);
+			}
+			
+			//TODO 3.插入广告与时间范围关系表 一对多
+			List<HashMap<String, Object>> timeSlots = new ArrayList<>();
+			Date deadLineDate = null;
+			
+			//String timeSlotArr = adSchedule.getTimeSlotArr();
+			String timeSlotArr ="["
+					+ "{\"beginTime\":\"2018-11-01 11:00:40\",\"endTime\":\"2018-11-01 11:01:40\"},"
+					+ "{\"beginTime\":\"2018-11-06 11:00:58\",\"endTime\":\"2018-11-06 11:29:58\"},"
+					+ "{\"beginTime\":\"2018-11-03 11:04:53\",\"endTime\":\"2018-11-03 11:29:53\"}]";
+			
 			JSONArray timeSlotJsonArray = new JSONArray(timeSlotArr);
 			for(int i=0 ; i < timeSlotJsonArray.length() ;i++)
 			{
 				org.json.JSONObject time = timeSlotJsonArray.getJSONObject(i);
-				System.out.println("beginTime="+time.getString("beginTime"));
-				System.out.println("endTime="+time.getString("endTime"));
+				String beginTime = time.getString("beginTime");
+				String lastTime = time.getString("endTime");
+				//处理时间
+				String startDate = beginTime.substring(0, beginTime.lastIndexOf(" "));
+				String startTime = beginTime.substring(beginTime.lastIndexOf(" ") + 1);
+
+				String endDate = lastTime.substring(0, lastTime.lastIndexOf(" "));
+				String endTime = lastTime.substring(lastTime.lastIndexOf(" ") + 1);
+				
+				HashMap<String, Object> timeSlot = new HashMap<>();
+				timeSlot.put("startDate", startDate);
+				timeSlot.put("endDate", endDate);
+				timeSlot.put("startTime", startTime);
+				timeSlot.put("endTime", endTime);
+				timeSlots.add(timeSlot);
+				
+				if(deadLineDate == null){
+					deadLineDate = yyyyMMddSFormat.parse(endDate);
+				}
+				//取最后日期
+				deadLineDate = compareDate(deadLineDate, yyyyMMddSFormat.parse(endDate));
 			}
+			
+			logger.info("timeSlots:"+timeSlots.toString());
+			logger.info("deadLineDate:"+deadLineDate);
+			
+			String pIds = adSchedule.getpId();
+			String tIds = adSchedule.gettId();
+			String result = addSchedule(pIds, tIds, timeSlots.toString(), deadLineDate.toString());
+			logger.info("addSchedule result:"+result);
+			
+			//TODO 4.插入广告与投放方式关系表 一对一
+			
+			return 1;//updateAdSchedule(adSchedule);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
-		};
-		
-		//插入广告与投放方式关系表 一对一
-		
-		
-		return updateAdSchedule(adSchedule);
+		}
 	}
 	
 	@Override
@@ -261,9 +299,27 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			String tId = adSchedule.gettId();
 			String eId = adSchedule.getThemeTemplateId();
 			
+			//根据themeTemplateId获取elementTypeID
+			String themeResult = getThemeListAction();
+			AdHttpResult themeResultHttp = Tools.analysisResult(themeResult);
+			if(AdConstant.RESPONSE_CODE_SUCCESS.equals(themeResultHttp.getCode())){
+				List<HashMap<String, Object>> data = (List<HashMap<String, Object>>) themeResultHttp.get("data");
+				for (HashMap<String, Object> themebject : data) {
+					String themeTemplateId = (String) themebject.get("THEMETEMPLATEID");
+					//匹配themeTemplateId的则获取该模板的元素ID
+					if(eId.equals(themeTemplateId)){
+						
+						break;
+					}else{
+						continue;
+					}
+					
+				}
+			}
+			
 			//1.上传素材文件
 			for (int i = 0; i < files.size(); ++i) {
-				//TODO 保存文件动作
+				//保存文件动作
 				MultipartFile multipartFile = files.get(i);
 			    if (!multipartFile.isEmpty()) {
 			    	//调用上传文件的接口
@@ -469,5 +525,17 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		return result;
 	}
 	
+	/**
+	 * 日期比较,返回日期大的Date
+	 * @param date1
+	 * @param date2
+	 * @return
+	 */
+	public static Date compareDate(Date date1, Date date2) {
+        if (date1.getTime() >= date2.getTime())
+            return date1;       
+        else
+            return date2;
+    }
 
 }
