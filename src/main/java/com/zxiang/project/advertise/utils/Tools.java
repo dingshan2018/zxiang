@@ -1,7 +1,12 @@
 package com.zxiang.project.advertise.utils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,7 +21,6 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.apache.commons.io.IOUtils;
-import org.springframework.http.RequestEntity;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -147,34 +151,6 @@ public class Tools {
 		}
 	}
 	
-	/**
-	 * HTTP post请求
-	 * Content-Type 为multipart/form-data
-	 * @param uri
-	 * @param requst
-	 * @return
-	 * @throws IOException
-	 */
-	public static String doPostMultipart(String uri, String requst) throws IOException {
-		String restult =null;
-		ProtocolSocketFactory fcty = new MySecureProtocolSocketFactory();
-		Protocol.registerProtocol("https", new Protocol("https", fcty, 443));
-		HttpClient client = new HttpClient();
-		// 使用POST方法
-		PostMethod method = new PostMethod(uri);
-		try {
-			StringRequestEntity entity = new StringRequestEntity(requst, "multipart/form-data", "UTF-8");
-			method.setRequestEntity(entity);
-			client.executeMethod(method);
-
-			InputStream inputStream = method.getResponseBodyAsStream();
-			restult = IOUtils.toString(inputStream);
-			return restult;
-		}finally {
-			// 释放连接
-			method.releaseConnection();
-		}
-	}
 	
 	/**
      * 根据返回的String分析调用结果
@@ -217,5 +193,55 @@ public class Tools {
         }    
         return map;    
     }
+    
+    /**
+     * 获取文件的二进制流
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    public static byte[] getFileToByte(File file) throws IOException {
+        byte[] by = new byte[(int) file.length()];
+        InputStream is = new FileInputStream(file);
+        try {
+            ByteArrayOutputStream bytestream = new ByteArrayOutputStream();
+            byte[] bb = new byte[2048];
+            int ch;
+            ch = is.read(bb);
+            while (ch != -1) {
+                bytestream.write(bb, 0, ch);
+                ch = is.read(bb);
+            }
+            by = bytestream.toByteArray();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }finally{
+        	 if (is != null) {
+  	           is.close();
+  	        }
+        }
+        return by;
+    }
+    
+    /**
+     * 文件流写入文件
+     * @param ins
+     * @param file
+     */
+	public static void inputStreamToFile(InputStream ins,File file) {
+		try {
+			OutputStream os = new FileOutputStream(file);
+			int bytesRead = 0;
+			byte[] buffer = new byte[8192];
+			while ((bytesRead = ins.read(buffer, 0, 8192)) != -1) {
+				os.write(buffer, 0, bytesRead);
+			}
+			os.close();
+			ins.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	 }
+
     
 }

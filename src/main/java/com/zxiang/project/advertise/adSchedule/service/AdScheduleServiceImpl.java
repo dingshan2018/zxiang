@@ -1,18 +1,25 @@
 package com.zxiang.project.advertise.adSchedule.service;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.jboss.logging.Logger;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.support.Convert;
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
@@ -164,8 +171,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			
 			return updateAdSchedule(adSchedule);
 		} catch (Exception e) {
+			logger.error("auditSave error:" + e);
 			e.printStackTrace();
-			logger.error("auditSave error:"+e.getMessage());
 			return 0;
 		}
 	}
@@ -235,8 +242,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			} 
 			
 		} catch (Exception e) {
+			logger.error("saveAdTemplates error:" + e);
 			e.printStackTrace();
-			logger.error("saveAdTemplates error:"+e.getMessage());
 		}
 		
 		//2.保存Advertise表数据
@@ -247,29 +254,43 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	@Transactional
 	public int materialUpload(List<MultipartFile> files, String adScheduleId) {
 
+		int saveNum = 0;
 		try {
-			int saveNum = 0;
 			
 			AdSchedule adSchedule = adScheduleMapper.selectAdScheduleById(Integer.parseInt(adScheduleId));
 			String tId = adSchedule.gettId();
 			String eId = adSchedule.getThemeTemplateId();
 			
+			//1.上传素材文件
 			for (int i = 0; i < files.size(); ++i) {
-				MultipartFile file = files.get(i);
-			    //TODO 保存文件动作
-			    if (!file.isEmpty()) {
-			    	String result = addElement(tId, eId);
-			    	
-			    	saveNum++; 
+				//TODO 保存文件动作
+				MultipartFile multipartFile = files.get(i);
+			    if (!multipartFile.isEmpty()) {
+			    	//调用上传文件的接口
+			    	String result = addElement(tId, eId, multipartFile);
+			    	if(result != null){
+			    		//返回结果封装
+						AdHttpResult adHttp = Tools.analysisResult(result);
+						if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
+							JSONObject jsonResult =  (JSONObject) adHttp.get("data");
+							String preview = jsonResult.getString("preview");
+							String teid = jsonResult.getString("teid");
+							String tresid = jsonResult.getString("tresid");
+							System.out.println("teid:"+teid+",tresid:"+tresid+",\tpreview:"+preview);
+							//TODO 业务处理
+						} 
+			        	saveNum++; 
+			        }
 			    } else {
 			        logger.error("文件不能为空!");
 			    }
 			}
 			
 			return saveNum;
+			
 		} catch (Exception e) {
+			logger.error("materialUpload error: " + e);
 			e.printStackTrace();
-			logger.error("materialUpload error: "+e.getMessage());
 			return 0;
 		}
 	}
@@ -292,18 +313,56 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	
 	/**
 	 * 接口2：调用上传素材信息HTTP Multipart接口
+	 * @param tId
+	 * @param eId
+	 * @param multipartFile
 	 * @return
-	 * @throws IOException 
 	 */
-	public String addElement(String tid,String eid) throws IOException{
-		Map<String, String> paramsMap = new HashMap<String, String>();
-		paramsMap.put("tid", tid);
-		paramsMap.put("eid", eid);
+	public String addElement(String tId,String eId, MultipartFile multipartFile) throws Exception{
 		
-		String param = Tools.paramsToString(paramsMap);
-		String result = Tools.doPostMultipart(AdConstant.AD_URL_ADDELEMENT, param);
-		
-		return result;
+		PostMethod postMethod = new PostMethod(AdConstant.AD_URL_ADDELEMENT);
+    	HttpClient client = new HttpClient();
+    	File file = null;
+        try {
+        	//MultipartFile转file
+        	/*CommonsMultipartFile cf= (CommonsMultipartFile) multipartFile; //这个myfile是MultipartFile的
+            DiskFileItem fi = (DiskFileItem)cf.getFileItem(); 
+            File file = fi.getStoreLocation();*/
+
+        	InputStream ins = multipartFile.getInputStream();
+        	file=new File(multipartFile.getOriginalFilename());
+		    Tools.inputStreamToFile(ins, file);
+            
+            //FilePart：用来上传文件的类
+        	FilePart myUpload = new FilePart("myUpload", file);
+        	//StringPart:普通文本参数
+        	StringPart tid = new StringPart("tid", tId);
+        	StringPart eid = new StringPart("eid", eId);
+        	Part[] parts = {(Part) tid, (Part) eid,(Part) myUpload};
+        	
+        	MultipartRequestEntity mre = new MultipartRequestEntity((org.apache.commons.httpclient.methods.multipart.Part[]) 
+        			parts, postMethod.getParams());
+        	postMethod.setRequestEntity(mre);
+        	
+            client.getHttpConnectionManager().getParams().setConnectionTimeout(50000);// 设置连接时间
+            int status = client.executeMethod(postMethod);
+            if (status == HttpStatus.SC_OK) {
+                String result = postMethod.getResponseBodyAsString();
+                logger.info("result:"+result);
+        		return result;
+            }
+        } catch (Exception e) {
+        	logger.error("addElement error:" + e);
+        	throw e;
+        } finally {
+        	if(file.exists()){
+        		file.delete();
+        	}
+            //释放连接
+            postMethod.releaseConnection();
+        }
+        
+		return null;
 	}
 	
 	/**

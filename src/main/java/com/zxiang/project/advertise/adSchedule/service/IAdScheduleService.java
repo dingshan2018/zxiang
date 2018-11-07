@@ -4,7 +4,6 @@ import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
 import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 

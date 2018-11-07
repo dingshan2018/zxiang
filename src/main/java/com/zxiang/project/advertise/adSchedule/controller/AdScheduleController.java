@@ -25,6 +25,7 @@ import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
 import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
 import com.zxiang.project.advertise.adSchedule.service.IAdScheduleService;
+import com.zxiang.project.advertise.utils.constant.AdConstant;
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.mapper.DeviceMapper;
 import com.zxiang.project.business.place.service.IPlaceService;
@@ -98,7 +99,7 @@ public class AdScheduleController extends BaseController
 	public AjaxResult addSave(AdSchedule adSchedule)
 	{		
 		String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
-		adSchedule.setStatus("01");//待预约
+		adSchedule.setStatus(AdConstant.AD_WAIT_ORDER);//待预约
 		adSchedule.setCreateBy(operatorUser);
 		adSchedule.setCreateTime(new Date());
 		adSchedule.setIsDel("0");
