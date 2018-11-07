@@ -128,7 +128,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			//String timeSlotArr = adSchedule.getTimeSlotArr();
 			String timeSlotArr ="["
 					+ "{\"beginTime\":\"2018-11-01 11:00:40\",\"endTime\":\"2018-11-01 11:01:40\"},"
-					+ "{\"beginTime\":\"2018-11-06 11:00:58\",\"endTime\":\"2018-11-06 11:29:58\"},"
+					+ "{\"beginTime\":\"2018-11-03 11:00:58\",\"endTime\":\"2018-11-03 11:29:58\"},"
 					+ "{\"beginTime\":\"2018-11-03 11:04:53\",\"endTime\":\"2018-11-03 11:29:53\"}]";
 			
 			JSONArray timeSlotJsonArray = new JSONArray(timeSlotArr);
@@ -459,9 +459,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			String termCode,String province,String city) throws IOException{
 		//请求参数封装
 		Map<String, String> paramsMap = new HashMap<String, String>();
-		paramsMap.put("terminalId", terminalId);
-		paramsMap.put("terminalName", terminalName);
-		paramsMap.put("termCode", termCode);
+		paramsMap.put("deviceId", terminalId);
+		paramsMap.put("deviceName", terminalName);
+		paramsMap.put("devCode", termCode);
 		paramsMap.put("province", province);
 		paramsMap.put("city", city);
 		
