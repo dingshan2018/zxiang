@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.advertise.adReleaseRange.mapper.AdReleaseRangeMapper">
+    
+    <resultMap type="AdReleaseRange" id="AdReleaseRangeResult">
+        <result property="adReleaseRangeId"    column="ad_release_range_id"    />
+        <result property="adScheduleId"    column="ad_schedule_id"    />
+        <result property="releaseType"    column="release_type"    />
+        <result property="province"    column="province"    />
+        <result property="city"    column="city"    />
+        <result property="county"    column="county"    />
+        <result property="placeGrade"    column="placeGrade"    />
+        <result property="devices"    column="devices"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectAdReleaseRangeVo">
+        select ad_release_range_id, ad_schedule_id, release_type, province, city, county, placeGrade, devices, remark, create_by, create_time, update_by, update_time from zx_ad_release_range
+    </sql>
+	
+    <select id="selectAdReleaseRangeList" parameterType="AdReleaseRange" resultMap="AdReleaseRangeResult">
+        <include refid="selectAdReleaseRangeVo"/>
+        <where>  
+            <if test="adReleaseRangeId != null and adReleaseRangeId != ''"> and ad_release_range_id = #{adReleaseRangeId}</if>
+             <if test="adScheduleId != null and adScheduleId != ''"> and ad_schedule_id = #{adScheduleId}</if>
+             <if test="releaseType != null and releaseType != ''"> and release_type = #{releaseType}</if>
+             <if test="province != null and province != ''"> and province = #{province}</if>
+             <if test="city != null and city != ''"> and city = #{city}</if>
+             <if test="county != null and county != ''"> and county = #{county}</if>
+             <if test="placeGrade != null and placeGrade != ''"> and placeGrade = #{placeGrade}</if>
+             <if test="devices != null and devices != ''"> and devices = #{devices}</if>
+             <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectAdReleaseRangeById" parameterType="Integer" resultMap="AdReleaseRangeResult">
+        <include refid="selectAdReleaseRangeVo"/>
+        where ad_release_range_id = #{adReleaseRangeId}
+    </select>
+        
+    <insert id="insertAdReleaseRange" parameterType="AdReleaseRange">
+        insert into zx_ad_release_range
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="adReleaseRangeId != null and adReleaseRangeId != '' ">ad_release_range_id,</if>
+			<if test="adScheduleId != null and adScheduleId != '' ">ad_schedule_id,</if>
+			<if test="releaseType != null and releaseType != '' ">release_type,</if>
+			<if test="province != null and province != '' ">province,</if>
+			<if test="city != null and city != '' ">city,</if>
+			<if test="county != null and county != '' ">county,</if>
+			<if test="placeGrade != null and placeGrade != '' ">placeGrade,</if>
+			<if test="devices != null and devices != '' ">devices,</if>
+			<if test="remark != null and remark != '' ">remark,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="updateBy != null and updateBy != '' ">update_by,</if>
+			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="adReleaseRangeId != null and adReleaseRangeId != ''">#{adReleaseRangeId},</if>
+			<if test="adScheduleId != null and adScheduleId != ''">#{adScheduleId},</if>
+			<if test="releaseType != null and releaseType != ''">#{releaseType},</if>
+			<if test="province != null and province != ''">#{province},</if>
+			<if test="city != null and city != ''">#{city},</if>
+			<if test="county != null and county != ''">#{county},</if>
+			<if test="placeGrade != null and placeGrade != ''">#{placeGrade},</if>
+			<if test="devices != null and devices != ''">#{devices},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateAdReleaseRange" parameterType="AdReleaseRange">
+        update zx_ad_release_range
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="adScheduleId != null  ">ad_schedule_id = #{adScheduleId},</if>
+            <if test="releaseType != null  and releaseType != ''  ">release_type = #{releaseType},</if>
+            <if test="province != null  ">province = #{province},</if>
+            <if test="city != null  ">city = #{city},</if>
+            <if test="county != null  ">county = #{county},</if>
+            <if test="placeGrade != null  ">placeGrade = #{placeGrade},</if>
+            <if test="devices != null  and devices != ''  ">devices = #{devices},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where ad_release_range_id = #{adReleaseRangeId}
+    </update>
+
+	<delete id="deleteAdReleaseRangeById" parameterType="Integer">
+        delete from zx_ad_release_range where ad_release_range_id = #{adReleaseRangeId}
+    </delete>
+	
+    <delete id="deleteAdReleaseRangeByIds" parameterType="String">
+        delete from zx_ad_release_range where ad_release_range_id in 
+        <foreach item="adReleaseRangeId" collection="array" open="(" separator="," close=")">
+            #{adReleaseRangeId}
+        </foreach>
+    </delete>
+    
+</mapper>
