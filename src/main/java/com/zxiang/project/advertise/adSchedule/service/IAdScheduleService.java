@@ -94,9 +94,10 @@ public interface IAdScheduleService
 	 * 
 	 * @param files
 	 * @param adScheduleId
+	 * @param operatorUser 
 	 * @return
 	 */
-	public int materialUpload(List<MultipartFile> files, String adScheduleId) throws Exception;
+	public int materialUpload(List<MultipartFile> files, String adScheduleId, String operatorUser) throws Exception;
 	
 
 }

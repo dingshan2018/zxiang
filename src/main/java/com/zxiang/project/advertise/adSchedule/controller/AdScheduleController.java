@@ -176,10 +176,10 @@ public class AdScheduleController extends BaseController
     {
     	 try {
 			String adScheduleId = request.getParameter("adScheduleId");
-			 //String scheduleName = request.getParameter("scheduleName");
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
 			
 			 List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
-			 return toAjax(adScheduleService.materialUpload(files,adScheduleId));
+			 return toAjax(adScheduleService.materialUpload(files,adScheduleId,operatorUser));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return error();

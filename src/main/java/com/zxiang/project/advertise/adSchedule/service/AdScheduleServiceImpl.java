@@ -27,6 +27,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
+import com.zxiang.project.advertise.adMaterial.domain.AdMaterial;
+import com.zxiang.project.advertise.adMaterial.mapper.AdMaterialMapper;
 import com.zxiang.project.advertise.adReleaseRange.domain.AdReleaseRange;
 import com.zxiang.project.advertise.adReleaseRange.mapper.AdReleaseRangeMapper;
 import com.zxiang.project.advertise.adReleaseTimer.domain.AdReleaseTimer;
@@ -60,6 +62,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	private AdReleaseTimerMapper adReleaseTimerMapper;
 	@Autowired
 	private DeviceMapper deviceMapper;
+	@Autowired
+	private AdMaterialMapper adMaterialMapper;
 
 	/**
      * 查询广告投放信息
@@ -340,7 +344,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 
 	@Override
 	@Transactional
-	public int materialUpload(List<MultipartFile> files, String adScheduleId) throws Exception{
+	public int materialUpload(List<MultipartFile> files, 
+			String adScheduleId,String operatorUser) throws Exception{
 
 		int saveNum = 0;
 		try {
@@ -374,28 +379,27 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			    if (!multipartFile.isEmpty()) {
 			    	//调用上传文件的接口
 			    	String result = addElement(tId, eId, multipartFile);
-			    	if(result != null){
-			    		//返回结果封装
-						AdHttpResult adHttp = Tools.analysisResult(result);
-						if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
-							JSONObject jsonResult =  (JSONObject) adHttp.get("data");
-							String preview = jsonResult.getString("preview");
-							String teid = jsonResult.getString("teid");
-							String tresid = jsonResult.getString("tresid");
-							logger.info("teid:"+teid+",tresid:"+tresid+",\tpreview:"+preview);
-							//TODO 业务处理
-							
-						}else{
-							logger.error("调用上传素材信息接口失败!" + adHttp.toString());
-							throw new RRException("调用上传素材信息接口失败!");
-						} 
-			        	saveNum++; 
-			        }
+			    	//返回结果封装
+					AdHttpResult adHttp = Tools.analysisResult(result);
+					if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
+						JSONObject jsonResult =  (JSONObject) adHttp.get("data");
+						String preview = jsonResult.getString("preview");
+						String teid = jsonResult.getString("teid");
+						String tresid = jsonResult.getString("tresid");
+						logger.info("teid:"+teid+",tresid:"+tresid+",\tpreview:"+preview);
+						//TODO 业务处理
+						saveNum += insertMaterial(adSchedule.getAdScheduleId(),teid,tresid,preview,i,operatorUser);
+						
+					}else{
+						logger.error("调用上传素材信息接口失败!" + adHttp.toString());
+						throw new RRException("调用上传素材信息接口失败!");
+					} 
 			    } else {
-			        logger.error("文件不能为空!");
+			        logger.error("上传素材文件不能为空!");
+			        throw new RRException("上传素材文件不能为空!");
 			    }
 			}
-			
+			logger.info("成功上传: "+ saveNum + " 份文件");
 			return saveNum;
 			
 		} catch (Exception e) {
@@ -404,7 +408,32 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		}
 	}
 	
-	
+	/**
+	 * 保存预览素材URL,在最大批次之上增加1,即保存第N+1批次上传记录
+	 * @param adScheduleId	投放广告ID
+	 * @param teid	
+	 * @param tresid	
+	 * @param preview	素材预览URL
+	 * @param order	上传顺序
+	 * @param operator	操作者
+	 * @return
+	 */
+	private int insertMaterial(Integer adScheduleId, String teid, 
+			String tresid, String preview,int order,String operator) {
+		//查询当前最大批次
+		int maxBatch = adMaterialMapper.selectMaxBatch(adScheduleId);
+		AdMaterial adMaterial = new AdMaterial();
+		adMaterial.setAdScheduleId(adScheduleId);
+		adMaterial.setPreview(preview);
+		adMaterial.settEid(teid);
+		adMaterial.setTreSid(tresid);
+		adMaterial.setBatch(++maxBatch);
+		adMaterial.setOrder(order);
+		adMaterial.setCreateBy(operator);
+		adMaterial.setCreateTime(new Date());
+		return adMaterialMapper.insertAdMaterial(adMaterial);
+	}
+
 	/**
 	 * 接口1：获取模板信息列表  HTTP 接口
 	 * @throws IOException 

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.advertise.adMaterial.mapper.AdMaterialMapper">
+    
+    <resultMap type="AdMaterial" id="AdMaterialResult">
+        <result property="adMaterialId"    column="ad_material_id"    />
+        <result property="adScheduleId"    column="ad_schedule_id"    />
+        <result property="preview"    column="preview"    />
+        <result property="tEid"    column="teid"    />
+        <result property="treSid"    column="tresid"    />
+        <result property="batch"    column="batch"    />
+        <result property="order"    column="order"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+	
+	<sql id="selectAdMaterialVo">
+        select ad_material_id, ad_schedule_id, preview,teid,tresid, batch, order, 
+        remark, create_by, create_time from zx_ad_material
+    </sql>
+	
+    <select id="selectAdMaterialList" parameterType="AdMaterial" resultMap="AdMaterialResult">
+        <include refid="selectAdMaterialVo"/>
+        <where>  
+            <if test="adMaterialId != null and adMaterialId != ''"> and ad_material_id = #{adMaterialId}</if>
+             <if test="adScheduleId != null and adScheduleId != ''"> and ad_schedule_id = #{adScheduleId}</if>
+             <if test="preview != null and preview != ''"> and preview = #{preview}</if>
+             <if test="tEid != null and tEid != ''"> and teid = #{tEid}</if>
+             <if test="treSid != null and treSid != ''"> and tresid = #{treSid}</if>
+             <if test="batch != null and batch != ''"> and batch = #{batch}</if>
+             <if test="order != null and order != ''"> and order = #{order}</if>
+             <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectAdMaterialById" parameterType="Integer" resultMap="AdMaterialResult">
+        <include refid="selectAdMaterialVo"/>
+        where ad_material_id = #{adMaterialId}
+    </select>
+        
+    <insert id="insertAdMaterial" parameterType="AdMaterial">
+        insert into zx_ad_material
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="adMaterialId != null and adMaterialId != '' ">ad_material_id,</if>
+			<if test="adScheduleId != null and adScheduleId != '' ">ad_schedule_id,</if>
+			<if test="preview != null and preview != '' ">preview,</if>
+			<if test="tEid != null and tEid != '' ">teid,</if>
+			<if test="treSid != null and treSid != '' ">tresid,</if>
+			<if test="batch != null and batch != '' ">batch,</if>
+			<if test="order != null and order != '' ">order,</if>
+			<if test="remark != null and remark != '' ">remark,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null  ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="adMaterialId != null and adMaterialId != ''">#{adMaterialId},</if>
+			<if test="adScheduleId != null and adScheduleId != ''">#{adScheduleId},</if>
+			<if test="preview != null and preview != ''">#{preview},</if>
+			<if test="tEid != null and tEid != ''">#{tEid},</if>
+			<if test="treSid != null and treSid != ''">#{treSid},</if>
+			<if test="batch != null and batch != ''">#{batch},</if>
+			<if test="order != null and order != ''">#{order},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateAdMaterial" parameterType="AdMaterial">
+        update zx_ad_material
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="adScheduleId != null  ">ad_schedule_id = #{adScheduleId},</if>
+            <if test="preview != null  and preview != ''  ">preview = #{preview},</if>
+            <if test="tEid != null  and tEid != ''  ">teid = #{tEid},</if>
+            <if test="treSid != null  and treSid != ''  ">tresid = #{treSid},</if>
+            <if test="batch != null  ">batch = #{batch},</if>
+            <if test="order != null  ">order = #{order},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+        </trim>
+        where ad_material_id = #{adMaterialId}
+    </update>
+
+	<delete id="deleteAdMaterialById" parameterType="Integer">
+        delete from zx_ad_material where ad_material_id = #{adMaterialId}
+    </delete>
+	
+    <delete id="deleteAdMaterialByIds" parameterType="String">
+        delete from zx_ad_material where ad_material_id in 
+        <foreach item="adMaterialId" collection="array" open="(" separator="," close=")">
+            #{adMaterialId}
+        </foreach>
+    </delete>
+    
+    <select id="selectMaxBatch" parameterType="Integer">
+       SELECT IFNULL(MAX(batch),0) FROM `zx_ad_material` WHERE ad_schedule_id=#{adScheduleId};
+    </select>
+</mapper>
