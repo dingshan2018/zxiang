@@ -33,7 +33,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<sql id="selectAdScheduleVo">
         select ad_schedule_id, schedule_name, 
         release_type,
-        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='release_type' AND sdd.dict_value=zas.`release_type` ) releaseTypeName,
+        <!-- release_type暂不采用字典表
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='release_type' AND sdd.dict_value=zas.`release_type` ) releaseTypeName, -->
         release_position,
         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='release_position' AND sdd.dict_value=zas.`release_position` ) releasePositionName, 
         sx_schedule_id, pid,tid,theme_template_id,

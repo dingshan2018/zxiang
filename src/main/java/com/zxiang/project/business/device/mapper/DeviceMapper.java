@@ -80,5 +80,12 @@ public interface DeviceMapper
 	 * 通过地区ID查询设备列表
 	 */
 	public List<Device> getDeviceByareaId(@Param("province")String province,@Param("city") String city, @Param("county")String county);
+
+	/**
+	 * 更新设备的adUrl
+	 * @param adUrl
+	 * @param terminalId
+	 */
+	public int updateAdUrlByTid(@Param("adUrl")String adUrl, @Param("terminalIds")String[] terminalIds);
 	
 }

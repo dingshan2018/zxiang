@@ -22,7 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
 import com.zxiang.project.advertise.adReleaseRange.domain.AdReleaseRange;
 import com.zxiang.project.advertise.adReleaseRange.mapper.AdReleaseRangeMapper;
@@ -34,6 +37,7 @@ import com.zxiang.project.advertise.adSchedule.mapper.AdScheduleMapper;
 import com.zxiang.project.advertise.utils.AdHttpResult;
 import com.zxiang.project.advertise.utils.Tools;
 import com.zxiang.project.advertise.utils.constant.AdConstant;
+import com.zxiang.project.business.device.mapper.DeviceMapper;
 
 /**
  * 广告投放 服务层实现
@@ -54,6 +58,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	private AdReleaseRangeMapper adReleaseRangeMapper;
 	@Autowired
 	private AdReleaseTimerMapper adReleaseTimerMapper;
+	@Autowired
+	private DeviceMapper deviceMapper;
 
 	/**
      * 查询广告投放信息
@@ -121,7 +127,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		
 		try {
 			Date createDate = new Date();
-			//TODO 1.插入广告投放范围表	 一对一
+			//1.插入广告投放范围表	 一对一
 			AdReleaseRange adReleaseRange = new AdReleaseRange();
 			adReleaseRange.setAdScheduleId(adSchedule.getAdScheduleId());
 			String releaseType = adSchedule.getReleaseType();
@@ -143,7 +149,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			adReleaseRangeMapper.insertAdReleaseRange(adReleaseRange);
 			
 			//2.插入广告与时间范围关系表 	一对多
-			List<HashMap<String, Object>> timeSlots = new ArrayList<>();
+			List<String> timeSlots = new ArrayList<>();
 			Date deadLineDate = null;
 			String timeSlotArr = adSchedule.getTimeSlotArr();
 			
@@ -174,7 +180,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 				timeSlot.put("endDate", endDate);
 				timeSlot.put("startTime", startTime);
 				timeSlot.put("endTime", endTime);
-				timeSlots.add(timeSlot);
+				//Map转换成JSON
+				String jsonTimeSlot = JSON.toJSONString(timeSlot); 
+				timeSlots.add(jsonTimeSlot);
 				
 				if(deadLineDate == null){
 					deadLineDate = yyyyMMddSFormat.parse(endDate);
@@ -183,13 +191,21 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 				deadLineDate = compareDate(deadLineDate, yyyyMMddSFormat.parse(endDate));
 			}
 			
-			logger.info("timeSlots:"+timeSlots.toString());
-			logger.info("deadLineDate:"+deadLineDate);
-			
+			//这边的参数tid是设备的ID，而不是广告表的tid，需要修改!
 			String pIds = adSchedule.getpId();
-			String tIds = adSchedule.gettId();
-			String result = addSchedule(pIds, tIds, timeSlots.toString(), deadLineDate.toString());
-			logger.info("addSchedule result:"+result);
+			String result = addSchedule(pIds, deviceIds, timeSlots.toString(), yyyyMMddSFormat.format(deadLineDate));
+			//返回结果封装
+			AdHttpResult adHttp = Tools.analysisResult(result);
+			//保存排期ID
+			if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
+				JSONObject data = (JSONObject) adHttp.get("data");
+				String scheduleId = (String) data.get("scheduleId");
+				adSchedule.setSxScheduleId(scheduleId);
+
+			}else{
+				logger.error("调用排期接口失败!" + adHttp.toString());
+				throw new RRException("调用排期接口失败!");
+			}
 			
 			//预约设备后广告状态变为待审核
 			adSchedule.setStatus(AdConstant.AD_WAIT_ADUIT);
@@ -208,20 +224,24 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			//审核通过下发排期计划
 			if(AdConstant.AD_ADUIT_PASS.equals(adSchedule.getApproved())){
 				adSchedule.setStatus(AdConstant.AD_WAIT_PUBLISH);
-				String result = publishSchedule(adSchedule.getAdScheduleId());
+				String result = publishSchedule(adSchedule.getSxScheduleId());
 				//返回结果封装
 				AdHttpResult adHttp = Tools.analysisResult(result);
 				if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
 					JSONObject data = (JSONObject) adHttp.get("data");
 					List<JSONObject> adUrls = (List<JSONObject>) data.get("adUrls");
 					for (JSONObject jsonObject : adUrls) {
-						String addUrl = jsonObject.getString("adUrl");
+						String adUrl = jsonObject.getString("adUrl");
 						String terminalId = jsonObject.getString("terminalId");
-						//TODO 保存广告URL链接
-						logger.info("addUrl:"+addUrl+",terminalId:"+terminalId);
+						//保存广告URL链接
 						
+						int updateNum = deviceMapper.updateAdUrlByTid(adUrl,Convert.toStrArray(terminalId));
+						logger.info("成功更新:"+updateNum+" 条设备adUrl数据");
 					}
-				} 
+				} else{
+					logger.error("调用审核通过下发排期计划接口失败!" + adHttp.toString());
+					throw new RRException("调用排期接口失败!");
+				}
 				
 			}else if(AdConstant.AD_ADUIT_NO_PASS.equals(adSchedule.getApproved())){
 				//审核不通过则不下发排期计划
@@ -273,6 +293,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 					theme.setThemeName(themeName);
 					ThemeTemplateList.add(theme);
 				}
+			}else{
+				logger.error("调用获取模板信息列表接口失败!" + adHttp.toString());
+				throw new RRException("调用获取模板信息列表接口失败!");
 			} 
 			
 		} catch (Exception e) {
@@ -301,7 +324,10 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 
 				adSchedule.setpId(pId);
 				adSchedule.settId(tId);
-			} 
+			}else{
+				logger.error("调用新增推广计划接口失败!" + adHttp.toString());
+				throw new RRException("调用新增推广计划接口失败!");
+			}
 			
 		} catch (Exception e) {
 			logger.error("saveAdTemplates error:" + e);
@@ -356,8 +382,12 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 							String preview = jsonResult.getString("preview");
 							String teid = jsonResult.getString("teid");
 							String tresid = jsonResult.getString("tresid");
-							System.out.println("teid:"+teid+",tresid:"+tresid+",\tpreview:"+preview);
+							logger.info("teid:"+teid+",tresid:"+tresid+",\tpreview:"+preview);
 							//TODO 业务处理
+							
+						}else{
+							logger.error("调用上传素材信息接口失败!" + adHttp.toString());
+							throw new RRException("调用上传素材信息接口失败!");
 						} 
 			        	saveNum++; 
 			        }
@@ -427,7 +457,6 @@ public class AdScheduleServiceImpl implements IAdScheduleService
             int status = client.executeMethod(postMethod);
             if (status == HttpStatus.SC_OK) {
                 String result = postMethod.getResponseBodyAsString();
-                logger.info("result:"+result);
         		return result;
             }
         } catch (Exception e) {
@@ -539,9 +568,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	 * @param adScheduleId 排期计划ID
 	 * @throws IOException 
 	 */
-	private String publishSchedule(Integer adScheduleId) throws IOException {
+	private String publishSchedule(String adScheduleId) throws IOException {
 		Map<String, String> paramsMap = new HashMap<String, String>();
-		paramsMap.put("scheduleId", adScheduleId.toString());
+		paramsMap.put("scheduleId", adScheduleId);
 		String param = Tools.paramsToString(paramsMap);
 		
 		String result = Tools.doPostForm(AdConstant.AD_URL_PUBLISHSCHEDULE, param);

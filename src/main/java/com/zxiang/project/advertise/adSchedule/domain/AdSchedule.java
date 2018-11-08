@@ -23,8 +23,8 @@ public class AdSchedule extends BaseEntity
 	private String releaseType;
 	/** 投放位置 */
 	private String releasePosition;
-	/** 视讯排期ID */
-	private Integer sxScheduleId;
+	/** 排期ID */
+	private String sxScheduleId;
 	/**  */
 	private String status;
 	/** 总价 */
@@ -111,12 +111,12 @@ public class AdSchedule extends BaseEntity
 	{
 		return releasePosition;
 	}
-	public void setSxScheduleId(Integer sxScheduleId) 
+	public void setSxScheduleId(String sxScheduleId) 
 	{
 		this.sxScheduleId = sxScheduleId;
 	}
 
-	public Integer getSxScheduleId() 
+	public String getSxScheduleId() 
 	{
 		return sxScheduleId;
 	}

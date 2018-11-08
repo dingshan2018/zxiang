@@ -95,8 +95,19 @@
 				title : '投放名称' 
 			},
 			{
-				field : 'releaseTypeName', 
-				title : '投放方式' 
+				field : 'releaseType', 
+				title : '投放方式',
+				formatter: function (value) {
+	              	if (value === '0') {
+	                	return '全部';
+	              	} else if (value === '1') {
+	                	return '按地区';
+	              	} else if (value === '2') {
+	                	return '按场所';
+	              	} else {
+	                	return '-';
+	              	}
+            	}
 			},
 			{
 				field : 'releasePositionName', 
@@ -227,10 +238,10 @@
    		}
    	 	
    		var pId = $.table.selectColumns($.table._option.columns[8].field);
-   		if (pId != '') {
+   		/* if (pId != '') {
    	        $.modal.alertWarning(hasMaterial);
    	        return;
-	      	}
+      	} */
    		
     	var url = ctx + "advertise/adSchedule/materialUpload/" + rows;
     	$.modal.open("素材上传", url);

@@ -50,7 +50,7 @@ public class AdConstant {
 	
 	/******************** 广告HTTP接口返回状态	*******************/
 	
-	/** 审核通过下发排期计划URL	 */
+	/** 接口返回成功码	 */
 	public final static String 	RESPONSE_CODE_SUCCESS = "0000";
 	
 	
