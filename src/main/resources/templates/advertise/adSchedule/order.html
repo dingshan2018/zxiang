@@ -162,6 +162,11 @@
         	var pId = $("#pId").val();
         	var tId = $("#tId").val();
         	var releaseType = $.form.selectSelects("releaseType");
+        	var province = $.form.selectSelects("province");
+        	var city = $.form.selectSelects("city");
+        	var county = $.form.selectSelects("county");
+        	var placeGrade = $.form.selectSelects("placeGrade");
+        	
         	var deviceIds = $.form.selectCheckeds("device");
         	if(deviceIds.length <= 0){
 	       		alert("没有选择可投放的设备!");
@@ -179,6 +184,10 @@
         			"deviceIds" : deviceIds,
         			"pId"	: pId,
         			"tId"	: tId,
+        			"province"	: province,
+        			"city"	: city,
+        			"county"	: county,
+        			"placeGrade"	: placeGrade,
               		"timeSlotArr": JSON.stringify(timeSlotArr)
         		},
         		async : false,
@@ -381,11 +390,11 @@
 	    function initDateTimePicker (select) {
 	      $(select || '.date-time-picker').datetimepicker({
 	        language:  'zh-CN',
-	        format: 'hh:ii:ss',
+	        format: 'yyyy-mm-dd hh:ii',
 	        todayBtn:  1,
 	        autoclose: true,
 	        todayHighlight: 1,
-	        startView: 0,
+	        startView: 3,
 	        showMeridian: 1,
 	        minuteStep: 1
 	      }).on('changeDate', function(ev){

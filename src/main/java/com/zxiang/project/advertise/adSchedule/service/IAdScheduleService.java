@@ -58,15 +58,16 @@ public interface IAdScheduleService
 	/**
 	 * 广告投放预约保存
 	 * @param adSchedule
+	 * @param operatorUser 
 	 */
-	public int orderSave(AdSchedule adSchedule);
+	public int orderSave(AdSchedule adSchedule, String operatorUser) throws Exception;
 	
 	/**
 	 * 广告投放审核
 	 * @param adSchedule
 	 * @param operatorUser 
 	 */
-	public int auditSave(AdSchedule adSchedule, String operatorUser);
+	public int auditSave(AdSchedule adSchedule, String operatorUser) throws Exception;
 
 	
 	/**
@@ -86,7 +87,7 @@ public interface IAdScheduleService
 	 * @param adSchedule
 	 * @return
 	 */
-	public int saveAdTemplates(AdSchedule adSchedule);
+	public int saveAdTemplates(AdSchedule adSchedule) throws Exception;
 
 	/**
 	 * 素材上传调用HTTP接口保存文件
@@ -95,7 +96,7 @@ public interface IAdScheduleService
 	 * @param adScheduleId
 	 * @return
 	 */
-	public int materialUpload(List<MultipartFile> files, String adScheduleId);
+	public int materialUpload(List<MultipartFile> files, String adScheduleId) throws Exception;
 	
 
 }

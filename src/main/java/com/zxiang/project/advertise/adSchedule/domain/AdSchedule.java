@@ -62,9 +62,14 @@ public class AdSchedule extends BaseEntity
 	/**HTTP接口返回的tid  */
 	private String tId;
 	
-	private Long[] deviceIds;
+	private String deviceIds;
 	private String timeSlotArr;
 
+	private Integer province; 
+	private Integer city; 
+	private Integer county; 
+	private Integer placeGrade; 
+	
 	private String releaseTypeName;
 	private String releasePositionName;
 	private String statusName;
@@ -238,11 +243,11 @@ public class AdSchedule extends BaseEntity
 		this.pId = pId;
 	}
 
-	public Long[] getDeviceIds() {
+	public String getDeviceIds() {
 		return deviceIds;
 	}
 
-	public void setDeviceIds(Long[] deviceIds) {
+	public void setDeviceIds(String deviceIds) {
 		this.deviceIds = deviceIds;
 	}
 
@@ -316,6 +321,38 @@ public class AdSchedule extends BaseEntity
 
 	public void setAdvertiseName(String advertiseName) {
 		this.advertiseName = advertiseName;
+	}
+
+	public Integer getProvince() {
+		return province;
+	}
+
+	public void setProvince(Integer province) {
+		this.province = province;
+	}
+
+	public Integer getCity() {
+		return city;
+	}
+
+	public void setCity(Integer city) {
+		this.city = city;
+	}
+
+	public Integer getCounty() {
+		return county;
+	}
+
+	public void setCounty(Integer county) {
+		this.county = county;
+	}
+
+	public Integer getPlaceGrade() {
+		return placeGrade;
+	}
+
+	public void setPlaceGrade(Integer placeGrade) {
+		this.placeGrade = placeGrade;
 	}
 
 	public String toString() {

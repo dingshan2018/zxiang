@@ -25,13 +25,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="adReleaseTimerId != null and adReleaseTimerId != ''"> and ad_release_timer_id = #{adReleaseTimerId}</if>
              <if test="adScheduleId != null and adScheduleId != ''"> and ad_schedule_id = #{adScheduleId}</if>
-             <if test="releaseBeginTime != null and releaseBeginTime != ''"> and release_begin_time = #{releaseBeginTime}</if>
-             <if test="releaseEndTime != null and releaseEndTime != ''"> and release_end_time = #{releaseEndTime}</if>
+             <if test="releaseBeginTime != null "> and release_begin_time = #{releaseBeginTime}</if>
+             <if test="releaseEndTime != null "> and release_end_time = #{releaseEndTime}</if>
              <if test="remark != null and remark != ''"> and remark = #{remark}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
-             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
          </where>
     </select>
     
@@ -45,24 +45,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="adReleaseTimerId != null and adReleaseTimerId != '' ">ad_release_timer_id,</if>
 			<if test="adScheduleId != null and adScheduleId != '' ">ad_schedule_id,</if>
-			<if test="releaseBeginTime != null and releaseBeginTime != '' ">release_begin_time,</if>
-			<if test="releaseEndTime != null and releaseEndTime != '' ">release_end_time,</if>
+			<if test="releaseBeginTime != null ">release_begin_time,</if>
+			<if test="releaseEndTime != null ">release_end_time,</if>
 			<if test="remark != null and remark != '' ">remark,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
-			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="createTime != null ">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
-			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+			<if test="updateTime != null ">update_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="adReleaseTimerId != null and adReleaseTimerId != ''">#{adReleaseTimerId},</if>
 			<if test="adScheduleId != null and adScheduleId != ''">#{adScheduleId},</if>
-			<if test="releaseBeginTime != null and releaseBeginTime != ''">#{releaseBeginTime},</if>
-			<if test="releaseEndTime != null and releaseEndTime != ''">#{releaseEndTime},</if>
+			<if test="releaseBeginTime != null ">#{releaseBeginTime},</if>
+			<if test="releaseEndTime != null ">#{releaseEndTime},</if>
 			<if test="remark != null and remark != ''">#{remark},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
-			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="createTime != null ">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
-			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+			<if test="updateTime != null ">#{updateTime},</if>
          </trim>
     </insert>
 	 

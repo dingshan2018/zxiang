@@ -98,13 +98,18 @@ public class AdScheduleController extends BaseController
 	@ResponseBody
 	public AjaxResult addSave(AdSchedule adSchedule)
 	{		
-		String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
-		adSchedule.setStatus(AdConstant.AD_WAIT_ORDER);//待预约
-		adSchedule.setCreateBy(operatorUser);
-		adSchedule.setCreateTime(new Date());
-		adSchedule.setIsDel("0");
-		
-		return toAjax(adScheduleService.saveAdTemplates(adSchedule));
+		try {
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			adSchedule.setStatus(AdConstant.AD_WAIT_ORDER);//待预约
+			adSchedule.setCreateBy(operatorUser);
+			adSchedule.setCreateTime(new Date());
+			adSchedule.setIsDel("0");
+			
+			return toAjax(adScheduleService.saveAdTemplates(adSchedule));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error();
+		}
 	}
 
 	/**
@@ -169,11 +174,16 @@ public class AdScheduleController extends BaseController
     @ResponseBody
     public AjaxResult materialUploadSave(HttpServletRequest request)
     {
-    	 String adScheduleId = request.getParameter("adScheduleId");
-    	 //String scheduleName = request.getParameter("scheduleName");
-    	
-    	 List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
-    	 return toAjax(adScheduleService.materialUpload(files,adScheduleId));
+    	 try {
+			String adScheduleId = request.getParameter("adScheduleId");
+			 //String scheduleName = request.getParameter("scheduleName");
+			
+			 List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
+			 return toAjax(adScheduleService.materialUpload(files,adScheduleId));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error();
+		}
     }
 	
 	/**
@@ -199,7 +209,13 @@ public class AdScheduleController extends BaseController
 	@ResponseBody
 	public AjaxResult orderSave(AdSchedule adSchedule)
 	{
-		return toAjax(adScheduleService.orderSave(adSchedule));
+		try {
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			return toAjax(adScheduleService.orderSave(adSchedule,operatorUser));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error();
+		}
 	}
 	
 	/**
@@ -223,8 +239,13 @@ public class AdScheduleController extends BaseController
 	@ResponseBody
 	public AjaxResult auditSave(AdSchedule adSchedule)
 	{
-		String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
-		return toAjax(adScheduleService.auditSave(adSchedule,operatorUser));
+		try {
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			return toAjax(adScheduleService.auditSave(adSchedule,operatorUser));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error();
+		}
 	}
 	
 	/**

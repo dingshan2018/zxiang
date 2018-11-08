@@ -24,6 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.support.Convert;
+import com.zxiang.project.advertise.adReleaseRange.domain.AdReleaseRange;
+import com.zxiang.project.advertise.adReleaseRange.mapper.AdReleaseRangeMapper;
+import com.zxiang.project.advertise.adReleaseTimer.domain.AdReleaseTimer;
+import com.zxiang.project.advertise.adReleaseTimer.mapper.AdReleaseTimerMapper;
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
 import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
 import com.zxiang.project.advertise.adSchedule.mapper.AdScheduleMapper;
@@ -46,6 +50,10 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			
 	@Autowired
 	private AdScheduleMapper adScheduleMapper;
+	@Autowired
+	private AdReleaseRangeMapper adReleaseRangeMapper;
+	@Autowired
+	private AdReleaseTimerMapper adReleaseTimerMapper;
 
 	/**
      * 查询广告投放信息
@@ -109,27 +117,35 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 
 	@Override
 	@Transactional
-	public int orderSave(AdSchedule adSchedule) {
+	public int orderSave(AdSchedule adSchedule,String operatorUser) throws Exception{
 		
 		try {
-			//1.预约设备后广告状态变为待审核
-			adSchedule.setStatus(AdConstant.AD_WAIT_ADUIT);
-			
-			//TODO 2.插入广告与设备关系表 一对多
-			Long[] deviceIds = adSchedule.getDeviceIds();
-			for (int i = 0; i < deviceIds.length; i++) {
-				System.out.println("deviceIds:"+deviceIds[i]);
+			Date createDate = new Date();
+			//TODO 1.插入广告投放范围表	 一对一
+			AdReleaseRange adReleaseRange = new AdReleaseRange();
+			adReleaseRange.setAdScheduleId(adSchedule.getAdScheduleId());
+			String releaseType = adSchedule.getReleaseType();
+			adReleaseRange.setReleaseType(releaseType);
+			adReleaseRange.setCreateBy(operatorUser);
+			adReleaseRange.setCreateTime(createDate);
+			//根据投放方式判断保存哪些字段:投放类型:0全部；1按地区；2按场所
+			if("0".equals(releaseType)){
+				
+			}else if("1".equals(releaseType)){
+				adReleaseRange.setProvince(adSchedule.getProvince());
+				adReleaseRange.setCity(adSchedule.getCity());
+				adReleaseRange.setCounty(adSchedule.getCounty());
+			}else if("2".equals(releaseType)){
+				adReleaseRange.setPlaceGrade(adSchedule.getPlaceGrade());
 			}
+			String deviceIds = adSchedule.getDeviceIds();
+			adReleaseRange.setDevices(deviceIds);
+			adReleaseRangeMapper.insertAdReleaseRange(adReleaseRange);
 			
-			//TODO 3.插入广告与时间范围关系表 一对多
+			//2.插入广告与时间范围关系表 	一对多
 			List<HashMap<String, Object>> timeSlots = new ArrayList<>();
 			Date deadLineDate = null;
-			
-			//String timeSlotArr = adSchedule.getTimeSlotArr();
-			String timeSlotArr ="["
-					+ "{\"beginTime\":\"2018-11-01 11:00:40\",\"endTime\":\"2018-11-01 11:01:40\"},"
-					+ "{\"beginTime\":\"2018-11-03 11:00:58\",\"endTime\":\"2018-11-03 11:29:58\"},"
-					+ "{\"beginTime\":\"2018-11-03 11:04:53\",\"endTime\":\"2018-11-03 11:29:53\"}]";
+			String timeSlotArr = adSchedule.getTimeSlotArr();
 			
 			JSONArray timeSlotJsonArray = new JSONArray(timeSlotArr);
 			for(int i=0 ; i < timeSlotJsonArray.length() ;i++)
@@ -137,6 +153,15 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 				org.json.JSONObject time = timeSlotJsonArray.getJSONObject(i);
 				String beginTime = time.getString("beginTime");
 				String lastTime = time.getString("endTime");
+				
+				AdReleaseTimer adReleaseTimer = new AdReleaseTimer();
+				adReleaseTimer.setAdScheduleId(adSchedule.getAdScheduleId());
+				adReleaseTimer.setReleaseBeginTime(yyyyMMddHHmmSFormat.parse(beginTime));
+				adReleaseTimer.setReleaseEndTime(yyyyMMddHHmmSFormat.parse(lastTime));
+				adReleaseTimer.setCreateBy(operatorUser);
+				adReleaseTimer.setCreateTime(createDate);
+				adReleaseTimerMapper.insertAdReleaseTimer(adReleaseTimer);
+				
 				//处理时间
 				String startDate = beginTime.substring(0, beginTime.lastIndexOf(" "));
 				String startTime = beginTime.substring(beginTime.lastIndexOf(" ") + 1);
@@ -166,19 +191,19 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			String result = addSchedule(pIds, tIds, timeSlots.toString(), deadLineDate.toString());
 			logger.info("addSchedule result:"+result);
 			
-			//TODO 4.插入广告与投放方式关系表 一对一
+			//预约设备后广告状态变为待审核
+			adSchedule.setStatus(AdConstant.AD_WAIT_ADUIT);
 			
-			return 1;//updateAdSchedule(adSchedule);
+			return updateAdSchedule(adSchedule);
 			
 		} catch (Exception e) {
-			e.printStackTrace();
-			return 0;
+			throw e;
 		}
 	}
 	
 	@Override
 	@Transactional
-	public int auditSave(AdSchedule adSchedule,String operatorUser) {
+	public int auditSave(AdSchedule adSchedule,String operatorUser) throws Exception{
 		try {
 			//审核通过下发排期计划
 			if(AdConstant.AD_ADUIT_PASS.equals(adSchedule.getApproved())){
@@ -210,8 +235,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			return updateAdSchedule(adSchedule);
 		} catch (Exception e) {
 			logger.error("auditSave error:" + e);
-			e.printStackTrace();
-			return 0;
+			throw e;
 		}
 	}
 	
@@ -258,7 +282,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	}
 
 	@Override
-	public int saveAdTemplates(AdSchedule adSchedule) {
+	public int saveAdTemplates(AdSchedule adSchedule) throws Exception{
 		
 		logger.info("adSchedule:"+adSchedule.toString());
 		try {
@@ -281,7 +305,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			
 		} catch (Exception e) {
 			logger.error("saveAdTemplates error:" + e);
-			e.printStackTrace();
+			throw e;
 		}
 		
 		//2.保存Advertise表数据
@@ -290,7 +314,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 
 	@Override
 	@Transactional
-	public int materialUpload(List<MultipartFile> files, String adScheduleId) {
+	public int materialUpload(List<MultipartFile> files, String adScheduleId) throws Exception{
 
 		int saveNum = 0;
 		try {
@@ -346,8 +370,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			
 		} catch (Exception e) {
 			logger.error("materialUpload error: " + e);
-			e.printStackTrace();
-			return 0;
+			throw e;
 		}
 	}
 	
