@@ -354,6 +354,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			String tId = adSchedule.gettId();
 			String eId = adSchedule.getThemeTemplateId();
 			
+			//TODO 
 			//根据themeTemplateId获取elementTypeID
 			String themeResult = getThemeListAction();
 			AdHttpResult themeResultHttp = Tools.analysisResult(themeResult);
@@ -372,6 +373,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 				}
 			}
 			
+			//查询当前最大批次
+			int maxBatch = adMaterialMapper.selectMaxBatch(Integer.parseInt(adScheduleId));
 			//1.上传素材文件
 			for (int i = 0; i < files.size(); ++i) {
 				//保存文件动作
@@ -388,7 +391,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 						String tresid = jsonResult.getString("tresid");
 						logger.info("teid:"+teid+",tresid:"+tresid+",\tpreview:"+preview);
 						//TODO 业务处理
-						saveNum += insertMaterial(adSchedule.getAdScheduleId(),teid,tresid,preview,i,operatorUser);
+						saveNum += insertMaterial(adSchedule.getAdScheduleId(),teid,
+								tresid,preview,++maxBatch,i,operatorUser);
 						
 					}else{
 						logger.error("调用上传素材信息接口失败!" + adHttp.toString());
@@ -414,20 +418,19 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	 * @param teid	
 	 * @param tresid	
 	 * @param preview	素材预览URL
+	 * @param batch	上传批次号
 	 * @param order	上传顺序
 	 * @param operator	操作者
 	 * @return
 	 */
 	private int insertMaterial(Integer adScheduleId, String teid, 
-			String tresid, String preview,int order,String operator) {
-		//查询当前最大批次
-		int maxBatch = adMaterialMapper.selectMaxBatch(adScheduleId);
+			String tresid, String preview,int batch,int order,String operator) {
 		AdMaterial adMaterial = new AdMaterial();
 		adMaterial.setAdScheduleId(adScheduleId);
 		adMaterial.setPreview(preview);
 		adMaterial.settEid(teid);
 		adMaterial.setTreSid(tresid);
-		adMaterial.setBatch(++maxBatch);
+		adMaterial.setBatch(batch);
 		adMaterial.setOrder(order);
 		adMaterial.setCreateBy(operator);
 		adMaterial.setCreateTime(new Date());
