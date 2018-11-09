@@ -1,4 +1,5 @@
 package com.zxiang.project.advertise.adSchedule.controller;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
+import com.zxiang.project.advertise.adSchedule.domain.ElementType;
 import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
 import com.zxiang.project.advertise.adSchedule.service.IAdScheduleService;
 import com.zxiang.project.advertise.utils.constant.AdConstant;
@@ -163,6 +165,12 @@ public class AdScheduleController extends BaseController
 	{
 		AdSchedule adSchedule = adScheduleService.selectAdScheduleById(adScheduleId);
 		mmap.put("adSchedule", adSchedule);
+		try {
+			List<ElementType> elementList = adScheduleService.getElementList(adSchedule.getThemeTemplateId());
+			mmap.put("elementList", elementList);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	    return prefix + "/materialUpload";
 	}
@@ -176,10 +184,11 @@ public class AdScheduleController extends BaseController
     {
     	 try {
 			String adScheduleId = request.getParameter("adScheduleId");
+			String elementId = request.getParameter("elementId");
 			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
 			
 			 List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
-			 return toAjax(adScheduleService.materialUpload(files,adScheduleId,operatorUser));
+			 return toAjax(adScheduleService.materialUpload(files,adScheduleId,elementId,operatorUser));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return error();

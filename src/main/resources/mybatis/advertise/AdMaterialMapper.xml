@@ -11,14 +11,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="tEid"    column="teid"    />
         <result property="treSid"    column="tresid"    />
         <result property="batch"    column="batch"    />
-        <result property="order"    column="order"    />
+        <result property="sequence"    column="sequence"    />
         <result property="remark"    column="remark"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
     </resultMap>
 	
 	<sql id="selectAdMaterialVo">
-        select ad_material_id, ad_schedule_id, preview,teid,tresid, batch, order, 
+        select ad_material_id, ad_schedule_id, preview,teid,tresid, batch, sequence, 
         remark, create_by, create_time from zx_ad_material
     </sql>
 	
@@ -31,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="tEid != null and tEid != ''"> and teid = #{tEid}</if>
              <if test="treSid != null and treSid != ''"> and tresid = #{treSid}</if>
              <if test="batch != null and batch != ''"> and batch = #{batch}</if>
-             <if test="order != null and order != ''"> and order = #{order}</if>
+             <if test="sequence != null and sequence != ''"> and sequence = #{sequence}</if>
              <if test="remark != null and remark != ''"> and remark = #{remark}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
              <if test="createTime != null "> and create_time = #{createTime}</if>
@@ -52,7 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="tEid != null and tEid != '' ">teid,</if>
 			<if test="treSid != null and treSid != '' ">tresid,</if>
 			<if test="batch != null and batch != '' ">batch,</if>
-			<if test="order != null and order != '' ">order,</if>
+			<if test="sequence != null and sequence != '' ">sequence,</if>
 			<if test="remark != null and remark != '' ">remark,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
 			<if test="createTime != null  ">create_time,</if>
@@ -64,7 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="tEid != null and tEid != ''">#{tEid},</if>
 			<if test="treSid != null and treSid != ''">#{treSid},</if>
 			<if test="batch != null and batch != ''">#{batch},</if>
-			<if test="order != null and order != ''">#{order},</if>
+			<if test="sequence != null and sequence != ''">#{sequence},</if>
 			<if test="remark != null and remark != ''">#{remark},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
 			<if test="createTime != null ">#{createTime},</if>
@@ -79,7 +79,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="tEid != null  and tEid != ''  ">teid = #{tEid},</if>
             <if test="treSid != null  and treSid != ''  ">tresid = #{treSid},</if>
             <if test="batch != null  ">batch = #{batch},</if>
-            <if test="order != null  ">order = #{order},</if>
+            <if test="sequence != null  ">sequence = #{sequence},</if>
             <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
             <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
             <if test="createTime != null  ">create_time = #{createTime},</if>
@@ -98,7 +98,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
-    <select id="selectMaxBatch" parameterType="Integer">
+    <select id="selectMaxBatch" parameterType="Integer" resultType="int">
        SELECT IFNULL(MAX(batch),0) FROM `zx_ad_material` WHERE ad_schedule_id=#{adScheduleId};
     </select>
 </mapper>

@@ -28,7 +28,7 @@ public class AdMaterial extends BaseEntity
 	/** 第几次上传 */
 	private Integer batch;
 	/** 上传顺序 */
-	private Integer order;
+	private Integer sequence;
 	/** 备注 */
 	private String remark;
 	/** 创建者 */
@@ -72,15 +72,15 @@ public class AdMaterial extends BaseEntity
 	{
 		return batch;
 	}
-	public void setOrder(Integer order) 
-	{
-		this.order = order;
+
+	public Integer getSequence() {
+		return sequence;
 	}
 
-	public Integer getOrder() 
-	{
-		return order;
+	public void setSequence(Integer sequence) {
+		this.sequence = sequence;
 	}
+
 	public void setRemark(String remark) 
 	{
 		this.remark = remark;
@@ -131,7 +131,7 @@ public class AdMaterial extends BaseEntity
             .append("adScheduleId", getAdScheduleId())
             .append("preview", getPreview())
             .append("batch", getBatch())
-            .append("order", getOrder())
+            .append("sequence ", getSequence())
             .append("remark", getRemark())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())

@@ -34,6 +34,7 @@ import com.zxiang.project.advertise.adReleaseRange.mapper.AdReleaseRangeMapper;
 import com.zxiang.project.advertise.adReleaseTimer.domain.AdReleaseTimer;
 import com.zxiang.project.advertise.adReleaseTimer.mapper.AdReleaseTimerMapper;
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
+import com.zxiang.project.advertise.adSchedule.domain.ElementType;
 import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
 import com.zxiang.project.advertise.adSchedule.mapper.AdScheduleMapper;
 import com.zxiang.project.advertise.utils.AdHttpResult;
@@ -123,6 +124,120 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	public int deleteAdScheduleByIds(String ids)
 	{
 		return adScheduleMapper.deleteAdScheduleByIds(Convert.toStrArray(ids));
+	}
+
+
+	@Override
+	public int saveAdTemplates(AdSchedule adSchedule) throws Exception{
+		
+		logger.info("adSchedule:"+adSchedule.toString());
+		try {
+			String scheduleName = adSchedule.getScheduleName();
+			String templateId = adSchedule.getThemeTemplateId();
+			Integer advertiser = adSchedule.getAdvertiseId();
+			String totalTime = adSchedule.getTotalTime();
+			
+			String result = savePlaybill(scheduleName, templateId, advertiser.toString(), totalTime);
+			//返回结果封装
+			AdHttpResult adHttp = Tools.analysisResult(result);
+			if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
+				JSONObject jsonResult =  (JSONObject) adHttp.get("data");
+				String pId = jsonResult.getString("pid");
+				String tId = jsonResult.getString("tid");
+
+				adSchedule.setpId(pId);
+				adSchedule.settId(tId);
+			}else{
+				logger.error("调用新增推广计划接口失败!" + adHttp.toString());
+				throw new RRException("调用新增推广计划接口失败!");
+			}
+			
+		} catch (Exception e) {
+			logger.error("saveAdTemplates error:" + e);
+			throw e;
+		}
+		
+		//2.保存Advertise表数据
+		return adScheduleMapper.insertAdSchedule(adSchedule);
+	}
+
+	@Override
+	@Transactional
+	public int materialUpload(List<MultipartFile> files,String adScheduleId,
+			String elementId,String operatorUser) throws Exception{
+
+		int saveNum = 0;
+		try {
+			
+			AdSchedule adSchedule = adScheduleMapper.selectAdScheduleById(Integer.parseInt(adScheduleId));
+			String tId = adSchedule.gettId();
+			//TODO 这里的eid是模板元素的ID，而不是模板ID
+			//String elementId = adSchedule.getElementId();
+			logger.info("elementId:"+elementId);
+			
+			//查询当前最大批次
+			int maxBatch = adMaterialMapper.selectMaxBatch(Integer.parseInt(adScheduleId));
+			++maxBatch;
+			//1.上传素材文件
+			for (int i = 0; i < files.size(); ++i) {
+				//保存文件动作
+				MultipartFile multipartFile = files.get(i);
+			    if (!multipartFile.isEmpty()) {
+			    	//调用上传文件的接口
+			    	String result = addElement(tId, elementId, multipartFile);
+			    	//返回结果封装
+					AdHttpResult adHttp = Tools.analysisResult(result);
+					if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
+						JSONObject jsonResult =  (JSONObject) adHttp.get("data");
+						String preview = jsonResult.getString("preview");
+						String teid = jsonResult.getString("teid");
+						String tresid = jsonResult.getString("tresid");
+						logger.info("teid:"+teid+",tresid:"+tresid+",\tpreview:"+preview);
+						//业务处理 保存素材文件
+						saveNum += insertMaterial(adSchedule.getAdScheduleId(),teid,
+								tresid,preview,maxBatch,(i+1),operatorUser);
+						
+					}else{
+						logger.error("调用上传素材信息接口失败!" + adHttp.toString());
+						throw new RRException("调用上传素材信息接口失败!");
+					} 
+			    } else {
+			        logger.error("上传素材文件不能为空!");
+			        throw new RRException("上传素材文件不能为空!");
+			    }
+			}
+			logger.info("成功上传: "+ saveNum + " 份文件");
+			return saveNum;
+			
+		} catch (Exception e) {
+			logger.error("materialUpload error: " + e);
+			throw e;
+		}
+	}
+	
+	/**
+	 * 保存预览素材URL,在最大批次之上增加1,即保存第N+1批次上传记录
+	 * @param adScheduleId	投放广告ID
+	 * @param teid	
+	 * @param tresid	
+	 * @param preview	素材预览URL
+	 * @param batch	上传批次号
+	 * @param sequence	上传顺序
+	 * @param operator	操作者
+	 * @return
+	 */
+	private int insertMaterial(Integer adScheduleId, String teid, 
+			String tresid, String preview,int batch,int sequence,String operator) {
+		AdMaterial adMaterial = new AdMaterial();
+		adMaterial.setAdScheduleId(adScheduleId);
+		adMaterial.setPreview(preview);
+		adMaterial.settEid(teid);
+		adMaterial.setTreSid(tresid);
+		adMaterial.setBatch(batch);
+		adMaterial.setSequence(sequence);
+		adMaterial.setCreateBy(operator);
+		adMaterial.setCreateTime(new Date());
+		return adMaterialMapper.insertAdMaterial(adMaterial);
 	}
 
 	@Override
@@ -307,136 +422,49 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		}
 		return ThemeTemplateList;
 	}
-
+	
 	@Override
-	public int saveAdTemplates(AdSchedule adSchedule) throws Exception{
-		
-		logger.info("adSchedule:"+adSchedule.toString());
+	public List<ElementType> getElementList(String themeTemplateId) throws IOException {
+		List<ElementType> elementList = new ArrayList<>();
 		try {
-			String scheduleName = adSchedule.getScheduleName();
-			String templateId = adSchedule.getThemeTemplateId();
-			Integer advertiser = adSchedule.getAdvertiseId();
-			String totalTime = adSchedule.getTotalTime();
-			
-			String result = savePlaybill(scheduleName, templateId, advertiser.toString(), totalTime);
+			String result = getThemeListAction();
 			//返回结果封装
 			AdHttpResult adHttp = Tools.analysisResult(result);
 			if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
-				JSONObject jsonResult =  (JSONObject) adHttp.get("data");
-				String pId = jsonResult.getString("pid");
-				String tId = jsonResult.getString("tid");
-
-				adSchedule.setpId(pId);
-				adSchedule.settId(tId);
-			}else{
-				logger.error("调用新增推广计划接口失败!" + adHttp.toString());
-				throw new RRException("调用新增推广计划接口失败!");
-			}
-			
-		} catch (Exception e) {
-			logger.error("saveAdTemplates error:" + e);
-			throw e;
-		}
-		
-		//2.保存Advertise表数据
-		return adScheduleMapper.insertAdSchedule(adSchedule);
-	}
-
-	@Override
-	@Transactional
-	public int materialUpload(List<MultipartFile> files, 
-			String adScheduleId,String operatorUser) throws Exception{
-
-		int saveNum = 0;
-		try {
-			
-			AdSchedule adSchedule = adScheduleMapper.selectAdScheduleById(Integer.parseInt(adScheduleId));
-			String tId = adSchedule.gettId();
-			String eId = adSchedule.getThemeTemplateId();
-			
-			//TODO 
-			//根据themeTemplateId获取elementTypeID
-			String themeResult = getThemeListAction();
-			AdHttpResult themeResultHttp = Tools.analysisResult(themeResult);
-			if(AdConstant.RESPONSE_CODE_SUCCESS.equals(themeResultHttp.getCode())){
-				List<HashMap<String, Object>> data = (List<HashMap<String, Object>>) themeResultHttp.get("data");
+				
+				List<HashMap<String, Object>> data = (List<HashMap<String, Object>>) adHttp.get("data");
 				for (HashMap<String, Object> themebject : data) {
-					String themeTemplateId = (String) themebject.get("THEMETEMPLATEID");
-					//匹配themeTemplateId的则获取该模板的元素ID
-					if(eId.equals(themeTemplateId)){
-						
+					String templateId = (String) themebject.get("THEMETEMPLATEID");
+					if(themeTemplateId.equals(templateId)){
+						JSONObject details =  (JSONObject) themebject.get("details");
+						List<JSONObject> themeElementBeanCollection = (List<JSONObject>) details.get("themeElementBeanCollection");
+						for (JSONObject themeElement : themeElementBeanCollection) {
+							String id = themeElement.getString("id");
+							JSONObject elementType =  (JSONObject) themeElement.get("elementType");
+							String elementTypeID = elementType.getString("elementTypeID");
+							String elementName = elementType.getString("elementName");
+							String tagName = elementType.getString("tagName");
+							ElementType element = new ElementType(id, elementTypeID, elementName, tagName);
+							logger.info(element.toString());
+							elementList.add(element);
+						}
 						break;
 					}else{
 						continue;
 					}
-					
 				}
+			}else{
+				logger.error("调用获取模板信息列表接口失败!" + adHttp.toString());
+				throw new RRException("调用获取模板信息列表接口失败!");
 			}
-			
-			//查询当前最大批次
-			int maxBatch = adMaterialMapper.selectMaxBatch(Integer.parseInt(adScheduleId));
-			//1.上传素材文件
-			for (int i = 0; i < files.size(); ++i) {
-				//保存文件动作
-				MultipartFile multipartFile = files.get(i);
-			    if (!multipartFile.isEmpty()) {
-			    	//调用上传文件的接口
-			    	String result = addElement(tId, eId, multipartFile);
-			    	//返回结果封装
-					AdHttpResult adHttp = Tools.analysisResult(result);
-					if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
-						JSONObject jsonResult =  (JSONObject) adHttp.get("data");
-						String preview = jsonResult.getString("preview");
-						String teid = jsonResult.getString("teid");
-						String tresid = jsonResult.getString("tresid");
-						logger.info("teid:"+teid+",tresid:"+tresid+",\tpreview:"+preview);
-						//TODO 业务处理
-						saveNum += insertMaterial(adSchedule.getAdScheduleId(),teid,
-								tresid,preview,++maxBatch,i,operatorUser);
-						
-					}else{
-						logger.error("调用上传素材信息接口失败!" + adHttp.toString());
-						throw new RRException("调用上传素材信息接口失败!");
-					} 
-			    } else {
-			        logger.error("上传素材文件不能为空!");
-			        throw new RRException("上传素材文件不能为空!");
-			    }
-			}
-			logger.info("成功上传: "+ saveNum + " 份文件");
-			return saveNum;
-			
-		} catch (Exception e) {
-			logger.error("materialUpload error: " + e);
+		} catch (IOException e) {
+			logger.error("获取模板元素列表失败!" + e);
 			throw e;
-		}
+		} 
+		
+		return elementList;
 	}
 	
-	/**
-	 * 保存预览素材URL,在最大批次之上增加1,即保存第N+1批次上传记录
-	 * @param adScheduleId	投放广告ID
-	 * @param teid	
-	 * @param tresid	
-	 * @param preview	素材预览URL
-	 * @param batch	上传批次号
-	 * @param order	上传顺序
-	 * @param operator	操作者
-	 * @return
-	 */
-	private int insertMaterial(Integer adScheduleId, String teid, 
-			String tresid, String preview,int batch,int order,String operator) {
-		AdMaterial adMaterial = new AdMaterial();
-		adMaterial.setAdScheduleId(adScheduleId);
-		adMaterial.setPreview(preview);
-		adMaterial.settEid(teid);
-		adMaterial.setTreSid(tresid);
-		adMaterial.setBatch(batch);
-		adMaterial.setOrder(order);
-		adMaterial.setCreateBy(operator);
-		adMaterial.setCreateTime(new Date());
-		return adMaterialMapper.insertAdMaterial(adMaterial);
-	}
-
 	/**
 	 * 接口1：获取模板信息列表  HTTP 接口
 	 * @throws IOException 

@@ -49,6 +49,8 @@ public class AdSchedule extends BaseEntity
 	private String pId;
 	/**模板主题ID  */
 	private String themeTemplateId;
+	/**模板元素ID  */
+	private String elementId;
 	/**审核结果  */
 	private String approved;
 	/**审核意见  */
@@ -353,6 +355,14 @@ public class AdSchedule extends BaseEntity
 
 	public void setPlaceGrade(Integer placeGrade) {
 		this.placeGrade = placeGrade;
+	}
+
+	public String getElementId() {
+		return elementId;
+	}
+
+	public void setElementId(String elementId) {
+		this.elementId = elementId;
 	}
 
 	public String toString() {

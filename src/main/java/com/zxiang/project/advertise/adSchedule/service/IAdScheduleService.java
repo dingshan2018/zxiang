@@ -1,8 +1,10 @@
 package com.zxiang.project.advertise.adSchedule.service;
 
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
+import com.zxiang.project.advertise.adSchedule.domain.ElementType;
 import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -55,6 +57,39 @@ public interface IAdScheduleService
      */
 	public int deleteAdScheduleByIds(String ids);
 
+	
+	/**
+	 * 获取模板详细信息列表
+	 */
+	public List<ThemeTemplate> getThemeList();
+	
+	/**
+	 * 通过模板ID获取模板元素
+	 * @param themeTemplateId
+	 * @return
+	 * @throws IOException 
+	 */
+	public List<ElementType> getElementList(String themeTemplateId) throws IOException;
+
+	/**
+	 * 新增广告并且保存推广计划
+	 * @param adSchedule
+	 * @return
+	 */
+	public int saveAdTemplates(AdSchedule adSchedule) throws Exception;
+
+	/**
+	 * 素材上传调用HTTP接口保存文件
+	 * 
+	 * @param files
+	 * @param adScheduleId
+	 * @param elementId 
+	 * @param operatorUser
+	 * @return
+	 */
+	public int materialUpload(List<MultipartFile> files, String adScheduleId, 
+			String elementId,String operatorUser) throws Exception;
+	
 	/**
 	 * 广告投放预约保存
 	 * @param adSchedule
@@ -76,28 +111,5 @@ public interface IAdScheduleService
 	 */
 	public int releaseOnlineSave(AdSchedule adSchedule);
 
-	
-	/**
-	 * 获取模板详细信息列表
-	 */
-	public List<ThemeTemplate> getThemeList();
-
-	/**
-	 * 新增广告并且保存推广计划
-	 * @param adSchedule
-	 * @return
-	 */
-	public int saveAdTemplates(AdSchedule adSchedule) throws Exception;
-
-	/**
-	 * 素材上传调用HTTP接口保存文件
-	 * 
-	 * @param files
-	 * @param adScheduleId
-	 * @param operatorUser 
-	 * @return
-	 */
-	public int materialUpload(List<MultipartFile> files, String adScheduleId, String operatorUser) throws Exception;
-	
 
 }
