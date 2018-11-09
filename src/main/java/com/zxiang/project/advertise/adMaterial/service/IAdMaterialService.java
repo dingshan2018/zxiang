@@ -51,5 +51,12 @@ public interface IAdMaterialService
      * @return 结果
      */
 	public int deleteAdMaterialByIds(String ids);
+
+	/**
+	 * 获取广告投放素材最大批次号
+	 * @param adScheduleId
+	 * @return
+	 */
+	public int getMaxBatch(Integer adScheduleId);
 	
 }

@@ -80,5 +80,10 @@ public class AdMaterialServiceImpl implements IAdMaterialService
 	{
 		return adMaterialMapper.deleteAdMaterialByIds(Convert.toStrArray(ids));
 	}
+
+	@Override
+	public int getMaxBatch(Integer adScheduleId) {
+		return adMaterialMapper.selectMaxBatch(adScheduleId);
+	}
 	
 }

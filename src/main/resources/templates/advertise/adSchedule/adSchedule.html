@@ -237,12 +237,12 @@
    			return;
    		}
    	 	
-   		var pId = $.table.selectColumns($.table._option.columns[8].field);
-   		/* if (pId != '') {
+   		/**判断是否上传过素材*/
+		var batch = getMaxBatch(rows);
+   		if (batch > 0) {
    	        $.modal.alertWarning(hasMaterial);
    	        return;
-      	} */
-   		
+      	}
     	var url = ctx + "advertise/adSchedule/materialUpload/" + rows;
     	$.modal.open("素材上传", url);
 	}
@@ -259,11 +259,11 @@
    			return;
    		}
    	 	
-   		var pId = $.table.selectColumns($.table._option.columns[8].field);
-   		if (pId == '') {
-   	        $.modal.alertWarning(noMaterial);
+   		var batch = getMaxBatch(rows);
+   		if (batch <= 0) {
+   			$.modal.alertWarning(noMaterial);
    	        return;
-      	}
+   		}
    		
    		var url = ctx + "advertise/adSchedule/order/" + rows;
     	$.modal.open("广告投放预约", url);
@@ -281,11 +281,11 @@
    			return;
    		}
    		var status = $.table.selectColumns($.table._option.columns[5].field);
-   		var pId = $.table.selectColumns($.table._option.columns[8].field);
-   		if (pId == '') {
-   	        $.modal.alertWarning(noMaterial);
+   		var batch = getMaxBatch(rows);
+   		if (batch <= 0) {
+   			$.modal.alertWarning(noMaterial);
    	        return;
-      	}
+   		}
    		if (status != toAudit) {
    	        $.modal.alertWarning('当前非待审核状态,只有投放状态为待审核的广告才能审核!');
    	        return;
@@ -308,10 +308,11 @@
    		}
    		var status = $.table.selectColumns($.table._option.columns[5].field);
    		var pId = $.table.selectColumns($.table._option.columns[8].field);
-   		if (pId == '') {
-   	        $.modal.alertWarning(noMaterial);
+   		var batch = getMaxBatch(rows);
+   		if (batch <= 0) {
+   			$.modal.alertWarning(noMaterial);
    	        return;
-      	}
+   		}
    		if (status != toBeReleased) {
    	        $.modal.alertWarning('当前非待发布状态,只有投放状态为待发布的广告才能发布!');
    	        return;
@@ -338,6 +339,25 @@
         	
     	});
   	}
+  	
+  	//判断该广告是否上传过素材 :batch>0
+    function getMaxBatch(rows) {
+    	var batch = 0;
+	    $.ajax({
+		        url: ctx + "settle/adMaterial/getMaxBatch/" + rows,
+		        type: "post",
+		        dataType: "json",
+		        data: 'data',
+		        async:false,
+		        success: function (data) {
+		        	batch = data;
+		        },
+		        error: function (data) {
+		            alert("查询失败" + data);
+		        }
+		})
+		return batch;
+    }
 </script>
 </body>
 </html>

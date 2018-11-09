@@ -328,6 +328,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			
 			//预约设备后广告状态变为待审核
 			adSchedule.setStatus(AdConstant.AD_WAIT_ADUIT);
+			//TODO 计算总价和押金 
 			
 			return updateAdSchedule(adSchedule);
 			

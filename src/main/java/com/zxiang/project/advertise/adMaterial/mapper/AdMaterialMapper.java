@@ -69,4 +69,11 @@ public interface AdMaterialMapper
 	 */
 	public int selectMaxBatch(@Param("adScheduleId") Integer adScheduleId);
 	
+	/**
+	 * 根据广告ID查询最新批次素材列表
+	 * @param adMaterial
+	 * @return
+	 */
+	public List<AdMaterial> selectListByAdSchId(@Param("adScheduleId") Integer adScheduleId);
+	
 }

@@ -111,4 +111,13 @@ public class AdMaterialController extends BaseController
 		return toAjax(adMaterialService.deleteAdMaterialByIds(ids));
 	}
 	
+	/**
+     * 校验终端编号
+     */
+    @PostMapping("/getMaxBatch/{adScheduleId}")
+    @ResponseBody
+    public int getMaxBatch(@PathVariable("adScheduleId") Integer adScheduleId)
+    {
+        return adMaterialService.getMaxBatch(adScheduleId);
+    }
 }
