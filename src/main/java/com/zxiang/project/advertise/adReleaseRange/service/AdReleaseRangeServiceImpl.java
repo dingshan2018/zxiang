@@ -80,5 +80,10 @@ public class AdReleaseRangeServiceImpl implements IAdReleaseRangeService
 	{
 		return adReleaseRangeMapper.deleteAdReleaseRangeByIds(Convert.toStrArray(ids));
 	}
+
+	@Override
+	public int getOrderNum(Integer adScheduleId) {
+		return adReleaseRangeMapper.getOrderNum(adScheduleId);
+	}
 	
 }

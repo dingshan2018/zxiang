@@ -51,5 +51,12 @@ public interface IAdReleaseRangeService
      * @return 结果
      */
 	public int deleteAdReleaseRangeByIds(String ids);
+
+	/**
+	 * 查询是否有投放设备,有则预约过
+	 * @param adScheduleId
+	 * @return
+	 */
+	public int getOrderNum(Integer adScheduleId);
 	
 }

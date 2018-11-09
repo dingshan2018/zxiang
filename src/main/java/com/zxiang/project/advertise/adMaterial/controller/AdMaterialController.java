@@ -112,7 +112,7 @@ public class AdMaterialController extends BaseController
 	}
 	
 	/**
-     * 校验终端编号
+     *	查询素材表最大上传批次号
      */
     @PostMapping("/getMaxBatch/{adScheduleId}")
     @ResponseBody
@@ -120,4 +120,5 @@ public class AdMaterialController extends BaseController
     {
         return adMaterialService.getMaxBatch(adScheduleId);
     }
+    
 }

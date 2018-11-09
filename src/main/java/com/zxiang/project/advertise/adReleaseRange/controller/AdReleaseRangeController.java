@@ -111,4 +111,16 @@ public class AdReleaseRangeController extends BaseController
 		return toAjax(adReleaseRangeService.deleteAdReleaseRangeByIds(ids));
 	}
 	
+	/**
+     *	查询是否有投放设备,有则预约过
+     */
+    @PostMapping("/getOrderNum/{adScheduleId}")
+    @ResponseBody
+    public int getOrderNum(@PathVariable("adScheduleId") Integer adScheduleId)
+    {
+    	int orderNum = adReleaseRangeService.getOrderNum(adScheduleId);
+        return orderNum;
+    }
+    
+	
 }

@@ -112,4 +112,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <!-- 查询是否有投放设备  -->
+    <select id="getOrderNum" resultType="int">
+      	SELECT COUNT(1) FROM `zx_ad_release_range` WHERE ad_schedule_id=#{adScheduleId};
+    </select>
+    
 </mapper>

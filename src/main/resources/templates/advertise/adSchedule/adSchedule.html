@@ -264,6 +264,11 @@
    			$.modal.alertWarning(noMaterial);
    	        return;
    		}
+   		var hasOrder = getOrderNum(rows);
+   		if (hasOrder > 0) {
+   			$.modal.alertWarning("该广告已预约过!");
+   	        return;
+   		}
    		
    		var url = ctx + "advertise/adSchedule/order/" + rows;
     	$.modal.open("广告投放预约", url);
@@ -353,11 +358,34 @@
 		        	batch = data;
 		        },
 		        error: function (data) {
-		            alert("查询失败" + data);
+		        	console.log("getMaxBatch:",data);
+		            alert("查询失败");
 		        }
 		})
 		return batch;
     }
+    
+ 	
+  	//判断该广告是否上传过素材 :batch>0
+    function getOrderNum(rows){
+    	var hasOrder = 0;
+	    $.ajax({
+		        url: ctx + "settle/adReleaseRange/getOrderNum/" + rows,
+		        type: "post",
+		        dataType: "json",
+		        data: 'data',
+		        async:false,
+		        success: function (data) {
+		        	console.log("data：",data);
+		        	hasOrder = data;
+		        },
+		        error: function (data) {
+		        	console.log("getOrderNum:",data);
+		            alert("查询失败");
+		        }
+		})
+		return hasOrder;
+  	}
 </script>
 </body>
 </html>

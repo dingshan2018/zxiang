@@ -2,6 +2,8 @@ package com.zxiang.project.advertise.adReleaseRange.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.zxiang.project.advertise.adReleaseRange.domain.AdReleaseRange;	
 
 /**
@@ -59,5 +61,12 @@ public interface AdReleaseRangeMapper
      * @return 结果
      */
 	public int deleteAdReleaseRangeByIds(String[] adReleaseRangeIds);
+
+	/**
+	 * 查询是否有投放设备,有则预约过
+	 * @param adScheduleId
+	 * @return
+	 */
+	public int getOrderNum(@Param("adScheduleId")Integer adScheduleId);
 	
 }
