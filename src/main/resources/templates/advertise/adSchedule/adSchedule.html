@@ -216,6 +216,7 @@
     //01待预约；02待审核；03待发布；04待播放；05已播放；06审核失败；07排期失败
     var toAudit= "02";//待审核
     var toBeReleased= "03";//待发布
+    var toPlay= "04";//待播放
     var hasMaterial = "该广告已上传过素材!";
     var noMaterial = "该广告无素材,请先上传素材!";
     
@@ -291,6 +292,11 @@
    			$.modal.alertWarning(noMaterial);
    	        return;
    		}
+   		
+   		if (status == toPlay || status == toBeReleased) {
+   	        $.modal.alertWarning('该广告已审核通过!');
+   	        return;
+      	}
    		if (status != toAudit) {
    	        $.modal.alertWarning('当前非待审核状态,只有投放状态为待审核的广告才能审核!');
    	        return;

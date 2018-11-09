@@ -114,8 +114,10 @@
     }
 
     function submitUpload () {
-      var opt = uploadTools.getOpt('fileUploadContent');
-      uploadEvent.uploadFileEvent(opt);
+    	$.modal.confirm("确定上传？", function() {
+	    	var opt = uploadTools.getOpt('fileUploadContent');
+		    uploadEvent.uploadFileEvent(opt);
+		});
     }
 
     function showUpError () {

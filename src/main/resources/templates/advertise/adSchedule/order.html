@@ -157,47 +157,49 @@
 		});
 
 	    function orderSaveFun(timeSlotArr) {
-        	var adScheduleId = $("#adScheduleId").val();
-        	var scheduleName = $("#scheduleName").val();
-        	var pId = $("#pId").val();
-        	var tId = $("#tId").val();
-        	var releaseType = $.form.selectSelects("releaseType");
-        	var province = $.form.selectSelects("province");
-        	var city = $.form.selectSelects("city");
-        	var county = $.form.selectSelects("county");
-        	var placeGrade = $.form.selectSelects("placeGrade");
-        	
-        	var deviceIds = $.form.selectCheckeds("device");
-        	if(deviceIds.length <= 0){
-	       		alert("没有选择可投放的设备!");
-				return;
-	       	}
-        	
-        	$.ajax({
-        		cache : true,
-        		type : "POST",
-        		url : prefix + "/orderSave",
-        		data : {
-        			"adScheduleId" : adScheduleId,
-        			"scheduleName" : scheduleName,
-        			"releaseType" : releaseType,
-        			"deviceIds" : deviceIds,
-        			"pId"	: pId,
-        			"tId"	: tId,
-        			"province"	: province,
-        			"city"	: city,
-        			"county"	: county,
-        			"placeGrade"	: placeGrade,
-              		"timeSlotArr": JSON.stringify(timeSlotArr)
-        		},
-        		async : false,
-        		error : function(request) {
-        			$.modal.alertError("系统错误");
-        		},
-        		success : function(data) {
-        			$.operate.saveSuccess(data);
-        		}
-        	});
+	    	$.modal.confirm("确定预约？", function() {
+	        	var adScheduleId = $("#adScheduleId").val();
+	        	var scheduleName = $("#scheduleName").val();
+	        	var pId = $("#pId").val();
+	        	var tId = $("#tId").val();
+	        	var releaseType = $.form.selectSelects("releaseType");
+	        	var province = $.form.selectSelects("province");
+	        	var city = $.form.selectSelects("city");
+	        	var county = $.form.selectSelects("county");
+	        	var placeGrade = $.form.selectSelects("placeGrade");
+	        	
+	        	var deviceIds = $.form.selectCheckeds("device");
+	        	if(deviceIds.length <= 0){
+		       		alert("没有选择可投放的设备!");
+					return;
+		       	}
+	        	
+	        	$.ajax({
+	        		cache : true,
+	        		type : "POST",
+	        		url : prefix + "/orderSave",
+	        		data : {
+	        			"adScheduleId" : adScheduleId,
+	        			"scheduleName" : scheduleName,
+	        			"releaseType" : releaseType,
+	        			"deviceIds" : deviceIds,
+	        			"pId"	: pId,
+	        			"tId"	: tId,
+	        			"province"	: province,
+	        			"city"	: city,
+	        			"county"	: county,
+	        			"placeGrade"	: placeGrade,
+	              		"timeSlotArr": JSON.stringify(timeSlotArr)
+	        		},
+	        		async : false,
+	        		error : function(request) {
+	        			$.modal.alertError("系统错误");
+	        		},
+	        		success : function(data) {
+	        			$.operate.saveSuccess(data);
+	        		}
+	        	});
+	    	});
         }
 
 		//投放方式onchange事件
