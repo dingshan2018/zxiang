@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>素材预览</title>
+    <link th:href="@{/css/pictureViewer.css}" rel="stylesheet"/>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/pictureViewer.js}"></script>
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-adSchedule-preview" th:object="${adSchedule}">
+            <input id="adScheduleId" name="adScheduleId" th:field="*{adScheduleId}"  type="hidden">
+            <input id="scheduleName" name="scheduleName" th:field="*{scheduleName}" class="form-control" type="hidden">
+            
+            <div class="main-content">
+			    <div class="image-list" id="image-list">
+			    </div>
+			</div>
+       	</form>
+   	</div>
+	
+  <div th:include="include::footer"></div>
+  
+  <script th:src="@{/js/jquery.mousewheel.min.js}"></script>
+  <script th:src="@{/js/pictureViewer.js}"></script>
+  <script>
+	  	$(function () {
+	  		//TODO 加载素材列表
+			getPreviewUrl();
+			
+	        $('.image-list').on('click', '.cover', function () {
+	            var this_ = $(this);
+	            var images = this_.parents('.image-list').find('.cover');
+	            var imagesArr = new Array();
+	            $.each(images, function (i, image) {
+	                imagesArr.push($(image).children('img').attr('src'));
+	            });
+	            $.pictureViewer({
+	                images: imagesArr, //需要查看的图片，数据类型为数组
+	                initImageIndex: this_.index() + 1, //初始查看第几张图片，默认1
+	                scrollSwitch: true //是否使用鼠标滚轮切换图片，默认false
+	            });
+	        });
+	    });
+	  	
+		//预览函数
+		function preview(){
+			var this_ = $(this);
+          	var images = getPreviewUrl();
+          	
+          	var imagesArr = new Array();
+          	$.each(images, function (i, image) {
+              imagesArr.push($(image).preview);
+          	});
+          	$.pictureViewer({
+              images: imagesArr, //需要查看的图片，数据类型为数组
+              initImageIndex: this_.index() + 1, //初始查看第几张图片，默认1
+              scrollSwitch: true //是否使用鼠标滚轮切换图片，默认false
+          	});
+		}
+		//获取预览文件
+		function getPreviewUrl(){
+			var previewUrls;
+			var adScheduleId = $("#adScheduleId").val();
+			$.ajax({
+		        url: ctx + "settle/adMaterial/selectListByAdSchId",
+		        type: "post",
+		        contentType:"application/json",
+		        dataType: "json",
+		        data: JSON.stringify({ "adScheduleId": adScheduleId}),
+		        async:false,
+		        success: function (data) {
+		        	previewUrls = data.rows;
+		        },
+		        error: function (data) {
+		        	console.log("getPreviewUrl:",data);
+		            alert("查询失败");
+		        }
+			})
+			
+			var html = '';
+			for (var i = 0; i < previewUrls.length; i++) {
+	       	 	html += `<div class="cover"><img src="${previewUrls[i].preview}" alt=""></div>`;
+	      	}
+	      	$('#image-list').html(html);
+		}
+    
+  </script>
+</body>
+</html>

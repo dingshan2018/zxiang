@@ -58,5 +58,12 @@ public interface IAdMaterialService
 	 * @return
 	 */
 	public int getMaxBatch(Integer adScheduleId);
+
+	/**
+	 * 根据广告ID查询最新批次素材列表
+	 * @param adScheduleId
+	 * @return
+	 */
+	public List<AdMaterial> selectListByAdSchId(Integer adScheduleId);
 	
 }

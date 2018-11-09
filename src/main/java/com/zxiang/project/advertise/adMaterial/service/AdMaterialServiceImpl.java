@@ -85,5 +85,10 @@ public class AdMaterialServiceImpl implements IAdMaterialService
 	public int getMaxBatch(Integer adScheduleId) {
 		return adMaterialMapper.selectMaxBatch(adScheduleId);
 	}
+
+	@Override
+	public List<AdMaterial> selectListByAdSchId(Integer adScheduleId) {
+		return adMaterialMapper.selectListByAdSchId(adScheduleId);
+	}
 	
 }

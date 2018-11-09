@@ -1,7 +1,8 @@
 <!DOCTYPE HTML>
 <html  lang="zh" xmlns:th="http://www.thymeleaf.org">
 <meta charset="utf-8">
-<head th:include="include :: header"></head>
+<head th:include="include :: header">
+</head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-adSchedule-audit" th:object="${adSchedule}">
@@ -29,7 +30,7 @@
             <div class="form-group">	
                 <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>预览素材：</label>
                 <div class="col-sm-8">
-                	<a class="btn btn-success btn-rounded btn-sm" href="http://www.baidu.com/" target="_blank"><i class="fa fa-download"></i>&nbsp;预览广告素材 </a>
+                	<button type="button" class="btn btn-primary" onclick="preview()">&nbsp;预览广告素材</button>
                 </div>
             </div>            
             <div class="form-group">	
@@ -55,6 +56,7 @@
 		</form>
     </div>
     <div th:include="include::footer"></div>
+    
     <script type="text/javascript">
 		var prefix = ctx + "advertise/adSchedule"
 		$("#form-adSchedule-audit").validate({
@@ -77,6 +79,35 @@
 		    	});
 			}
 		});
+		
+		//预览函数
+		function preview(){
+			var adScheduleId = $("#adScheduleId").val();
+			var url = ctx + "advertise/adSchedule/preview/" + adScheduleId;
+	    	$.modal.openFull("素材预览", url);
+		}
+		
+		//获取预览文件
+		function getPreviewUrl(){
+			var previewUrls;
+			var adScheduleId = $("#adScheduleId").val();
+			$.ajax({
+		        url: ctx + "settle/adMaterial/selectListByAdSchId",
+		        type: "post",
+		        contentType:"application/json",
+		        dataType: "json",
+		        data: JSON.stringify({ "adScheduleId": adScheduleId}),
+		        async:false,
+		        success: function (data) {
+		        	previewUrls = data.rows;
+		        },
+		        error: function (data) {
+		        	console.log("getPreviewUrl:",data);
+		            alert("查询失败");
+		        }
+			})
+			return previewUrls;
+		}
 	</script>
 </body>
 </html>

@@ -273,4 +273,16 @@ public class AdScheduleController extends BaseController
 		int releaseNumber = adScheduleService.releaseOnlineSave(adSchedule);
 		return success("成功发布 "+ releaseNumber + " 条广告");
 	}
+	
+	/**
+	 * 广告素材预览
+	 */
+	@GetMapping("/preview/{adScheduleId}")
+	public String preview(@PathVariable("adScheduleId") Integer adScheduleId, ModelMap mmap)
+	{
+		AdSchedule adSchedule = adScheduleService.selectAdScheduleById(adScheduleId);
+		mmap.put("adSchedule", adSchedule);
+		
+	    return prefix + "/preview";
+	}
 }

@@ -1,6 +1,7 @@
 package com.zxiang.project.advertise.adMaterial.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -119,6 +121,17 @@ public class AdMaterialController extends BaseController
     public int getMaxBatch(@PathVariable("adScheduleId") Integer adScheduleId)
     {
         return adMaterialService.getMaxBatch(adScheduleId);
+    }
+    
+    /**
+	 * 根据广告ID查询最新批次素材列表
+	 */
+	@RequestMapping("/selectListByAdSchId")
+    @ResponseBody
+    public TableDataInfo selectListByAdSchId(@RequestBody Map<String, Object> params) {
+		String adScheduleId = (String) params.get("adScheduleId");
+		List<AdMaterial> list = adMaterialService.selectListByAdSchId(Integer.parseInt(adScheduleId));
+		return getDataTable(list);
     }
     
 }
