@@ -37,7 +37,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='release_type' AND sdd.dict_value=zas.`release_type` ) releaseTypeName, -->
         CASE release_type  WHEN '0' THEN '全部' WHEN '1' THEN '按地区' WHEN '2' THEN '按场所' ELSE '' END releaseTypeName,
         release_position,
-        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='release_position' AND sdd.dict_value=zas.`release_position` ) releasePositionName, 
+        <!-- 先使用广告类型替代投放位置，方便总价和押金的计算 -->
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='ad_type' AND sdd.dict_value=zas.`release_position` ) releasePositionName, 
         sx_schedule_id, pid,tid,theme_template_id,
         status, 
         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='schedule_status' AND sdd.dict_value=zas.`status` ) statusName,

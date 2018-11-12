@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-adSchedule-adDetail" th:object="${adSchedule}">
+            <input id="adScheduleId" name="adScheduleId" th:field="*{adScheduleId}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">投放名称：</label>
+                <div class="col-sm-8">
+                    <input id="scheduleName" name="scheduleName" th:field="*{scheduleName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">投放位置：</label>
+                <div class="col-sm-8">
+                    <!-- <select id="releasePosition"  name="releasePosition" class="form-control m-b" 
+                    th:with="type=${@dict.getType('release_position')}">
+	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" 
+	                    th:value="${dict.dictValue}" th:field="*{releasePosition}"></option>
+	                </select> -->
+	                <select id="releasePosition" name="releasePosition" class="form-control m-b" th:with="type=${@dict.getType('ad_type')}">
+	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{releasePosition}"></option>
+	                </select>
+                </div>
+            </div>
+            <div class="form-group">
+				<label class="col-sm-3 control-label">投放范围：</label>
+				<div class="col-sm-8">
+					<div class="col-sm-8">
+					<label th:each="role:${roles}" class="checkbox-inline i-checks">
+						<input name="role" type="checkbox" th:value="${role.roleId}" th:text="${role.roleName}" th:checked="${role.flag}">
+					</label>
+				</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">投放时段：</label>
+				<div class="col-sm-8">
+					
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">投放方式：</label>
+				<div class="col-sm-8">
+					<select id="releaseType" name="releaseType" class="form-control" th:field="*{releaseType}">
+						<option value=""></option>
+						<option value="0">全部</option>
+						<option value="1">按地区投放</option>
+						<option value="2">按场所投放</option>
+					</select>
+				</div>
+			</div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">模板主题名称：</label>
+                <div class="col-sm-8">
+                    <select id="themeTemplateId" name="themeTemplateId" class="form-control">
+						<option value=""></option>
+						<option th:each="c:${ThemeTemplateList}"  th:value="${c.themeTemplateId}" 
+						th:text="${c.themeName}" th:field="*{themeTemplateId}"/>
+					</select>
+                </div>
+            </div>
+            <div class="form-group">	
+				<label class="col-sm-3 control-label">广告商：</label>
+				<div class="col-sm-8">
+					<select id="advertiseId" name="advertiseId" class="form-control">
+						<option value=""></option>
+						<option th:each="c:${advertiserList}"  th:value="${c.advertiseId}" 
+						th:text="${c.advertisorName}" th:field="*{advertiseId}"/>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">总播放时长：</label>
+				<div class="col-sm-8">
+					<input id="totalTime" name="totalTime" th:field="*{totalTime}" class="form-control" type="text">
+				</div>
+			</div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">排期编号：</label>
+                <div class="col-sm-8">
+                    <input id="sxScheduleId" name="sxScheduleId" th:field="*{sxScheduleId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">投放状态：</label>
+                <div class="col-sm-8">
+                    <select id="status" name="status" th:with="type=${@dict.getType('schedule_status')}" class="form-control">
+						<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{status}"></option>
+					</select>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">总价：</label>
+                <div class="col-sm-8">
+                    <input id="totalPay" name="totalPay" th:field="*{totalPay}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">押金：</label>
+                <div class="col-sm-8">
+                    <input id="prepay" name="prepay" th:field="*{prepay}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">投放终端数：</label>
+                <div class="col-sm-8">
+                    <input id="releaseTermNum" name="releaseTermNum" th:field="*{releaseTermNum}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">投放备注：</label>
+                <div class="col-sm-8">
+                    <input id="releaseNote" name="releaseNote" th:field="*{releaseNote}" class="form-control" type="text">
+                </div>
+            </div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "advertise/adSchedule"
+		$("#form-adSchedule-adDetail").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+				
+			},
+			submitHandler: function(form) {
+				$.operate.save(prefix + "/edit", $('#form-adSchedule-edit').serialize());
+			}
+		});
+	</script>
+</body>
+</html>

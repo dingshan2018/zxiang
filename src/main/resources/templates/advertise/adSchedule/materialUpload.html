@@ -114,6 +114,12 @@
     }
 
     function submitUpload () {
+    	var elements = $.form.selectCheckeds("element");
+    	if(elements.length <= 0){
+    		$.modal.alertWarning("请先选择模板元素!");
+			return;
+       	}
+    	
     	$.modal.confirm("确定上传？", function() {
 	    	var opt = uploadTools.getOpt('fileUploadContent');
 		    uploadEvent.uploadFileEvent(opt);

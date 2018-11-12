@@ -1,7 +1,9 @@
 package com.zxiang.project.advertise.adPriceCfg.mapper;
 
 import com.zxiang.project.advertise.adPriceCfg.domain.AdPriceCfg;
-import java.util.List;	
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;	
 
 /**
  * 投放价格 数据层
@@ -58,5 +60,12 @@ public interface AdPriceCfgMapper
      * @return 结果
      */
 	public int deleteAdPriceCfgByIds(String[] priceCfgIds);
+
+	/**
+	 * 根据广告类型获取广告价格
+	 * @param releasePosition
+	 * @return
+	 */
+	public AdPriceCfg getPriceByType(@Param("adType") String adType);
 	
 }

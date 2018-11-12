@@ -138,28 +138,91 @@
 			  var dateTimeValidate = true;
 			  var timeSlotArr = [];
 			  $('.date-time-picker').each(function () {
-          if (!(!!$(this).val())){
-            dateTimeValidate = false;
-            $(this).addClass('error').siblings('.time-error').show();
-          }else{
-            $(this).removeClass('error').siblings('.time-error').hide();
-          }
-        });
-			  if (!dateTimeValidate) return;
-        $('.control-time-slot').each(function () {
-          timeSlotArr.push({
-            beginTime: $(this).find('.date-time-picker:first').val(),
-            endTime: $(this).find('.date-time-picker:last').val(),
-          })
-        });
-        orderSaveFun(timeSlotArr);
-			}
-		});
+		          if (!(!!$(this).val())){
+	            	  dateTimeValidate = false;
+	            	  $(this).addClass('error').siblings('.time-error').show();
+	          	  }else{
+	            	  $(this).removeClass('error').siblings('.time-error').hide();
+		          }
+        		  });
+				  if (!dateTimeValidate) return;
+	        	  $('.control-time-slot').each(function () {
+		          timeSlotArr.push({
+		            	beginTime: $(this).find('.date-time-picker:first').val(),
+		            	endTime: $(this).find('.date-time-picker:last').val(),
+		          	})
+	        	  });
+        		  orderSaveFun(timeSlotArr);
+				}
+			});
 
 	    function orderSaveFun(timeSlotArr) {
+	    	//开始时间必须小于结束时间
+	    	var timeFlag = false;
+	    	for(var i=0;i<timeSlotArr.length;i++){
+   				var beginTime = timeSlotArr[i].beginTime;
+	    		var endTime = timeSlotArr[i].endTime;
+	    		beginTime = beginTime.replace(/-/g,'/'); 
+	    		endTime = endTime.replace(/-/g,'/'); 
+	    		var beginTimestamp = new Date(beginTime).getTime();
+	    		var endTimestamp = new Date(endTime).getTime();
+	    		if( beginTime >= endTime){
+	    			timeFlag = true;
+	    			break;
+	    		}
+    		}
+	    	if(timeFlag){
+    			$.modal.alertWarning("投放时段结束时间必须大于开始时间!");
+    			return;
+    		}
+	    	
+			//时间范围不能重复
+			var timeCheck = false;
+	    	for(var i=0;i<timeSlotArr.length;i++){
+	    		for(var j=0;j<timeSlotArr.length;j++){
+	    			if(i != j){
+	    				//第i个时段
+	    				var beginTime = timeSlotArr[i].beginTime;
+			    		var endTime = timeSlotArr[i].endTime;
+			    		beginTime = beginTime.replace(/-/g,'/'); 
+			    		endTime = endTime.replace(/-/g,'/'); 
+			    		var beginTimestamp = new Date(beginTime).getTime();
+			    		var endTimestamp = new Date(endTime).getTime();
+			    		//console.log("beginTime:",beginTime,"endTime:",endTime);
+			    		//console.log("beginTimestamp:",beginTimestamp,",endTimestamp:",endTimestamp);
+			    		
+			    		//第j个时段
+			    		var beginTime_J = timeSlotArr[j].beginTime;
+			    		var endTime_J = timeSlotArr[j].endTime;
+			    		beginTime_J = beginTime_J.replace(/-/g,'/'); 
+			    		endTime_J = endTime_J.replace(/-/g,'/'); 
+			    		var beginTimestamp_J = new Date(beginTime_J).getTime();
+			    		var endTimestamp_J = new Date(endTime_J).getTime();
+			    		//console.log("beginTime_J:",beginTime_J,"endTime_J:",endTime_J);
+			    		//console.log("beginTimestamp_J:",beginTimestamp_J,",endTimestamp_J:",endTimestamp_J);
+			    		if( beginTime <=endTime_J && endTime>=beginTime_J){
+			    			timeCheck = true;
+			    			break;
+			    		}
+	    			}
+	    		}
+	    	}
+	    	if(timeCheck){
+    			$.modal.alertWarning("投放时段不可重复,请重新选择!");
+    			return;
+    		}
+	    	
+	    	//设备不能为空
+	    	var deviceIds = $.form.selectCheckeds("device");
+        	if(deviceIds.length <= 0){
+        		$.modal.alertWarning("没有选择可投放的设备!");
+				return;
+	       	}
+        	
 	    	$.modal.confirm("确定预约？", function() {
 	        	var adScheduleId = $("#adScheduleId").val();
 	        	var scheduleName = $("#scheduleName").val();
+	        	var releasePosition = $("#releasePosition").val();
 	        	var pId = $("#pId").val();
 	        	var tId = $("#tId").val();
 	        	var releaseType = $.form.selectSelects("releaseType");
@@ -168,12 +231,6 @@
 	        	var county = $.form.selectSelects("county");
 	        	var placeGrade = $.form.selectSelects("placeGrade");
 	        	
-	        	var deviceIds = $.form.selectCheckeds("device");
-	        	if(deviceIds.length <= 0){
-		       		alert("没有选择可投放的设备!");
-					return;
-		       	}
-	        	
 	        	$.ajax({
 	        		cache : true,
 	        		type : "POST",
@@ -181,6 +238,7 @@
 	        		data : {
 	        			"adScheduleId" : adScheduleId,
 	        			"scheduleName" : scheduleName,
+	        			"releasePosition" : releasePosition,
 	        			"releaseType" : releaseType,
 	        			"deviceIds" : deviceIds,
 	        			"pId"	: pId,

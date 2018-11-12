@@ -68,5 +68,12 @@ public interface AdReleaseRangeMapper
 	 * @return
 	 */
 	public int getOrderNum(@Param("adScheduleId")Integer adScheduleId);
+
+	/**
+	 * 通过广告ID查询广告投放范围信息
+	 * @param adScheduleId
+	 * @return
+	 */
+	public AdReleaseRange selectAdRangeByAd(@Param("adScheduleId") Integer adScheduleId);
 	
 }

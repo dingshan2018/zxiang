@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -29,6 +30,8 @@ import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
 import com.zxiang.project.advertise.adMaterial.domain.AdMaterial;
 import com.zxiang.project.advertise.adMaterial.mapper.AdMaterialMapper;
+import com.zxiang.project.advertise.adPriceCfg.domain.AdPriceCfg;
+import com.zxiang.project.advertise.adPriceCfg.mapper.AdPriceCfgMapper;
 import com.zxiang.project.advertise.adReleaseRange.domain.AdReleaseRange;
 import com.zxiang.project.advertise.adReleaseRange.mapper.AdReleaseRangeMapper;
 import com.zxiang.project.advertise.adReleaseTimer.domain.AdReleaseTimer;
@@ -65,6 +68,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	private DeviceMapper deviceMapper;
 	@Autowired
 	private AdMaterialMapper adMaterialMapper;
+	@Autowired
+	private AdPriceCfgMapper adPriceCfgMapper;
 
 	/**
      * 查询广告投放信息
@@ -270,6 +275,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			//2.插入广告与时间范围关系表 	一对多
 			List<String> timeSlots = new ArrayList<>();
 			Date deadLineDate = null;
+			int days = 0;
 			String timeSlotArr = adSchedule.getTimeSlotArr();
 			
 			JSONArray timeSlotJsonArray = new JSONArray(timeSlotArr);
@@ -306,8 +312,12 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 				if(deadLineDate == null){
 					deadLineDate = yyyyMMddSFormat.parse(endDate);
 				}
+				
 				//取最后日期
 				deadLineDate = compareDate(deadLineDate, yyyyMMddSFormat.parse(endDate));
+				
+				//获取时间段之间的相差天数
+				days += differentDaysByMillisecond(yyyyMMddSFormat.parse(startDate), yyyyMMddSFormat.parse(endDate));
 			}
 			
 			//这边的参数tid是设备的ID，而不是广告表的tid，需要修改!
@@ -328,7 +338,19 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			
 			//预约设备后广告状态变为待审核
 			adSchedule.setStatus(AdConstant.AD_WAIT_ADUIT);
-			//TODO 计算总价和押金 
+			//投放终端数
+			int deviceNum = deviceIds.split(",").length;
+			adSchedule.setReleaseTermNum(deviceNum);
+			// 计算总价和押金  总价= 计费类型*days*播放设备数量,押金=总价*比率
+			// 先获取该投放位置的单价
+			AdPriceCfg adPriceCfg = adPriceCfgMapper.getPriceByType(adSchedule.getReleasePosition());
+			
+			if(adPriceCfg != null){
+				float totalPay = adPriceCfg.getDailyPrice() * days * deviceNum;
+				float prepay = totalPay * AdConstant.PREPAY;
+				adSchedule.setTotalPay(totalPay);
+				adSchedule.setPrepay(prepay);
+			}
 			
 			return updateAdSchedule(adSchedule);
 			
@@ -651,4 +673,16 @@ public class AdScheduleServiceImpl implements IAdScheduleService
             return date2;
     }
 
+	/**
+     * 通过时间秒毫秒数判断两个时间的间隔
+     * @param date1
+     * @param date2
+     * @return
+     */
+    public static int differentDaysByMillisecond(Date date1,Date date2)
+    {
+        int days = (int) ((date2.getTime() - date1.getTime()) / (1000*3600*24));
+        //在获得的绝对差天数上加1天
+        return days + 1;
+    }
 }

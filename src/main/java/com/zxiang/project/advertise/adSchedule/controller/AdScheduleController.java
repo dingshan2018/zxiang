@@ -23,6 +23,10 @@ import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
+import com.zxiang.project.advertise.adReleaseRange.domain.AdReleaseRange;
+import com.zxiang.project.advertise.adReleaseRange.mapper.AdReleaseRangeMapper;
+import com.zxiang.project.advertise.adReleaseTimer.domain.AdReleaseTimer;
+import com.zxiang.project.advertise.adReleaseTimer.mapper.AdReleaseTimerMapper;
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
 import com.zxiang.project.advertise.adSchedule.domain.ElementType;
 import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
@@ -54,6 +58,10 @@ public class AdScheduleController extends BaseController
 	private IPlaceService placeService;
 	@Autowired
 	private AdvertiseMapper advertiseMapper;
+	@Autowired
+	private AdReleaseTimerMapper adReleaseTimerMapper;
+	@Autowired
+	private AdReleaseRangeMapper adReleaseRangeMapper;
 	
 	 //01待预约；02待审核；03待发布；04待播放；05已播放；06审核失败；07排期失败
     
@@ -284,5 +292,26 @@ public class AdScheduleController extends BaseController
 		mmap.put("adSchedule", adSchedule);
 		
 	    return prefix + "/preview";
+	}
+	
+	/**
+	 * 广告详情
+	 */
+	@GetMapping("/adDetail/{adScheduleId}")
+	public String adDetail(@PathVariable("adScheduleId") Integer adScheduleId, ModelMap mmap)
+	{
+		AdSchedule adSchedule = adScheduleService.selectAdScheduleById(adScheduleId);
+		mmap.put("adSchedule", adSchedule);
+		List<ThemeTemplate> ThemeTemplateList = adScheduleService.getThemeList();
+		mmap.put("ThemeTemplateList", ThemeTemplateList);
+		mmap.put("advertiserList", advertiseMapper.selectAdvertiseList(new Advertise()));
+		
+		AdReleaseTimer queryTimer = new AdReleaseTimer();
+		queryTimer.setAdScheduleId(adScheduleId);
+		mmap.put("adTimerList", adReleaseTimerMapper.selectAdReleaseTimerList(queryTimer));
+
+		mmap.put("adRange", adReleaseRangeMapper.selectAdRangeByAd(adScheduleId));
+		
+	    return prefix + "/adDetail";
 	}
 }
