@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -28,6 +31,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.DateUtils;
+import com.zxiang.common.utils.excel.EXCELObject;
 import com.zxiang.project.advertise.adMaterial.domain.AdMaterial;
 import com.zxiang.project.advertise.adMaterial.mapper.AdMaterialMapper;
 import com.zxiang.project.advertise.adPriceCfg.domain.AdPriceCfg;
@@ -166,6 +171,45 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		return adScheduleMapper.insertAdSchedule(adSchedule);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		List erportList = adScheduleMapper.queryExport(params);
+      	String realPath = request.getSession().getServletContext().getRealPath("/file/temp");
+  		EXCELObject s = new EXCELObject();
+  		s.seteFilePath(realPath);
+  		//表头名称
+  		String[] titH = { "ID", "投放名称", "投放方式","投放位置","广告商",
+  				"排期编号", "节目单ID","TID","模板ID","投放状态", 
+  				"总价", "押金", "投放终端数","审核结果","审核意见",
+  				"审核人",	"是否删除","投放备注", "总播放时长","创建者", 
+  				"创建时间", "修改者", "修改时间"};
+  		//数据库字段名称
+  		String[] titN = { "ad_schedule_id","schedule_name","releaseTypeName","releasePositionName","advertiseName",
+  				"sx_schedule_id", "pid","tid","theme_template_id","statusName",
+  				"total_pay", "prepay", "release_term_num","approved","approved_remark",
+  				"approved_user","is_del","release_note","total_time","create_by",
+  				"create_time", "update_by", "update_time"};
+  		String[] width= 
+  			   {"15","20","20","20","20",
+  				"20","20","20","20","20",
+  				"20","20","20","20","20",
+  				"20","20","20","20","20",
+  				"20","20","20"};
+  		s.setWidth(width);
+  		s.setFname("广告投放"); // sheet栏名称
+  		s.setTitle("广告投放"); // Excel内容标题名称
+  		s.setTitH(titH);
+  		s.setTitN(titN);
+  		s.setDataList(erportList);
+  		File exportFile = null;
+  		exportFile = s.setData();
+  		//Excel文件名称
+  		String excelName = "广告投放" + System.currentTimeMillis() + ".xls";
+  		s.exportExcel("广告投放", excelName, exportFile, request, response);
+	}
+	
 	@Override
 	@Transactional
 	public int materialUpload(List<MultipartFile> files,String adScheduleId,
@@ -685,4 +729,5 @@ public class AdScheduleServiceImpl implements IAdScheduleService
         //在获得的绝对差天数上加1天
         return days + 1;
     }
+
 }

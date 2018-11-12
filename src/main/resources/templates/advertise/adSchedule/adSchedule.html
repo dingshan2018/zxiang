@@ -11,23 +11,23 @@
             <ul>
               <li>
                 <span class="select-item-name">投放名称：</span>
-                <input type="text" name="scheduleName"/>
+                <input type="text" name="scheduleName" id="scheduleName"/>
               </li>
               <li>
                 <span class="select-item-name">投放用户：</span>
-                <input type="text" name="releaser"/>
+                <input type="text" name="releaser" id="releaser"/>
               </li>
               <li>
                 <span class="select-item-name">广告商户：</span>
-                <input type="text" name="advertiser"/>
+                <input type="text" name="advertiser" id="advertiser"/>
               </li>
               <li>
                 <span class="select-item-name">推广用户：</span>
-                <input type="text" name="promotioner"/>
+                <input type="text" name="promotioner" id="promotioner"/>
               </li>
               <li>
                 <span class="select-item-name">投放状态：</span>
-                <select name="status" th:with="type=${@dict.getType('schedule_status')}">
+                <select name="status" id="status" th:with="type=${@dict.getType('schedule_status')}">
                   <option value="">所有</option>
                   <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
                 </select>
@@ -411,6 +411,25 @@
 		var url = ctx + "advertise/adSchedule/adDetail/" + adScheduleId;
 		$.modal.open("广告详情", url);
   	}
+  	
+  	//导出Excel
+    function exportModule(){
+    	$.modal.confirm("确认导出？", function() {
+			//location.href = ctx + "advertise/adSchedule/excelExport?orgId="+vm.q.orgId+'&jssysDm='+vm.q.jssysDm+'&result='+vm.q.result+'&userRybh='+vm.q.userRybh;
+    		var scheduleName = $("#scheduleName").val();
+    		var releaser = $("#releaser").val();
+    		var advertiser = $("#advertiser").val();
+    		var promotioner = $("#promotioner").val();
+    		var status = $.form.selectSelects("status");
+    		var startTime = $("#startTime").val();
+    		var endTime = $("#endTime").val();
+    		
+			location.href = ctx + "advertise/adSchedule/excelExport?scheduleName="+scheduleName+'&releaser='+releaser
+					+'&advertiser='+advertiser+'&promotioner='+promotioner+'&status='+status
+					+'&startTime='+startTime+'&endTime='+endTime
+    		$.modal.alert("导出成功!");
+		});
+    }
   	
 </script>
 </body>

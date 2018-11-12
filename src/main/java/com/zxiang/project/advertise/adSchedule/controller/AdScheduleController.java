@@ -1,9 +1,11 @@
 package com.zxiang.project.advertise.adSchedule.controller;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -23,7 +26,6 @@ import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
-import com.zxiang.project.advertise.adReleaseRange.domain.AdReleaseRange;
 import com.zxiang.project.advertise.adReleaseRange.mapper.AdReleaseRangeMapper;
 import com.zxiang.project.advertise.adReleaseTimer.domain.AdReleaseTimer;
 import com.zxiang.project.advertise.adReleaseTimer.mapper.AdReleaseTimerMapper;
@@ -313,5 +315,21 @@ public class AdScheduleController extends BaseController
 		mmap.put("adRange", adReleaseRangeMapper.selectAdRangeByAd(adScheduleId));
 		
 	    return prefix + "/adDetail";
+	}
+	
+	/**
+	 * 导出Excel
+	 * 
+	 */
+	@RequestMapping("/excelExport")
+	public void excelExport(@RequestParam HashMap<String, String> params, 
+			HttpServletResponse response,HttpServletRequest request){
+
+		try {
+			adScheduleService.queryExport(params, request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 }
