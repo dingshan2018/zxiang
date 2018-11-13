@@ -113,5 +113,19 @@ public interface IDeviceService
      * 校验设备资产编号是否唯一
      */
 	public String checkDeviceSnUnique(String deviceSn);
+
+	/**
+	 * 查找库存设备列表
+	 * @param device
+	 * @return
+	 */
+	public List<Device> selectDeviceStockList(Device device);
+
+	/**
+	 * 库存设备出库
+	 * @param ids
+	 * @return
+	 */
+	public int outStock(String ids);
 	
 }

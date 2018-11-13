@@ -30,6 +30,13 @@ public interface DeviceMapper
 	public List<Device> selectDeviceList(Device device);
 	
 	/**
+	 * 查询库存设备列表
+	 * @param device
+	 * @return
+	 */
+	public List<Device> selectDeviceStockList(Device device);
+	
+	/**
      * 新增共享设备
      * 
      * @param device 共享设备信息
@@ -94,5 +101,13 @@ public interface DeviceMapper
 	 * @return
 	 */
 	public int checkDeviceSnUnique(String deviceSn);
+
+	/**
+	 * 库存设备出库
+	 * @param ids
+	 * @return
+	 */
+	public int outStock(String[] ids);
+
 	
 }

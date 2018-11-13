@@ -15,8 +15,8 @@
               </select>
             </li>
             <li>
-              <span class="select-item-name">设备编号：</span>
-              <input type="text" name="deviceCode" id="deviceCode"/>
+              <span class="select-item-name">设备资产编号：</span>
+              <input type="text" name="deviceSn" id="deviceSn"/>
             </li>
             <li>
               <span class="select-item-name">设备状态：</span>
@@ -130,16 +130,16 @@
             title: '设备编号'
           },
           {
+              field: 'deviceSn',
+              title: '设备资产编号'
+          },
+          {
             field: 'placeName',
             title: '场所'
           },
           {
             field: 'terminalCode',
             title: '终端编号'
-          },
-          {
-            field: 'deviceSn',
-            title: '设备资产编号'
           },
           {
               field: 'deviceType',
@@ -225,8 +225,7 @@
     function proviceBind () {
       //清空下拉数据
       $('#province').html('');
-      var str = '<option value=';
-      '>全部</option>';
+      var str = '<option value="">全部</option>';
 
       var provinceAreaList = selectAreaListByPid('0');
       $.each(provinceAreaList, function (i, item) {
@@ -243,8 +242,7 @@
         return;
       }
       $('#city').html('');
-      var str = '<option value=';
-      '>全部</option>';
+      var str = '<option value="">全部</option>';
 
       var cityAreaList = selectAreaListByPid(provice);
       $.each(cityAreaList, function (i, item) {
@@ -261,8 +259,7 @@
         return;
       }
       $('#county').html('');
-      var str = '<option value=';
-      '>全部</option>';
+      var str = '<option value="">全部</option>';
 
       var countyAreaList = selectAreaListByPid(provice);
       $.each(countyAreaList, function (i, item) {

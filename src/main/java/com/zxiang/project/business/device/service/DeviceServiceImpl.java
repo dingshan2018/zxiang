@@ -66,6 +66,14 @@ public class DeviceServiceImpl implements IDeviceService
 	    return deviceMapper.selectDeviceList(device);
 	}
 	
+	/**
+	 * 查询库存设备列表
+	 */
+	@Override
+	public List<Device> selectDeviceStockList(Device device) {
+		return deviceMapper.selectDeviceStockList(device);
+	}
+	
     /**
      * 新增共享设备
      * 
@@ -309,4 +317,10 @@ public class DeviceServiceImpl implements IDeviceService
         }
         return "0";
 	}
+
+	@Override
+	public int outStock(String ids) {
+		return deviceMapper.outStock(Convert.toStrArray(ids));
+	}
+
 }
