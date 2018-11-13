@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="deviceType"    column="device_type"    />
         <result property="terminalId"    column="terminal_id"    />
         <result property="placeId"    column="place_id"    />
+        <result property="ownerId"    column="owner_id"    />
         <result property="price"    column="price"    />
         <result property="lon"    column="lon"    />
         <result property="lat"    column="lat"    />
@@ -34,7 +35,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select device_id, device_code, device_sn, device_type,
          terminal_id,
          (select distinct t.terminal_code from zx_terminal t where t.terminal_id =d.`terminal_id` ) terminalCode,
-         place_id, 
+         place_id, owner_id,
+         (select distinct u.user_name from sys_user u where u.user_id =d.`owner_id` ) ownerName,
          (select distinct p.name from zx_place p where p.place_id =d.`place_id` ) placeName,
          price, lon, lat, release_time, remove_time, total_len, remain_len, last_heart_time, 
          last_login_time, last_scan_time, note, 
@@ -55,6 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="deviceType != null and deviceType != ''"> and device_type = #{deviceType}</if>
              <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
              <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
+             <if test="ownerId != null and ownerId != ''"> and owner_id = #{ownerId}</if>
              <if test="price != null and price != ''"> and price = #{price}</if>
              <if test="lon != null and lon != ''"> and lon = #{lon}</if>
              <if test="lat != null and lat != ''"> and lat = #{lat}</if>
@@ -98,6 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="deviceType != null and deviceType != '' ">device_type,</if>
 			<if test="terminalId != null and terminalId != '' ">terminal_id,</if>
 			<if test="placeId != null and placeId != '' ">place_id,</if>
+			<if test="ownerId != null and ownerId != '' ">owner_id,</if>
 			<if test="price != null and price != '' ">price,</if>
 			<if test="lon != null and lon != '' ">lon,</if>
 			<if test="lat != null and lat != '' ">lat,</if>
@@ -123,6 +127,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="deviceType != null and deviceType != ''">#{deviceType},</if>
 			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
 			<if test="placeId != null and placeId != ''">#{placeId},</if>
+			<if test="ownerId != null and ownerId != ''">#{ownerId},</if>
 			<if test="price != null and price != ''">#{price},</if>
 			<if test="lon != null and lon != ''">#{lon},</if>
 			<if test="lat != null and lat != ''">#{lat},</if>
@@ -151,6 +156,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deviceType != null  and deviceType != ''  ">device_type = #{deviceType},</if>
             <if test="terminalId != null  ">terminal_id = #{terminalId},</if>
             <if test="placeId != null  and placeId != ''  ">place_id = #{placeId},</if>
+            <if test="ownerId != null  and ownerId != ''  ">owner_id = #{ownerId},</if>
             <if test="price != null  ">price = #{price},</if>
             <if test="lon != null  and lon != ''  ">lon = #{lon},</if>
             <if test="lat != null  and lat != ''  ">lat = #{lat},</if>

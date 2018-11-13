@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.utils.excel.ExcelServiceUtil;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
@@ -77,8 +78,13 @@ public class DeviceController extends BaseController
 	 * 新增共享设备
 	 */
 	@GetMapping("/add")
-	public String add()
+	public String add(ModelMap mmap)
 	{
+		User queryUser = new User();
+		queryUser.setUserType(UserConstants.USER_TYPE_JOIN);
+		List<User> userListJoin = userService.selectUserList(queryUser);
+		mmap.put("userList", userListJoin);
+		
 	    return prefix + "/add";
 	}
 	
@@ -109,6 +115,11 @@ public class DeviceController extends BaseController
 		mmap.put("device", device);
 		mmap.put("terminalDropBoxList", terminalService.selectDropBoxList());
 		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
+		User queryUser = new User();
+		queryUser.setUserType(UserConstants.USER_TYPE_JOIN);
+		List<User> userListJoin = userService.selectUserList(queryUser);
+		mmap.put("userList", userListJoin);
+		
 	    return prefix + "/edit";
 	}
 	
@@ -221,7 +232,7 @@ public class DeviceController extends BaseController
 		mmap.put("terminalDropBoxList", terminalService.getDropBoxValidlList());
 		
 		User queryUser = new User();
-		queryUser.setUserType(TYPE_REPAIR);
+		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
 		List<User> userList = userService.selectUserList(queryUser);
 		mmap.put("userList", userList);
 		
@@ -257,7 +268,7 @@ public class DeviceController extends BaseController
 		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 		
 		User queryUser = new User();
-		queryUser.setUserType(TYPE_REPAIR);
+		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
 		List<User> userList = userService.selectUserList(queryUser);
 		mmap.put("userList", userList);
 		

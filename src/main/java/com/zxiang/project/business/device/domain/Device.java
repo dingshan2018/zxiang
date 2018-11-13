@@ -63,6 +63,8 @@ public class Device extends BaseEntity
 	private String updateBy;
 	/**  */
 	private Date updateTime;
+	/** 机主ID */
+	private Integer ownerId;
 
 	private String terminalCode;
 	private String placeName;
@@ -82,6 +84,7 @@ public class Device extends BaseEntity
 	private Integer supplierId;
 	
 	private String statusName;
+	private String ownerName;
 	
 	public void setDeviceId(Integer deviceId) 
 	{
@@ -385,6 +388,22 @@ public class Device extends BaseEntity
 
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
+	}
+
+	public Integer getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(Integer ownerId) {
+		this.ownerId = ownerId;
+	}
+
+	public String getOwnerName() {
+		return ownerName;
+	}
+
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
 	}
 
 	public String toString() {

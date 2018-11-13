@@ -146,6 +146,10 @@
               title: '设备类型'
           },
           {
+              field: 'ownerName',
+              title: '机主'
+          },
+          {
             field: 'releaseTime',
             title: '投放时间'
           },
@@ -305,7 +309,7 @@
         return;
       }
       //若已经有撤机时间说明已经撤机，不允许再次撤机
-      var removeTime = $.table.selectColumns($.table._option.columns[8].field);
+      var removeTime = $.table.selectColumns($.table._option.columns[9].field);
       if (removeTime != '') {
         $.modal.alertWarning('该设备已被撤机!');
         return;
