@@ -37,7 +37,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          place_id, 
          (select distinct p.name from zx_place p where p.place_id =d.`place_id` ) placeName,
          price, lon, lat, release_time, remove_time, total_len, remain_len, last_heart_time, 
-         last_login_time, last_scan_time, note, status, del_flag, create_by, create_time, 
+         last_login_time, last_scan_time, note, 
+         status,
+         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='device_status' AND sdd.dict_value=d.`status` ) statusName,
+         del_flag, create_by, create_time, 
          update_by, update_time from zx_device d
     </sql>
 	
@@ -213,4 +216,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </update>
     
+    <select id="checkDeviceSnUnique" parameterType="String" resultType="int">
+		SELECT COUNT(1) FROM `zx_device` WHERE BINARY device_sn=#{deviceSn}
+	</select>
+	
 </mapper>

@@ -100,5 +100,18 @@ public interface IDeviceService
 	 * @return
 	 */
 	public List<Device> getDeviceByareaId(String province, String city, String county);
+
+	/**
+	 * 保存Excel设备资产编号数据
+	 * @param sheetList
+	 * @param operatorUser
+	 * @return
+	 */
+	public int saveBatchImport(List<Object> sheetList, String operatorUser);
+	
+	/**
+     * 校验设备资产编号是否唯一
+     */
+	public String checkDeviceSnUnique(String deviceSn);
 	
 }

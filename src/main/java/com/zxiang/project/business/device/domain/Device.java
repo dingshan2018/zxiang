@@ -81,6 +81,8 @@ public class Device extends BaseEntity
 	private Integer tissueCount;
 	private Integer supplierId;
 	
+	private String statusName;
+	
 	public void setDeviceId(Integer deviceId) 
 	{
 		this.deviceId = deviceId;
@@ -375,6 +377,14 @@ public class Device extends BaseEntity
 
 	public void setSupplierId(Integer supplierId) {
 		this.supplierId = supplierId;
+	}
+
+	public String getStatusName() {
+		return statusName;
+	}
+
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
 	}
 
 	public String toString() {

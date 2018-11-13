@@ -20,12 +20,10 @@
             </li>
             <li>
               <span class="select-item-name">设备状态：</span>
-              <select id="status" name="status">
-                <option value="">全部</option>
-                <option value="2">上线</option>
-                <option value="1">下线</option>
-                <option value="3">故障</option>
-              </select>
+              <select id="status" name="status" th:with="type=${@dict.getType('device_status')}" >
+				<option value="">全部</option>
+				<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+			  </select>
             </li>
             <li class="select-time">
               <label class="select-item-name">投放时间： </label>
@@ -76,6 +74,9 @@
       </a>
       <a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="business:device:remove">
         <i class="fa fa-trash-o"></i> 删除
+      </a>
+      <a class="btn btn-outline btn-success btn-rounded" onclick="batchImport()" shiro:hasPermission="business:device:add">
+        <i class="fa fa-plus"></i> 批量导入
       </a>
     </div>
 
@@ -141,6 +142,10 @@
             title: '设备资产编号'
           },
           {
+              field: 'deviceType',
+              title: '设备类型'
+          },
+          {
             field: 'releaseTime',
             title: '投放时间'
           },
@@ -166,19 +171,8 @@
             title: '备注'
           },
           {
-            field    : 'status',
+            field    : 'statusName',
             title    : '设备状态',
-            formatter: function (value) {
-              if (value === '1') {
-                return '下线';
-              } else if (value === '2') {
-                return '上线';
-              } else if (value === '3') {
-                return '故障';
-              } else {
-                return '-';
-              }
-            }
           },
           {
             field: 'createBy',
@@ -311,7 +305,7 @@
         return;
       }
       //若已经有撤机时间说明已经撤机，不允许再次撤机
-      var removeTime = $.table.selectColumns($.table._option.columns[7].field);
+      var removeTime = $.table.selectColumns($.table._option.columns[8].field);
       if (removeTime != '') {
         $.modal.alertWarning('该设备已被撤机!');
         return;
@@ -353,6 +347,12 @@
       //
       var url = ctx + 'business/device/supplyTissueAdd/' + rows;
       $.modal.open('设备补纸', url);
+    }
+  	
+  	//批量导入设备资产编号弹窗函数
+    function batchImport () {
+      var url = ctx + 'business/device/batchImport';
+      $.modal.open('批量导入设备资产编号', url);
     }
   </script>
 </body>

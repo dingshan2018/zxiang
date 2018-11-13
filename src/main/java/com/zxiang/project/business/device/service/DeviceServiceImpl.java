@@ -1,5 +1,6 @@
 package com.zxiang.project.business.device.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -74,11 +75,13 @@ public class DeviceServiceImpl implements IDeviceService
 	@Override
 	public int insertDevice(Device device)
 	{
+		device.setStatus("04");
 		int deviceSave = deviceMapper.insertDevice(device);
 		//设备绑定终端后也要修改终端数据对应设备ID的值，设备不能再次绑定该终端
-		Terminal terminal = terminalMapper.selectTerminalById(device.getTerminalId());
+		//终端不再平台绑定，由微信公众号去做绑定操作
+		/*Terminal terminal = terminalMapper.selectTerminalById(device.getTerminalId());
 		terminal.setDeviceId(device.getDeviceId());
-		terminalMapper.updateTerminal(terminal);
+		terminalMapper.updateTerminal(terminal);*/
 		
 		return deviceSave;
 	}
@@ -119,7 +122,7 @@ public class DeviceServiceImpl implements IDeviceService
 	}
 	
 	/**
-	 * 设备编号为场所编号加3为序号
+	 * 设备编号为场所编号加3位序号
 	 * @param device
 	 * @return
 	 */
@@ -146,7 +149,7 @@ public class DeviceServiceImpl implements IDeviceService
 		deviceCode = placeCode + deviceCode;
 		device.setDeviceCode(deviceCode);
 		device.setReleaseTime(new Date());
-		device.setStatus("2");
+		device.setStatus("02");
 		//4.场所投放的设备数量+1
 		Place place = placeMapper.selectPlaceById(Integer.parseInt(placeId));
 		Integer deviceCount = place.getDeviceCount();
@@ -157,11 +160,13 @@ public class DeviceServiceImpl implements IDeviceService
 		}
 		place.setDeviceCount(deviceCount);
 		placeMapper.updatePlace(place);
+		
 		//终端数据也将绑定的设备编号信息插入
-		Terminal terminal = terminalMapper.selectTerminalById(device.getTerminalId());
+		/**终端不再平台绑定，由微信公众号去做绑定操作
+		/*Terminal terminal = terminalMapper.selectTerminalById(device.getTerminalId());
 		terminal.setDeviceId(device.getDeviceId());
 		terminal.setPlaceId(Integer.parseInt(placeId));
-		terminalMapper.updateTerminal(terminal);
+		terminalMapper.updateTerminal(terminal);*/
 		
 		return deviceMapper.updateDevice(device);
 	}
@@ -244,4 +249,56 @@ public class DeviceServiceImpl implements IDeviceService
 		return deviceMapper.getDeviceByareaId(province, city, county);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public int saveBatchImport(List<Object> sheetList, String operatorUser) {
+		int saveCount = 0;
+		//用于存放本批次已插入的数据进行保存
+		List<String> hasCodeList = new ArrayList<>(); 
+				
+		for (Object object : sheetList) {
+			List<Object> deviceList = (List<Object>) object;
+			if(deviceList.size() > 0 && null != deviceList.get(0)){
+				String deviceSn = (String) deviceList.get(0);
+				if(org.apache.commons.lang.StringUtils.isNotBlank(deviceSn)){
+					//设备资产编号去重,如果本Excel已经导入过这个设备编号就不再保存数据
+					if(hasCodeList.contains(deviceSn)){
+						continue;
+					}
+					
+					int saveNum = checkAndSaveDeviceSn(deviceSn,operatorUser);
+					saveCount = saveCount +  saveNum;
+					if(saveNum == 1){
+						hasCodeList.add(deviceSn);
+					}
+				}
+			}
+		}
+		return saveCount;
+	}
+
+	public int checkAndSaveDeviceSn(String deviceSn,String operatorUser){
+		String codeExist = checkDeviceSnUnique(deviceSn);
+		//设备资产编号不存在则保存,返回插入成功数量
+		if("0".equals(codeExist)){
+			Device device = new Device();
+			device.setDeviceSn(deviceSn);
+			device.setStatus("04");
+			device.setCreateBy(operatorUser);
+			device.setCreateTime(new Date());
+		    return deviceMapper.insertDevice(device);
+		}
+		//终端编号存在则不保存，直接返回0
+		return 0;
+	}
+
+	@Override
+	public String checkDeviceSnUnique(String deviceSn) {
+		int count = deviceMapper.checkDeviceSnUnique(deviceSn);
+        if (count > 0)
+        {
+            return "1";
+        }
+        return "0";
+	}
 }

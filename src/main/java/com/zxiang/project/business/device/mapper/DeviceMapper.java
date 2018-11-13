@@ -87,5 +87,12 @@ public interface DeviceMapper
 	 * @param terminalId
 	 */
 	public int updateAdUrlByTid(@Param("adUrl")String adUrl, @Param("terminalIds")String[] terminalIds);
+
+	/**
+	 * 校验设备资产编号是否唯一
+	 * @param deviceSn
+	 * @return
+	 */
+	public int checkDeviceSnUnique(String deviceSn);
 	
 }
