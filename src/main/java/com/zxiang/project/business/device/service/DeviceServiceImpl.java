@@ -127,8 +127,16 @@ public class DeviceServiceImpl implements IDeviceService
 	 * @return
 	 */
 	public synchronized int getAutoCodeNum(Device device){
-		//1.根据场所ID查询场所编号和地区编号
+		Device oldDevice = deviceMapper.selectDeviceById(device.getDeviceId());
 		String placeId = device.getPlaceId();
+		if(oldDevice != null){
+			String oldPlaceId = oldDevice.getPlaceId();
+			if(placeId.equals(oldPlaceId)){
+				device.setStatus("02");
+				return deviceMapper.updateDevice(device);
+			}
+		}
+		//1.根据场所ID查询场所编号和地区编号
 		Place placeEntity = placeMapper.selectPlaceById(Integer.parseInt(placeId));
 		String placeCode = placeEntity.getPlaceCode();
 

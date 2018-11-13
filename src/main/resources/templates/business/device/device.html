@@ -175,8 +175,12 @@
             title: '备注'
           },
           {
-            field    : 'statusName',
-            title    : '设备状态',
+              field: 'status',
+              title: '状态',
+          },
+          {
+            field: 'statusName',
+            title: '设备状态',
           },
           {
             field: 'createBy',
@@ -215,6 +219,7 @@
       $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'status');
     });
 
     function proviceBind () {
@@ -280,11 +285,11 @@
         return;
       }
       //若已经有设备编号说明已经投放过，不允许再次投放
-      var deviceCode = $.table.selectColumns($.table._option.columns[2].field);
+     /*  var deviceCode = $.table.selectColumns($.table._option.columns[2].field);
       if (deviceCode != '') {
         $.modal.alertWarning('该设备已投放!');
         return;
-      }
+      } */
       //
       var url = ctx + 'business/device/release/' + rows;
       $.modal.open('选择投放场所', url);
@@ -302,9 +307,9 @@
         $.modal.alertWarning('只能选择一条记录');
         return;
       }
-      //若没有设备编号说明未投放，不允许撤机
-      var deviceCode = $.table.selectColumns($.table._option.columns[2].field);
-      if (deviceCode == '') {
+      /*  //若当前状态不是已投放，不允许撤机
+      var status = $.table.selectColumns($.table._option.columns[14].field);
+      if (status != "02") {
         $.modal.alertWarning('该设备未投放，不能撤机!');
         return;
       }
@@ -312,6 +317,13 @@
       var removeTime = $.table.selectColumns($.table._option.columns[9].field);
       if (removeTime != '') {
         $.modal.alertWarning('该设备已被撤机!');
+        return;
+      } */
+      
+      //若当前状态不是已投放，不允许撤机
+      var status = $.table.selectColumns($.table._option.columns[14].field);
+      if (status != "02") {
+        $.modal.alertWarning('该设备未投放，不能撤机!');
         return;
       }
       //
