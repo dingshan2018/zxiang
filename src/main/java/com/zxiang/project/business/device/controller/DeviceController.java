@@ -14,8 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.zxiang.common.constant.UserConstants;
+import com.zxiang.common.utils.excel.ExcelServiceUtil;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -73,8 +78,13 @@ public class DeviceController extends BaseController
 	 * 新增共享设备
 	 */
 	@GetMapping("/add")
-	public String add()
+	public String add(ModelMap mmap)
 	{
+		User queryUser = new User();
+		queryUser.setUserType(UserConstants.USER_TYPE_JOIN);
+		List<User> userListJoin = userService.selectUserList(queryUser);
+		mmap.put("userList", userListJoin);
+		
 	    return prefix + "/add";
 	}
 	
@@ -105,6 +115,11 @@ public class DeviceController extends BaseController
 		mmap.put("device", device);
 		mmap.put("terminalDropBoxList", terminalService.selectDropBoxList());
 		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
+		User queryUser = new User();
+		queryUser.setUserType(UserConstants.USER_TYPE_JOIN);
+		List<User> userListJoin = userService.selectUserList(queryUser);
+		mmap.put("userList", userListJoin);
+		
 	    return prefix + "/edit";
 	}
 	
@@ -217,7 +232,7 @@ public class DeviceController extends BaseController
 		mmap.put("terminalDropBoxList", terminalService.getDropBoxValidlList());
 		
 		User queryUser = new User();
-		queryUser.setUserType(TYPE_REPAIR);
+		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
 		List<User> userList = userService.selectUserList(queryUser);
 		mmap.put("userList", userList);
 		
@@ -253,7 +268,7 @@ public class DeviceController extends BaseController
 		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 		
 		User queryUser = new User();
-		queryUser.setUserType(TYPE_REPAIR);
+		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
 		List<User> userList = userService.selectUserList(queryUser);
 		mmap.put("userList", userList);
 		
@@ -314,5 +329,37 @@ public class DeviceController extends BaseController
 		
 		List<Device> list = deviceService.getDeviceByareaId(province,city,county);
 		return getDataTable(list);
+    }
+	
+	/**
+	 * 批量导入设备资产编号-界面跳转
+	 */
+	@GetMapping("/batchImport")
+	public String batchImport()
+	{
+	    return prefix + "/batchImport";
+	}
+	
+	/**
+     * 批量导入设备资产编号保存
+     */
+    @RequestMapping(value = "/batchImport", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxResult batchImportSave(@RequestParam("fileUpload") MultipartFile file)
+    {
+    	int saveCount = 0;
+    	try {
+    		//解析Excel数据
+			List<Object> sheetList = ExcelServiceUtil.importData(file);
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";
+			//保存终端编号
+			saveCount = deviceService.saveBatchImport(sheetList,operatorUser);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error("导入失败！");
+		}    	
+
+        return success("成功导入 "+ saveCount +" 条数据!");
     }
 }

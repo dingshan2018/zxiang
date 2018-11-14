@@ -1,7 +1,8 @@
 package com.zxiang.project.client.advertise.mapper;
 
-import com.zxiang.project.client.advertise.domain.Advertise;
-import java.util.List;	
+import java.util.List;
+
+import com.zxiang.project.client.advertise.domain.Advertise;	
 
 /**
  * 广告商 数据层
@@ -58,5 +59,7 @@ public interface AdvertiseMapper
      * @return 结果
      */
 	public int deleteAdvertiseByIds(String[] advertiseIds);
+
+	public int selectTotal();
 	
 }

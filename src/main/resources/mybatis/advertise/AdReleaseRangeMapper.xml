@@ -117,4 +117,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       	SELECT COUNT(1) FROM `zx_ad_release_range` WHERE ad_schedule_id=#{adScheduleId};
     </select>
     
+    <!-- 过广告ID查询广告投放范围信息  -->
+    <select id="selectAdRangeByAd" resultMap="AdReleaseRangeResult">
+        <include refid="selectAdReleaseRangeVo"/>
+        where ad_schedule_id = #{adScheduleId} ORDER BY ad_release_range_id DESC LIMIT 1
+    </select>
+    
 </mapper>

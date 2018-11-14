@@ -23,8 +23,13 @@
 			<div class="form-group">	
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放位置：</label>
 				<div class="col-sm-8">
-					<select id="releasePosition" name="releasePosition" th:with="type=${@dict.getType('release_position')}" class="form-control">
+					<!-- 先使用广告类型替代投放位置，方便总价和押金的计算 -->
+					<!-- <select id="releasePosition" name="releasePosition" th:with="type=${@dict.getType('release_position')}" class="form-control">
 						<option value="">---请选择---</option> 
+						<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+					</select> -->
+					<select id="releasePosition" name="releasePosition" th:with="type=${@dict.getType('ad_type')}" class="form-control">
+						<option value="">---请选择---</option>
 						<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 					</select>
 				</div>

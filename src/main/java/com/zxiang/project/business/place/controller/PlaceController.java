@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -73,7 +74,7 @@ public class PlaceController extends BaseController
 		List<User> userListAll = userService.selectUserList(queryUser);
 		mmap.put("userListAll", userListAll);
 		
-		queryUser.setUserType(TYPE_REPAIR);
+		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
 		List<User> userListRepair = userService.selectUserList(queryUser);
 		
 		mmap.put("userListRepair", userListRepair);
@@ -116,7 +117,7 @@ public class PlaceController extends BaseController
 		List<User> userListAll = userService.selectUserList(queryUser);
 		mmap.put("userListAll", userListAll);
 		
-		queryUser.setUserType(TYPE_REPAIR);
+		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
 		List<User> userListRepair = userService.selectUserList(queryUser);
 		
 		mmap.put("userListRepair", userListRepair);

@@ -1,9 +1,10 @@
 package com.zxiang.project.business.device.mapper;
 
-import com.zxiang.project.business.device.domain.Device;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;	
+import org.apache.ibatis.annotations.Param;
+
+import com.zxiang.project.business.device.domain.Device;	
 
 /**
  * 共享设备 数据层
@@ -28,6 +29,13 @@ public interface DeviceMapper
      * @return 共享设备集合
      */
 	public List<Device> selectDeviceList(Device device);
+	
+	/**
+	 * 查询库存设备列表
+	 * @param device
+	 * @return
+	 */
+	public List<Device> selectDeviceStockList(Device device);
 	
 	/**
      * 新增共享设备
@@ -87,5 +95,22 @@ public interface DeviceMapper
 	 * @param terminalId
 	 */
 	public int updateAdUrlByTid(@Param("adUrl")String adUrl, @Param("terminalIds")String[] terminalIds);
+
+	/**
+	 * 校验设备资产编号是否唯一
+	 * @param deviceSn
+	 * @return
+	 */
+	public int checkDeviceSnUnique(String deviceSn);
+
+	/**
+	 * 库存设备出库
+	 * @param ids
+	 * @return
+	 */
+	public int outStock(String[] ids);
+
+	public int selectTotal();
+
 	
 }

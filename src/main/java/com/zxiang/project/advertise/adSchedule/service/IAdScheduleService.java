@@ -5,7 +5,11 @@ import com.zxiang.project.advertise.adSchedule.domain.ElementType;
 import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -110,6 +114,15 @@ public interface IAdScheduleService
 	 * @param adSchedule
 	 */
 	public int releaseOnlineSave(AdSchedule adSchedule);
+
+	/**
+	 * 导出Excel
+	 * @param params
+	 * @param request
+	 * @param response
+	 * @throws Exception 
+	 */
+	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
 
 }

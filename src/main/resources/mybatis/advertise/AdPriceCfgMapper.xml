@@ -129,4 +129,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <!--  根据广告类型获取广告价格  -->
+    <select id="getPriceByType" resultMap="AdPriceCfgResult">
+        <include refid="selectAdPriceCfgVo"/>
+        where ad_type = #{adType}  ORDER BY price_cfg_id DESC LIMIT 1
+    </select>
+    
 </mapper>

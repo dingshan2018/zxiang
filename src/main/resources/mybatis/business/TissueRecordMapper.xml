@@ -58,11 +58,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              		WHERE zp.repair_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
              			WHERE su.user_type='04' AND su.puser_id=#{repairId}  AND su.user_id=p.repair_id))
              </if>
-             <!-- 按照加盟商搜索 通过场所机主关联-->
-             <if test="joinId != null and joinId != ''">  and tr.place_id in 
-             	(SELECT DISTINCT zp.place_id FROM zx_place zp 
-             		WHERE zp.owner_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
-             			WHERE su.user_type='02' AND su.puser_id=#{joinId}  AND su.user_id=p.owner_id))
+             <!-- 按照加盟商搜索 通过设备机主关联-->
+             <if test="joinId != null and joinId != ''">  and tr.device_id in 
+             	(SELECT DISTINCT zd.device_id FROM zx_device zd 
+             		WHERE zd.owner_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_device d 
+             			WHERE su.user_type='02' AND su.puser_id=#{joinId}  AND su.user_id=d.owner_id))
          	 </if>
          </where>
     </select>
@@ -126,5 +126,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{tissueRecordId}
         </foreach>
     </delete>
-    
+    <select id="selectTotal" resultType="int">
+       select count(*) from zx_tissue_record where status = '1'
+       <if test="selDate != null selDate.trim() != ''">and date_format(create_time,'%Y-%m-%d') = #{selDate}</if>
+    </select>
 </mapper>

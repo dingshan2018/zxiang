@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="deviceType"    column="device_type"    />
         <result property="terminalId"    column="terminal_id"    />
         <result property="placeId"    column="place_id"    />
+        <result property="ownerId"    column="owner_id"    />
         <result property="price"    column="price"    />
         <result property="lon"    column="lon"    />
         <result property="lat"    column="lat"    />
@@ -34,10 +35,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select device_id, device_code, device_sn, device_type,
          terminal_id,
          (select distinct t.terminal_code from zx_terminal t where t.terminal_id =d.`terminal_id` ) terminalCode,
-         place_id, 
+         place_id, owner_id,
+         (select distinct u.user_name from sys_user u where u.user_id =d.`owner_id` ) ownerName,
          (select distinct p.name from zx_place p where p.place_id =d.`place_id` ) placeName,
          price, lon, lat, release_time, remove_time, total_len, remain_len, last_heart_time, 
-         last_login_time, last_scan_time, note, status, del_flag, create_by, create_time, 
+         last_login_time, last_scan_time, note, 
+         status,
+         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='device_status' AND sdd.dict_value=d.`status` ) statusName,
+         del_flag, create_by, create_time, 
          update_by, update_time from zx_device d
     </sql>
 	
@@ -48,10 +53,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="deviceCode != null and deviceCode != ''"> 
              	and device_code like concat('%', #{deviceCode}, '%')
              </if>
-             <if test="deviceSn != null and deviceSn != ''"> and device_sn = #{deviceSn}</if>
+             <if test="deviceSn != null and deviceSn != ''"> 
+             	and device_sn like concat('%', #{deviceSn}, '%')
+             </if>
              <if test="deviceType != null and deviceType != ''"> and device_type = #{deviceType}</if>
              <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
              <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
+             <if test="ownerId != null and ownerId != ''"> and owner_id = #{ownerId}</if>
              <if test="price != null and price != ''"> and price = #{price}</if>
              <if test="lon != null and lon != ''"> and lon = #{lon}</if>
              <if test="lat != null and lat != ''"> and lat = #{lat}</if>
@@ -69,6 +77,52 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="lastScanTime != null "> and last_scan_time = #{lastScanTime}</if>
              <if test="note != null and note != ''"> and note = #{note}</if>
              <if test="status != null and status != ''"> and status = #{status}</if>
+             <if test="1==1"> and status != "04"</if>
+             <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null"> and update_time = #{updateTime}</if>
+             <!-- 按照省市县下拉框搜索 -->
+             <if test="province != null and province != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.province = #{province})</if>
+             <if test="city != null and city != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.city = #{city})</if>
+             <if test="county != null and county != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.county = #{county})</if>
+         </where>
+    </select>
+    
+    <!-- 查询库存设备列表  -->
+    <select id="selectDeviceStockList" parameterType="Device" resultMap="DeviceResult">
+        <include refid="selectDeviceVo"/>
+        <where>  
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="deviceCode != null and deviceCode != ''"> 
+             	and device_code like concat('%', #{deviceCode}, '%')
+             </if>
+             <if test="deviceSn != null and deviceSn != ''"> 
+             	and device_sn like concat('%', #{deviceSn}, '%')
+             </if>
+             <if test="deviceType != null and deviceType != ''"> and device_type = #{deviceType}</if>
+             <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
+             <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
+             <if test="ownerId != null and ownerId != ''"> and owner_id = #{ownerId}</if>
+             <if test="price != null and price != ''"> and price = #{price}</if>
+             <if test="lon != null and lon != ''"> and lon = #{lon}</if>
+             <if test="lat != null and lat != ''"> and lat = #{lat}</if>
+             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				 AND date_format(d.release_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			 </if>
+			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				 AND date_format(d.release_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+			 </if>
+             <if test="removeTime != null "> and remove_time = #{removeTime}</if>
+             <if test="totalLen != null and totalLen != ''"> and total_len = #{totalLen}</if>
+             <if test="remainLen != null and remainLen != ''"> and remain_len = #{remainLen}</if>
+             <if test="lastHeartTime != null "> and last_heart_time = #{lastHeartTime}</if>
+             <if test="lastLoginTime != null "> and last_login_time = #{lastLoginTime}</if>
+             <if test="lastScanTime != null "> and last_scan_time = #{lastScanTime}</if>
+             <if test="note != null and note != ''"> and note = #{note}</if>
+             <!-- <if test="status != null and status != ''"> and status = #{status}</if> -->
+             <if test="1==1"> and status = "04"</if>
              <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
              <if test="createTime != null "> and create_time = #{createTime}</if>
@@ -95,6 +149,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="deviceType != null and deviceType != '' ">device_type,</if>
 			<if test="terminalId != null and terminalId != '' ">terminal_id,</if>
 			<if test="placeId != null and placeId != '' ">place_id,</if>
+			<if test="ownerId != null and ownerId != '' ">owner_id,</if>
 			<if test="price != null and price != '' ">price,</if>
 			<if test="lon != null and lon != '' ">lon,</if>
 			<if test="lat != null and lat != '' ">lat,</if>
@@ -120,6 +175,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="deviceType != null and deviceType != ''">#{deviceType},</if>
 			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
 			<if test="placeId != null and placeId != ''">#{placeId},</if>
+			<if test="ownerId != null and ownerId != ''">#{ownerId},</if>
 			<if test="price != null and price != ''">#{price},</if>
 			<if test="lon != null and lon != ''">#{lon},</if>
 			<if test="lat != null and lat != ''">#{lat},</if>
@@ -148,6 +204,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deviceType != null  and deviceType != ''  ">device_type = #{deviceType},</if>
             <if test="terminalId != null  ">terminal_id = #{terminalId},</if>
             <if test="placeId != null  and placeId != ''  ">place_id = #{placeId},</if>
+            <if test="ownerId != null  and ownerId != ''  ">owner_id = #{ownerId},</if>
             <if test="price != null  ">price = #{price},</if>
             <if test="lon != null  and lon != ''  ">lon = #{lon},</if>
             <if test="lat != null  and lat != ''  ">lat = #{lat},</if>
@@ -206,6 +263,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          )
     </select>
     
+    <!-- 更新设备的adUrl -->
     <update id="updateAdUrlByTid" parameterType="String">
         update zx_device set ad_url=#{adUrl} where device_id in 
         <foreach item="deviceId" collection="terminalIds" open="(" separator="," close=")">
@@ -213,4 +271,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </update>
     
+    <select id="checkDeviceSnUnique" parameterType="String" resultType="int">
+		SELECT COUNT(1) FROM `zx_device` WHERE BINARY device_sn=#{deviceSn}
+	</select>
+	
+	<!-- 库存设备出库 -->
+    <update id="outStock" parameterType="String">
+        update zx_device set status="01" where status="04" and device_id in 
+        <foreach item="deviceId" collection="array" open="(" separator="," close=")">
+            #{deviceId}
+        </foreach>
+    </update>
+    <select id="selectTotal" resultType="int">
+    	select count(*) from zx_device
+    </select>
 </mapper>

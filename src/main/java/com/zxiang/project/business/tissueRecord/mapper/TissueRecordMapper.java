@@ -1,7 +1,10 @@
 package com.zxiang.project.business.tissueRecord.mapper;
 
-import com.zxiang.project.business.tissueRecord.domain.TissueRecord;
-import java.util.List;	
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.zxiang.project.business.tissueRecord.domain.TissueRecord;	
 
 /**
  * 出纸记录 数据层
@@ -58,5 +61,7 @@ public interface TissueRecordMapper
      * @return 结果
      */
 	public int deleteTissueRecordByIds(String[] tissueRecordIds);
+
+	public int selectTotal(@Param("selDate")String selDate);
 	
 }

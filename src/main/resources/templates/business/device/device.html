@@ -15,17 +15,15 @@
               </select>
             </li>
             <li>
-              <span class="select-item-name">设备编号：</span>
-              <input type="text" name="deviceCode" id="deviceCode"/>
+              <span class="select-item-name">设备资产编号：</span>
+              <input type="text" name="deviceSn" id="deviceSn"/>
             </li>
             <li>
               <span class="select-item-name">设备状态：</span>
-              <select id="status" name="status">
-                <option value="">全部</option>
-                <option value="2">上线</option>
-                <option value="1">下线</option>
-                <option value="3">故障</option>
-              </select>
+              <select id="status" name="status" th:with="type=${@dict.getType('device_status')}" >
+				<option value="">全部</option>
+				<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+			  </select>
             </li>
             <li class="select-time">
               <label class="select-item-name">投放时间： </label>
@@ -76,6 +74,9 @@
       </a>
       <a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="business:device:remove">
         <i class="fa fa-trash-o"></i> 删除
+      </a>
+      <a class="btn btn-outline btn-success btn-rounded" onclick="batchImport()" shiro:hasPermission="business:device:add">
+        <i class="fa fa-plus"></i> 批量导入
       </a>
     </div>
 
@@ -129,6 +130,10 @@
             title: '设备编号'
           },
           {
+              field: 'deviceSn',
+              title: '设备资产编号'
+          },
+          {
             field: 'placeName',
             title: '场所'
           },
@@ -137,8 +142,12 @@
             title: '终端编号'
           },
           {
-            field: 'deviceSn',
-            title: '设备资产编号'
+              field: 'deviceType',
+              title: '设备类型'
+          },
+          {
+              field: 'ownerName',
+              title: '机主'
           },
           {
             field: 'releaseTime',
@@ -166,19 +175,12 @@
             title: '备注'
           },
           {
-            field    : 'status',
-            title    : '设备状态',
-            formatter: function (value) {
-              if (value === '1') {
-                return '下线';
-              } else if (value === '2') {
-                return '上线';
-              } else if (value === '3') {
-                return '故障';
-              } else {
-                return '-';
-              }
-            }
+              field: 'status',
+              title: '状态',
+          },
+          {
+            field: 'statusName',
+            title: '设备状态',
           },
           {
             field: 'createBy',
@@ -217,13 +219,13 @@
       $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'status');
     });
 
     function proviceBind () {
       //清空下拉数据
       $('#province').html('');
-      var str = '<option value=';
-      '>全部</option>';
+      var str = '<option value="">全部</option>';
 
       var provinceAreaList = selectAreaListByPid('0');
       $.each(provinceAreaList, function (i, item) {
@@ -240,8 +242,7 @@
         return;
       }
       $('#city').html('');
-      var str = '<option value=';
-      '>全部</option>';
+      var str = '<option value="">全部</option>';
 
       var cityAreaList = selectAreaListByPid(provice);
       $.each(cityAreaList, function (i, item) {
@@ -258,8 +259,7 @@
         return;
       }
       $('#county').html('');
-      var str = '<option value=';
-      '>全部</option>';
+      var str = '<option value="">全部</option>';
 
       var countyAreaList = selectAreaListByPid(provice);
       $.each(countyAreaList, function (i, item) {
@@ -282,11 +282,11 @@
         return;
       }
       //若已经有设备编号说明已经投放过，不允许再次投放
-      var deviceCode = $.table.selectColumns($.table._option.columns[2].field);
+     /*  var deviceCode = $.table.selectColumns($.table._option.columns[2].field);
       if (deviceCode != '') {
         $.modal.alertWarning('该设备已投放!');
         return;
-      }
+      } */
       //
       var url = ctx + 'business/device/release/' + rows;
       $.modal.open('选择投放场所', url);
@@ -304,16 +304,23 @@
         $.modal.alertWarning('只能选择一条记录');
         return;
       }
-      //若没有设备编号说明未投放，不允许撤机
-      var deviceCode = $.table.selectColumns($.table._option.columns[2].field);
-      if (deviceCode == '') {
+      /*  //若当前状态不是已投放，不允许撤机
+      var status = $.table.selectColumns($.table._option.columns[14].field);
+      if (status != "02") {
         $.modal.alertWarning('该设备未投放，不能撤机!');
         return;
       }
       //若已经有撤机时间说明已经撤机，不允许再次撤机
-      var removeTime = $.table.selectColumns($.table._option.columns[7].field);
+      var removeTime = $.table.selectColumns($.table._option.columns[9].field);
       if (removeTime != '') {
         $.modal.alertWarning('该设备已被撤机!');
+        return;
+      } */
+      
+      //若当前状态不是已投放，不允许撤机
+      var status = $.table.selectColumns($.table._option.columns[14].field);
+      if (status != "02") {
+        $.modal.alertWarning('该设备未投放，不能撤机!');
         return;
       }
       //
@@ -353,6 +360,12 @@
       //
       var url = ctx + 'business/device/supplyTissueAdd/' + rows;
       $.modal.open('设备补纸', url);
+    }
+  	
+  	//批量导入设备资产编号弹窗函数
+    function batchImport () {
+      var url = ctx + 'business/device/batchImport';
+      $.modal.open('批量导入设备资产编号', url);
     }
   </script>
 </body>

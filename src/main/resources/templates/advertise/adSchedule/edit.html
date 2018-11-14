@@ -25,10 +25,13 @@
             <div class="form-group">	
                 <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放位置：</label>
                 <div class="col-sm-8">
-                    <select id="releasePosition"  name="releasePosition" class="form-control m-b" 
+                    <!-- <select id="releasePosition"  name="releasePosition" class="form-control m-b" 
                     th:with="type=${@dict.getType('release_position')}">
 	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" 
 	                    th:value="${dict.dictValue}" th:field="*{releasePosition}"></option>
+	                </select> -->
+	                <select id="releasePosition" name="releasePosition" class="form-control m-b" th:with="type=${@dict.getType('ad_type')}">
+	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{releasePosition}"></option>
 	                </select>
                 </div>
             </div>

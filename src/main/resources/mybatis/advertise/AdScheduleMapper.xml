@@ -37,7 +37,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='release_type' AND sdd.dict_value=zas.`release_type` ) releaseTypeName, -->
         CASE release_type  WHEN '0' THEN '全部' WHEN '1' THEN '按地区' WHEN '2' THEN '按场所' ELSE '' END releaseTypeName,
         release_position,
-        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='release_position' AND sdd.dict_value=zas.`release_position` ) releasePositionName, 
+        <!-- 先使用广告类型替代投放位置，方便总价和押金的计算 -->
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='ad_type' AND sdd.dict_value=zas.`release_position` ) releasePositionName, 
         sx_schedule_id, pid,tid,theme_template_id,
         status, 
         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='schedule_status' AND sdd.dict_value=zas.`status` ) statusName,
@@ -71,7 +72,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="isDel != null and isDel != ''"> and is_del = #{isDel}</if>
              <if test="releaseNote != null and releaseNote != ''"> and release_note = #{releaseNote}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				 AND date_format(zas.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			 </if>
+			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				 AND date_format(zas.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+			 </if>
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
              <if test="updateTime != null "> and update_time = #{updateTime}</if>
              <if test="advertiseId != null and advertiseId != ''"> and advertise_id = #{advertiseId}</if>
@@ -178,4 +184,39 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <select id="queryExport" resultType="java.util.HashMap">
+       <include refid="selectAdScheduleVo"/>
+        <where>  
+            <if test="adScheduleId != null and adScheduleId != ''"> and ad_schedule_id = #{adScheduleId}</if>
+             <if test="scheduleName != null and scheduleName != ''">
+              	and schedule_name like concat('%', #{scheduleName}, '%')
+             </if>
+             <if test="releaseType != null and releaseType != ''"> and release_type = #{releaseType}</if>
+             <if test="releasePosition != null and releasePosition != ''"> and release_position = #{releasePosition}</if>
+             <if test="sxScheduleId != null and sxScheduleId != ''"> and sx_schedule_id = #{sxScheduleId}</if>
+             <if test="pId != null and pId != ''"> and pid = #{pId}</if>
+             <if test="tId != null and tId != ''"> and tid = #{tId}</if>
+             <if test="themeTemplateId != null and themeTemplateId != ''"> and theme_template_id = #{themeTemplateId}</if>
+             <if test="status != null and status != ''"> and status = #{status}</if>
+             <if test="totalPay != null and totalPay != ''"> and total_pay = #{totalPay}</if>
+             <if test="prepay != null and prepay != ''"> and prepay = #{prepay}</if>
+             <if test="releaseTermNum != null and releaseTermNum != ''"> and release_term_num = #{releaseTermNum}</if>
+             <if test="approved != null and approved != ''"> and approved = #{approved}</if>
+             <if test="approvedRemark != null and approvedRemark != ''"> and approved_remark = #{approvedRemark}</if>
+             <if test="approvedUser != null and approvedUser != ''"> and approved_user = #{approvedUser}</if>
+             <if test="isDel != null and isDel != ''"> and is_del = #{isDel}</if>
+             <if test="releaseNote != null and releaseNote != ''"> and release_note = #{releaseNote}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+            <if test="startTime != null and startTime != ''"><!-- 开始时间检索 -->
+				 AND date_format(zas.create_time,'%y%m%d') &gt;= date_format(#{startTime},'%y%m%d')
+			 </if>
+			 <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+				 AND date_format(zas.create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+			 </if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="advertiseId != null and advertiseId != ''"> and advertise_id = #{advertiseId}</if>
+             <if test="totalTime != null and totalTime != ''"> and total_time = #{totalTime}</if>
+         </where>
+    </select>
 </mapper>

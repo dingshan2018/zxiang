@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -74,7 +75,7 @@ public class SupplyTissueController extends BaseController
 	public String add(ModelMap mmap)
 	{
 		User queryUser = new User();
-		queryUser.setUserType(TYPE_REPAIR);
+		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
 		List<User> userList = userService.selectUserList(queryUser);
 		mmap.put("userList", userList);
 		
@@ -110,7 +111,7 @@ public class SupplyTissueController extends BaseController
 		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 		
 		User queryUser = new User();
-		queryUser.setUserType(TYPE_REPAIR);
+		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
 		List<User> userList = userService.selectUserList(queryUser);
 		mmap.put("userList", userList);
 		

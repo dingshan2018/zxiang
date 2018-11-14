@@ -27,7 +27,7 @@ public class WxUser extends BaseEntity
 	private String nickname;
 	/** 性别 */
 	private String sexDesc;
-	/** 性别代号 */
+	/** 性别代号 0:未知,1:男,2:女 */
 	private Integer sex;
 	/** 语言 */
 	private String language;

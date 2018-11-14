@@ -1,6 +1,8 @@
 package com.zxiang.project.advertise.adSchedule.mapper;
 
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
+
+import java.util.HashMap;
 import java.util.List;	
 
 /**
@@ -58,5 +60,12 @@ public interface AdScheduleMapper
      * @return 结果
      */
 	public int deleteAdScheduleByIds(String[] adScheduleIds);
+
+	/**
+	 * 查询map导出Excel数据
+	 * @param params
+	 * @return map类型的list
+	 */
+	public List queryExport(HashMap<String, String> params);
 	
 }

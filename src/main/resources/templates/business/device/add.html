@@ -6,25 +6,17 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-device-add">
 			<!-- <div class="form-group">	
-				<label class="col-sm-3 control-label">设备编号 （场所编号+序号）：</label>
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>终端：</label>
 				<div class="col-sm-8">
-					<input id="deviceCode" name="deviceCode" class="form-control" type="text">
-				</div>
-			</div> -->
-			<!-- <div class="form-group">	
-				<label class="col-sm-3 control-label">场所：</label>
-				<div class="col-sm-8">
-					<select id="placeId" name="placeId" class="form-control">
+					<select id="terminalId" name="terminalId" class="form-control">
 						<option value="">---请选择---</option>
 					</select>
 				</div>
 			</div> -->
 			<div class="form-group">	
-				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>终端（板卡）：</label>
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>设备资产编号：</label>
 				<div class="col-sm-8">
-					<select id="terminalId" name="terminalId" class="form-control">
-						<option value="">---请选择---</option>
-					</select>
+					<input id="deviceSn" name="deviceSn" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
@@ -34,21 +26,14 @@
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">设备资产编号（钢印编号）：</label>
+				<label class="col-sm-3 control-label">机主：</label>
 				<div class="col-sm-8">
-					<input id="deviceSn" name="deviceSn" class="form-control" type="text">
-				</div>
-			</div>
-			<!-- <div class="form-group">	
-				<label class="col-sm-3 control-label">设备状态：</label>
-				<div class="col-sm-8">
-					<select id="status" name="status" class="form-control">
-						<option value="2">上线</option>
-                        <option value="1">下线</option>
-                        <option value="3">故障</option>
+					<select id="ownerId" name="ownerId" class="form-control">
+						<option value="">---请选择---</option>
+						<option th:each="c:${userList}"  th:value="${c.userId}" th:text="${c.userName}"/>
 					</select>
 				</div>
-			</div> -->
+			</div> 
 			<div class="form-group">	
 				<label class="col-sm-3 control-label">出纸价格：</label>
 				<div class="col-sm-8">
@@ -65,30 +50,6 @@
 				<label class="col-sm-3 control-label">纬度：</label>
 				<div class="col-sm-8">
 					<input id="lat" name="lat" class="form-control" type="text">
-				</div>
-			</div>
-			<!-- <div class="form-group">	
-				<label class="col-sm-3 control-label">投放时间：</label>
-				<div class="col-sm-8">
-					<input id="releaseTime" name="releaseTime" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">撤机时间：</label>
-				<div class="col-sm-8">
-					<input id="removeTime" name="removeTime" class="form-control" type="text">
-				</div>
-			</div> -->
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">累计出纸：</label>
-				<div class="col-sm-8">
-					<input id="totalLen" name="totalLen" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">剩余出纸：</label>
-				<div class="col-sm-8">
-					<input id="remainLen" name="remainLen" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
@@ -108,7 +69,7 @@
     <div th:include="include::footer"></div>
     <script type="text/javascript">
 	    $(function(){ 
-	    	var terminalList = selectTerminaValidlList();
+	    	/* var terminalList = selectTerminaValidlList();
 	    	$.each(terminalList, function (i) {
 	        	$('#terminalId').append("<option value=" + terminalList[i].terminalId + ">" + terminalList[i].terminalCode + "</option>");
 	        });
@@ -117,6 +78,11 @@
 	    	$.each(placeList, function (i) {
 	        	$('#placeId').append("<option value=" + placeList[i].placeId + ">" + placeList[i].name + "</option>");
 	        });
+	    	
+	    	var userList = selectUserList();
+	    	$.each(userList, function (i) {
+	        	$('#ownerId').append("<option value=" + userList[i].userId + ">" + userList[i].userName + "</option>");
+	        }); */
 	 	});	
     
 		var prefix = ctx + "business/device"
@@ -125,6 +91,12 @@
 				terminalId:{
 					required:true,
 				},
+				deviceSn:{
+					required:true,
+				},
+				/* ownerId:{
+					required:true,
+				}, */
 			},
 			submitHandler: function(form) {
 				$.operate.save(prefix + "/add", $('#form-device-add').serialize());
