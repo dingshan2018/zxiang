@@ -1,6 +1,7 @@
 package com.zxiang.project.client.wxuser.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.zxiang.project.client.wxuser.domain.WxUser;
 
@@ -51,5 +52,10 @@ public interface IWxUserService
      * @return 结果
      */
 	public int deleteWxUserByIds(String ids);
+
+	/** 查询 系统指标 **/
+	public Map<String,Object> systemIndicators();
+	/** 出纸统计 **/
+	public Map<String, Object> tissueStatistical();
 	
 }

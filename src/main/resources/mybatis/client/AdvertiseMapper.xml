@@ -126,5 +126,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{advertiseId}
         </foreach>
     </delete>
-    
+    <select id="selectTotal" resultType="int">
+    	select count(*) from zx_advertise
+    </select>
 </mapper>

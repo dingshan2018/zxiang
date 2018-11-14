@@ -1,7 +1,8 @@
 package com.zxiang.project.client.agent.mapper;
 
-import com.zxiang.project.client.agent.domain.Agent;
-import java.util.List;	
+import java.util.List;
+
+import com.zxiang.project.client.agent.domain.Agent;	
 
 /**
  * 代理商 数据层
@@ -69,5 +70,7 @@ public interface AgentMapper
 	 * 查找代理商下拉框数据
 	 */
 	public List<Agent> selectDropBoxList();
+
+	public int selectTotal();
 	
 }

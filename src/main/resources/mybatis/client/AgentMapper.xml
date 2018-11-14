@@ -208,5 +208,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDropBoxList" resultMap="AgentResult">
          select agent_id, agent_name,manager_id,manager_name from zx_agent
     </select>
+    <select id="selectTotal" resultType="int">
+         select count(*) from zx_agent
+    </select>
     
 </mapper>

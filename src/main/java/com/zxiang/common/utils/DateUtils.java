@@ -3,6 +3,7 @@ package com.zxiang.common.utils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 /**
@@ -40,6 +41,10 @@ public class DateUtils
     public static String getDate()
     {
         return dateTimeNow(YYYY_MM_DD);
+    }
+    public static String formate(Date date)
+    {
+    	return parseDateToStr(YYYY_MM_DD,date);
     }
 
     public static final String getTime()

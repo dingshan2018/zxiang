@@ -142,4 +142,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <select id="queryFansTotalBySex" resultType="int">
+    	select count(*) from zx_wx_user where 1 = 1 
+    	<if test="sex != null">and sex = #{sex}</if>
+    	<if test="selDate != null selDate.trim() != ''">and date_format(create_time,'%Y-%m-%d') = #{selDate}</if>
+    </select>
+    
 </mapper>
