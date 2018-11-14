@@ -1,9 +1,10 @@
 package com.zxiang.project.business.device.mapper;
 
-import com.zxiang.project.business.device.domain.Device;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;	
+import org.apache.ibatis.annotations.Param;
+
+import com.zxiang.project.business.device.domain.Device;	
 
 /**
  * 共享设备 数据层
@@ -108,6 +109,8 @@ public interface DeviceMapper
 	 * @return
 	 */
 	public int outStock(String[] ids);
+
+	public int selectTotal();
 
 	
 }

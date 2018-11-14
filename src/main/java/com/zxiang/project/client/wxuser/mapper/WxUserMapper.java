@@ -2,6 +2,8 @@ package com.zxiang.project.client.wxuser.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.zxiang.project.client.wxuser.domain.WxUser;	
 
 /**
@@ -59,5 +61,7 @@ public interface WxUserMapper
      * @return 结果
      */
 	public int deleteWxUserByIds(String[] wxUserIds);
+	
+	int queryFansTotalBySex(@Param("sex")Integer sex,@Param("selDate")String selDate);
 	
 }

@@ -282,5 +282,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{deviceId}
         </foreach>
     </update>
-    
+    <select id="selectTotal" resultType="int">
+    	select count(*) from zx_device
+    </select>
 </mapper>
