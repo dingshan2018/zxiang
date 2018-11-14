@@ -61,5 +61,19 @@ public interface ShiroConstants
      * 验证码错误
      */
     public static final String CAPTCHA_ERROR = "captchaError";
+    
+    /**
+     * 场所权限
+     */
+    public static final String PLACE_DATA_FILTER = "place";
+    
+    /**
+     * 人员权限（包括主体权限）
+     */
+    public static final String PERSON_DATA_FILTER = "person";
 
+    /**
+     * 部门权限
+     */
+    public static final String DEPT_DATA_FILTER = "dept";
 }

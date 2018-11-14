@@ -35,6 +35,8 @@ public class BaseEntity implements Serializable
     /** 备注 */
     private String remark;
 
+    private String filterSql;
+    
     /** 请求参数 */
     private Map<String, Object> params;
 
@@ -111,4 +113,12 @@ public class BaseEntity implements Serializable
     {
         this.params = params;
     }
+
+	public String getFilterSql() {
+		return filterSql;
+	}
+
+	public void setFilterSql(String filterSql) {
+		this.filterSql = filterSql;
+	}
 }

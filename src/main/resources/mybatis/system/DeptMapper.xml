@@ -38,6 +38,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="deptName != null and deptName != ''">
 				AND dept_name like concat('%', #{deptName}, '%')
 			</if>
+			<if test="ancestors != null and ancestors != ''">
+				AND ancestors like concat(#{ancestors}, '%')
+			</if>
 			<if test="status != null and status != ''">
 				AND status = #{status}
 			</if>

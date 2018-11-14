@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.record.scheduleOrder.mapper.ScheduleOrderMapper">
+    
+    <resultMap type="ScheduleOrder" id="ScheduleOrderResult">
+        <result property="scheduleOrderId"    column="schedule_order_id"    />
+        <result property="scheduleId"    column="schedule_id"    />
+        <result property="tradeOrderId"    column="trade_order_id"    />
+        <result property="orderStatus"    column="order_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+	
+	<sql id="selectScheduleOrderVo">
+        select schedule_order_id, schedule_id, trade_order_id, order_status, create_by, create_time from zx_schedule_order
+    </sql>
+	
+    <select id="selectScheduleOrderList" parameterType="ScheduleOrder" resultMap="ScheduleOrderResult">
+        <include refid="selectScheduleOrderVo"/>
+        <where>  
+            <if test="scheduleOrderId != null and scheduleOrderId != ''"> and schedule_order_id = #{scheduleOrderId}</if>
+             <if test="scheduleId != null and scheduleId != ''"> and schedule_id = #{scheduleId}</if>
+             <if test="tradeOrderId != null and tradeOrderId != ''"> and trade_order_id = #{tradeOrderId}</if>
+             <if test="orderStatus != null and orderStatus != ''"> and order_status = #{orderStatus}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectScheduleOrderById" parameterType="Integer" resultMap="ScheduleOrderResult">
+        <include refid="selectScheduleOrderVo"/>
+        where schedule_order_id = #{scheduleOrderId}
+    </select>
+        
+    <insert id="insertScheduleOrder" parameterType="ScheduleOrder">
+        insert into zx_schedule_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="scheduleOrderId != null and scheduleOrderId != '' ">schedule_order_id,</if>
+			<if test="scheduleId != null and scheduleId != '' ">schedule_id,</if>
+			<if test="tradeOrderId != null and tradeOrderId != '' ">trade_order_id,</if>
+			<if test="orderStatus != null and orderStatus != '' ">order_status,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="scheduleOrderId != null and scheduleOrderId != ''">#{scheduleOrderId},</if>
+			<if test="scheduleId != null and scheduleId != ''">#{scheduleId},</if>
+			<if test="tradeOrderId != null and tradeOrderId != ''">#{tradeOrderId},</if>
+			<if test="orderStatus != null and orderStatus != ''">#{orderStatus},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateScheduleOrder" parameterType="ScheduleOrder">
+        update zx_schedule_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="scheduleId != null  ">schedule_id = #{scheduleId},</if>
+            <if test="tradeOrderId != null  ">trade_order_id = #{tradeOrderId},</if>
+            <if test="orderStatus != null  and orderStatus != ''  ">order_status = #{orderStatus},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+        </trim>
+        where schedule_order_id = #{scheduleOrderId}
+    </update>
+
+	<delete id="deleteScheduleOrderById" parameterType="Integer">
+        delete from zx_schedule_order where schedule_order_id = #{scheduleOrderId}
+    </delete>
+	
+    <delete id="deleteScheduleOrderByIds" parameterType="String">
+        delete from zx_schedule_order where schedule_order_id in 
+        <foreach item="scheduleOrderId" collection="array" open="(" separator="," close=")">
+            #{scheduleOrderId}
+        </foreach>
+    </delete>
+    
+</mapper>
