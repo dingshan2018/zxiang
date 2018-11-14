@@ -34,7 +34,7 @@
 			<div id="fileUploadContent" class="fileUploadContent"></div>
 			<span style="color: red;">*&nbsp;最多上传30个图片/视频文件;每个文件最大30M</span>
 		  	<br><br>
-		  	<button onclick="submitUpload()" class="btn btn-primary">上传</button>
+		  	<button onclick="submitUpload()" id="submit" class="btn btn-primary">上传</button>
 		  	<!-- <button onclick="showUpError()" class="btn btn-primary">显示错误</button> -->
 		</form>
 	</div> 
@@ -121,6 +121,7 @@
        	}
     	
     	$.modal.confirm("确定上传？", function() {
+    		$("#submit").attr('disabled',true);
 	    	var opt = uploadTools.getOpt('fileUploadContent');
 		    uploadEvent.uploadFileEvent(opt);
 		});
