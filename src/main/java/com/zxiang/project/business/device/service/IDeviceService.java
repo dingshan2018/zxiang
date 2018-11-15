@@ -128,4 +128,12 @@ public interface IDeviceService
 	 */
 	public int outStock(String ids);
 	
+	/**
+	 * 通过订单号选择出库设备
+	 * @param ids
+	 * @param tradeOrderId
+	 * @return
+	 */
+	public int outStockByTradeId(String ids,Integer tradeOrderId,String operatorUser);
+	
 }

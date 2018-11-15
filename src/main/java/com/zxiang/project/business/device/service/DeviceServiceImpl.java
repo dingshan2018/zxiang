@@ -323,4 +323,17 @@ public class DeviceServiceImpl implements IDeviceService
 		return deviceMapper.outStock(Convert.toStrArray(ids));
 	}
 
+	@Override
+	public int outStockByTradeId(String ids, Integer tradeOrderId,String operatorUser) {
+		//(页面初始化的时候做)1.查询zx_trade_order表order_type=1 AND (send_status=0 OR send_status=2) AND order_status=1 的订单；
+		//(js校验)2.界面选择订单设备数量，最多只能选择订单数量total_cnt台数的设备进行出库
+		//3.将选择的设备置为出库状态；订单数量累加，判断是否达到total_cnt若达到订单数量则将send_status置为1，否则置为2
+		//此处需要注意，要先判断设备当前状态是否为库存，避免并发时被其他人出库了,或使用下述SQL简单 ;如果更新的设备数量与选择设备数量相同则为成功，否则报失败回滚
+		//update `zx_device` set status="01" where status="04" and device_id in ()
+		//4.订单销售记录表插入记录
+		//5.事务处理，若有异常需要回滚
+		//TODO 
+		return 0;
+	}
+
 }
