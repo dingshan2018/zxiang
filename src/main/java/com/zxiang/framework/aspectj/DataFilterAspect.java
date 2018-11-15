@@ -34,7 +34,7 @@ public class DataFilterAspect {
 //    @Autowired
 //    private SysRoleDeptService sysRoleDeptService;
 
-    @Pointcut("@annotation(com.zxiang.framework.aspectj.annotation.DataFilter)")
+    @Pointcut("@annotation(com.zxiang.framework.aspectj.lang.annotation.DataFilter)")
     public void dataFilterCut() {
 
     }
