@@ -9,135 +9,125 @@
             <div class="form-group">	
                 <label class="col-sm-2 control-label">合作客户ID：</label>
                 <div class="col-sm-3">
-                    <input id="coperatorId" name="coperatorId" th:field="*{coperatorId}" class="form-control" type="text" disabled="disabled">
+                    <label th:text="*{coperatorId}" class="form-control"></label>
                 </div>
                 <label class="col-sm-2 control-label">合作类型：</label>
                 <div class="col-sm-3">
-                    <input id="coperatorType" name="coperatorType" th:field="*{coperatorType}" class="form-control" type="text" disabled="disabled">
+                    <label th:text="*{coperatorType}" class="form-control"></label>
                 </div>
             </div>
     
             <div class="form-group">	
                 <label class="col-sm-2 control-label">视频广告基数：</label>
                 <div class="col-sm-3">
-                    <input id="adIncome" name="adIncome" th:field="*{adIncome}" class="form-control" type="text" disabled="disabled">
+                	<label th:text="*{adIncome}" class="form-control"></label>
                 </div>
                 <label class="col-sm-2 control-label">轮播广告基数：</label>
                 <div class="col-sm-3">
-                    <input id="adCarouselIncome" name="adCarouselIncome" th:field="*{adCarouselIncome}" class="form-control" type="text" disabled="disabled">
+               		 <label th:text="*{adCarouselIncome}" class="form-control"></label>
                 </div>
             </div>
             <div class="form-group">	
-                <label class="col-sm-2 control-label">扫码基数：</label>
+                <label class="col-sm-2 control-label">推广二维码广告基数：</label>
                 <div class="col-sm-3">
-                    <input id="scanIncome" name="scanIncome" th:field="*{scanIncome}" class="form-control" type="text" disabled="disabled">
+                   <label th:text="*{promPaperIncome}" class="form-control"></label>
                 </div>
                  <label class="col-sm-2 control-label">推广广告基数 ：</label>
                 <div class="col-sm-3">
-                    <input  th:field="*{promotionIncome}" class="form-control" type="text" disabled="disabled">
+                     <label th:text="*{promotionIncome}" class="form-control"></label>
                 </div>
             </div>
              <div class="form-group">	
                 <label class="col-sm-2 control-label">直推机子数量：</label>
                 <div class="col-sm-3">
-                    <input  th:field="*{promDirectIncome}" class="form-control" type="text" disabled="disabled">
+                    <label th:text="*{promDirectIncome}" class="form-control"></label>
                 </div>
                 <label class="col-sm-2 control-label">间推机子数量：</label>
                 <div class="col-sm-3">
-                    <input  th:field="*{promIndirectIncome}" class="form-control" type="text" disabled="disabled">
+                     <label th:text="*{promIndirectIncome}" class="form-control"></label>
                 </div>
             </div>
           
               <div class="form-group">	
                 <label class="col-sm-2 control-label">出纸数量 ：</label>
                 <div class="col-sm-3">
-                    <input  th:field="*{paperIncome}" class="form-control" type="text" disabled="disabled">
+                    <label th:text="*{paperIncome}" class="form-control"></label>
                 </div>
                 <label class="col-sm-2 control-label">直推代理基数 ：</label>
                 <div class="col-sm-3">
-                    <input  th:field="*{directAgentIncome}" class="form-control" type="text" disabled="disabled">
+                    <label th:text="*{directAgentIncome}" class="form-control"></label>
                 </div>
             </div>
               <div class="form-group">	
                 <label class="col-sm-2 control-label">招商金额 ：</label>
                 <div class="col-sm-3">
-                    <input  th:field="*{subsidyIncome}" class="form-control" type="text" disabled="disabled">
+                    <label th:text="*{subsidyIncome}" class="form-control"></label>
                 </div>
                 <label class="col-sm-2 control-label">广告收入值：</label>
                 <div class="col-sm-3">
-                    <input id="adIncomeRate" name="adIncomeRate" th:field="*{adIncomeRate}" class="form-control" type="text" disabled="disabled">
+                    <label th:text="*{adIncomeRate}" class="form-control"></label>
                 </div>
             </div>
             <div class="form-group">	
                 <label class="col-sm-2 control-label">推广收入值：</label>
                 <div class="col-sm-3">
-                    <input id="promotionIncomeRate" name="promotionIncomeRate" th:field="*{promotionIncomeRate}" class="form-control" type="text" disabled="disabled">
+                    <label th:text="*{promotionIncomeRate}" class="form-control"></label>
                 </div>
                 <label class="col-sm-2 control-label">扫码收入值：</label>
                 <div class="col-sm-3">
-                    <input  th:field="*{scanIncomeRate}" class="form-control" type="text" disabled="disabled">
+                    <label th:text="*{scanIncomeRate}" class="form-control"></label>
                 </div>
             </div>
             
             <div class="form-group">	
                 <label class="col-sm-2 control-label">视频广告系数：</label>
                 <div class="col-sm-3">
-                    <input  th:field="*{adRate}" class="form-control" type="text" disabled="disabled">
+                     <label th:text="*{adRate}" class="form-control"></label>
                 </div>
                  <label class="col-sm-2 control-label">轮播广告系数：</label>
                 <div class="col-sm-3">
-                    <input th:field="*{adCarouselRate}" class="form-control" type="text" disabled="disabled">
+                    <label th:text="*{adCarouselRate}" class="form-control"></label>
                 </div>
             </div>
             <div class="form-group">	
                 <label class="col-sm-2 control-label">二维码广告系数：</label>
                 <div class="col-sm-3">
-                    <input  th:field="*{scanRate}" class="form-control" type="text" disabled="disabled">
+                    <label th:text="*{scanRate}" class="form-control"></label>
                 </div>
                 <label class="col-sm-2 control-label">直推机子分润系数：</label>
                 <div class="col-sm-3">
-                    <input  th:field="*{promDirectRate}" class="form-control" type="text" disabled="disabled">
+                    <label th:text="*{promDirectRate}" class="form-control"></label>
                 </div>
             </div>
              <div class="form-group">	
                 <label class="col-sm-2 control-label">间推机子分润系数：</label>
                 <div class="col-sm-3">
-                    <input  th:field="*{promIndirectRate}" class="form-control" type="text" disabled="disabled">
+                    <label th:text="*{promIndirectRate}" class="form-control"></label>
                 </div>
                  <label class="col-sm-2 control-label">推广二维码广告系数：</label>
                 <div class="col-sm-3">
-                    <input  th:field="*{promPaperRate}" class="form-control" type="text" disabled="disabled">
+                    <label th:text="*{promPaperRate}" class="form-control"></label>
                 </div>
             </div>
                
               <div class="form-group">	
                 <label class="col-sm-2 control-label">推广广告系数：</label>
                 <div class="col-sm-3">
-                    <input  th:field="*{promotionRate}" class="form-control" type="text" disabled="disabled">
+               		 <label th:text="*{promotionRate}" class="form-control"></label>
                 </div>
                 <label class="col-sm-2 control-label">直推代理分润系数：</label>
                 <div class="col-sm-3">
-                    <input  th:field="*{directAgentRate}" class="form-control" type="text" disabled="disabled">
+                	<label th:text="*{directAgentRate}" class="form-control"></label>
                 </div>
             </div>
             <div class="form-group">	
                 <label class="col-sm-2 control-label">服务出纸系数：</label>
                 <div class="col-sm-3">
-                    <input  th:field="*{serveRate}" class="form-control" type="text" disabled="disabled">
+                	<label th:text="*{serveRate}" class="form-control"></label>
                 </div>
                  <label class="col-sm-2 control-label">办公补贴：</label>
                 <div class="col-sm-3">
-                    <input  th:field="*{subsidyRate}" class="form-control" type="text" disabled="disabled">
-                </div>
-            </div>
-            <div class="form-group">	
-                <label class="col-sm-2 control-label">退款收入：</label>
-                <div class="col-sm-3">
-                    <input id="refundIncome" name="refundIncome" th:field="*{refundIncome}" class="form-control" type="text" disabled="disabled">
-                </div>
-                <label class="col-sm-2 control-label">退款收入值：</label>
-                <div class="col-sm-3">
-                    <input id="refundIncomeRate" name="refundIncomeRate" th:field="*{refundIncomeRate}" class="form-control" type="text" disabled="disabled">
+                    <label th:text="*{subsidyRate}" class="form-control"></label>
                 </div>
             </div>
 			<div class="form-group">

@@ -1,5 +1,6 @@
 package com.zxiang.project.settle.deviceIncomeDaily.service;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -140,7 +141,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				int tissuenum = selectzxtissuerecordlist(device.get("device_id")+"",""); //出纸数量
 				//计算每日设备推广费用
 				deviceorder(isincome,promotioner_id,device,order);
-				//计算每日出纸费用（二维码推广告）
+				//计算每日出纸费用
 				tissuedata(device,buyer_id,tissuenum);
 				//计算广告费用
 				addata(device,buyer_id,tissuenum);
@@ -330,8 +331,6 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				 }
 				break;
 			case "03":
-				
-				 tissuenum = selectzxtissuerecordlist(deviceId+"",releaserecord.get("schedule_id").toString());
 				//--------------推广收益-----------------------
 				rate =  Double.valueOf(user.get("promPaperRate")+"");
 				insertdata(-tissuenum*rate,promotioner+"","02",RateConstants.RATETYPE_PROMPAPERINCOME,0.0,tissuenum,user);
@@ -397,7 +396,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		 map.put("promotionagent", "1");
 		 List<HashMap<String, Object>> promotionagentlist = iUserIncomeService.selectzxagentlist(map);
 		 for(HashMap<String, Object> promotionagent : promotionagentlist) {
-			 if(com.zxiang.common.utils.StringUtils.isNull(promotionagent.get("promotor_id"))) {
+			 if(com.zxiang.common.utils.StringUtils.isNotNull(promotionagent.get("promotor_id"))) {
 			   double agency_fee = Double.valueOf(promotionagent.get("agency_fee")+"");
 			   HashMap<String, Object>  user = getusedata(promotionagent.get("promotor_id")+"");
 			   double rate = Double.valueOf(user.get("directAgentRate")+"");
@@ -519,4 +518,17 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		}
 		return null;
 	}
+	
+	public float datatofloat(double num) {
+		DecimalFormat   df   =     new   DecimalFormat( "########0.00 ");// 
+		String   temp     =   df.format(num); 
+		return Float.valueOf(temp);
+		
+	}
+	public double datatodouble(double num) {
+		DecimalFormat   df   =     new   DecimalFormat( "###########0.00 ");//   16位整数位，两小数位
+		String   temp     =   df.format(num); 
+		return Double.valueOf(temp);
+	}
+	
 }
