@@ -20,27 +20,47 @@
 	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
 	                    th:value="${dict.dictValue}" th:field="*{releasePosition}"></option>
 	                </select> -->
-	                <select id="releasePosition" name="releasePosition" class="form-control m-b" th:with="type=${@dict.getType('ad_type')}">
+	                <select id="releasePosition" name="releasePosition" class="form-control" th:with="type=${@dict.getType('ad_type')}">
 	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{releasePosition}"></option>
 	                </select>
                 </div>
             </div>
-            <div class="form-group">
-				<label class="col-sm-3 control-label">投放范围：</label>
-				<div class="col-sm-8">
-					<div class="col-sm-8">
-					<label th:each="role:${roles}" class="checkbox-inline i-checks">
-						<input name="role" type="checkbox" th:value="${role.roleId}" th:text="${role.roleName}" th:checked="${role.flag}">
-					</label>
-				</div>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">投放时段：</label>
-				<div class="col-sm-8">
-
-				</div>
-			</div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">投放范围：</label>
+            <div class="col-sm-8">
+              <!-- 全部 -->
+              <input th:if="${adRange != null && adRange.releaseType == '0'}" value="全部" class="form-control" type="text">
+              <!-- 按地区 -->
+              <div class="row m-n" th:if="${adRange.releaseType == '1'}">
+                <select class="select-pca__province p-n col-sm-4 pull-left"
+                        data-style="btn-outline btn-default"
+                        title="请选择省份"
+                        data-live-search="true"></select>
+                <select class="select-pca__city p-n col-sm-4 pull-left"
+                        data-style="btn-outline btn-default"
+                        title="请选择城市"
+                        ></select>
+                <select class="select-pca__areas p-n col-sm-4 pull-left"
+                        data-style="btn-outline btn-default"
+                        title="请选择区县"
+                        ></select>
+              </div>
+              <!-- 按场所 -->
+              <input th:if="${adRange != null && adRange.releaseType == '2'}" th:value="${adRange.placeGrade}" class="form-control" type="text">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">投放时段：</label>
+            <div class="col-sm-8">
+              <div class="form-control ad-timer-control">
+                <div th:each="list:${adTimerList}" class="ad-timer-item">
+                  <span th:text="${#dates.format(list.releaseBeginTime, 'yyyy-MM-dd hh:mm:ss')}"></span>
+                  <span class="broken"></span>
+                  <span th:text="${#dates.format(list.releaseEndTime, 'yyyy-MM-dd hh:mm:ss')}"></span>
+                </div>
+              </div>
+            </div>
+          </div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label">投放方式：</label>
 				<div class="col-sm-8">
@@ -142,6 +162,56 @@
 		</form>
     </div>
     <div th:include="include::footer"></div>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/css/bootstrap-select.min.css">
+  <script th:src="@{/js/plugins/bootstrapSelect/bootstrap-select.js}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/i18n/defaults-zh_CN.min.js"></script>
+  <script>
+
+    $(function () {
+
+      $('select[class*=select-pca__]').selectpicker({
+        size : 7,
+        selectPca:{
+          province: 'select.select-pca__province',
+          city    : 'select.select-pca__city',
+          areas   : 'select.select-pca__areas'
+        }
+      });
+
+      $.getJSON("[[@{/json/select__pac-code.json}]]",function (data) {
+        $('select.select-pca__province').selectpicker('selectPca', data)
+      });
+    })
+  </script>
+  <style>
+    .ad-timer-control {
+      height: auto;
+      min-height: 34px;
+      padding: 4px 12px;
+    }
+
+    .ad-timer-item {
+      display: inline-block;
+      padding: 0 7px;
+      border: 1px solid #ccc;
+      line-height: 22px;
+      background-color: #f1f1f1;
+    }
+
+    .ad-timer-item + .ad-timer-item {
+      margin-top: 4px;
+    }
+
+    .ad-timer-item .broken {
+      display: inline-block;
+      vertical-align: top;
+      width: 10px;
+      height: 0;
+      margin: 10px 5px 0;
+      border-bottom: 1px solid #676a6c;
+      font-size: 0;
+    }
+  </style>
     <script type="text/javascript">
 		var prefix = ctx + "advertise/adSchedule"
 		$("#form-adSchedule-adDetail").validate({

@@ -3972,6 +3972,10 @@ a.close-canvas-menu:hover {
     padding-top: 70px;
 }
 /* MARGINS & PADDINGS */
+.p-n{
+    padding: 0 !important;
+}
+
 .p-xxs {
     padding: 5px;
 }
