@@ -21,10 +21,8 @@ import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.service.IDeviceService;
-import com.zxiang.project.record.tradeOrder.controller.TradeOrderController;
 import com.zxiang.project.record.tradeOrder.domain.TradeOrder;
 import com.zxiang.project.record.tradeOrder.service.ITradeOrderService;
-import com.zxiang.project.record.tradeOrder.service.TradeOrderServiceImpl;
 import com.zxiang.project.system.user.domain.User;
 import com.zxiang.project.system.user.service.IUserService;
 
@@ -164,7 +162,13 @@ public class DeviceStockController extends BaseController
 				return error("所选订单已退款!");
 			}
 			
-			return success("成功出库" + deviceService.outStockByTradeId(ids, tradeOrderId,operatorUser) + " 台设备");
+			try {
+				int num = deviceService.outStockByTradeId(ids, tradeOrder,operatorUser);
+				return success("成功出库" + num + " 台设备");
+			} catch (Exception e) {
+				e.printStackTrace();
+				return error(e.getMessage());
+			}
 			
 		}else{
 			return error("所选订单不存在!");
