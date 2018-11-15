@@ -163,8 +163,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
       <select id="selectzxtissuerecordlist"  resultType="int">
+	       SELECT 
+			 COUNT(1)
+			FROM (
 	        SELECT 
-			  COUNT(1) 
+			  open_id 
 			FROM
 			  zx_tissue_record z, zx_ad_schedule s
 			  WHERE 
@@ -174,7 +177,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			AND DATE_FORMAT(z.create_time, '%Y-%m-%d') = DATE_FORMAT(
 			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
 			    '%Y-%m-%d'
-			  )
+			  ) GROUP BY open_id
+			  )t
     </select>
     
       

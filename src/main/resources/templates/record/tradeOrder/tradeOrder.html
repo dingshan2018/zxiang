@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="btn-group hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="settle:tradeOrder:add">
+				<i class="fa fa-plus"></i> 新增
+			</a>
+			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="settle:tradeOrder:remove">
+				<i class="fa fa-trash-o"></i> 删除
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('settle:tradeOrder:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('settle:tradeOrder:remove')}]];
+        var prefix = ctx + "settle/tradeOrder"
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "订单",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'tradeOrderId', 
+					title : '主键' 
+				},
+				{
+					field : 'outTradeOrder', 
+					title : '商户订单号' 
+				},
+				{
+					field : 'transactionId', 
+					title : '交易订单号' 
+				},
+				{
+					field : 'refundId', 
+					title : '退款订单号' 
+				},
+				{
+					field : 'openId', 
+					title : '机主微信账号' 
+				},
+				{
+					field : 'userId', 
+					title : '机主' 
+				},
+				{
+					field : 'totalFee', 
+					title : '支付金额' 
+				},
+				{
+					field : 'totalCnt', 
+					title : '订单数量' 
+				},
+				{
+					field : 'orderType', 
+					title : '订单类型（1 购机订单  2 广告订单 ）' 
+				},
+				{
+					field : 'orderStatus', 
+					title : '订单状态（0 待支付 1 已支付 2 支付失败 3 已退款 4 退款失败）' 
+				},
+				{
+					field : 'sendStatus', 
+					title : '发货状态（0 未发货 1 已发货 2 部分发货 ）' 
+				},
+				{
+					field : 'remark', 
+					title : '订单备注' 
+				},
+				{
+					field : 'payTime', 
+					title : '支付时间' 
+				},
+				{
+					field : 'createBy', 
+					title : '' 
+				},
+				{
+					field : 'createTime', 
+					title : '' 
+				},
+				{
+					field : 'updateBy', 
+					title : '' 
+				},
+				{
+					field : 'updateTime', 
+					title : '' 
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.tradeOrderId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.tradeOrderId + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>
