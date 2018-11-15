@@ -51,5 +51,10 @@ public interface ITradeOrderService
      * @return 结果
      */
 	public int deleteTradeOrderByIds(String ids);
+
+	/**
+	 * 查询未发货或部分发货的订单且支付完成且订单类型为购机订单的数据
+	 */
+	public List<TradeOrder> selectUnSendList();
 	
 }

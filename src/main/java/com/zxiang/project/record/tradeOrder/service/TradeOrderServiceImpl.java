@@ -80,5 +80,13 @@ public class TradeOrderServiceImpl implements ITradeOrderService
 	{
 		return tradeOrderMapper.deleteTradeOrderByIds(Convert.toStrArray(ids));
 	}
+
+	/**
+	 * 查询未发货或部分发货的订单且支付完成且订单类型为购机订单的数据
+	 */
+	@Override
+	public List<TradeOrder> selectUnSendList() {
+		return tradeOrderMapper.selectUnSendList();
+	}
 	
 }

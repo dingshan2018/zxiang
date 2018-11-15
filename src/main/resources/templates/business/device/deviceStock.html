@@ -31,7 +31,7 @@
               </a>
               <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
               </a>
-              <a class="btn btn-primary btn-rounded btn-sm" onclick="outStock()" shiro:hasPermission="business:deviceStock:outStock">
+              <a class="btn btn-primary btn-rounded btn-sm" onclick="outStockByTradeId()" shiro:hasPermission="business:deviceStock:outStock">
                 <i class="fa fa-edit"></i>&nbsp;出库
               </a>
             </li>
@@ -236,7 +236,13 @@
       $('#county').append(str);
     }
 
-    //打开设备投放选择投放场所弹窗
+  	//批量导入设备资产编号弹窗函数
+    function batchImport () {
+      var url = ctx + 'business/device/batchImport';
+      $.modal.open('批量导入设备资产编号', url);
+    }
+  
+    //打开设备出库弹窗
     function outStock() {
       var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns(
         $.table._option.id);
@@ -265,10 +271,10 @@
   	});
     }
 
-  	//批量导入设备资产编号弹窗函数
-    function batchImport () {
-      var url = ctx + 'business/device/batchImport';
-      $.modal.open('批量导入设备资产编号', url);
+  	//打开设备出库弹窗--选择订单后选择出库设备
+    function outStockByTradeId() {
+    	 var url = prefix + '/outStockByTradeId';
+         $.modal.open('设备出库', url);
     }
   </script>
 </body>

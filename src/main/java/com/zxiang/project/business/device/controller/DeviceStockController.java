@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,6 +21,10 @@ import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.service.IDeviceService;
+import com.zxiang.project.record.tradeOrder.controller.TradeOrderController;
+import com.zxiang.project.record.tradeOrder.domain.TradeOrder;
+import com.zxiang.project.record.tradeOrder.service.ITradeOrderService;
+import com.zxiang.project.record.tradeOrder.service.TradeOrderServiceImpl;
 import com.zxiang.project.system.user.domain.User;
 import com.zxiang.project.system.user.service.IUserService;
 
@@ -33,12 +38,16 @@ import com.zxiang.project.system.user.service.IUserService;
 @RequestMapping("/business/deviceStock")
 public class DeviceStockController extends BaseController
 {
+	Logger logger = Logger.getLogger(DeviceStockController.class);
+			
     private String prefix = "business/device";
     
 	@Autowired
 	private IDeviceService deviceService;
 	@Autowired
 	private IUserService userService;
+	@Autowired
+	private ITradeOrderService tradeOrderService;
 	
 	@RequiresPermissions("business:deviceStock:view")
 	@GetMapping()
@@ -105,6 +114,7 @@ public class DeviceStockController extends BaseController
 	}
 	
 	/**
+	 * 暂时不用这种，先使用需要根据订单号选择数量的/outStockByTradeId方法
 	 * 库存设备出库
 	 */
 	@RequiresPermissions("business:deviceStock:outStock")
@@ -116,4 +126,50 @@ public class DeviceStockController extends BaseController
 		int number = deviceService.outStock(ids);
 		return success("成功出库" + number + " 台设备");
 	}
+	
+	
+	/**
+	 * 库存设备出库--跳转界面
+	 */
+	@GetMapping("/outStockByTradeId")
+	public String outStockByTradeId(ModelMap mmap)
+	{
+		List<TradeOrder> tradeOrderList = tradeOrderService.selectUnSendList();
+		mmap.put("tradeOrderList", tradeOrderList);
+		Device device = new Device();
+		mmap.put("deviceList", deviceService.selectDeviceStockList(device));
+		
+	    return prefix + "/outStock";
+	}
+	/**
+	 * 库存设备出库
+	 */
+	@RequiresPermissions("business:deviceStock:outStock")
+	@Log(title = "库存设备出库", businessType = BusinessType.UPDATE)
+	@PostMapping("/outStockByTradeId")
+	@ResponseBody
+	public AjaxResult outStockByTradeId(String ids,Integer tradeOrderId)
+	{
+		logger.info("devices:"+ids+",tradeOrderId"+tradeOrderId);
+		String operatorUser = getUser().getUserName()+"("+getUserId()+")";
+		
+		TradeOrder tradeOrder = tradeOrderService.selectTradeOrderById(tradeOrderId);
+		if(tradeOrder != null){
+			//若已经发货则不再发货 发货状态（0 未发货 1 已发货 2 部分发货 ）
+			if("1".equals(tradeOrder.getSendStatus())){
+				return error("所选订单已发货!");
+			}
+			//若已经退款也不再发货 订单状态（0 待支付 1 已支付 2 支付失败 3 已退款 4 退款失败）
+			if("3".equals(tradeOrder.getOrderStatus())){
+				return error("所选订单已退款!");
+			}
+			
+			return success("成功出库" + deviceService.outStockByTradeId(ids, tradeOrderId,operatorUser) + " 台设备");
+			
+		}else{
+			return error("所选订单不存在!");
+		}
+		
+	}
+	
 }
