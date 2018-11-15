@@ -39,6 +39,9 @@ import com.zxiang.project.business.device.mapper.DeviceMapper;
 import com.zxiang.project.business.place.service.IPlaceService;
 import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
+import com.zxiang.project.system.area.domain.Area;
+import com.zxiang.project.system.area.mapper.AreaMapper;
+import com.zxiang.project.system.area.service.IAreaService;
 
 /**
  * 广告投放 信息操作处理
@@ -64,6 +67,8 @@ public class AdScheduleController extends BaseController
 	private AdReleaseTimerMapper adReleaseTimerMapper;
 	@Autowired
 	private AdReleaseRangeMapper adReleaseRangeMapper;
+	@Autowired
+	private AreaMapper areaMapper;
 	
 	 //01待预约；02待审核；03待发布；04待播放；05已播放；06审核失败；07排期失败
     
@@ -313,6 +318,9 @@ public class AdScheduleController extends BaseController
 		mmap.put("adTimerList", adReleaseTimerMapper.selectAdReleaseTimerList(queryTimer));
 
 		mmap.put("adRange", adReleaseRangeMapper.selectAdRangeByAd(adScheduleId));
+		mmap.put("placeList", placeService.selectDropBoxList());
+		mmap.put("areaList", areaMapper.selectAreaList(new Area()));
+		mmap.put("deviceList", deviceMapper.selectDeviceList(new Device()));
 		
 	    return prefix + "/adDetail";
 	}

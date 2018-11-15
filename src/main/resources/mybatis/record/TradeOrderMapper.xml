@@ -132,4 +132,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <!-- 查询1.未发货或部分发货的订单且2.支付完成且订单类型为3.购机订单的数据 -->
+    <select id="selectUnSendList" resultMap="TradeOrderResult">
+        <include refid="selectTradeOrderVo"/>
+        where order_type=1 AND (send_status=0 OR send_status=2) AND order_status=1 
+    </select>
+    
 </mapper>
