@@ -27,25 +27,25 @@ import com.zxiang.project.record.scheduleOrder.service.IScheduleOrderService;
  * @date 2018-11-15
  */
 @Controller
-@RequestMapping("/settle/scheduleOrder")
+@RequestMapping("/record/scheduleOrder")
 public class ScheduleOrderController extends BaseController
 {
-    private String prefix = "settle/scheduleOrder";
+    private String prefix = "record/scheduleOrder";
 	
 	@Autowired
 	private IScheduleOrderService scheduleOrderService;
 	
-	@RequiresPermissions("settle:scheduleOrder:view")
-	@GetMapping()
-	public String scheduleOrder()
-	{
+	@RequiresPermissions("record:scheduleOrder:view")
+	@GetMapping(value = {"/{transactionId}",""})
+	public String scheduleOrder(@PathVariable(required = false) String transactionId,ModelMap mmap) {
+		mmap.put("transactionId", transactionId == null ? null : transactionId);
 	    return prefix + "/scheduleOrder";
 	}
 	
 	/**
 	 * 查询排期订单列表
 	 */
-	@RequiresPermissions("settle:scheduleOrder:list")
+	@RequiresPermissions("record:scheduleOrder:list")
 	@PostMapping("/list")
 	@ResponseBody
 	public TableDataInfo list(ScheduleOrder scheduleOrder)
@@ -67,7 +67,7 @@ public class ScheduleOrderController extends BaseController
 	/**
 	 * 新增保存排期订单
 	 */
-	@RequiresPermissions("settle:scheduleOrder:add")
+	@RequiresPermissions("record:scheduleOrder:add")
 	@Log(title = "排期订单", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
@@ -90,7 +90,7 @@ public class ScheduleOrderController extends BaseController
 	/**
 	 * 修改保存排期订单
 	 */
-	@RequiresPermissions("settle:scheduleOrder:edit")
+	@RequiresPermissions("record:scheduleOrder:edit")
 	@Log(title = "排期订单", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
@@ -102,7 +102,7 @@ public class ScheduleOrderController extends BaseController
 	/**
 	 * 删除排期订单
 	 */
-	@RequiresPermissions("settle:scheduleOrder:remove")
+	@RequiresPermissions("record:scheduleOrder:remove")
 	@Log(title = "排期订单", businessType = BusinessType.DELETE)
 	@PostMapping( "/remove")
 	@ResponseBody

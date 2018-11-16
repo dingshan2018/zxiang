@@ -20,10 +20,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="tradeOrderId"    column="trade_order_id"    />
     </resultMap>
 	
 	<sql id="selectDeviceOrderVo">
-        select d.device_order_id, 
+        select d.device_order_id,d.trade_order_id,
         d.device_id, 
         (select v.device_code from zx_device v where v.device_id = d.device_id) as deviceCode, 
         d.terminal_id,
@@ -38,20 +39,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 	
     <select id="selectDeviceOrderList" parameterType="DeviceOrder" resultMap="DeviceOrderResult">
-        select d.device_order_id, 
+        select d.device_order_id, d.trade_order_id,
         d.device_id, 
         v.device_code as deviceCode, 
         d.terminal_id,
         t.terminal_code as terminalCode,
+        o.transaction_id as transactionId,
          d.promotioner_id,
          (select u.user_name from sys_user u where u.user_id = d.promotioner_id) as promotionerName,
           d.price, d.cut_off, 
           d.seller_id, 
           (select u.user_name from sys_user u where u.user_id = d.seller_id) as sellerName, 
           d.status, d.buyer_id, d.buyer_name, 
-        d.buyer_open_id, d.create_by, d.create_time, d.update_by, d.update_time from zx_device_order d 
+        d.buyer_open_id, d.create_by, d.create_time, d.update_by, d.update_time 
+        from zx_device_order d 
         left join zx_device v on v.device_id = d.device_id 
         left join zx_terminal t on t.terminal_id = d.terminal_id
+        left join zx_trade_order o on d.trade_order_id = o.trade_order_id
         <where>  
             <if test="deviceOrderId != null and deviceOrderId != ''"> and device_order_id = #{deviceOrderId}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
@@ -62,7 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="price != null and price != ''"> and price = #{price}</if>
              <if test="cutOff != null and cutOff != ''"> and cut_off = #{cutOff}</if>
              <if test="sellerId != null and sellerId != ''"> and seller_id = #{sellerId}</if>
-             <if test="status != null and status != ''"> and status = #{status}</if>
+             <if test="status != null and status != ''"> and d.status = #{status}</if>
              <if test="buyerId != null and buyerId != ''"> and buyer_id = #{buyerId}</if>
              <if test="buyerName != null and buyerName != ''"> and buyer_name = #{buyerName}</if>
              <if test="buyerOpenId != null and buyerOpenId != ''"> and buyer_open_id = #{buyerOpenId}</if>
@@ -70,6 +74,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
              <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+             <if test="tradeOrderId != null"> and d.trade_order_id = #{tradeOrderId}</if>
+             <if test="transactionId != null and transactionId.trim() != ''"> and o.transaction_id like concat('%', #{transactionId}, '%')</if>
          </where>
     </select>
     
@@ -96,6 +102,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createTime != null and createTime != '' ">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
 			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+			<if test="tradeOrderId != null">trade_order_id,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="deviceOrderId != null and deviceOrderId != ''">#{deviceOrderId},</if>
@@ -113,6 +120,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createTime != null and createTime != ''">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
 			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+			<if test="tradeOrderId != null">#{tradeOrderId},</if>
          </trim>
     </insert>
 	 
@@ -133,6 +141,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="tradeOrderId != null">trade_order_id = #{tradeOrderId},</if>
         </trim>
         where device_order_id = #{deviceOrderId}
     </update>

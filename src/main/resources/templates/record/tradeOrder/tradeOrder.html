@@ -4,11 +4,48 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
+    	<div class="col-sm-12 select-info">
+	      <form id="change-form">
+	        <div class="select-list">
+	          <ul>
+	            <li>
+	              <span class="select-item-name">交易订单号：</span>
+	              <input type="text" name="transactionId" id="transactionId"/>
+	            </li>
+	            <li>
+	                <span class="select-item-name">订单类型：</span>
+	                <select name="orderType">
+		                <option value="">所有</option>
+		                <option value="1">购机订单</option>
+		                <option value="2">广告订单</option>
+		            </select>
+	            </li>
+	            <li>
+	                <span class="select-item-name">订单状态：</span>
+	                <select name="orderStatus">
+		                <option value="">所有</option>
+		                <option value="0">待支付</option>
+		                <option value="1">已支付</option>
+		                <option value="2">支付失败</option>
+		                <option value="3">已退款</option>
+		                <option value="4">退款失败</option>
+		            </select>
+	            </li>
+	            <li class="select-btns">
+	              <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
+	              </a>
+	              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
+	              </a>
+	            </li>
+	          </ul>
+	        </div>
+	      </form>
+	    </div>
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
-			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="settle:tradeOrder:add">
+			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="record:tradeOrder:add">
 				<i class="fa fa-plus"></i> 新增
 			</a>
-			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="settle:tradeOrder:remove">
+			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="record:tradeOrder:remove">
 				<i class="fa fa-trash-o"></i> 删除
 			</a>
 		</div>
@@ -19,9 +56,11 @@
     </div>
     <div th:include="include :: footer"></div>
     <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('settle:tradeOrder:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('settle:tradeOrder:remove')}]];
-        var prefix = ctx + "settle/tradeOrder"
+        var editFlag = [[${@permission.hasPermi('record:tradeOrder:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('record:tradeOrder:remove')}]];
+        var listFlag = [[${@permission.hasPermi('record:tradeOrder:list')}]] ;
+//         +" "+[[${@permission.hasPermi('record:scheduleOrder:list')}]];
+        var prefix = ctx + "record/tradeOrder"
 
         $(function() {
             var options = {
@@ -30,20 +69,25 @@
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "订单",
+                search: false,
                 columns: [{
 		            checkbox: true
 		        },
 				{
 					field : 'tradeOrderId', 
-					title : '主键' 
+					title : '主键' ,
+					visible: false
+				},
+				{
+					field : 'transactionId', 
+					title : '交易订单号' ,
+		            formatter: function (value, row, index) {
+		                return '<a href="#" onclick="detail(\'' + row.transactionId+"\',\'"+row.orderType + '\')">' + value + '</a>';
+		              }
 				},
 				{
 					field : 'outTradeOrder', 
 					title : '商户订单号' 
-				},
-				{
-					field : 'transactionId', 
-					title : '交易订单号' 
 				},
 				{
 					field : 'refundId', 
@@ -54,7 +98,7 @@
 					title : '机主微信账号' 
 				},
 				{
-					field : 'userId', 
+					field : 'userName', 
 					title : '机主' 
 				},
 				{
@@ -67,15 +111,31 @@
 				},
 				{
 					field : 'orderType', 
-					title : '订单类型（1 购机订单  2 广告订单 ）' 
+					title : '订单类型' ,formatter: function(value, row, index) {
+						if(value == '1') {return "购机订单"}
+						if(value == '2') {return "广告订单"}
+						return "-";
+		            } 
 				},
 				{
 					field : 'orderStatus', 
-					title : '订单状态（0 待支付 1 已支付 2 支付失败 3 已退款 4 退款失败）' 
+					title : '订单状态' ,formatter: function(value, row, index) {
+						if(value == '0') {return " 待支付"}
+						if(value == '1') {return "已支付"}
+						if(value == '2') {return "支付失败"}
+						if(value == '3') {return "已退款"}
+						if(value == '4') {return "退款失败"}
+						return "-";
+		            } 
 				},
 				{
 					field : 'sendStatus', 
-					title : '发货状态（0 未发货 1 已发货 2 部分发货 ）' 
+					title : '发货状态' ,formatter: function(value, row, index) {
+						if(value == '0') {return "未发货"}
+						if(value == '1') {return "已发货"}
+						if(value == '2') {return "部分发货"}
+						return "-";
+		            } 
 				},
 				{
 					field : 'remark', 
@@ -87,33 +147,47 @@
 				},
 				{
 					field : 'createBy', 
-					title : '' 
+					title : '创建者' ,
+					visible: false
 				},
 				{
 					field : 'createTime', 
-					title : '' 
+					title : '创建时间' 
 				},
 				{
 					field : 'updateBy', 
-					title : '' 
+					title : '更新者' ,
+					visible: false
 				},
 				{
 					field : 'updateTime', 
-					title : '' 
+					title : '更新时间' ,
+					visible: false
 				},
 		        {
 		            title: '操作',
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	var actions = [];
-		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.tradeOrderId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.tradeOrderId + '\')"><i class="fa fa-remove"></i>删除</a>');
-						return actions.join('');
+// 		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.tradeOrderId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+//                      actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.tradeOrderId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        actions.push('<a class="btn btn-info btn-xs ' + listFlag + '" href="#" onclick="detail(\'' + row.transactionId+"\',\'"+row.orderType  +
+                        '\')"><i class="fa fa-list-ul"></i>列表</a> ');
+                        return actions.join('');
 		            }
 		        }]
             };
             $.table.init(options);
         });
+        function detail (orderId,orderType) {
+        	if(orderType == '1') {
+        		 var url = '/record/deviceOrder/'+orderId;
+                 createMenuItem(url, '设备销售订单');
+        	}else if(orderType == '2') {
+        		var url = '/record/scheduleOrder/'+orderId;
+                createMenuItem(url, '广告订单');
+			}
+        }
     </script>
 </body>
 </html>

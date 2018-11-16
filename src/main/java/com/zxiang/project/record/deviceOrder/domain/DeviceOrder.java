@@ -55,6 +55,9 @@ public class DeviceOrder extends BaseEntity
 	private String updateBy;
 	/**  */
 	private Date updateTime;
+	
+	private Integer tradeOrderId;
+	private String transactionId;
 
 	public void setDeviceOrderId(Integer deviceOrderId) 
 	{
@@ -222,6 +225,22 @@ public class DeviceOrder extends BaseEntity
 
 	public void setSellerName(String sellerName) {
 		this.sellerName = sellerName;
+	}
+
+	public Integer getTradeOrderId() {
+		return tradeOrderId;
+	}
+
+	public void setTradeOrderId(Integer tradeOrderId) {
+		this.tradeOrderId = tradeOrderId;
+	}
+
+	public String getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
 	}
 
 	public String toString() {
