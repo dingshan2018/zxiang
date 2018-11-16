@@ -1,9 +1,11 @@
 package com.zxiang.project.record.tradeOrder.domain;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 import com.zxiang.framework.web.domain.BaseEntity;
-import java.util.Date;
 
 /**
  * 订单表 zx_trade_order
@@ -25,8 +27,10 @@ public class TradeOrder extends BaseEntity
 	private String refundId;
 	/** 机主微信账号 */
 	private String openId;
-	/** 机主 */
+	/** 机主id */
 	private Integer userId;
+	/** 机主 */
+	private String userName;
 	/** 支付金额 */
 	private Double totalFee;
 	/** 订单数量 */
@@ -204,7 +208,15 @@ public class TradeOrder extends BaseEntity
 		return updateTime;
 	}
 
-    public String toString() {
+    public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("tradeOrderId", getTradeOrderId())
             .append("outTradeOrder", getOutTradeOrder())

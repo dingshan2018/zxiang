@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="refundId"    column="refund_id"    />
         <result property="openId"    column="open_id"    />
         <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
         <result property="totalFee"    column="total_fee"    />
         <result property="totalCnt"    column="total_cnt"    />
         <result property="orderType"    column="order_type"    />
@@ -25,35 +26,38 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectTradeOrderVo">
-        select trade_order_id, out_trade_order, transaction_id, refund_id, open_id, user_id, total_fee, total_cnt, order_type, order_status, send_status, remark, pay_time, create_by, create_time, update_by, update_time from zx_trade_order
+        select o.trade_order_id, o.out_trade_order, o.transaction_id, o.refund_id, o.open_id, 
+        o.user_id,s.user_name,
+        o.total_fee, o.total_cnt, o.order_type, o.order_status, o.send_status, o.remark, o.pay_time, o.create_by, o.create_time, o.update_by, o.update_time 
+        from zx_trade_order o left join sys_user s on s.user_id = o.user_id
     </sql>
 	
     <select id="selectTradeOrderList" parameterType="TradeOrder" resultMap="TradeOrderResult">
         <include refid="selectTradeOrderVo"/>
         <where>  
-            <if test="tradeOrderId != null and tradeOrderId != ''"> and trade_order_id = #{tradeOrderId}</if>
-             <if test="outTradeOrder != null and outTradeOrder != ''"> and out_trade_order = #{outTradeOrder}</if>
-             <if test="transactionId != null and transactionId != ''"> and transaction_id = #{transactionId}</if>
-             <if test="refundId != null and refundId != ''"> and refund_id = #{refundId}</if>
-             <if test="openId != null and openId != ''"> and open_id = #{openId}</if>
-             <if test="userId != null and userId != ''"> and user_id = #{userId}</if>
+            <if test="tradeOrderId != null and tradeOrderId != ''"> and o.trade_order_id = #{tradeOrderId}</if>
+             <if test="outTradeOrder != null and outTradeOrder != ''"> and o.out_trade_order = #{outTradeOrder}</if>
+             <if test="transactionId != null and transactionId != ''"> and o.transaction_id = #{transactionId}</if>
+             <if test="refundId != null and refundId != ''"> and o.refund_id = #{refundId}</if>
+             <if test="openId != null and openId != ''"> and o.open_id = #{openId}</if>
+             <if test="userId != null and userId != ''"> and o.user_id = #{userId}</if>
              <if test="totalFee != null and totalFee != ''"> and total_fee = #{totalFee}</if>
-             <if test="totalCnt != null and totalCnt != ''"> and total_cnt = #{totalCnt}</if>
-             <if test="orderType != null and orderType != ''"> and order_type = #{orderType}</if>
-             <if test="orderStatus != null and orderStatus != ''"> and order_status = #{orderStatus}</if>
-             <if test="sendStatus != null and sendStatus != ''"> and send_status = #{sendStatus}</if>
-             <if test="remark != null and remark != ''"> and remark = #{remark}</if>
-             <if test="payTime != null and payTime != ''"> and pay_time = #{payTime}</if>
-             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
-             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
-             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+             <if test="totalCnt != null and totalCnt != ''"> and o.total_cnt = #{totalCnt}</if>
+             <if test="orderType != null and orderType != ''"> and o.order_type = #{orderType}</if>
+             <if test="orderStatus != null and orderStatus != ''"> and o.order_status = #{orderStatus}</if>
+             <if test="sendStatus != null and sendStatus != ''"> and o.send_status = #{sendStatus}</if>
+             <if test="remark != null and remark != ''"> and o.remark = #{remark}</if>
+             <if test="payTime != null and payTime != ''"> and o.pay_time = #{payTime}</if>
+             <if test="createBy != null and createBy != ''"> and o.create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and o.create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and o.update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and o.update_time = #{updateTime}</if>
          </where>
     </select>
     
     <select id="selectTradeOrderById" parameterType="Integer" resultMap="TradeOrderResult">
         <include refid="selectTradeOrderVo"/>
-        where trade_order_id = #{tradeOrderId}
+        where o.trade_order_id = #{tradeOrderId}
     </select>
         
     <insert id="insertTradeOrder" parameterType="TradeOrder">

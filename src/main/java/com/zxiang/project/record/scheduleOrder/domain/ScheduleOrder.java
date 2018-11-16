@@ -1,9 +1,11 @@
 package com.zxiang.project.record.scheduleOrder.domain;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 import com.zxiang.framework.web.domain.BaseEntity;
-import java.util.Date;
 
 /**
  * 排期订单表 zx_schedule_order
@@ -25,8 +27,11 @@ public class ScheduleOrder extends BaseEntity
 	private String orderStatus;
 	/**  */
 	private String createBy;
+	// 排期投放名称
+	private String scheduleName;
 	/**  */
 	private Date createTime;
+	private String transactionId;
 
 	public void setScheduleOrderId(Integer scheduleOrderId) 
 	{
@@ -83,7 +88,23 @@ public class ScheduleOrder extends BaseEntity
 		return createTime;
 	}
 
-    public String toString() {
+    public String getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
+	}
+
+	public String getScheduleName() {
+		return scheduleName;
+	}
+
+	public void setScheduleName(String scheduleName) {
+		this.scheduleName = scheduleName;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("scheduleOrderId", getScheduleOrderId())
             .append("scheduleId", getScheduleId())

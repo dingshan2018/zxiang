@@ -1,6 +1,7 @@
 package com.zxiang.project.record.deviceOrder.controller;
 
 import java.util.List;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,13 +11,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
+import com.zxiang.framework.web.controller.BaseController;
+import com.zxiang.framework.web.domain.AjaxResult;
+import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.record.deviceOrder.domain.DeviceOrder;
 import com.zxiang.project.record.deviceOrder.service.IDeviceOrderService;
-import com.zxiang.framework.web.controller.BaseController;
-import com.zxiang.framework.web.page.TableDataInfo;
-import com.zxiang.framework.web.domain.AjaxResult;
 
 /**
  * 设备销售订单 信息操作处理
@@ -34,9 +36,9 @@ public class DeviceOrderController extends BaseController
 	private IDeviceOrderService deviceOrderService;
 	
 	@RequiresPermissions("record:deviceOrder:view")
-	@GetMapping()
-	public String deviceOrder()
-	{
+	@GetMapping(value = {"/{transactionId}",""})
+	public String deviceOrder(@PathVariable(required = false) String transactionId,ModelMap mmap) {
+		mmap.put("transactionId", transactionId == null ? null : transactionId);
 	    return prefix + "/deviceOrder";
 	}
 	
