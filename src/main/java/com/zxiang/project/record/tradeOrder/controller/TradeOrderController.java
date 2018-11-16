@@ -30,15 +30,15 @@ import com.zxiang.project.record.tradeOrder.service.ITradeOrderService;
  * @date 2018-11-15
  */
 @Controller
-@RequestMapping("/settle/tradeOrder")
+@RequestMapping("/record/tradeOrder")
 public class TradeOrderController extends BaseController
 {
-    private String prefix = "settle/tradeOrder";
+    private String prefix = "record/tradeOrder";
 	
 	@Autowired
 	private ITradeOrderService tradeOrderService;
 	
-	@RequiresPermissions("settle:tradeOrder:view")
+	@RequiresPermissions("record:tradeOrder:view")
 	@GetMapping()
 	public String tradeOrder()
 	{
@@ -48,7 +48,7 @@ public class TradeOrderController extends BaseController
 	/**
 	 * 查询订单列表
 	 */
-	@RequiresPermissions("settle:tradeOrder:list")
+	@RequiresPermissions("record:tradeOrder:list")
 	@PostMapping("/list")
 	@ResponseBody
 	public TableDataInfo list(TradeOrder tradeOrder)
@@ -70,7 +70,7 @@ public class TradeOrderController extends BaseController
 	/**
 	 * 新增保存订单
 	 */
-	@RequiresPermissions("settle:tradeOrder:add")
+	@RequiresPermissions("record:tradeOrder:add")
 	@Log(title = "订单", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
@@ -93,7 +93,7 @@ public class TradeOrderController extends BaseController
 	/**
 	 * 修改保存订单
 	 */
-	@RequiresPermissions("settle:tradeOrder:edit")
+	@RequiresPermissions("record:tradeOrder:edit")
 	@Log(title = "订单", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
@@ -105,7 +105,7 @@ public class TradeOrderController extends BaseController
 	/**
 	 * 删除订单
 	 */
-	@RequiresPermissions("settle:tradeOrder:remove")
+	@RequiresPermissions("record:tradeOrder:remove")
 	@Log(title = "订单", businessType = BusinessType.DELETE)
 	@PostMapping( "/remove")
 	@ResponseBody
