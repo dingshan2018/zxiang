@@ -276,8 +276,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<!-- 库存设备出库 -->
-    <update id="outStock" parameterType="String">
-        update zx_device set status="01" where status="04" and device_id in 
+    <update id="outStock" >
+        update zx_device set status="01",owner_id=#{ownerId} where status="04" and device_id in 
         <foreach item="deviceId" collection="array" open="(" separator="," close=")">
             #{deviceId}
         </foreach>

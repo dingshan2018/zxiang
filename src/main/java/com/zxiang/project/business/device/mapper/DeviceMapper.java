@@ -106,9 +106,10 @@ public interface DeviceMapper
 	/**
 	 * 库存设备出库
 	 * @param ids
+	 * @param integer 
 	 * @return
 	 */
-	public int outStock(String[] ids);
+	public int outStock(@Param("array")String[] ids, @Param("ownerId")Integer ownerId);
 
 	public int selectTotal();
 
