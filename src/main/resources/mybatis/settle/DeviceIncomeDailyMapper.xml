@@ -141,6 +141,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			FROM
 			  zx_device_order 
 			WHERE  device_id = #{deviceId}
+			   and status = 1
 			  order by create_time desc
     </select>
     
