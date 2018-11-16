@@ -1,5 +1,6 @@
 package com.zxiang.project.client.wxuser.service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mysql.fabric.xmlrpc.base.Array;
 import com.zxiang.common.constant.Const;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.DateUtils;
@@ -115,6 +117,7 @@ public class WxUserServiceImpl implements IWxUserService
 	@Override
 	public Map<String, Object> tissueStatistical() {
 		Map<String, Object> map = new HashMap<String, Object>();
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>> ();
 		Map<String, Object> data = null;
 		Calendar c = null;
 		String selDate = null;
@@ -127,8 +130,10 @@ public class WxUserServiceImpl implements IWxUserService
 			data.put("fansManTotal", wxUserMapper.queryFansTotalBySex(Const.SEX_MAN, selDate)); // 单日累计男粉丝总量
 			data.put("fansWomanTotal", wxUserMapper.queryFansTotalBySex(Const.SEX_WOMAN, selDate)); // 单日累计女粉丝总量
 			data.put("fansNotSexTotal", wxUserMapper.queryFansTotalBySex(Const.SEX_NOT, selDate)); // 单日未知性别
-			map.put(selDate, data);
+			data.put("selDate", selDate);
+			list.add(data);
 		}
+		map.put("dataList", list);
 		return map;
 	}
 }

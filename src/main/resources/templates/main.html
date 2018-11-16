@@ -221,17 +221,19 @@
       $('[data-id="advertiseTotal"]').text(data.advertiseTotal);
     });
     $.post('/home/tissueStatistical', function (data) {
-      var keys = Object.keys(data);
+      data = data.dataList;
+      var selDate = [];
       var tissueTotal = [];
       var fansManTotal = [];
       var fansWomanTotal = [];
       var fansNotSexTotal = [];
 
-      for (index in keys) {
-        fansManTotal.push(data[keys[index]].fansManTotal);
-        fansNotSexTotal.push(data[keys[index]].fansNotSexTotal);
-        fansWomanTotal.push(data[keys[index]].fansWomanTotal);
-        tissueTotal.push(data[keys[index]].tissueTotal);
+      for (let i = 0; i < data.length; i++) {
+        selDate.push(data[i].selDate);
+        fansManTotal.push(data[i].fansManTotal);
+        fansNotSexTotal.push(data[i].fansNotSexTotal);
+        fansWomanTotal.push(data[i].fansWomanTotal);
+        tissueTotal.push(data[i].tissueTotal);
       }
 
       var pagerEchartsOption = {
@@ -249,7 +251,7 @@
           {
             type    : 'category',
             axisTick: {show: false},
-            data    : keys
+            data    : selDate
           }
         ],
         yAxis  : [
