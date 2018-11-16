@@ -339,6 +339,10 @@ public class DeviceServiceImpl implements IDeviceService
 		//此处需要注意，要先判断设备当前状态是否为库存，避免并发时被其他人出库了,或使用下述SQL简单 ;如果更新的设备数量与选择设备数量相同则为成功，否则报失败回滚
 		//update `zx_device` set status="01" where status="04" and device_id in ()
 		int updateDeviceNum = deviceMapper.outStock(Convert.toStrArray(ids));
+		if(updateDeviceNum < Convert.toStrArray(ids).length){
+			//更新的设备数量应该等于选择的设备数，否则为设备已出库或者被删除,抛异常
+			throw new RRException("操作失败,有所选设备已出货,请刷新重试!");
+		}
 		//获取设备销售表已有多少台设备，与更新的设备数相加判断是否全部出货完成
 		int deviceOrderNum = deviceOrderMapper.selectByTradeId(tradeOrder.getTradeOrderId());
 		
@@ -347,7 +351,7 @@ public class DeviceServiceImpl implements IDeviceService
 		int nowCount = updateDeviceNum + deviceOrderNum;
 		if(nowCount > totalCnt){
 			//设备台数不应该大于订单数,抛异常
-			throw new RRException("操作失败,出货设备数量大于订单数量!");
+			throw new RRException("操作失败,已出货设备数量大于订单数量!");
 		}
 		if(nowCount == totalCnt){
 			//订单表状态改为已发货

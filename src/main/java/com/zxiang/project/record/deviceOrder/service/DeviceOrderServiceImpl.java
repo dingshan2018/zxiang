@@ -79,5 +79,10 @@ public class DeviceOrderServiceImpl implements IDeviceOrderService
 	{
 		return deviceOrderMapper.deleteDeviceOrderByIds(Convert.toStrArray(ids));
 	}
+
+	@Override
+	public int getSendNum(Integer tradeOrderId) {
+		return deviceOrderMapper.selectByTradeId(tradeOrderId);
+	}
 	
 }

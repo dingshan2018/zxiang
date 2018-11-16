@@ -20,7 +20,6 @@ import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
-import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.record.tradeOrder.domain.TradeOrder;
 import com.zxiang.project.record.tradeOrder.service.ITradeOrderService;
 
