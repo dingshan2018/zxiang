@@ -35,15 +35,24 @@
                 <select class="select-pca__province p-n col-sm-4 pull-left"
                         data-style="btn-outline btn-default"
                         title="请选择省份"
-                        data-live-search="true"></select>
+                        style="width: 100px"
+                        >
+                  <option th:each="list:${areaList}" th:value="${list.id}" th:text="${list.pname}"></option>
+                </select>
                 <select class="select-pca__city p-n col-sm-4 pull-left"
                         data-style="btn-outline btn-default"
                         title="请选择城市"
-                        ></select>
+                        th:value="${adRange.city}"
+                        disabled>
+                  <option th:each="list:${areaList}" th:value="${list.id}" th:text="${list.pname}"></option>
+                </select>
                 <select class="select-pca__areas p-n col-sm-4 pull-left"
                         data-style="btn-outline btn-default"
                         title="请选择区县"
-                        ></select>
+                        th:value="${adRange.county}"
+                        disabled>
+                  <option th:each="list:${areaList}" th:value="${list.id}" th:text="${list.pname}"></option>
+                </select>
               </div>
               <!-- 按场所 -->
               <input th:if="${adRange != null && adRange.releaseType == '2'}" th:value="${adRange.placeGrade}" class="form-control" type="text">
@@ -166,21 +175,24 @@
   <script th:src="@{/js/plugins/bootstrapSelect/bootstrap-select.js}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/i18n/defaults-zh_CN.min.js"></script>
   <script>
-
     $(function () {
 
       $('select[class*=select-pca__]').selectpicker({
         size : 7,
+        width: '100px',
         selectPca:{
           province: 'select.select-pca__province',
           city    : 'select.select-pca__city',
           areas   : 'select.select-pca__areas'
         }
       });
+      $('.select-pca__province').selectpicker('val',"[[${adRange.province}]]");
+      $('.select-pca__city').selectpicker('val',"[[${adRange.city}]]");
+      $('.select-pca__areas').selectpicker('val',"[[${adRange.county}]]");
 
-      $.getJSON("[[@{/json/select__pac-code.json}]]",function (data) {
+      /*$.getJSON("[[@{/json/select__pac-code.json}]]",function (data) {
         $('select.select-pca__province').selectpicker('selectPca', data)
-      });
+      });*/
     })
   </script>
   <style>
