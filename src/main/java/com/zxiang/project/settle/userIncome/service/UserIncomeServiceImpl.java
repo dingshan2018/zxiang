@@ -1,13 +1,20 @@
 package com.zxiang.project.settle.userIncome.service;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.zxiang.project.settle.userIncome.mapper.UserIncomeMapper;
 import com.zxiang.project.settle.userIncome.domain.UserIncome;
 import com.zxiang.project.settle.userIncome.service.IUserIncomeService;
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.DateUtils;
+import com.zxiang.common.utils.excel.EXCELObject;
 
 /**
  * 客户收入日统计 服务层实现
@@ -128,6 +135,33 @@ public class UserIncomeServiceImpl implements IUserIncomeService
 			return list.get(0);
 		}
 		return null;
+	}
+	
+	
+	@Override
+	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception{
+		List userIncomeList = userIncomeMapper.queryExport(params);
+		String realPath = request.getSession().getServletContext().getRealPath("/file/temp");
+		EXCELObject s = new EXCELObject();
+		s.seteFilePath(realPath);
+		String[] titH = {"日期", "姓名", "合作类型", "视频广告基数","轮播广告基数","推广二维码广告基数", "推广广告基数","直推机子数量","间推机子数量",
+				          "出纸数量", "直推代理基数", "招商金额","视频广告系数", "轮播广告系数","二维码广告系数", "直推机子分润系数","间推机子分润系数",
+				          "推广二维码广告系数","推广广告系数","直推代理分润系数","服务出纸系数","办公补贴", "广告收入值","推广收入值","扫码收入值"};
+		String[] titN = { "sum_date","coperator_name","coperator_type","ad_income","ad_carousel_income","prom_paper_income","promotion_income","prom_direct_income","prom_indirect_income",
+				           "paper_income","direct_agent_income","subsidy_income","ad_rate","ad_carousel_rate","scan_rate","prom_direct_rate","prom_indirect_rate",
+				           "prom_paper_rate","promotion_rate","direct_agent_rate","serve_rate","subsidy_rate","ad_income_rate","promotion_income_rate","scan_income_rate"};
+		
+		//String[] width= {"15","20","25","25","15","25","25","15","15","25","15","25"};
+		//s.setWidth(width);
+		s.setFname("客户结算统计 "); // 临时文件名
+		s.setTitle("客户结算统计"); // 大标题名称
+		s.setTitH(titH);
+		s.setTitN(titN);
+		s.setDataList(userIncomeList);
+		File exportFile = null;
+		exportFile = s.setData();
+		String excelName = "客户结算统计" + DateUtils.getCurrentTime() + ".xls";
+		s.exportExcel("客户结算统计", excelName, exportFile, request, response);
 	}
 	
 }

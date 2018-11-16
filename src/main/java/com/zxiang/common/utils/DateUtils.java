@@ -101,5 +101,19 @@ public class DateUtils
         Date now = new Date();
         return DateFormatUtils.format(now, "yyyyMMdd");
     }
+    
+	/**
+	 * 获得正确的 时间
+	 * 
+	 * @return yyyyMMddHHmmsss
+	 */
+	public static String getCurrentTime() {
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmsss");
+		//sdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+		String time = sdf.format(date);
+		return time;
+
+	}
 
 }

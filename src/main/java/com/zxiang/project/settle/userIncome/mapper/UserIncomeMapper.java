@@ -95,4 +95,6 @@ public interface UserIncomeMapper
 	
 	public List<HashMap<String, Object>> selectzxrepairarealist(HashMap<String, Object> map);
 	
+	List<?> queryExport(HashMap<String, String> map);
+	
 }

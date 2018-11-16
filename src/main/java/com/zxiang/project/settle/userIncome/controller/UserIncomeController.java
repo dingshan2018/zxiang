@@ -1,6 +1,11 @@
 package com.zxiang.project.settle.userIncome.controller;
 
+import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -108,5 +113,27 @@ public class UserIncomeController extends BaseController
 	{		
 		return toAjax(userIncomeService.deleteUserIncomeByIds(ids));
 	}
+	
+    /**
+     * 导出
+     * @throws Exception 
+     */
+	@GetMapping("/excelExport")
+	@ResponseBody
+    public void excelExport(HttpServletResponse response,HttpServletRequest request) throws Exception {
+    	 String bgTime = request.getParameter("startTime");
+    	 String edTime = request.getParameter("endTime");
+    	 String coperatorName = request.getParameter("coperatorName");
+    	 
+    	 HashMap<String, String> query = new HashMap<String, String>();
+         query.put("bgTime", bgTime);
+         query.put("edTime", edTime);
+         query.put("coperatorName", coperatorName);
+         try {
+        	 userIncomeService.queryExport(query, request, response);
+ 		} catch (Exception e) {
+ 		
+ 		}
+    }
 	
 }

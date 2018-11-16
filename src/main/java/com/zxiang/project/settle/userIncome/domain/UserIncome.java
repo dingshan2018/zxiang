@@ -18,6 +18,9 @@ public class UserIncome extends BaseEntity
 	    private Integer incomeId;
 	    /** 合作客户ID */
 	    private Integer coperatorId;
+	    
+	    /** 合作客户名称 */
+	    private String coperatorName;
 	    /** 合作类型 */
 	    private String coperatorType;
 	    /** 统计日期 */
@@ -358,6 +361,16 @@ public class UserIncome extends BaseEntity
 		public void setSubsidyIncomeRate(Double subsidyIncomeRate) {
 			this.subsidyIncomeRate = subsidyIncomeRate;
 		}
+
+		public String getCoperatorName() {
+			return coperatorName;
+		}
+
+		public void setCoperatorName(String coperatorName) {
+			this.coperatorName = coperatorName;
+		}
+
+	
 		
 		
 

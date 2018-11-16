@@ -5,6 +5,9 @@ import com.zxiang.project.settle.userIncome.domain.UserIncome;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * 客户收入日统计 服务层
  * 
@@ -83,5 +86,8 @@ public interface IUserIncomeService
 	 * 通过主体获取人员信息
 	 * */
 	public HashMap<String, Object> selectuserbypuserId(String sellerId);
+	
+    void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception;
+
 	
 }

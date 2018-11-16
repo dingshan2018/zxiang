@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="UserIncome" id="UserIncomeResult">
       <id column="income_id" property="incomeId" jdbcType="INTEGER" />
     <result column="coperator_id" property="coperatorId" jdbcType="INTEGER" />
+    <result column="coperator_name" property="coperatorName" jdbcType="INTEGER" />
     <result column="coperator_type" property="coperatorType" jdbcType="VARCHAR" />
     <result column="sum_date" property="sumDate" jdbcType="TIMESTAMP" />
     <result column="ad_income" property="adIncome" jdbcType="DOUBLE" />
@@ -41,7 +42,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectUserIncomeVo">
-	select income_id, coperator_id, coperator_type, sum_date, ad_income, ad_carousel_income, 
+	select income_id, coperator_id, (SELECT DISTINCT  user_name FROM sys_user t WHERE t.user_id = coperator_id) coperator_name,  
+	 CASE coperator_type WHEN 00 THEN '系统用户'
+              WHEN 01 THEN '合作伙伴'
+              WHEN 02 THEN '加盟商'
+              WHEN 03 THEN '代理商'
+              WHEN 04 THEN '服务商'
+              WHEN 05 THEN '广告商'
+              WHEN 06 THEN '业务员'
+               ELSE '' END
+              AS coperator_type, sum_date, ad_income, ad_carousel_income, 
     scan_income, prom_direct_income, prom_indirect_income,promotion_income, paper_income, prom_paper_income, 
     direct_agent_income, subsidy_income, ad_income_rate, promotion_income_rate, scan_income_rate, 
     subsidy_income_rate, ad_rate, ad_carousel_rate, scan_rate, prom_direct_rate, prom_indirect_rate, 
@@ -53,7 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectUserIncomeVo"/>
         <where>  
             <if test="incomeId != null and incomeId != ''"> and income_id = #{incomeId}</if>
-             <if test="coperatorId != null and coperatorId != ''"> and coperator_id = #{coperatorId}</if>
+             <if test="coperatorName != null and coperatorName != ''"> and (SELECT DISTINCT  user_name FROM sys_user t WHERE t.user_id = coperator_id) like concat('%',#{coperatorName},'%')</if>
              <if test="coperatorType != null and coperatorType != ''"> and coperator_type = #{coperatorType}</if>
               <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
 				AND date_format(sum_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
@@ -442,5 +452,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  AND county_id= #{countyId} 
 		</if>
     </select>
+    
+    
+     <select id="queryExport" resultType="java.util.HashMap">
+        	select  coperator_id,(SELECT DISTINCT  user_name FROM sys_user t WHERE t.user_id = coperator_id) coperator_name, coperator_type,  DATE_FORMAT(`sum_date`,'%Y-%m-%d') sum_date, ad_income, ad_carousel_income, 
+			    scan_income, prom_direct_income, prom_indirect_income,promotion_income, paper_income, prom_paper_income, 
+			    direct_agent_income, subsidy_income, ad_income_rate, promotion_income_rate, scan_income_rate, 
+			    subsidy_income_rate, ad_rate, ad_carousel_rate, scan_rate, prom_direct_rate, prom_indirect_rate, 
+			    prom_paper_rate, promotion_rate, direct_agent_rate, serve_rate, subsidy_rate, refund_income, 
+			    refund_income_rate  from zx_user_income
+        <where>  
+            <if test="incomeId != null and incomeId != ''"> and income_id = #{incomeId}</if>
+             <if test="coperatorName != null and coperatorName != ''"> and (SELECT DISTINCT  user_name FROM sys_user t WHERE t.user_id = coperator_id) like concat('%',#{coperatorName},'%')</if>
+             <if test="coperatorType != null and coperatorType != ''"> and coperator_type = #{coperatorType}</if>
+              <if test="bgTime != null and bgTime != ''"><!-- 开始时间检索 -->
+				AND date_format(sum_date,'%y%m%d') &gt;= date_format(#{bgTime},'%y%m%d')
+			 </if>
+			 <if test="edTime != null and edTime != ''"><!-- 结束时间检索 -->
+				AND date_format(sum_date,'%y%m%d') &lt;= date_format(#{edTime},'%y%m%d')
+			 </if>
+         </where>
+    </select>
+    
+    
+    
+    
     
 </mapper>
