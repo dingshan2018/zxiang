@@ -50,5 +50,12 @@ public interface IDeviceOrderService
      * @return 结果
      */
 	public int deleteDeviceOrderByIds(String ids);
+
+	/**
+	 * 获取某订单的发货数量
+	 * @param tradeOrderId
+	 * @return
+	 */
+	public int getSendNum(Integer tradeOrderId);
 	
 }

@@ -109,4 +109,14 @@ public class DeviceOrderController extends BaseController
 		return toAjax(deviceOrderService.deleteDeviceOrderByIds(ids));
 	}
 	
+	/**
+     * 获取已发送设备数量
+     */
+    @PostMapping("/getSendNum")
+    @ResponseBody
+    public int getSendNum(Integer tradeOrderId)
+    {
+        return deviceOrderService.getSendNum(tradeOrderId);
+    }
+	
 }

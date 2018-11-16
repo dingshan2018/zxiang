@@ -1,7 +1,9 @@
 package com.zxiang.project.business.device.service;
 
-import com.zxiang.project.business.device.domain.Device;
 import java.util.List;
+
+import com.zxiang.project.business.device.domain.Device;
+import com.zxiang.project.record.tradeOrder.domain.TradeOrder;
 
 /**
  * 共享设备 服务层
@@ -131,9 +133,9 @@ public interface IDeviceService
 	/**
 	 * 通过订单号选择出库设备
 	 * @param ids
-	 * @param tradeOrderId
+	 * @param tradeOrder
 	 * @return
 	 */
-	public int outStockByTradeId(String ids,Integer tradeOrderId,String operatorUser);
+	public int outStockByTradeId(String ids,TradeOrder tradeOrder,String operatorUser) throws Exception;
 	
 }

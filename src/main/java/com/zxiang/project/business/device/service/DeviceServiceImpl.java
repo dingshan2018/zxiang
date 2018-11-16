@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.StringUtils;
 import com.zxiang.project.business.changeTerminal.domain.ChangeTerminal;
@@ -20,6 +21,10 @@ import com.zxiang.project.business.supplyTissue.domain.SupplyTissue;
 import com.zxiang.project.business.supplyTissue.mapper.SupplyTissueMapper;
 import com.zxiang.project.business.terminal.domain.Terminal;
 import com.zxiang.project.business.terminal.mapper.TerminalMapper;
+import com.zxiang.project.record.deviceOrder.domain.DeviceOrder;
+import com.zxiang.project.record.deviceOrder.mapper.DeviceOrderMapper;
+import com.zxiang.project.record.tradeOrder.domain.TradeOrder;
+import com.zxiang.project.record.tradeOrder.mapper.TradeOrderMapper;
 
 /**
  * 共享设备 服务层实现
@@ -41,6 +46,10 @@ public class DeviceServiceImpl implements IDeviceService
 	private ChangeTerminalMapper TerminalMapper;
 	@Autowired
 	private SupplyTissueMapper supplyTissueMapper;
+	@Autowired
+	private DeviceOrderMapper deviceOrderMapper;
+	@Autowired
+	private TradeOrderMapper tradeOrderMapper;
 	
 	/**
      * 查询共享设备信息
@@ -320,20 +329,66 @@ public class DeviceServiceImpl implements IDeviceService
 
 	@Override
 	public int outStock(String ids) {
-		return deviceMapper.outStock(Convert.toStrArray(ids));
+		return deviceMapper.outStock(Convert.toStrArray(ids),0);
 	}
 
 	@Override
-	public int outStockByTradeId(String ids, Integer tradeOrderId,String operatorUser) {
-		//(页面初始化的时候做)1.查询zx_trade_order表order_type=1 AND (send_status=0 OR send_status=2) AND order_status=1 的订单；
+	public int outStockByTradeId(String ids, TradeOrder tradeOrder,String operatorUser) throws Exception{
 		//(js校验)2.界面选择订单设备数量，最多只能选择订单数量total_cnt台数的设备进行出库
 		//3.将选择的设备置为出库状态；订单数量累加，判断是否达到total_cnt若达到订单数量则将send_status置为1，否则置为2
 		//此处需要注意，要先判断设备当前状态是否为库存，避免并发时被其他人出库了,或使用下述SQL简单 ;如果更新的设备数量与选择设备数量相同则为成功，否则报失败回滚
 		//update `zx_device` set status="01" where status="04" and device_id in ()
-		//4.订单销售记录表插入记录
-		//5.事务处理，若有异常需要回滚
-		//TODO 
-		return 0;
+		int updateDeviceNum = deviceMapper.outStock(Convert.toStrArray(ids),tradeOrder.getUserId());
+		if(updateDeviceNum < Convert.toStrArray(ids).length){
+			//更新的设备数量应该等于选择的设备数，否则为设备已出库或者被删除,抛异常
+			throw new RRException("操作失败,有所选设备已出货,请刷新重试!");
+		}
+		//获取设备销售表已有多少台设备，与更新的设备数相加判断是否全部出货完成
+		int deviceOrderNum = deviceOrderMapper.selectByTradeId(tradeOrder.getTradeOrderId());
+		
+		//与更新的设备数相加判断是否全部出货完成
+		int totalCnt = tradeOrder.getTotalCnt();
+		int nowCount = updateDeviceNum + deviceOrderNum;
+		if(nowCount > totalCnt){
+			//设备台数不应该大于订单数,抛异常
+			throw new RRException("操作失败,已出货设备数量大于订单数量!");
+		}
+		if(nowCount == totalCnt){
+			//订单表状态改为已发货
+			tradeOrder.setSendStatus("1");
+		}
+		if(nowCount < totalCnt && nowCount > 0){
+			//订单表状态改为部分发货
+			tradeOrder.setSendStatus("2");
+		}
+		tradeOrderMapper.updateTradeOrder(tradeOrder);
+		
+		// 4.订单销售记录表插入记录
+		List<DeviceOrder> deviceOrderList = new ArrayList<>();
+		String[] devices = Convert.toStrArray(ids);
+		if(devices.length > 0){
+			for (String device : devices) {
+				//查询这台设备已有信息
+				Device dev = deviceMapper.selectDeviceById(Integer.parseInt(device));
+				//要插入的设备订单数据
+				DeviceOrder deviceOrder = new DeviceOrder();
+				deviceOrder.setDeviceId(Integer.parseInt(device));
+				deviceOrder.setTradeOrderId(tradeOrder.getTradeOrderId());
+				deviceOrder.setTerminalCode(dev.getTerminalCode());
+				deviceOrder.setPrice(tradeOrder.getTotalFee());
+				deviceOrder.setStatus(tradeOrder.getOrderStatus());
+				deviceOrder.setBuyerId(tradeOrder.getUserId());
+				deviceOrder.setBuyerOpenId(tradeOrder.getOpenId());
+				deviceOrder.setCreateBy(operatorUser);
+				deviceOrder.setCreateTime(new Date());
+				
+				deviceOrderList.add(deviceOrder);
+			}
+			//mapper.xml 批量插入数据
+			deviceOrderMapper.batchInsert(deviceOrderList);
+		}
+		
+		return updateDeviceNum;
 	}
 
 }

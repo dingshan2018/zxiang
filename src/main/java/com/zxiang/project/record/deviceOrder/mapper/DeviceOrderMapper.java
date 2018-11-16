@@ -58,5 +58,18 @@ public interface DeviceOrderMapper
      * @return 结果
      */
 	public int deleteDeviceOrderByIds(String[] deviceOrderIds);
+
+	/**
+	 * 通过订单号ID判断出了多少台设备
+	 * @param tradeOrderId
+	 * @return
+	 */
+	public int selectByTradeId(Integer tradeOrderId);
+
+	/**
+	 * 批量插入销售订单表
+	 * @param deviceOrderList
+	 */
+	public void batchInsert(List<DeviceOrder> deviceOrderList);
 	
 }
