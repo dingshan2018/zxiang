@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!--360浏览器优先以webkit内核解析-->
-  <title>若依介绍</title>
+  <title></title>
   <link rel="shortcut icon" href="favicon.ico">
   <link href="../static/css/bootstrap.min.css"
         th:href="@{/css/bootstrap.min.css}"
@@ -25,7 +25,7 @@
       list-style: none;
     }
 
-    body{
+    body {
       height: auto;
       min-height: 100%;
       padding-bottom: 20px;
@@ -107,6 +107,9 @@
 
     .system-target__content .target-content__count {
       margin: 10px 0 0 0;
+      line-height: 28px;
+      height: 28px;
+      font-weight: 600;
       font-size: 20px;
     }
 
@@ -129,65 +132,65 @@
       <ul class="system-target__list">
         <li class="system-target__item">
           <div class="system-target__content">
-            <img src="https://via.placeholder.com/860x60/19aa8d/fff?text=."
+            <img th:src="@{/img/icons/main_tissueTotal.png}"
                  class="target-content__figure"/>
-            <p class="target-content__count"><strong>145645</strong></p>
+            <p class="target-content__count" data-id="tissueTotal"></p>
             <p class="target-content__name">累计出纸量</p>
           </div>
         </li>
         <li class="system-target__item">
           <div class="system-target__content">
-            <img src="https://via.placeholder.com/860x60/19aa8d/fff?text=."
+            <img th:src="@{/img/icons/main_fansTotal.png}"
                  class="target-content__figure"/>
-            <p class="target-content__count"><strong>145645</strong></p>
+            <p class="target-content__count" data-id="fansTotal"></p>
             <p class="target-content__name">累计关注出纸量</p>
           </div>
         </li>
         <li class="system-target__item">
           <div class="system-target__content">
-            <img src="https://via.placeholder.com/860x60/19aa8d/fff?text=."
+            <img th:src="@{/img/icons/main_deviceTotal.png}"
                  class="target-content__figure"/>
-            <p class="target-content__count"><strong>145645</strong></p>
+            <p class="target-content__count" data-id="deviceTotal"></p>
             <p class="target-content__name">设备总量</p>
           </div>
         </li>
         <li class="system-target__item">
           <div class="system-target__content">
-            <img src="https://via.placeholder.com/860x60/19aa8d/fff?text=."
+            <img th:src="@{/img/icons/main_agentTotal.png}"
                  class="target-content__figure"/>
-            <p class="target-content__count"><strong>145645</strong></p>
+            <p class="target-content__count" data-id="agentTotal"></p>
             <p class="target-content__name">代理商总量</p>
           </div>
         </li>
         <li class="system-target__item">
           <div class="system-target__content">
-            <img src="https://via.placeholder.com/860x60/19aa8d/fff?text=."
+            <img th:src="@{/img/icons/main_fansManTotal.png}"
                  class="target-content__figure"/>
-            <p class="target-content__count"><strong>145645</strong></p>
+            <p class="target-content__count" data-id="fansManTotal"></p>
             <p class="target-content__name">累计男粉丝</p>
           </div>
         </li>
         <li class="system-target__item">
           <div class="system-target__content">
-            <img src="https://via.placeholder.com/860x60/19aa8d/fff?text=."
+            <img th:src="@{/img/icons/main_fansWomanTotal.png}"
                  class="target-content__figure"/>
-            <p class="target-content__count"><strong>145645</strong></p>
+            <p class="target-content__count" data-id="fansWomanTotal"></p>
             <p class="target-content__name">累计女粉丝</p>
           </div>
         </li>
         <li class="system-target__item">
           <div class="system-target__content">
-            <img src="https://via.placeholder.com/860x60/19aa8d/fff?text=."
+            <img th:src="@{/img/icons/main_fansNotSexTotal.png}"
                  class="target-content__figure"/>
-            <p class="target-content__count"><strong>145645</strong></p>
+            <p class="target-content__count" data-id="fansNotSexTotal"></p>
             <p class="target-content__name">未知性别</p>
           </div>
         </li>
         <li class="system-target__item">
           <div class="system-target__content">
-            <img src="https://via.placeholder.com/860x60/19aa8d/fff?text=."
+            <img th:src="@{/img/icons/main_advertiseTotal.png}"
                  class="target-content__figure"/>
-            <p class="target-content__count"><strong>145645</strong></p>
+            <p class="target-content__count" data-id="advertiseTotal"></p>
             <p class="target-content__name">广告主总量</p>
           </div>
         </li>
@@ -207,55 +210,81 @@
   <script th:src="@{/js/bootstrap.min.js}"></script>
   <script th:src="@{/js/plugins/echarts/echarts.common.min.js}"></script>
   <script>
-    var pagerEchartsOption = {
-      color  : ['#e5323e', '#003366', '#006699', '#4cabce'],
-      tooltip: {
-        trigger    : 'axis',
-        axisPointer: {
-          type: 'shadow'
-        }
-      },
-      legend : {
-        data: ['单日出纸量', '关注男粉丝', '关注女粉丝', '未知性别']
-      },
-      xAxis  : [
-        {
-          type    : 'category',
-          axisTick: {show: false},
-          data    : ['2018-09-09', '2018-09-10', '2018-09-11', '2018-09-12', '2018-09-013']
-        }
-      ],
-      yAxis  : [
-        {
-          type: 'value'
-        }
-      ],
-      series : [
-        {
-          name: '单日出纸量',
-          type: 'bar',
-          data: [620, 732, 801, 934, 490]
-        },
-        {
-          name: '关注男粉丝',
-          type: 'bar',
-          data: [220, 182, 191, 234, 290]
-        },
-        {
-          name: '关注女粉丝',
-          type: 'bar',
-          data: [150, 232, 201, 154, 190]
-        },
-        {
-          name: '未知性别',
-          type: 'bar',
-          data: [198, 77, 101, 99, 40]
-        }
-      ]
-    };
+    $.post('/home/systemIndicators', function (data) {
+      $('[data-id="tissueTotal"]').text(data.tissueTotal);
+      $('[data-id="fansTotal"]').text(data.fansTotal);
+      $('[data-id="deviceTotal"]').text(data.deviceTotal);
+      $('[data-id="agentTotal"]').text(data.agentTotal);
+      $('[data-id="fansManTotal"]').text(data.fansManTotal);
+      $('[data-id="fansWomanTotal"]').text(data.fansWomanTotal);
+      $('[data-id="fansNotSexTotal"]').text(data.fansNotSexTotal);
+      $('[data-id="advertiseTotal"]').text(data.advertiseTotal);
+    });
+    $.post('/home/tissueStatistical', function (data) {
+      var keys = Object.keys(data);
+      var tissueTotal = [];
+      var fansManTotal = [];
+      var fansWomanTotal = [];
+      var fansNotSexTotal = [];
 
-    var echart = echarts.init(document.querySelector('.pager-echarts'));
-    echart.setOption(pagerEchartsOption);
+      for (index in keys) {
+        fansManTotal.push(data[keys[index]].fansManTotal);
+        fansNotSexTotal.push(data[keys[index]].fansNotSexTotal);
+        fansWomanTotal.push(data[keys[index]].fansWomanTotal);
+        tissueTotal.push(data[keys[index]].tissueTotal);
+      }
+
+      var pagerEchartsOption = {
+        color  : ['#19aa8d', '#006699', '#e5323e', '#fbdd7e'],
+        tooltip: {
+          trigger    : 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        legend : {
+          data: ['单日出纸量', '关注男粉丝', '关注女粉丝', '未知性别']
+        },
+        xAxis  : [
+          {
+            type    : 'category',
+            axisTick: {show: false},
+            data    : keys
+          }
+        ],
+        yAxis  : [
+          {
+            type: 'value'
+          }
+        ],
+        series : [
+          {
+            name: '单日出纸量',
+            type: 'bar',
+            data: tissueTotal
+          },
+          {
+            name: '关注男粉丝',
+            type: 'bar',
+            data: fansManTotal
+          },
+          {
+            name: '关注女粉丝',
+            type: 'bar',
+            data: fansWomanTotal
+          },
+          {
+            name: '未知性别',
+            type: 'bar',
+            data: fansNotSexTotal
+          }
+        ]
+      };
+
+      var echart = echarts.init(document.querySelector('.pager-echarts'));
+      echart.setOption(pagerEchartsOption);
+    });
+
   </script>
 </body>
 </html>

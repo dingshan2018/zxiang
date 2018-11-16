@@ -128,6 +128,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
     <select id="selectTotal" resultType="int">
        select count(*) from zx_tissue_record where status = '1'
-       <if test="selDate != null selDate.trim() != ''">and date_format(create_time,'%Y-%m-%d') = #{selDate}</if>
+       <if test="selDate != null and selDate.trim() != ''">and date_format(create_time,'%Y-%m-%d') = #{selDate}</if>
     </select>
 </mapper>
