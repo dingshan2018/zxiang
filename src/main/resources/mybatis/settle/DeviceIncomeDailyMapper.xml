@@ -173,6 +173,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			  WHERE 
 			   z.device_id = #{deviceId}
 			   and  z.`schedule_id` = s.`ad_schedule_id`
+			    AND s.promotioner != ''
+			    AND s.promotioner IS NOT NULL
 			   <if test="scheduleId != null and scheduleId != ''"> and z.schedule_id = #{scheduleId}</if>
 			AND DATE_FORMAT(z.create_time, '%Y-%m-%d') = DATE_FORMAT(
 			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),

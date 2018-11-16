@@ -8,24 +8,24 @@
 					<form id="user-form">
 						<div class="select-list">
 							<ul>
+								<!-- <li>
+									用户类型：<input type="text" name="coperatorType" id="coperatorType"/>
+								</li> -->
 								<li>
-									用户类型：<input type="text" name="coperatorType"/>
+									结算用户：<input type="text" name="coperatorName" id="coperatorName"/>
 								</li>
-								<li>
-									结算用户：<input type="text" name="coperatorId"/>
-								</li>
-								<li>
-									结算地区：<input type="text" name="areaId"/>
-								</li>
+								<!-- <li>
+									结算地区：<input type="text" name="areaId" id="areaId"/>
+								</li> -->
 								<li class="select-time">
 									<label>结算日期： </label>
-									<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+									<input type="text" class="time-input" id="startTime"  placeholder="开始时间" name="params[beginTime]"/>
 									<span>-</span>
-									<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+									<input type="text" class="time-input" id="endTime"  placeholder="结束时间" name="params[endTime]"/>
 								</li>
 								<li>
 									<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
-							    	<a class="btn btn-success btn-rounded btn-sm" onclick="$.table.exportExcel()"><i class="fa fa-download"></i>&nbsp;导出</a>
+							    	<a class="btn btn-success btn-rounded btn-sm" onclick="excelExport()"><i class="fa fa-download"></i>&nbsp;导出</a>
 								</li>
 							</ul>
 						</div>
@@ -66,7 +66,7 @@
 					title : '合作类型' 
 				},
 				{
-					field : 'coperatorId', 
+					field : 'coperatorName', 
 					title : '合作客户' 
 				},
 				{
@@ -83,13 +83,6 @@
 					title : '扫码分润' 
 				},
 				{
-					field : 'refundIncome', 
-					title : '今日退款' 
-				},
-				{
-					field : 'refundIncomeRate', 
-					title : '今日分润退款' 
-				},{
 		            title: '操作',
 		            align: 'center',
 		            formatter: function(value, row, index) {
@@ -101,6 +94,13 @@
             };
             $.table.init(options);
         });
+        
+         function excelExport() {
+        	 var startTime = $("#startTime").val();
+        	 var endTime = $("#endTime").val();
+        	 var coperatorName = $("#coperatorName").val();
+            location.href = prefix + '/excelExport?startTime='+startTime+'&endTime='+endTime+'&coperatorName='+coperatorName;
+         }
     </script>
 </body>
 </html>

@@ -7,9 +7,9 @@
         <form class="form-horizontal m" id="form-userIncome-edit" th:object="${userIncome}">
             <input id="incomeId" name="incomeId" th:field="*{incomeId}"  type="hidden">
             <div class="form-group">	
-                <label class="col-sm-2 control-label">合作客户ID：</label>
+                <label class="col-sm-2 control-label">合作客户：</label>
                 <div class="col-sm-3">
-                    <label th:text="*{coperatorId}" class="form-control"></label>
+                    <label th:text="*{coperatorName}" class="form-control"></label>
                 </div>
                 <label class="col-sm-2 control-label">合作类型：</label>
                 <div class="col-sm-3">

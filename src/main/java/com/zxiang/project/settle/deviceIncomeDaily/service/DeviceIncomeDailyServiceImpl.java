@@ -255,20 +255,28 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			//获取推广计划
 			HashMap<String, Object> selecadschedule = selecadschedulelist(Integer.valueOf(releaserecord.get("schedule_id").toString()));
 			String release_type = selecadschedule.get("release_type").toString(); //投放方式01终端轮播  02终端视频  03H5广告       (二维码广告还分公司（免费）和外部)
-			//int  advertiser = Integer.valueOf(selecadschedule.get("advertiser")+""); //广告商
-			int	 promotioner = Integer.valueOf(selecadschedule.get("promotioner")+""); //推荐人
+			boolean ispromotioner = true; 
+			int	 promotioner = 0;
+			HashMap<String, Object> user = null ;
+			if(com.zxiang.common.utils.StringUtils.isNull(selecadschedule.get("promotioner"))) {
+				ispromotioner = false;
+			}else {
+				 promotioner = Integer.valueOf(selecadschedule.get("promotioner")+""); //推荐人
+				 user = getusedata(promotioner+"");
+			}
 			HashMap<String, Object> promotionagenmap = new HashMap<String, Object>();
 			HashMap<String, Object> repairmap = new HashMap<String, Object>();
 			List<HashMap<String, Object>> promotionagentlist = new ArrayList<HashMap<String, Object>>();
 			List<HashMap<String, Object>> repairlist = new ArrayList<HashMap<String, Object>>();
-			HashMap<String, Object> user = getusedata(promotioner+"");
+			
 			double rate = 0.0;//系数
 			switch (release_type) {
 			case "01":
 				//--------------推广收益-----------------------
-				rate = Double.valueOf(user.get("promotionRate")+"");
-				insertdata(price*rate,promotioner+"","02",RateConstants.RATETYPE_PROMOTIONINCOME,price,0,user);
-				
+				if(ispromotioner) {
+					rate = Double.valueOf(user.get("promotionRate")+"");
+					insertdata(price*rate,promotioner+"","02",RateConstants.RATETYPE_PROMOTIONINCOME,price,0,user);
+				}
 				//-----------------------广告收益--------------
 				//插入机主广告数据(视频广告投放金额40% , 轮播广告投放金额40%)
 				user = getusedata(buyerid);
@@ -299,9 +307,10 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				break;
 			case "02":
 				//--------------推广收益-----------------------
-				rate = Double.valueOf(user.get("promotionRate")+"");
-				insertdata(price*rate,promotioner+"","02",RateConstants.RATETYPE_PROMOTIONINCOME,price,0,user);
-				
+				if(ispromotioner) {
+					rate = Double.valueOf(user.get("promotionRate")+"");
+					insertdata(price*rate,promotioner+"","02",RateConstants.RATETYPE_PROMOTIONINCOME,price,0,user);
+				}
 				//-----------------------广告收益--------------
 				//插入机主广告数据(视频广告投放金额40% , 轮播广告投放金额40%)
 				user = getusedata(buyerid);
@@ -332,9 +341,10 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				break;
 			case "03":
 				//--------------推广收益-----------------------
-				rate =  Double.valueOf(user.get("promPaperRate")+"");
-				insertdata(-tissuenum*rate,promotioner+"","02",RateConstants.RATETYPE_PROMPAPERINCOME,0.0,tissuenum,user);
-				
+				if(ispromotioner) {
+					rate =  Double.valueOf(user.get("promPaperRate")+"");
+					insertdata(-tissuenum*rate,promotioner+"","02",RateConstants.RATETYPE_PROMPAPERINCOME,0.0,tissuenum,user);
+				}
 				//-----------------------广告收益--------------
 				//插入机主广告数据每次出纸收益0.3元
 				user = getusedata(buyerid);
@@ -405,8 +415,6 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		 }
 		
 	}
-	
-	
 	
 	
 	//获取用户信息
