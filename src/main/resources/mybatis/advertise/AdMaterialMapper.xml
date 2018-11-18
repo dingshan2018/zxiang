@@ -104,8 +104,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <!-- 根据广告ID查询最新批次素材列表 -->
-    <select id="selectListByAdSchId" parameterType="Integer" resultMap="AdMaterialResult">
+    <select id="selectMaxListByAdSchId" parameterType="Integer" resultMap="AdMaterialResult">
     	SELECT * FROM `zx_ad_material` WHERE ad_schedule_id = #{adScheduleId} AND batch=
     	(SELECT IFNULL(MAX(batch),0) FROM `zx_ad_material` WHERE ad_schedule_id=#{adScheduleId});
     </select>
+    
+    <!-- 根据广告ID查询该广告下所有素材列表 -->
+    <select id="selectListByAdSchId" parameterType="Integer" resultMap="AdMaterialResult">
+    	SELECT * FROM `zx_ad_material` WHERE ad_schedule_id = #{adScheduleId};
+    </select>
+    
 </mapper>

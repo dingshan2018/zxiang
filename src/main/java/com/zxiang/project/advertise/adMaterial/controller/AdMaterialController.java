@@ -126,6 +126,17 @@ public class AdMaterialController extends BaseController
     /**
 	 * 根据广告ID查询最新批次素材列表
 	 */
+	@RequestMapping("/selectMaxListByAdSchId")
+    @ResponseBody
+    public TableDataInfo selectMaxListByAdSchId(@RequestBody Map<String, Object> params) {
+		String adScheduleId = (String) params.get("adScheduleId");
+		List<AdMaterial> list = adMaterialService.selectMaxListByAdSchId(Integer.parseInt(adScheduleId));
+		return getDataTable(list);
+    }
+    
+	/**
+	 * 根据广告ID查询该广告下所有素材列表
+	 */
 	@RequestMapping("/selectListByAdSchId")
     @ResponseBody
     public TableDataInfo selectListByAdSchId(@RequestBody Map<String, Object> params) {
@@ -133,5 +144,4 @@ public class AdMaterialController extends BaseController
 		List<AdMaterial> list = adMaterialService.selectListByAdSchId(Integer.parseInt(adScheduleId));
 		return getDataTable(list);
     }
-    
 }

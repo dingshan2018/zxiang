@@ -253,11 +253,17 @@
    		}
 
    		/**判断是否上传过素材*/
-		var batch = getMaxBatch(rows);
+		/* var batch = getMaxBatch(rows);
    		if (batch > 0) {
    	        $.modal.alertWarning(hasMaterial);
    	        return;
-      	}
+      	} */
+      	//改成在未预约之前可以上传多次素材，每次模板元素只能单选，即同一批次上传的文件都是同一模板元素的
+      	var hasOrder = getOrderNum(rows);
+   		if (hasOrder > 0) {
+   			$.modal.alertWarning("该广告已预约过,不能再次上传素材!");
+   	        return;
+   		}
     	var url = ctx + "advertise/adSchedule/materialUpload/" + rows;
     	$.modal.open("素材上传", url);
 	}
@@ -386,7 +392,7 @@
     }
 
 
-  	//判断该广告是否上传过素材 :batch>0
+  	//判断该广告是否预约过 :hasOrder>0
     function getOrderNum(rows){
     	var hasOrder = 0;
 	    $.ajax({

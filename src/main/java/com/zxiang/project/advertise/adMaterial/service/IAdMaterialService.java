@@ -64,6 +64,13 @@ public interface IAdMaterialService
 	 * @param adScheduleId
 	 * @return
 	 */
+	public List<AdMaterial> selectMaxListByAdSchId(Integer adScheduleId);
+
+	/**
+	 * 根据广告ID查询该广告下所有素材列表
+	 * @param parseInt
+	 * @return
+	 */
 	public List<AdMaterial> selectListByAdSchId(Integer adScheduleId);
 	
 }

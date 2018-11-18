@@ -86,6 +86,17 @@ public class AdMaterialServiceImpl implements IAdMaterialService
 		return adMaterialMapper.selectMaxBatch(adScheduleId);
 	}
 
+	/**
+	 *  根据广告ID查询最新批次素材列表
+	 */
+	@Override
+	public List<AdMaterial> selectMaxListByAdSchId(Integer adScheduleId) {
+		return adMaterialMapper.selectMaxListByAdSchId(adScheduleId);
+	}
+
+	/**
+	 * 根据广告ID查询该广告下所有素材列表
+	 */
 	@Override
 	public List<AdMaterial> selectListByAdSchId(Integer adScheduleId) {
 		return adMaterialMapper.selectListByAdSchId(adScheduleId);

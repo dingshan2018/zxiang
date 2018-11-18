@@ -24,9 +24,14 @@
             <div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>模板元素：</label>
 				<div class="col-sm-8">
-					<label th:each="element:${elementList}" class="checkbox-inline i-checks">
+					<!-- 模板元素每次单选,若要传不同模板元素的可在预约之前多次上传素材  -->
+					<!-- <label th:each="element:${elementList}" class="checkbox-inline i-checks">
 						<input name="element" type="checkbox" th:value="${element.id}" th:text="${element.elementName}">
-					</label>
+					</label> -->
+					<select class="form-control" name="element" id="element">
+                    	<option value=""> -- 请选择 -- </option>
+	                    <option th:each="e:${elementList}"  th:value="${e.id}" th:text="${e.elementName}"/>
+                    </select>
 				</div>
 			</div>
             
@@ -48,6 +53,9 @@
 	  $('#form-adSchedule-materialUpload').validate({
 	    rules        : {
 	      fileUpload: {
+	        required: true
+	      },
+	      element: {
 	        required: true
 	      },
 	    },
@@ -82,11 +90,6 @@
     });
 
     function beforeUploadFun (opt) {
-    	/* var elements = $.form.selectCheckeds("element");
-    	if(elements.length <= 0){
-       		alert("请先选择模板元素!");
-			return;
-       	} */
     	
     	opt.otherData = [
         	{
@@ -99,7 +102,8 @@
         	},
         	{
         		'name' : 'elementId',
-        		'value': $.form.selectCheckeds("element")
+        		/* 'value': $.form.selectCheckeds("element") */
+        		'value': $("#element").val()
         	}];
     }
 
@@ -114,7 +118,8 @@
     }
 
     function submitUpload () {
-    	var elements = $.form.selectCheckeds("element");
+    	//var elements = $.form.selectCheckeds("element");
+    	var elements = $("#element").val();
     	if(elements.length <= 0){
     		$.modal.alertWarning("请先选择模板元素!");
 			return;
