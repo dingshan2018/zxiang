@@ -101,7 +101,7 @@ public class TissueRecordController extends BaseController
 		mmap.put("tissueRecord", tissueRecord);
 		mmap.put("terminalDropBoxList", terminalService.selectDropBoxList());
 		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
-		mmap.put("deviceDropBoxList", deviceService.selectDropBoxList());
+		mmap.put("deviceDropBoxList", deviceService.selectDropBoxList(null));
 	    return prefix + "/edit";
 	}
 	

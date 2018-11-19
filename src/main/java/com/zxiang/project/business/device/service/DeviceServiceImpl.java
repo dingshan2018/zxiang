@@ -129,8 +129,8 @@ public class DeviceServiceImpl implements IDeviceService
 	}
 
 	@Override
-	public List<Device> selectDropBoxList() {
-		return deviceMapper.selectDropBoxList();
+	public List<Device> selectDropBoxList(String status) {
+		return deviceMapper.selectDropBoxList(status);
 	}
 
 	@Override

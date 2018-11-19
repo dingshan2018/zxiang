@@ -274,8 +274,9 @@
 	        	$("#placeDiv").hide();
 	        	$("#areaGrade").val("");
 	        	$("#placeGrade").val("");
-	        	//投放方式选择全部的时候加载全部设备
-	        	loadDevices(selectDeviceList());
+	        	//投放方式选择全部的时候加载全部已投放设备
+	        	//loadDevices(selectDeviceList());
+	        	loadDevices(selectDevByStatus("02"));
 
 	        } else if(value=="1"){
 	        	proviceBind();

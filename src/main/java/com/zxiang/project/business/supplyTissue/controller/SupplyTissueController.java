@@ -107,7 +107,7 @@ public class SupplyTissueController extends BaseController
 	{
 		SupplyTissue supplyTissue = supplyTissueService.selectSupplyTissueById(supplyTissueId);
 		mmap.put("supplyTissue", supplyTissue);
-		mmap.put("deviceDropBoxList", deviceService.selectDropBoxList());
+		mmap.put("deviceDropBoxList", deviceService.selectDropBoxList(null));
 		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 		
 		User queryUser = new User();

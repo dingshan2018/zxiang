@@ -71,8 +71,9 @@ public interface DeviceMapper
 
 	/**
 	 * 查找设备下拉框数据
+	 * @param status 
 	 */
-	public List<Device> selectDropBoxList();
+	public List<Device> selectDropBoxList(@Param("status") String status);
 
 	/**
 	 * 获取设备当前最大编号
@@ -80,12 +81,12 @@ public interface DeviceMapper
 	public String getMaxDeviceCode(String placeId);
 
 	/**
-	 * 根据场所ID查询设备列表
+	 * 根据场所ID查询已投放设备列表
 	 */
 	public List<Device> getDeviceByPlaceId(String placeId);
 
 	/**
-	 * 通过地区ID查询设备列表
+	 * 根据地区ID查找所有已投放设备列表
 	 */
 	public List<Device> getDeviceByareaId(@Param("province")String province,@Param("city") String city, @Param("county")String county);
 

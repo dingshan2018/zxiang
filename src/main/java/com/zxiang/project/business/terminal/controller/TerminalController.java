@@ -101,7 +101,7 @@ public class TerminalController extends BaseController
 	{
 		Terminal terminal = terminalService.selectTerminalById(terminalId);
 		mmap.put("terminal", terminal);
-		mmap.put("deviceDropBoxList", deviceService.selectDropBoxList());
+		mmap.put("deviceDropBoxList", deviceService.selectDropBoxList(null));
 		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 	    return prefix + "/edit";
 	}
