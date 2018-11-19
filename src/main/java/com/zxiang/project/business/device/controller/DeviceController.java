@@ -157,8 +157,10 @@ public class DeviceController extends BaseController
 	 */
 	@RequestMapping("/getDropBoxDeviceList")
     @ResponseBody
-    public TableDataInfo getDropBoxDeviceList() {
-		List<Device> list = deviceService.selectDropBoxList();
+    public TableDataInfo getDropBoxDeviceList(@RequestBody Map<String, Object> params) {
+		String status = (String) params.get("status");
+		System.out.println("status:"+status);
+		List<Device> list = deviceService.selectDropBoxList(status);
 		return getDataTable(list);
     }
 	
@@ -307,7 +309,7 @@ public class DeviceController extends BaseController
     }
 	
 	/**
-	 * 根据场所ID查找设备
+	 * 根据场所ID查找已投放设备列表
 	 */
 	@RequestMapping("/getDeviceByPlaceId")
     @ResponseBody
@@ -318,7 +320,7 @@ public class DeviceController extends BaseController
     }
 	
 	/**
-	 * 根据地区ID查找设备
+	 * 根据地区ID查找所有已投放设备列表
 	 */
 	@RequestMapping("/getDeviceByareaId")
     @ResponseBody

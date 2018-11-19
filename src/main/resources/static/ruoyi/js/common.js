@@ -105,6 +105,28 @@ function selectDeviceList(){
      return deviceList;
 }
 
+/**根据status选择设备列表*/
+function selectDevByStatus(status){
+	var deviceList = [];
+	 $.ajax({
+         url: ctx + "business/device/getDropBoxDeviceList",
+         type: "post",
+         //接受数据格式
+         contentType:"application/json",
+         dataType: "json",
+			//要传递的数据
+         data: JSON.stringify({ "status": status}),
+         async:false,
+         success: function (data) {
+        	 deviceList = data.rows;
+         },
+         error: function (data) {
+             alert("查询设备下拉列表失败" + data);
+         }
+     })
+     return deviceList;
+}
+
 /**场所下拉框选择*/
 function selectPlaceList(){
 	var placeList = [];

@@ -55,8 +55,9 @@ public interface IDeviceService
 
 	/**
 	 * 查找设备下拉框数据
+	 * @param status 
 	 */
-	public List<Device> selectDropBoxList();
+	public List<Device> selectDropBoxList(String status);
 
 	/**
 	 * 共享是设备投放
@@ -88,14 +89,14 @@ public interface IDeviceService
 	public int supplyTissueAdd(Device device, String operatorUser);
 
 	/**
-	 * 根据场所ID查询设备列表
+	 * 根据场所ID查询已投放设备列表
 	 * @param placeId
 	 * @return
 	 */
 	public List<Device> getDeviceByPlaceId(String placeId);
 
 	/**
-	 * 通过地区ID查询设备列表
+	 * 根据地区ID查找所有已投放设备列表
 	 * @param province
 	 * @param city
 	 * @param county
