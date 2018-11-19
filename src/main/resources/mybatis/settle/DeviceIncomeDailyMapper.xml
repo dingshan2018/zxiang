@@ -28,6 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDeviceIncomeDailyList" parameterType="DeviceIncomeDaily" resultMap="DeviceIncomeDailyResult">
         <include refid="selectDeviceIncomeDailyVo"/>
         <where>  
+            ${filterSql}
             <if test="incomeId != null and incomeId != ''"> and income_id = #{incomeId}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
              <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>

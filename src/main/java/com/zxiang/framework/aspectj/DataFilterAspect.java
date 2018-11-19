@@ -1,13 +1,15 @@
 package com.zxiang.framework.aspectj;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.zxiang.common.constant.ShiroConstants;
@@ -17,9 +19,6 @@ import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.web.domain.BaseEntity;
 import com.zxiang.project.system.user.domain.User;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 数据过滤，切面处理类
@@ -43,12 +42,18 @@ public class DataFilterAspect {
     public void dataFilter(JoinPoint point) throws Throwable {
         //获取参数
         Object params = point.getArgs()[0];
-        if (params != null && params instanceof BaseEntity) {
+        if (params != null && (params instanceof BaseEntity || params instanceof Map)) {
             User user = ShiroUtils.getUser();
             //系统用户不做数据权限过滤
             if(!UserConstants.USER_TYPE_SYS.equals(user.getUserType())) {
-            	BaseEntity base = (BaseEntity) params;
-            	base.setFilterSql(getFilterSQL(user, point));
+            	if(params instanceof Map) {
+            		Map paramMap = (Map)params;
+            		paramMap.put("filterSql", getFilterSQL(user, point));
+            	}else if(params instanceof BaseEntity) {
+            		BaseEntity base = (BaseEntity) params;
+                	base.setFilterSql(getFilterSQL(user, point));
+            	}
+            	
             }
             return;
         }

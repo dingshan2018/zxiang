@@ -15,6 +15,7 @@ import com.zxiang.project.settle.userIncome.service.IUserIncomeService;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.DateUtils;
 import com.zxiang.common.utils.excel.EXCELObject;
+import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 
 /**
  * 客户收入日统计 服务层实现
@@ -139,6 +140,7 @@ public class UserIncomeServiceImpl implements IUserIncomeService
 	
 	
 	@Override
+	@DataFilter(personAlias="coperator_id")
 	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception{
 		List userIncomeList = userIncomeMapper.queryExport(params);
 		String realPath = request.getSession().getServletContext().getRealPath("/file/temp");

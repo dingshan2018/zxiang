@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.project.settle.userIncome.domain.UserIncome;
@@ -48,6 +50,7 @@ public class UserIncomeController extends BaseController
 	/**
 	 * 查询客户收入日统计列表
 	 */
+	@DataFilter(personAlias="coperator_id")
 	@RequiresPermissions("settle:userIncome:list")
 	@PostMapping("/list")
 	@ResponseBody
@@ -132,7 +135,7 @@ public class UserIncomeController extends BaseController
          try {
         	 userIncomeService.queryExport(query, request, response);
  		} catch (Exception e) {
- 		
+ 		  e.printStackTrace();
  		}
     }
 	

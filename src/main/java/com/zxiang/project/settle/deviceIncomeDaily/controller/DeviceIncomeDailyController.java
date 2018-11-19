@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.project.settle.deviceIncomeDaily.domain.DeviceIncomeDaily;
@@ -43,6 +45,7 @@ public class DeviceIncomeDailyController extends BaseController
 	/**
 	 * 查询设备收入日统计列表
 	 */
+	@DataFilter(placeAlias="place_id")
 	@RequiresPermissions("settle:deviceIncomeDaily:list")
 	@PostMapping("/list")
 	@ResponseBody
