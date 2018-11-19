@@ -69,15 +69,16 @@
     </div>
 
     <div class="btn-group hidden-xs" id="toolbar" role="group">
-      <a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:device:add">
+     <!-- 新增操作移到库存管理完成 -->
+     <!--  <a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:device:add">
         <i class="fa fa-plus"></i> 新增
-      </a>
+      </a> -->
       <a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="business:device:remove">
         <i class="fa fa-trash-o"></i> 删除
       </a>
-      <a class="btn btn-outline btn-success btn-rounded" onclick="batchImport()" shiro:hasPermission="business:device:add">
+      <!-- <a class="btn btn-outline btn-success btn-rounded" onclick="batchImport()" shiro:hasPermission="business:device:add">
         <i class="fa fa-plus"></i> 批量导入
-      </a>
+      </a> -->
     </div>
 
     <div class="col-sm-12 select-table table-striped">
