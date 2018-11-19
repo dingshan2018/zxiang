@@ -78,9 +78,10 @@
           <div class="form-group">
             <label class="col-sm-3 control-label">投放设备：</label>
             <div class="col-sm-8">
-              <label th:each="device:${deviceList}" class="checkbox-inline i-checks">
+              <label th:each="device:${deviceList}" class="device-item checkbox-inline" th:data-device-id="${device.deviceId}">
                 <input type="checkbox" th:value="${device.deviceId}" th:text="${device.deviceCode}" disabled>
               </label>
+              <input type="text" class="form-control" style="display: none;" data-id="noAdRangeDevices" value="暂无投放设备" disabled >
             </div>
           </div>
           <div class="form-group">
@@ -220,19 +221,35 @@
     }
   </style>
     <script type="text/javascript">
-
+      // 设置select的value
       if ("[[${adRange != null && adRange.releaseType == '1'}]]" === "true"){
         $('.select-pca__province').val("[[${adRange.province}]]");
         $('.select-pca__city').val("[[${adRange.city}]]");
         $('.select-pca__areas').val("[[${adRange.county}]]");
 
-      } else if ("[[${adRange != null && adRange.releaseType == '2'}]]" === "true"){
+      }
+      else if ("[[${adRange != null && adRange.releaseType == '2'}]]" === "true"){
         $('[data-id="placeGrade"]').val("[[${adRange.placeGrade}]]");
 
       }
-      $('.i-checks').iCheck('check');
 
-		var prefix = ctx + "advertise/adSchedule"
+      // 投放设备
+      var adRangeDevices = "[[${adRange.devices}]]";
+      $('.device-item').each(function (index, item) {
+        !(new RegExp('(,|^)' + $(item).data('deviceId') + '(,|$)').test(adRangeDevices)) ?
+        $(item).remove() :
+        $(item).addClass('i-checks');
+      });
+
+      var deviceChecks = $('.device-item.i-checks');
+      console.log(deviceChecks);
+      if (deviceChecks.length <= 1) {
+        deviceChecks.iCheck('check');
+      } else {
+        $('[data-id="noAdRangeDevices"]').show();
+      }
+
+		var prefix = ctx + "advertise/adSchedule";
 		$("#form-adSchedule-adDetail").validate({
 			rules:{
 				xxxx:{
