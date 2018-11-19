@@ -56,11 +56,13 @@ public class AgentController extends BaseController
 	/**
 	 * 查询代理商列表
 	 */
+	@DataFilter(personAlias="b.user_id")
 	@RequiresPermissions("client:agent:list")
 	@PostMapping("/list")
 	@ResponseBody
 	public TableDataInfo list(Agent agent)
 	{
+		//agent.setUserId(getUserId());
 		startPage();
         List<Agent> list = agentService.selectAgentList(agent);
 		return getDataTable(list);
