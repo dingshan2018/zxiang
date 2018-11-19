@@ -70,19 +70,23 @@
           },
           {
             field: 'terminalId',
-            title: '终端ID'
+            title: 'ID'
           },
           {
             field: 'terminalCode',
             title: '终端编号'
           },
           {
-            field: 'deviceCode',
-            title: '绑定设备编号'
+              field: 'placeName',
+              title: '场所名称'
           },
           {
-            field: 'placeName',
-            title: '场所名称'
+            field: 'deviceCode',
+            title: '设备编号'
+          },
+          {
+              field: 'iccid',
+              title: '卡号'
           },
           {
             field: 'rssi',
@@ -90,15 +94,11 @@
           },
           {
             field: 'lastHeartTime',
-            title: '最后心跳时间'
+            title: '心跳时间'
           },
           {
             field: 'lastLoginTime',
-            title: '最后登陆时间'
-          },
-          {
-            field: 'volumn',
-            title: '终端音量'
+            title: '登陆时间'
           },
           {
             field    : 'status',
@@ -168,6 +168,7 @@
           }]
       };
       $.table.init(options);
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'terminalId');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'lon');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'lat');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'delFlag');

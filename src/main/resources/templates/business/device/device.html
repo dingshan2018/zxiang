@@ -15,7 +15,7 @@
               </select>
             </li>
             <li>
-              <span class="select-item-name">设备资产编号：</span>
+              <span class="select-item-name">资产编号：</span>
               <input type="text" name="deviceSn" id="deviceSn"/>
             </li>
             <li>
@@ -131,7 +131,7 @@
           },
           {
               field: 'deviceSn',
-              title: '设备资产编号'
+              title: '资产编号'
           },
           {
             field: 'placeName',
@@ -168,7 +168,7 @@
 
           {
             field: 'lastScanTime',
-            title: '最后扫码时间'
+            title: '最近扫码'
           },
           {
             field: 'note',
@@ -212,11 +212,14 @@
           }]
       };
       $.table.init(options);
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'deviceId');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'deviceType');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'lon');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'lat');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'delFlag');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'createBy');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'lastHeartTime');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'status');
