@@ -51,7 +51,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
     <select id="selectAgentList" parameterType="Agent" resultMap="AgentResult">
         <include refid="selectAgentVo"/>
-        <where>  
+        <where> 
+             ${filterSql} 
             <if test="agentId != null and agentId != ''"> and agent_id = #{agentId}</if>
              <if test="pagentId != null and pagentId != ''"> and pagent_id = #{pagentId}</if>
              <if test="agentName != null and agentName != ''"> and agent_name like concat('%', #{agentName}, '%')</if>
