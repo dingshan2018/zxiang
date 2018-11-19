@@ -32,6 +32,7 @@ import com.zxiang.common.exception.user.UserBlockedException;
 import com.zxiang.common.exception.user.UserNotExistsException;
 import com.zxiang.common.exception.user.UserPasswordNotMatchException;
 import com.zxiang.common.exception.user.UserPasswordRetryLimitExceedException;
+import com.zxiang.common.utils.StringUtils;
 import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.LoginService;
 import com.zxiang.framework.shiro.token.UsernamePasswordOauthToken;
@@ -186,9 +187,31 @@ public class UserRealm extends AuthorizingRealm
         	}
         	deptSets.add(deptId+"");
         }
-        session.setAttribute(ShiroConstants.PLACE_DATA_FILTER, placeSets.toString());
-        session.setAttribute(ShiroConstants.PERSON_DATA_FILTER, personSets.toString());
-        session.setAttribute(ShiroConstants.DEPT_DATA_FILTER, deptSets.toString());
+        if(StringUtils.isNotNull(placeSets)) {
+        	String placeSet = "";
+        	for(String s : placeSets) {
+        		placeSet = placeSet+s+",";
+            }
+        	placeSet =placeSet.substring(0,placeSet.length()-1);
+        	session.setAttribute(ShiroConstants.PLACE_DATA_FILTER, placeSet);
+        }
+        if(StringUtils.isNotNull(personSets)) {
+        	String personSet = "";
+        	for(String s : personSets) {
+        		personSet = personSet+s+",";
+            }
+        	personSet =personSet.substring(0,personSet.length()-1);
+        	 session.setAttribute(ShiroConstants.PERSON_DATA_FILTER, personSet.toString());
+        }
+        if(StringUtils.isNotNull(deptSets)) {
+        	String deptSet = "";
+        	for(String s : deptSets) {
+        		deptSet = deptSet+s+",";
+            }
+        	deptSet =deptSet.substring(0,deptSet.length()-1);
+        	session.setAttribute(ShiroConstants.DEPT_DATA_FILTER, deptSet);
+        }
+        
         SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user, password, getName());
         return info;
     }
