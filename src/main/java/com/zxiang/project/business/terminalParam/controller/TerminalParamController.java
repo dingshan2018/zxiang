@@ -1,5 +1,6 @@
 package com.zxiang.project.business.terminalParam.controller;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -122,4 +123,22 @@ public class TerminalParamController extends BaseController
 		return toAjax(terminalParamService.deleteTerminalParamByIds(ids));
 	}
 	
+	/**
+	 * 终端参数下发
+	 */
+	@RequiresPermissions("business:terminalParam:paramIssued")
+	@Log(title = "终端参数下发", businessType = BusinessType.UPDATE)
+	@PostMapping("/paramIssued")
+	@ResponseBody
+	public AjaxResult paramIssued(String ids)
+	{
+		try {
+			int paramIssued = terminalParamService.paramIssued(ids);
+			return success("成功下发 "+ paramIssued + " 条终端参数!");
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			return error("下发失败!");
+		}
+	}
 }
