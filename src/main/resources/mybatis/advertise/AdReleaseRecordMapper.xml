@@ -22,20 +22,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select release_device_id, schedule_id, sx_schedule_id, device_id, down_time, play_time, price, create_by, create_time, update_by, update_time from zx_ad_release_record
     </sql>
 	
+	<sql id="selectAdReleaseRecordVos">
+        select a.release_device_id, a.schedule_id, a.sx_schedule_id, a.device_id, a.down_time, a.play_time, a.price, a.create_by, a.create_time, a.update_by, a.update_time 
+        from zx_ad_release_record a LEFT JOIN zx_device b ON a.device_id=b.device_id
+    </sql>
     <select id="selectAdReleaseRecordList" parameterType="AdReleaseRecord" resultMap="AdReleaseRecordResult">
-        <include refid="selectAdReleaseRecordVo"/>
+        <include refid="selectAdReleaseRecordVos"/>
         <where>  
-            <if test="releaseDeviceId != null and releaseDeviceId != ''"> and release_device_id = #{releaseDeviceId}</if>
-             <if test="scheduleId != null and scheduleId != ''"> and schedule_id = #{scheduleId}</if>
-             <if test="sxScheduleId != null and sxScheduleId != ''"> and sx_schedule_id = #{sxScheduleId}</if>
-             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
-             <if test="downTime != null and downTime != ''"> and down_time = #{downTime}</if>
-             <if test="playTime != null and playTime != ''"> and play_time = #{playTime}</if>
-             <if test="price != null and price != ''"> and price = #{price}</if>
-             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
-             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
-             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+           ${filterSql}
+            <if test="releaseDeviceId != null and releaseDeviceId != ''"> and a.release_device_id = #{releaseDeviceId}</if>
+             <if test="scheduleId != null and scheduleId != ''"> and a.schedule_id = #{scheduleId}</if>
+             <if test="sxScheduleId != null and sxScheduleId != ''"> and a.sx_schedule_id = #{sxScheduleId}</if>
+             <if test="deviceId != null and deviceId != ''"> and a.device_id = #{deviceId}</if>
+             <if test="downTime != null and downTime != ''"> and a.down_time = #{downTime}</if>
+             <if test="playTime != null and playTime != ''"> and a.play_time = #{playTime}</if>
+             <if test="price != null and price != ''"> and a.price = #{price}</if>
+             <if test="createBy != null and createBy != ''"> and a.create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and a.create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and a.update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and a.update_time = #{updateTime}</if>
          </where>
     </select>
     

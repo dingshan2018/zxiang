@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.project.advertise.adReleaseRecord.domain.AdReleaseRecord;
@@ -43,6 +45,7 @@ public class AdReleaseRecordController extends BaseController
 	/**
 	 * 查询广告投放设备列表
 	 */
+	@DataFilter(placeAlias="tr.place_id")
 	@RequiresPermissions("advertise:adReleaseRecord:list")
 	@PostMapping("/list")
 	@ResponseBody

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -55,6 +56,7 @@ public class TissueRecordController extends BaseController
 	/**
 	 * 查询出纸记录列表
 	 */
+	@DataFilter(placeAlias="b.place_id")
 	@RequiresPermissions("business:tissueRecord:list")
 	@PostMapping("/list")
 	@ResponseBody

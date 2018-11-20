@@ -32,6 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectTissueRecordList" parameterType="TissueRecord" resultMap="TissueRecordResult">
         <include refid="selectTissueRecordVo"/>
         <where>  
+            ${filterSql}
             <if test="tissueRecordId != null and tissueRecordId != ''"> and tissue_record_id = #{tissueRecordId}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
              <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
