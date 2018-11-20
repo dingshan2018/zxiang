@@ -9,6 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="deviceId"    column="device_id"    />
         <result property="terminalId"    column="terminal_id"    />
         <result property="placeId"    column="place_id"    />
+         <result property="placeName"    column="place_name"    />
         <result property="sellIncome"    column="sell_income"    />
         <result property="adIncome"    column="ad_income"    />
         <result property="scanIncome"    column="scan_income"    />
@@ -22,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectDeviceIncomeDailyVo">
-        select income_id, device_id, terminal_id, place_id, sell_income, ad_income, scan_income, sum_date, refund_income, refund_num, create_by, create_time, update_by, update_time from zx_device_income_daily
+        select income_id, device_id, terminal_id, place_id,( SELECT DISTINCT NAME FROM  zx_place b WHERE b.place_id = 25) place_name, sell_income, ad_income, scan_income, sum_date, refund_income, refund_num, create_by, create_time, update_by, update_time from zx_device_income_daily
     </sql>
 	
     <select id="selectDeviceIncomeDailyList" parameterType="DeviceIncomeDaily" resultMap="DeviceIncomeDailyResult">

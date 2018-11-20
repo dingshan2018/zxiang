@@ -7,7 +7,7 @@
         <form class="form-horizontal m" id="form-userIncome-edit" th:object="${userIncome}">
             <input id="incomeId" name="incomeId" th:field="*{incomeId}"  type="hidden">
           <div>
-            <div style="height: 30px;line-height: 30px;background: #f1f1f1;color: #000;font-weight: 600;text-indent: 8px;margin-bottom: 18px;">标题来一个</div>
+            <div style="height: 30px;line-height: 30px;background: #f1f1f1;color: #000;font-weight: 600;text-indent: 8px;margin-bottom: 18px;">客户信息</div>
             <div class="form-group">
               <label class="col-sm-2 control-label">合作客户：</label>
               <div class="col-sm-3">
@@ -19,120 +19,124 @@
               </div>
             </div>
           </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">视频广告基数：</label>
-                <div class="col-sm-3">
-                	<label th:text="*{adIncome}" class="form-control"></label>
+          
+          <div>
+            <div style="height: 30px;line-height: 30px;background: #f1f1f1;color: #000;font-weight: 600;text-indent: 8px;margin-bottom: 18px;">广告收益</div>
+              <div class="form-group">
+	                <label class="col-sm-2 control-label">视频广告基数：</label>
+	                <div class="col-sm-3">
+	                	<label th:text="*{adIncome}" class="form-control"></label>
+	                </div>
+	                 <label class="col-sm-2 control-label">视频广告系数：</label>
+	                <div class="col-sm-3">
+	                     <label th:text="*{adRate}" class="form-control"></label>
+	                </div>
+               </div>
+               <div class="form-group">
+	                <label class="col-sm-2 control-label">轮播广告基数：</label>
+	                <div class="col-sm-3">
+	               		 <label th:text="*{adCarouselIncome}" class="form-control"></label>
+	                </div>
+	                 <label class="col-sm-2 control-label">轮播广告系数：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{adCarouselRate}" class="form-control"></label>
+	                </div>
+               </div>
+                 <div class="form-group">
+	                <label class="col-sm-2 control-label">出纸数量 ：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{paperIncome}" class="form-control"></label>
+	                </div>
+	                <label class="col-sm-2 control-label">二维码广告系数：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{scanRate}" class="form-control"></label>
+	                </div>
+               </div>
+               <div class="form-group">
+	                <label class="col-sm-2 control-label">广告收益：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{adIncomeRate}" class="form-control"></label>
+	                </div>
+               </div>
+          </div>
+          
+           <div>
+           <div style="height: 30px;line-height: 30px;background: #f1f1f1;color: #000;font-weight: 600;text-indent: 8px;margin-bottom: 18px;">推广收益</div>
+	            <div class="form-group">
+	                 <label class="col-sm-2 control-label">推广广告基数 ：</label>
+	                <div class="col-sm-3">
+	                     <label th:text="*{promotionIncome}" class="form-control"></label>
+	                </div>
+                   <label class="col-sm-2 control-label">推广广告系数：</label>
+	                <div class="col-sm-3">
+	               		 <label th:text="*{promotionRate}" class="form-control"></label>
+	                </div>
+	            </div>
+	            <div class="form-group">
+	                <label class="col-sm-2 control-label">推广二维码广告基数：</label>
+	                <div class="col-sm-3">
+	                   <label th:text="*{promPaperIncome}" class="form-control"></label>
+	                </div>
+	                 <label class="col-sm-2 control-label">推广二维码广告系数：</label>
+	                 <div class="col-sm-3">
+	                    <label th:text="*{promPaperRate}" class="form-control"></label>
+	                 </div>
+	            </div>
+	            <div class="form-group">
+	                <label class="col-sm-2 control-label">直推机子数量：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{promDirectIncome}" class="form-control"></label>
+	                </div>
+	                <label class="col-sm-2 control-label">直推机子系数：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{promDirectRate}" class="form-control"></label>
+	                </div>
                 </div>
-                <label class="col-sm-2 control-label">轮播广告基数：</label>
-                <div class="col-sm-3">
-               		 <label th:text="*{adCarouselIncome}" class="form-control"></label>
+	            <div class="form-group">
+	                <label class="col-sm-2 control-label">间推机子数量：</label>
+	                <div class="col-sm-3">
+	                     <label th:text="*{promIndirectIncome}" class="form-control"></label>
+	                </div>
+	                 <label class="col-sm-2 control-label">间推机子系数：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{promIndirectRate}" class="form-control"></label>
+	                </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">推广二维码广告基数：</label>
-                <div class="col-sm-3">
-                   <label th:text="*{promPaperIncome}" class="form-control"></label>
+	            <div class="form-group">
+	                <label class="col-sm-2 control-label">直推代理基数 ：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{directAgentIncome}" class="form-control"></label>
+	                </div>
+	                <label class="col-sm-2 control-label">直推代理系数：</label>
+	                <div class="col-sm-3">
+	                	<label th:text="*{directAgentRate}" class="form-control"></label>
+	                </div>
                 </div>
-                 <label class="col-sm-2 control-label">推广广告基数 ：</label>
-                <div class="col-sm-3">
-                     <label th:text="*{promotionIncome}" class="form-control"></label>
-                </div>
-            </div>
+                <div class="form-group">
+	                <label class="col-sm-2 control-label">推广收益：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{promotionIncomeRate}" class="form-control"></label>
+	                </div>
+            	</div>
+           </div>
+           <div style="height: 30px;line-height: 30px;background: #f1f1f1;color: #000;font-weight: 600;text-indent: 8px;margin-bottom: 18px;">服务收益</div>
              <div class="form-group">
-                <label class="col-sm-2 control-label">直推机子数量：</label>
-                <div class="col-sm-3">
-                    <label th:text="*{promDirectIncome}" class="form-control"></label>
-                </div>
-                <label class="col-sm-2 control-label">间推机子数量：</label>
-                <div class="col-sm-3">
-                     <label th:text="*{promIndirectIncome}" class="form-control"></label>
-                </div>
-            </div>
-
-              <div class="form-group">
-                <label class="col-sm-2 control-label">出纸数量 ：</label>
-                <div class="col-sm-3">
-                    <label th:text="*{paperIncome}" class="form-control"></label>
-                </div>
-                <label class="col-sm-2 control-label">直推代理基数 ：</label>
-                <div class="col-sm-3">
-                    <label th:text="*{directAgentIncome}" class="form-control"></label>
-                </div>
-            </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label">招商金额 ：</label>
-                <div class="col-sm-3">
-                    <label th:text="*{subsidyIncome}" class="form-control"></label>
-                </div>
-                <label class="col-sm-2 control-label">广告收入值：</label>
-                <div class="col-sm-3">
-                    <label th:text="*{adIncomeRate}" class="form-control"></label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">推广收入值：</label>
-                <div class="col-sm-3">
-                    <label th:text="*{promotionIncomeRate}" class="form-control"></label>
-                </div>
-                <label class="col-sm-2 control-label">扫码收入值：</label>
+                    <div class="form-group">
+	                <label class="col-sm-2 control-label">出纸数量 ：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{paperIncome}" class="form-control"></label>
+	                </div>
+	               <label class="col-sm-2 control-label">服务出纸系数：</label>
+	                <div class="col-sm-3">
+	                	<label th:text="*{serveRate}" class="form-control"></label>
+	                </div>
+               </div>
+                <label class="col-sm-2 control-label">服务收益：</label>
                 <div class="col-sm-3">
                     <label th:text="*{scanIncomeRate}" class="form-control"></label>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">视频广告系数：</label>
-                <div class="col-sm-3">
-                     <label th:text="*{adRate}" class="form-control"></label>
-                </div>
-                 <label class="col-sm-2 control-label">轮播广告系数：</label>
-                <div class="col-sm-3">
-                    <label th:text="*{adCarouselRate}" class="form-control"></label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">二维码广告系数：</label>
-                <div class="col-sm-3">
-                    <label th:text="*{scanRate}" class="form-control"></label>
-                </div>
-                <label class="col-sm-2 control-label">直推机子分润系数：</label>
-                <div class="col-sm-3">
-                    <label th:text="*{promDirectRate}" class="form-control"></label>
-                </div>
-            </div>
-             <div class="form-group">
-                <label class="col-sm-2 control-label">间推机子分润系数：</label>
-                <div class="col-sm-3">
-                    <label th:text="*{promIndirectRate}" class="form-control"></label>
-                </div>
-                 <label class="col-sm-2 control-label">推广二维码广告系数：</label>
-                <div class="col-sm-3">
-                    <label th:text="*{promPaperRate}" class="form-control"></label>
-                </div>
-            </div>
-
-              <div class="form-group">
-                <label class="col-sm-2 control-label">推广广告系数：</label>
-                <div class="col-sm-3">
-               		 <label th:text="*{promotionRate}" class="form-control"></label>
-                </div>
-                <label class="col-sm-2 control-label">直推代理分润系数：</label>
-                <div class="col-sm-3">
-                	<label th:text="*{directAgentRate}" class="form-control"></label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">服务出纸系数：</label>
-                <div class="col-sm-3">
-                	<label th:text="*{serveRate}" class="form-control"></label>
-                </div>
-                 <label class="col-sm-2 control-label">办公补贴：</label>
-                <div class="col-sm-3">
-                    <label th:text="*{subsidyRate}" class="form-control"></label>
-                </div>
-            </div>
+           </div>
 			<div class="form-group">
 				<div class="form-control-static col-sm-offset-9">
 					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>

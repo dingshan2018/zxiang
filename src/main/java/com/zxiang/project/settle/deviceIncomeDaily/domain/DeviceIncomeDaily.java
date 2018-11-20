@@ -43,6 +43,8 @@ public class DeviceIncomeDaily extends BaseEntity
 	private String updateBy;
 	/**  */
 	private Date updateTime;
+	
+	private String placeName;
 
 	public void setIncomeId(Integer incomeId) 
 	{
@@ -170,8 +172,18 @@ public class DeviceIncomeDaily extends BaseEntity
 	{
 		return updateTime;
 	}
+	
+	
 
-    public String toString() {
+    public String getPlaceName() {
+		return placeName;
+	}
+
+	public void setPlaceName(String placeName) {
+		this.placeName = placeName;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("incomeId", getIncomeId())
             .append("deviceId", getDeviceId())
