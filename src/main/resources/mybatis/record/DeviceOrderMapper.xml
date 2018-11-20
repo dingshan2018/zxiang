@@ -15,7 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="status"    column="status"    />
         <result property="buyerId"    column="buyer_id"    />
         <result property="buyerName"    column="buyer_name"    />
-        <result property="buyerOpenId"    column="buyer_open_id"    />
+        <result property="outTradeOrder"    column="out_trade_order"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -44,7 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         v.device_code as deviceCode, 
         d.terminal_id,
         t.terminal_code as terminalCode,
-        o.transaction_id as transactionId,
+        o.out_trade_order as outTradeOrder,
          d.promotioner_id,
          (select u.user_name from sys_user u where u.user_id = d.promotioner_id) as promotionerName,
           d.price, d.cut_off, 
@@ -76,7 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="updateTime != null "> and update_time = #{updateTime}</if>
              <if test="tradeOrderId != null and tradeOrderId != ''"> and trade_order_id = #{tradeOrderId}</if>
              <if test="tradeOrderId != null"> and d.trade_order_id = #{tradeOrderId}</if>
-             <if test="transactionId != null and transactionId.trim() != ''"> and o.transaction_id like concat('%', #{transactionId}, '%')</if>
+             <if test="outTradeOrder != null and outTradeOrder.trim() != ''"> and o.out_trade_order like concat('%', #{outTradeOrder}, '%')</if>
          </where>
     </select>
     

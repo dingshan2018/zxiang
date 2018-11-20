@@ -9,7 +9,7 @@
 				<div class="select-list">
 					<ul>
 						<li>
-							交易订单号： <input type="text" name="transactionId" id="transactionId" th:value="${transactionId}"/>
+							商户订单号： <input type="text" name="outTradeOrder" id="outTradeOrder" th:value="${outTradeOrder}"/>
 						</li>
 						<li>
 			                <span class="select-item-name">订单状态：</span>
@@ -71,8 +71,8 @@
 					title : '排期投放名称' 
 				},
 				{
-					field : 'transactionId', 
-					title : '交易订单号' 
+					field : 'outTradeOrder', 
+					title : '商户订单号' 
 				},
 				{
 					field : 'orderStatus', 
@@ -110,7 +110,7 @@
         });
         function queryParams (params) {
             return {
-            	transactionId: $('#transactionId').val()
+            	outTradeOrder: $('#outTradeOrder').val()
             };
           }
     </script>

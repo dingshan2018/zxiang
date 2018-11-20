@@ -36,9 +36,9 @@ public class DeviceOrderController extends BaseController
 	private IDeviceOrderService deviceOrderService;
 	
 	@RequiresPermissions("record:deviceOrder:view")
-	@GetMapping(value = {"/{transactionId}",""})
-	public String deviceOrder(@PathVariable(required = false) String transactionId,ModelMap mmap) {
-		mmap.put("transactionId", transactionId == null ? null : transactionId);
+	@GetMapping(value = {"/{outTradeOrder}",""})
+	public String deviceOrder(@PathVariable(required = false) String outTradeOrder,ModelMap mmap) {
+		mmap.put("outTradeOrder", outTradeOrder == null ? null : outTradeOrder);
 	    return prefix + "/deviceOrder";
 	}
 	

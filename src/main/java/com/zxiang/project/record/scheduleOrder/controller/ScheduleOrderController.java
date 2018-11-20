@@ -36,9 +36,9 @@ public class ScheduleOrderController extends BaseController
 	private IScheduleOrderService scheduleOrderService;
 	
 	@RequiresPermissions("record:scheduleOrder:view")
-	@GetMapping(value = {"/{transactionId}",""})
-	public String scheduleOrder(@PathVariable(required = false) String transactionId,ModelMap mmap) {
-		mmap.put("transactionId", transactionId == null ? null : transactionId);
+	@GetMapping(value = {"/{outTradeOrder}",""})
+	public String scheduleOrder(@PathVariable(required = false) String outTradeOrder,ModelMap mmap) {
+		mmap.put("outTradeOrder", outTradeOrder == null ? null : outTradeOrder);
 	    return prefix + "/scheduleOrder";
 	}
 	
