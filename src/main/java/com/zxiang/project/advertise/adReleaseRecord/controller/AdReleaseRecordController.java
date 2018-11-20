@@ -45,7 +45,7 @@ public class AdReleaseRecordController extends BaseController
 	/**
 	 * 查询广告投放设备列表
 	 */
-	@DataFilter(placeAlias="tr.place_id")
+	@DataFilter(placeAlias="b.place_id")
 	@RequiresPermissions("advertise:adReleaseRecord:list")
 	@PostMapping("/list")
 	@ResponseBody

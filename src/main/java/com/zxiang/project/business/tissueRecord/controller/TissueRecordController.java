@@ -56,7 +56,7 @@ public class TissueRecordController extends BaseController
 	/**
 	 * 查询出纸记录列表
 	 */
-	@DataFilter(placeAlias="b.place_id")
+	@DataFilter(placeAlias="tr.place_id")
 	@RequiresPermissions("business:tissueRecord:list")
 	@PostMapping("/list")
 	@ResponseBody
