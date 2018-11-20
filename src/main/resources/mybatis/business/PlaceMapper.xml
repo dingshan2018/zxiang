@@ -69,6 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectPlaceList" parameterType="Place" resultMap="PlaceResult">
         <include refid="selectPlaceVo"/>
         <where>  
+            ${filterSql}
             <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
              <if test="parentPlaceId != null and parentPlaceId != ''"> and parent_place_id = #{parentPlaceId}</if>
              <if test="placeCode != null and placeCode != ''"> and place_code = #{placeCode}</if>

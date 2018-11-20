@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zxiang.common.utils.excel.ExcelServiceUtil;
+import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -57,6 +58,7 @@ public class TerminalController extends BaseController
 	/**
 	 * 查询终端管理列表
 	 */
+	@DataFilter(placeAlias="place_id")
 	@RequiresPermissions("business:terminal:list")
 	@PostMapping("/list")
 	@ResponseBody

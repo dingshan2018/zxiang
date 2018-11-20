@@ -37,6 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectTerminalList" parameterType="Terminal" resultMap="TerminalResult">
         <include refid="selectTerminalVo"/>
         <where>  
+           ${filterSql}
             <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
              <if test="terminalCode != null and terminalCode != ''">
              	AND t.terminal_code like concat('%', #{terminalCode}, '%')

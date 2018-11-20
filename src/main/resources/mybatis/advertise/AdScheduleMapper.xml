@@ -48,10 +48,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         (SELECT DISTINCT za.advertisor_name FROM zx_advertise za WHERE za.advertise_id =zas.`advertise_id`) advertiseName,
         total_time from zx_ad_schedule zas
     </sql>
+    
+    <sql id="selectAdScheduleVos">
+      SELECT DISTINCT zas.ad_schedule_id, zas.schedule_name, 
+        zas.release_type,
+        CASE zas.release_type  WHEN '0' THEN '全部' WHEN '1' THEN '按地区' WHEN '2' THEN '按场所' ELSE '' END releaseTypeName,
+        zas.release_position,
+    
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='ad_type' AND sdd.dict_value=zas.`release_position` ) releasePositionName, 
+        zas.sx_schedule_id, zas.pid,zas.tid,zas.theme_template_id,
+        zas.status, 
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='schedule_status' AND sdd.dict_value=zas.`status` ) statusName,
+        zas.total_pay, zas.prepay, zas.release_term_num,zas.approved,zas.approved_remark,zas.approved_user, 
+        zas.is_del, zas.release_note, zas.create_by, zas.create_time, zas.update_by, zas.update_time,
+        zas.advertise_id,
+        (SELECT DISTINCT za.advertisor_name FROM zx_advertise za WHERE za.advertise_id =zas.`advertise_id`) advertiseName,
+        total_time FROM zx_ad_schedule zas  LEFT JOIN zx_ad_release_record a ON a.schedule_id = zas.ad_schedule_id LEFT JOIN zx_device b ON a.device_id=b.device_id
+    </sql>
 	
     <select id="selectAdScheduleList" parameterType="AdSchedule" resultMap="AdScheduleResult">
-        <include refid="selectAdScheduleVo"/>
+        <include refid="selectAdScheduleVos"/>
         <where>  
+            ${filterSql}
             <if test="adScheduleId != null and adScheduleId != ''"> and ad_schedule_id = #{adScheduleId}</if>
              <if test="scheduleName != null and scheduleName != ''">
               	and schedule_name like concat('%', #{scheduleName}, '%')

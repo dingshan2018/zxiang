@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -83,6 +84,7 @@ public class AdScheduleController extends BaseController
 	/**
 	 * 查询广告投放列表
 	 */
+	@DataFilter(placeAlias="b.place_id")
 	@RequiresPermissions("advertise:adSchedule:list")
 	@PostMapping("/list")
 	@ResponseBody
