@@ -9,8 +9,8 @@
         <div class="select-list">
           <ul>
             <li>
-              <span class="select-item-name">服务网点名称：</span>
-              <input type="text" name="repairName" id="repairName"/>
+              <span class="select-item-name">广告商名称：</span>
+              <input type="text" name="advertisorName" id="advertisorName"/>
             </li>
             <li>
               <span class="select-item-name">管理者电话：</span>
@@ -32,9 +32,6 @@
       </a>
       <a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="client:advertise:remove">
         <i class="fa fa-trash-o"></i> 删除
-      </a>
-      <a class="btn btn-outline btn-success btn-rounded" onclick="salesman()" shiro:hasPermission="client:advertise:salesman">
-        <i class="fa fa-plus"></i> 新增业务员
       </a>
     </div>
 
@@ -61,7 +58,8 @@
 		        },
 				{
 					field : 'advertiseId', 
-					title : '广告商id' 
+					title : '广告商id',
+					visible:false 
 				},
 				{
 					field : 'advertisorName', 
@@ -69,7 +67,8 @@
 				},
 				{
 					field : 'managerId', 
-					title : '管理者' 
+					title : '管理者',
+					visible:false 
 				},
 				{
 					field : 'managerName', 
@@ -81,7 +80,8 @@
 				},
 				{
 					field : 'business', 
-					title : '' 
+					title : '',
+					visible:false 
 				},
 				{
 					field : 'releaseNum', 
@@ -89,7 +89,8 @@
 				},
 				{
 					field : 'lastScheduler', 
-					title : '上次投放ID' 
+					title : '上次投放ID',
+					visible:false 
 				},
 				{field : 'status',title : '状态',formatter: function(value, row, index) {
 					if(value == 0) {return "无效"}
@@ -102,23 +103,28 @@
 				},
 				{
 					field : 'cutOff', 
-					title : '投放广告折扣' 
+					title : '投放广告折扣',
+					visible:false 
 				},
 				{
 					field : 'createBy', 
-					title : '创建者' 
+					title : '创建者',
+					visible:false 
 				},
 				{
 					field : 'createTime', 
-					title : '创建时间' 
+					title : '创建时间',
+					visible:false 
 				},
 				{
 					field : 'updateBy', 
-					title : '更新者' 
+					title : '更新者',
+					visible:false 
 				},
 				{
 					field : 'updateTime', 
-					title : '更新时间' 
+					title : '更新时间',
+					visible:false
 				},
 		        {
 		            title: '操作',
@@ -132,25 +138,7 @@
 		        }]
             };
             $.table.init(options);
-            $('#bootstrap-table').bootstrapTable('hideColumn', 'advertiseId');
-            $('#bootstrap-table').bootstrapTable('hideColumn', 'business');
-            $('#bootstrap-table').bootstrapTable('hideColumn', 'cutOff');
-            $('#bootstrap-table').bootstrapTable('hideColumn', 'managerId');
-            $('#bootstrap-table').bootstrapTable('hideColumn', 'lastScheduler');
-            $('#bootstrap-table').bootstrapTable('hideColumn', 'createBy');
-            $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
-            $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
-            $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
         });
-        function salesman() {
-        	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
-    		if (rows.length == 0 || rows.length > 1) {
-    			$.modal.alertWarning("请选择一条记录");
-    			return;
-    		}
-    		var url = ctx + "client/join/toAddSalesman/15/"+rows;
-    		$.modal.open($.table._option.modalName + "新增业务员", url,800,500);
-        }
     </script>
 </body>
 </html>

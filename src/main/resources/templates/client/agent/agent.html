@@ -33,9 +33,6 @@
       <a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="client:agent:remove">
         <i class="fa fa-trash-o"></i> 删除
       </a>
-      <a class="btn btn-outline btn-success btn-rounded" onclick="salesman()" shiro:hasPermission="client:agent:salesman">
-        <i class="fa fa-plus"></i> 新增业务员
-      </a>
     </div>
 
     <div class="col-sm-12 select-table table-striped">
@@ -83,7 +80,7 @@
 				{field : 'bankReceiver',title : '收款人'},
 				{field : 'bankAccount',title : '收款账号'},
 				{field : 'bankName',title : '开户行'},
-				{field : 'promotorId',title : '直推人' },
+				{field : 'promotorName',title : '直推人' },
 				{field : 'adRate',title : '广告收益', visible: false  },
 				{field : 'scanRate', title : '扫码收益', visible: false },
 				{field : 'promotionRate',title : '推广收益', visible: false },
@@ -97,7 +94,9 @@
 		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.agentId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.agentId + '\')"><i class="fa fa-remove"></i>删除</a>');
                         actions.push('<a class="btn btn-info btn-xs ' + editParamFlag + '" href="#" onclick="editParam(\'' + row.agentId + '\')"><i class="fa fa-edit"></i>参数</a>');
-						return actions.join('');
+                        actions.push('<a class="btn btn-info btn-xs " href="#" onclick="salesmanList(\'' + row.agentId+
+                        '\')"><i class="fa fa-list-ul"></i>业务员</a> ');
+                        return actions.join('');
 		            }
 		        }]
             };
@@ -114,14 +113,9 @@
         	var url = $.table._option.editParamUrl.replace("{id}", id);
         	$.modal.open($.table._option.modalName + "参数配置", url,800,500);
         }
-        function salesman() {
-        	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
-    		if (rows.length == 0 || rows.length > 1) {
-    			$.modal.alertWarning("请选择一条记录");
-    			return;
-    		}
-    		var url = ctx + "client/join/toAddSalesman/13/"+rows;
-    		$.modal.open($.table._option.modalName + "新增业务员", url,800,500);
+        function salesmanList(cliendId) {
+    		var url = ctx + "client/salesman/13/"+cliendId;
+            createMenuItem(url, $.table._option.modalName+'业务员');
         }
     </script>
 </body>

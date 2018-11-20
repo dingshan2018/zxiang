@@ -83,6 +83,9 @@ public class User extends BaseEntity
     private String nickName;
     
     private String headImgUrl;
+    
+    // 粉丝id
+ 	private Integer wxUserId;
 
     /** 部门对象 */
     private Dept dept;
@@ -340,6 +343,15 @@ public class User extends BaseEntity
 
 	public void setHeadImgUrl(String headImgUrl) {
 		this.headImgUrl = headImgUrl;
+	}
+
+
+	public Integer getWxUserId() {
+		return wxUserId;
+	}
+
+	public void setWxUserId(Integer wxUserId) {
+		this.wxUserId = wxUserId;
 	}
 
 	@Override

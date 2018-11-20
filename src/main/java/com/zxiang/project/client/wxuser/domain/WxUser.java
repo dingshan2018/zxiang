@@ -1,9 +1,11 @@
 package com.zxiang.project.client.wxuser.domain;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 import com.zxiang.framework.web.domain.BaseEntity;
-import java.util.Date;
 
 /**
  * 微信粉丝表 zx_wx_user
@@ -53,7 +55,7 @@ public class WxUser extends BaseEntity
 	private String updateBy;
 	/**  */
 	private Date updateTime;
-
+	
 	public void setWxUserId(Integer wxUserId) 
 	{
 		this.wxUserId = wxUserId;
@@ -226,7 +228,7 @@ public class WxUser extends BaseEntity
 		return updateTime;
 	}
 
-    public String toString() {
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("wxUserId", getWxUserId())
             .append("userId", getUserId())

@@ -50,11 +50,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
     
     <sql id="selectAgentVos">
-         SELECT a.agent_id, pagent_id, a.agent_name,
+         SELECT distinct a.agent_id, pagent_id, a.agent_name,
          a.province,(SELECT DISTINCT a.pname FROM sys_area a WHERE a.id =a.`province` ) provinceName,
          a.city,(SELECT DISTINCT a.pname FROM sys_area a WHERE a.id =a.`city` ) cityName,
          county,(SELECT DISTINCT a.pname FROM sys_area a WHERE a.id =a.`county` ) countyName, 
-         a.level, a.device_num, a.del_flag, a.status, a.manager_id, a.manager_name, a.manager_phone, a.bank_receiver, a.bank_account, a.bank_name, a.promotor_id,
+         a.level, a.device_num, a.del_flag, a.status, a.manager_id, a.manager_name, a.manager_phone, a.bank_receiver, a.bank_account, a.bank_name,
+         promotor_id,(select u.user_name from sys_user u where u.user_id = a.promotor_id) promotorName,
          a.ad_rate,a.ad_carousel_rate, a.scan_rate,a.prom_direct_rate,a.prom_indirect_rate,a.prom_paper_rate,a.promotion_rate,a.direct_agent_rate,a.serve_rate,a.subsidy_rate, 
          a.create_by, a.create_time, a.update_by, a.update_time
         FROM zx_agent a LEFT JOIN sys_user b ON b.puser_id = a.agent_id

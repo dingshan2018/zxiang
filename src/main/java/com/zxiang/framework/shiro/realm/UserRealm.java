@@ -14,7 +14,6 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -187,7 +186,7 @@ public class UserRealm extends AuthorizingRealm
         	}
         	deptSets.add(deptId+"");
         }
-        if(StringUtils.isNotNull(placeSets)) {
+        if(StringUtils.isNotNull(placeSets) && placeSets.size()>0) {
         	String placeSet = "";
         	for(String s : placeSets) {
         		placeSet = placeSet+s+",";
