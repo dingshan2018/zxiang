@@ -277,8 +277,10 @@ public class UserServiceImpl implements IUserService
      * 
      * @param user 用户对象
      */
-    public void insertUserPost(User user)
-    {
+    public void insertUserPost(User user) {
+    	if(user.getPostIds() == null) {
+    		return;
+    	}
         // 新增用户与岗位管理
         List<UserPost> list = new ArrayList<UserPost>();
         for (Long postId : user.getPostIds())

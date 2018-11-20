@@ -82,6 +82,7 @@ public class Agent extends BaseEntity
 	private String provinceName;
 	private String cityName;
 	private String countyName;
+	private String promotorName;
 
 	public void setAgentId(Integer agentId) 
 	{
@@ -378,6 +379,14 @@ public class Agent extends BaseEntity
 
 	public void setCountyName(String countyName) {
 		this.countyName = countyName;
+	}
+
+	public String getPromotorName() {
+		return promotorName;
+	}
+
+	public void setPromotorName(String promotorName) {
+		this.promotorName = promotorName;
 	}
 
 	public String toString() {

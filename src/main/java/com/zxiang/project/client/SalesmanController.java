@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zxiang.common.constant.UserConstants;
+import com.zxiang.common.exception.RRException;
 import com.zxiang.common.utils.StringUtils;
 import com.zxiang.common.utils.poi.ExcelUtil;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
@@ -21,6 +22,8 @@ import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
+import com.zxiang.framework.web.service.ConfigService;
+import com.zxiang.project.client.wxuser.service.IWxUserService;
 import com.zxiang.project.system.post.service.IPostService;
 import com.zxiang.project.system.role.service.IRoleService;
 import com.zxiang.project.system.user.domain.User;
@@ -39,6 +42,10 @@ public class SalesmanController extends BaseController
 
     @Autowired
     private IUserService userService;
+    @Autowired
+    private IWxUserService wxUserService;
+    @Autowired
+    private ConfigService configService;
 
     @Autowired
     private IRoleService roleService;
@@ -57,10 +64,10 @@ public class SalesmanController extends BaseController
     @RequiresPermissions("client:salesman:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(User user)
-    {
+    public TableDataInfo list(User user)  {
         startPage();
         List<User> list = userService.selectUserList(user);
+        wxUserService.setbindStatus(list);
         return getDataTable(list);
     }
     /**
@@ -93,35 +100,28 @@ public class SalesmanController extends BaseController
     }
 
     /**
-     * 新增业务员
+     * 展示二维码
      */
-    @GetMapping("/add")
-    public String add(ModelMap mmap)
-    {
-        mmap.put("roles", roleService.selectRoleAll());
-        mmap.put("posts", postService.selectPostAll());
-        List<User> userList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
-				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
-		mmap.put("userList", userList);
-        return prefix + "/add";
+    @GetMapping("/showQrCode/{userId}")
+    public String showQrCode(@PathVariable Integer userId,ModelMap mmap)  {
+    	User user = userService.selectUserById(userId.longValue());
+    	String url = configService.getKey("salesman_qr_code_url");
+    	if(StringUtils.isBlank(url)) {
+    		throw new RRException("salesman_qr_code_url 未配置");
+    	}
+    	url = url + "?userId="+userId+"&name="+user.getUserName()+"&phone="+user.getPhonenumber();
+        mmap.put("qrCodeUrl", url);
+        return prefix + "/qrCode";
+    }
+    /**
+     * 解绑
+     */
+    @PostMapping("/clearBind/{wcUserId}")
+    @ResponseBody
+    public AjaxResult clearBind(@PathVariable Integer wcUserId)  {
+    	return toAjax(wxUserService.updateUserIdNull(wcUserId));
     }
 
-    /**
-     * 新增保存业务员
-     */
-    @RequiresPermissions("client:salesman:add")
-    @Log(title = "业务员管理", businessType = BusinessType.INSERT)
-    @PostMapping("/add")
-    @Transactional(rollbackFor = Exception.class)
-    @ResponseBody
-    public AjaxResult addSave(User user)
-    {
-        if (StringUtils.isNotNull(user.getUserId()) && User.isAdmin(user.getUserId()))
-        {
-            return error("不允许修改超级管理员业务员");
-        }
-        return toAjax(userService.insertUser(user));
-    }
 
     /**
      * 修改业务员

@@ -44,7 +44,6 @@
     var editFlag = [[${@permission.hasPermi('client:join:edit')}]];
     var removeFlag = [[${@permission.hasPermi('client:join:remove')}]];
     var editParamFlag = [[${@permission.hasPermi('client:join:params')}]];
-    var listFlag = [[${@permission.hasPermi('client:join:params')}]];;
     var prefix = ctx + 'client/join';
 
         $(function() {
@@ -119,7 +118,7 @@
 		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.joinId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.joinId + '\')"><i class="fa fa-remove"></i>删除</a>');
                         actions.push('<a class="btn btn-info btn-xs ' + editParamFlag + '" href="#" onclick="editParam(\'' + row.joinId + '\')"><i class="fa fa-edit"></i>参数</a>');
-                        actions.push('<a class="btn btn-info btn-xs ' + listFlag + '" href="#" onclick="salesmanList(\'' + row.joinId+
+                        actions.push('<a class="btn btn-info btn-xs " href="#" onclick="salesmanList(\'' + row.joinId+
                         '\')"><i class="fa fa-list-ul"></i>业务员</a> ');
                         return actions.join('');
 		            }

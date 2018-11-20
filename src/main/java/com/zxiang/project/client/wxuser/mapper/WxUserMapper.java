@@ -63,5 +63,9 @@ public interface WxUserMapper
 	public int deleteWxUserByIds(String[] wxUserIds);
 	
 	int queryFansTotalBySex(@Param("sex")Integer sex,@Param("selDate")String selDate);
+
+	public Integer queryByUserId(@Param("userId")Long userId);
+
+	public int updateUserIdNull(Integer wcUserId);
 	
 }

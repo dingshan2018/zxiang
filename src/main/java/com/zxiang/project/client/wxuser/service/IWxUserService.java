@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.zxiang.project.client.wxuser.domain.WxUser;
+import com.zxiang.project.system.user.domain.User;
 
 /**
  * 微信粉丝 服务层
@@ -57,5 +58,9 @@ public interface IWxUserService
 	public Map<String,Object> systemIndicators();
 	/** 出纸统计 **/
 	public Map<String, Object> tissueStatistical();
+
+	public void setbindStatus(List<User> list);
+
+	public int updateUserIdNull(Integer wcUserId);
 	
 }

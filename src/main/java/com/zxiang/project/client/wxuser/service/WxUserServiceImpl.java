@@ -9,7 +9,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mysql.fabric.xmlrpc.base.Array;
 import com.zxiang.common.constant.Const;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.DateUtils;
@@ -19,6 +18,7 @@ import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
 import com.zxiang.project.client.agent.mapper.AgentMapper;
 import com.zxiang.project.client.wxuser.domain.WxUser;
 import com.zxiang.project.client.wxuser.mapper.WxUserMapper;
+import com.zxiang.project.system.user.domain.User;
 
 /**
  * 微信粉丝 服务层实现
@@ -135,5 +135,22 @@ public class WxUserServiceImpl implements IWxUserService
 		}
 		map.put("dataList", list);
 		return map;
+	}
+
+	@Override
+	public void setbindStatus(List<User> list) {
+		if(list == null || list.size() == 0) {
+			return;
+		}
+		Integer wxUserId = null;
+		for (User user : list) {
+			wxUserId = wxUserMapper.queryByUserId(user.getUserId());
+			user.setWxUserId(wxUserId);
+		}
+	}
+
+	@Override
+	public int updateUserIdNull(Integer wcUserId) {
+		return wxUserMapper.updateUserIdNull(wcUserId);
 	}
 }
