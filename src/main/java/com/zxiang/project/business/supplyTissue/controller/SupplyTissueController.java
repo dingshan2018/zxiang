@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zxiang.common.constant.UserConstants;
+import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -58,6 +59,7 @@ public class SupplyTissueController extends BaseController
 	/**
 	 * 查询补纸记录列表
 	 */
+	@DataFilter(placeAlias="zst.place_id")
 	@RequiresPermissions("business:supplyTissue:list")
 	@PostMapping("/list")
 	@ResponseBody

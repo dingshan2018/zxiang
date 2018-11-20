@@ -27,6 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectSupplyTissueList" parameterType="SupplyTissue" resultMap="SupplyTissueResult">
         <include refid="selectSupplyTissueVo"/>
         <where>  
+            ${filterSql}
             <if test="supplyTissueId != null and supplyTissueId != ''"> and supply_tissue_id = #{supplyTissueId}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
              <if test="tissueCount != null and tissueCount != ''"> and tissue_count = #{tissueCount}</if>

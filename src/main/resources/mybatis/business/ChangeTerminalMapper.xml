@@ -32,7 +32,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
     <select id="selectChangeTerminalList" parameterType="ChangeTerminal" resultMap="ChangeTerminalResult">
         <include refid="selectChangeTerminalVo"/>
-        <where>  
+        <where> 
+             ${filterSql} 
             <if test="changeTerminalId != null and changeTerminalId != ''"> and change_terminal_id = #{changeTerminalId}</if>
              <if test="oldTerminalId != null and oldTerminalId != ''"> and old_terminal_id = #{oldTerminalId}</if>
              <if test="newTerminalId != null and newTerminalId != ''"> and new_terminal_id = #{newTerminalId}</if>

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zxiang.common.constant.UserConstants;
+import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -55,6 +56,7 @@ public class ChangeTerminalController extends BaseController
 	/**
 	 * 查询终端更换记录列表
 	 */
+	@DataFilter(personAlias="zct.changerId")
 	@RequiresPermissions("business:changeTerminal:list")
 	@PostMapping("/list")
 	@ResponseBody

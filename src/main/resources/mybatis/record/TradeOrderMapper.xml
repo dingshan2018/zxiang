@@ -34,7 +34,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
     <select id="selectTradeOrderList" parameterType="TradeOrder" resultMap="TradeOrderResult">
         <include refid="selectTradeOrderVo"/>
-        <where>  
+        <where>
+             ${filterSql}  
             <if test="tradeOrderId != null and tradeOrderId != ''"> and o.trade_order_id = #{tradeOrderId}</if>
              <if test="outTradeOrder != null and outTradeOrder != ''"> and o.out_trade_order = #{outTradeOrder}</if>
              <if test="transactionId != null and transactionId != ''"> and o.transaction_id = #{transactionId}</if>

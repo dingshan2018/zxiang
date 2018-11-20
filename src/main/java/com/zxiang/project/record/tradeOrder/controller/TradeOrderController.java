@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -48,6 +49,7 @@ public class TradeOrderController extends BaseController
 	/**
 	 * 查询订单列表
 	 */
+	@DataFilter(personAlias="o.user_id")
 	@RequiresPermissions("record:tradeOrder:list")
 	@PostMapping("/list")
 	@ResponseBody
