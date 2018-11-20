@@ -172,16 +172,16 @@
             title: '最近扫码'
           },
           {
-            field: 'note',
-            title: '备注'
-          },
-          {
               field: 'status',
               title: '状态',
           },
           {
             field: 'statusName',
             title: '设备状态',
+          },
+          {
+              field: 'note',
+              title: '备注'
           },
           {
             field: 'createBy',
@@ -322,7 +322,7 @@
       } */
       
       //若当前状态不是已投放，不允许撤机
-      var status = $.table.selectColumns($.table._option.columns[14].field);
+      var status = $.table.selectColumns($.table._option.columns[13].field);
       if (status != "02") {
         $.modal.alertWarning('该设备未投放，不能撤机!');
         return;

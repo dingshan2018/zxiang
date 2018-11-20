@@ -64,18 +64,6 @@
 
     $(function () {
 
-      /* //投放地区联动搜索
-      //默认绑定省
-      proviceBind();
-      //绑定事件
-      $('#province').change(function () {
-        cityBind();
-      });
-
-      $('#city').change(function () {
-        countyBind();
-      }); */
-
       var options = {
         url       : prefix + '/list',
         createUrl : prefix + '/add',
@@ -138,24 +126,24 @@
             title: '最后扫码时间'
           },
           {
-            field: 'note',
-            title: '备注'
-          },
-          {
               field: 'status',
               title: '状态',
+          },
+          {
+              field: 'createTime',
+              title: '库存时间'
           },
           {
             field: 'statusName',
             title: '设备状态',
           },
           {
-            field: 'createBy',
-            title: '创建者'
+              field: 'note',
+              title: '备注'
           },
           {
-            field: 'createTime',
-            title: '创建时间'
+            field: 'createBy',
+            title: '创建者'
           },
           {
             field: 'updateBy',
@@ -180,12 +168,13 @@
       };
       $.table.init(options);
       $('#bootstrap-table').bootstrapTable('hideColumn', 'deviceId');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'deviceCode');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'placeName');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'lon');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'lat');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'delFlag');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'createBy');
-      $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'lastScanTime');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'status');
