@@ -3,25 +3,42 @@
 <meta charset="utf-8">
 <head th:include="include :: header"></head>
 <body class="gray-bg">
+	 <div class="col-sm-12 select-info">
+      <form id="change-form">
+        <div class="select-list">
+          <ul>
+            <li>
+              <span class="select-item-name">微信昵称：</span>
+              <input type="text" name="nickname" id="nickname"/>
+            </li>
+            <li class="select-btns">
+              <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
+              </a>
+              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
+              </a>
+            </li>
+          </ul>
+        </div>
+      </form>
+    </div>
     <div class="container-div">
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
-			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="settle:wxUser:add">
+			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="client:wxUser:add">
 				<i class="fa fa-plus"></i> 新增
 			</a>
-			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="settle:wxUser:remove">
+			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="client:wxUser:remove">
 				<i class="fa fa-trash-o"></i> 删除
 			</a>
 		</div>
-			
 		<div class="col-sm-12 select-table table-striped">
 			<table id="bootstrap-table" data-mobile-responsive="true"></table>
 		</div>
     </div>
     <div th:include="include :: footer"></div>
     <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('settle:wxUser:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('settle:wxUser:remove')}]];
-        var prefix = ctx + "settle/wxUser"
+        var editFlag = [[${@permission.hasPermi('client:wxUser:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('client:wxUser:remove')}]];
+        var prefix = ctx + "client/wxUser"
 
         $(function() {
             var options = {
@@ -30,24 +47,30 @@
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "微信粉丝",
+                search: false,
                 columns: [{
 		            checkbox: true
 		        },
 				{
 					field : 'wxUserId', 
-					title : '' 
+					title : '',
+					visible:false  
 				},
 				{
 					field : 'userId', 
-					title : '系统用户ID' 
-				},
-				{
-					field : 'subscribe', 
-					title : '是否关注' 
+					title : '系统用户ID',
+					visible:false  
 				},
 				{
 					field : 'openId', 
 					title : '微信账号' 
+				},
+				{
+					field : 'subscribe', 
+					title : '是否关注',formatter: function(value, row, index) {
+						if(value == 1) {return "已关注"}else{return "未关注"}
+						return "-";
+		            } 
 				},
 				{
 					field : 'nickname', 
@@ -59,7 +82,8 @@
 				},
 				{
 					field : 'sex', 
-					title : '性别代号' 
+					title : '性别代号',
+					visible:false 
 				},
 				{
 					field : 'language', 
@@ -79,7 +103,9 @@
 				},
 				{
 					field : 'headImgUrl', 
-					title : '头像' 
+					title : '头像',formatter: function(value, row, index) {
+						return '<img alt="" style="width:70px;height:70px;" src="'+value+'">';
+		            } 
 				},
 				{
 					field : 'subscribeTime', 
@@ -91,23 +117,27 @@
 				},
 				{
 					field : 'remark', 
-					title : '备注' 
+					title : '备注'
 				},
 				{
 					field : 'createBy', 
-					title : '' 
+					title : '创建人',
+					visible:false 
 				},
 				{
 					field : 'createTime', 
-					title : '' 
+					title : '创建时间',
+					visible:false
 				},
 				{
 					field : 'updateBy', 
-					title : '' 
+					title : '更新者' ,
+					visible:false
 				},
 				{
 					field : 'updateTime', 
-					title : '' 
+					title : '更新时间',
+					visible:false
 				},
 		        {
 		            title: '操作',
@@ -117,7 +147,8 @@
 		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.wxUserId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.wxUserId + '\')"><i class="fa fa-remove"></i>删除</a>');
 						return actions.join('');
-		            }
+		            },
+					visible:false 
 		        }]
             };
             $.table.init(options);

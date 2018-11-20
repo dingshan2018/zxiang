@@ -27,15 +27,15 @@ import com.zxiang.project.client.wxuser.service.IWxUserService;
  * @date 2018-11-03
  */
 @Controller
-@RequestMapping("/settle/wxUser")
+@RequestMapping("/client/wxUser")
 public class WxUserController extends BaseController
 {
-    private String prefix = "settle/wxUser";
+    private String prefix = "client/wxUser";
 	
 	@Autowired
 	private IWxUserService wxUserService;
 	
-	@RequiresPermissions("settle:wxUser:view")
+	@RequiresPermissions("client:wxUser:view")
 	@GetMapping()
 	public String wxUser()
 	{
@@ -45,7 +45,7 @@ public class WxUserController extends BaseController
 	/**
 	 * 查询微信粉丝列表
 	 */
-	@RequiresPermissions("settle:wxUser:list")
+	@RequiresPermissions("client:wxUser:list")
 	@PostMapping("/list")
 	@ResponseBody
 	public TableDataInfo list(WxUser wxUser)
@@ -67,7 +67,7 @@ public class WxUserController extends BaseController
 	/**
 	 * 新增保存微信粉丝
 	 */
-	@RequiresPermissions("settle:wxUser:add")
+	@RequiresPermissions("client:wxUser:add")
 	@Log(title = "微信粉丝", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
@@ -90,7 +90,7 @@ public class WxUserController extends BaseController
 	/**
 	 * 修改保存微信粉丝
 	 */
-	@RequiresPermissions("settle:wxUser:edit")
+	@RequiresPermissions("client:wxUser:edit")
 	@Log(title = "微信粉丝", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
@@ -102,7 +102,7 @@ public class WxUserController extends BaseController
 	/**
 	 * 删除微信粉丝
 	 */
-	@RequiresPermissions("settle:wxUser:remove")
+	@RequiresPermissions("client:wxUser:remove")
 	@Log(title = "微信粉丝", businessType = BusinessType.DELETE)
 	@PostMapping( "/remove")
 	@ResponseBody

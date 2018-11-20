@@ -37,7 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="userId != null and userId != ''"> and user_id = #{userId}</if>
              <if test="subscribe != null and subscribe != ''"> and subscribe = #{subscribe}</if>
              <if test="openId != null and openId != ''"> and open_id = #{openId}</if>
-             <if test="nickname != null and nickname != ''"> and nickname = #{nickname}</if>
+             <if test="nickname != null and nickname != ''"> and nickname like concat('%', #{nickname}, '%')</if>
              <if test="sexDesc != null and sexDesc != ''"> and sex_desc = #{sexDesc}</if>
              <if test="sex != null and sex != ''"> and sex = #{sex}</if>
              <if test="language != null and language != ''"> and language = #{language}</if>
