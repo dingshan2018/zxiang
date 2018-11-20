@@ -93,6 +93,7 @@ public class DeviceServiceImpl implements IDeviceService
 	public int insertDevice(Device device)
 	{
 		device.setStatus("04");
+		device.setDeviceType("共享纸巾机");
 		int deviceSave = deviceMapper.insertDevice(device);
 		//设备绑定终端后也要修改终端数据对应设备ID的值，设备不能再次绑定该终端
 		//终端不再平台绑定，由微信公众号去做绑定操作
@@ -309,6 +310,7 @@ public class DeviceServiceImpl implements IDeviceService
 			Device device = new Device();
 			device.setDeviceSn(deviceSn);
 			device.setStatus("04");
+			device.setDeviceType("共享纸巾机");
 			device.setCreateBy(operatorUser);
 			device.setCreateTime(new Date());
 		    return deviceMapper.insertDevice(device);

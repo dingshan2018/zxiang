@@ -131,7 +131,7 @@
     		$("#remark").val("");
 			if(value != "" && value != null){
 				$.ajax({
-			         url: ctx + "settle/tradeOrder/getTradeById",
+			         url: ctx + "record/tradeOrder/getTradeById",
 			         type: "post",
 			         contentType:"application/json",
 			         dataType: "json",
@@ -148,7 +148,7 @@
 			        	 }
 			         },
 			         error: function (data) {
-			             alert("查询失败" + data);
+			             alert("查询订单详情失败");
 			         }
 			    })
 			}
@@ -172,7 +172,7 @@
 			        	 $("#remain").val((totalCnt - data));
 			         },
 			         error: function (data) {
-			             alert("查询失败" + data);
+			             alert("查询失败");
 			         }
 			    })
 			}

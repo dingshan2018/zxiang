@@ -99,7 +99,7 @@ function selectDeviceList(){
         	 deviceList = data.rows;
          },
          error: function (data) {
-             alert("查询设备下拉列表失败" + data);
+             alert("查询设备下拉列表失败");
          }
      })
      return deviceList;
@@ -121,7 +121,7 @@ function selectDevByStatus(status){
         	 deviceList = data.rows;
          },
          error: function (data) {
-             alert("查询设备下拉列表失败" + data);
+             alert("查询设备下拉列表失败");
          }
      })
      return deviceList;
@@ -140,7 +140,7 @@ function selectPlaceList(){
         	placeList = data.rows;
         },
         error: function (data) {
-            alert("查询场所下拉列表失败" + data);
+            alert("查询场所下拉列表失败");
         }
     })
     return placeList;
@@ -160,7 +160,7 @@ function selectTerminalList(){
         	terminalList = data.rows;
         },
         error: function (data) {
-            alert("查询终端设备下拉列表失败" + data);
+            alert("查询终端设备下拉列表失败");
         }
     })
     return terminalList;
@@ -179,7 +179,7 @@ function selectUserList(){
         	userList = data.rows;
         },
         error: function (data) {
-            alert("查询用户下拉列表失败" + data);
+            alert("查询用户下拉列表失败");
         }
     })
     return userList;
@@ -216,7 +216,7 @@ function selectRepairList(){
         	repairList = data.rows;
         },
         error: function (data) {
-            alert("查询服务商下拉列表失败" + data);
+            alert("查询服务商下拉列表失败");
         }
     })
     return repairList;
@@ -235,7 +235,7 @@ function selectAgentList(){
         	agentList = data.rows;
         },
         error: function (data) {
-            alert("查询代理商下拉列表失败" + data);
+            alert("查询代理商下拉列表失败");
         }
     })
     return agentList;
@@ -254,7 +254,7 @@ function selectJoinList(){
         	joinList = data.rows;
         },
         error: function (data) {
-            alert("查询加盟商下拉列表失败" + data);
+            alert("查询加盟商下拉列表失败");
         }
     })
     return joinList;
