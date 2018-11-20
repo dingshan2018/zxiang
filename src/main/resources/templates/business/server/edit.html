@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-server-edit" th:object="${server}">
+            <input id="serverId" name="serverId" th:field="*{serverId}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">TCP外网IP：</label>
+                <div class="col-sm-8">
+                    <input id="accessIp" name="accessIp" th:field="*{accessIp}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">TCP外网端口：</label>
+                <div class="col-sm-8">
+                    <input id="accessPort" name="accessPort" th:field="*{accessPort}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">TCP内网IP：</label>
+                <div class="col-sm-8">
+                    <input id="localIp" name="localIp" th:field="*{localIp}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">TCP内网端口：</label>
+                <div class="col-sm-8">
+                    <input id="localPort" name="localPort" th:field="*{localPort}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">HTTP外网端口：</label>
+                <div class="col-sm-8">
+                    <input id="httpPort" name="httpPort" th:field="*{httpPort}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">当前设备连接数：</label>
+                <div class="col-sm-8">
+                    <input id="connection" name="connection" th:field="*{connection}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">：</label>
+                <div class="col-sm-8">
+                    <input id="status" name="status" th:field="*{status}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">创建时间：</label>
+                <div class="col-sm-8">
+                    <input id="createTime" name="createTime" th:field="*{createTime}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">更新时间：</label>
+                <div class="col-sm-8">
+                    <input id="updateTime" name="updateTime" th:field="*{updateTime}" class="form-control" type="text">
+                </div>
+            </div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "settle/server"
+		$("#form-server-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			},
+			submitHandler: function(form) {
+				$.operate.save(prefix + "/edit", $('#form-server-edit').serialize());
+			}
+		});
+	</script>
+</body>
+</html>

@@ -31,6 +31,12 @@ public class Terminal extends BaseEntity
 	private Date lastHeartTime;
 	/** 最后登陆时间 */
 	private Date lastLoginTime;
+	/**accSysIp*/
+	private String accSysIp;
+	/** accSysPort */
+	private String accSysPort;
+	/** 板卡编号*/
+	private String snCode;
 	/** 终端音量 */
 	private Float volumn;
 	/** 终端状态 */
@@ -224,6 +230,30 @@ public class Terminal extends BaseEntity
 
 	public void setPlaceName(String placeName) {
 		this.placeName = placeName;
+	}
+
+	public String getAccSysIp() {
+		return accSysIp;
+	}
+
+	public void setAccSysIp(String accSysIp) {
+		this.accSysIp = accSysIp;
+	}
+
+	public String getAccSysPort() {
+		return accSysPort;
+	}
+
+	public void setAccSysPort(String accSysPort) {
+		this.accSysPort = accSysPort;
+	}
+
+	public String getSnCode() {
+		return snCode;
+	}
+
+	public void setSnCode(String snCode) {
+		this.snCode = snCode;
 	}
 
 	public String toString() {

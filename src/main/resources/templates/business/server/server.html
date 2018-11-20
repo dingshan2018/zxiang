@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="btn-group hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="settle:server:add">
+				<i class="fa fa-plus"></i> 新增
+			</a>
+			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="settle:server:remove">
+				<i class="fa fa-trash-o"></i> 删除
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('settle:server:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('settle:server:remove')}]];
+        var prefix = ctx + "settle/server"
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "接入服务器",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'serverId', 
+					title : '接入服务器主键' 
+				},
+				{
+					field : 'accessIp', 
+					title : 'TCP外网IP' 
+				},
+				{
+					field : 'accessPort', 
+					title : 'TCP外网端口' 
+				},
+				{
+					field : 'localIp', 
+					title : 'TCP内网IP' 
+				},
+				{
+					field : 'localPort', 
+					title : 'TCP内网端口' 
+				},
+				{
+					field : 'httpPort', 
+					title : 'HTTP外网端口' 
+				},
+				{
+					field : 'connection', 
+					title : '当前设备连接数' 
+				},
+				{
+					field : 'status', 
+					title : '' 
+				},
+				{
+					field : 'createTime', 
+					title : '创建时间' 
+				},
+				{
+					field : 'updateTime', 
+					title : '更新时间' 
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.serverId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.serverId + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

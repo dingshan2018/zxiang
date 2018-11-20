@@ -1,6 +1,8 @@
 package com.zxiang.project.business.terminalParam.service;
 
 import com.zxiang.project.business.terminalParam.domain.TerminalParam;
+
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -50,5 +52,13 @@ public interface ITerminalParamService
      * @return 结果
      */
 	public int deleteTerminalParamByIds(String ids);
+
+	/**
+	 * 终端参数下发
+	 * @param ids
+	 * @return
+	 * @throws IOException 
+	 */
+	public int paramIssued(String ids) throws IOException;
 	
 }

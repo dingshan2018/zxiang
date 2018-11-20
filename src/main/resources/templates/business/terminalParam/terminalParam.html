@@ -19,7 +19,7 @@
 							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
 						</li>
 						<li>
-							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;下发</a>
+							<a class="btn btn-success btn-rounded btn-sm" onclick="paramIssued()"><i class="fa fa-plus"></i>&nbsp;下发</a>
 						</li>
 					</ul>
 				</div>
@@ -115,6 +115,36 @@
 				terminalId:       $("#terminalId").val()
 			};
 		}
+        
+        //下发参数函数
+        function paramIssued() {
+       	 	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+     		if (rows.length == 0) {
+	        	$.modal.alertWarning('请至少选择一条记录');
+	        	return;
+	      	}
+	      	
+	   		$.modal.confirm("确定下发?", function() {
+	        	$.ajax({
+	        		cache : true,
+	        		type : "POST",
+	        		url : prefix + "/paramIssued",
+	        		data : {
+	        			"ids": rows.join()
+	        		},
+	        		async : false,
+	        		error : function(request) {
+	        			$.modal.alertError("系统错误");
+	        		},
+	        		success : function(data) {
+	        			//$.modal.msgSuccess(data.msg);
+	        			$.modal.alert(data.msg);
+	        		}
+	        	});
+	        	
+	    	});
+  		}
+
     </script>
 </body>
 </html>
