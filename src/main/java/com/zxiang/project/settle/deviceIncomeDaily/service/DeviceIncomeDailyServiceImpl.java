@@ -437,7 +437,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		if(user.size()>0) {
 			HashMap<String, Object> userdata =  user.get(0);
 			userdata.put("coperatorType", user_type);
-			userdata.put("suuser_id", promotionerdata.get("suuser_id"));
+			userdata.put("suuser_id", promotionerdata.get("leader_id"));
 			return userdata;
 		}
 		return null;
