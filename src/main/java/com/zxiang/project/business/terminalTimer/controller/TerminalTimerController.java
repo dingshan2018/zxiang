@@ -82,6 +82,8 @@ public class TerminalTimerController extends BaseController
 		
 		terminalTimer.setCreateBy(createor+"("+userId+")");
 		terminalTimer.setCreateTime(new Date());
+		terminalTimer.setDelFlag("0");
+		
 		return toAjax(terminalTimerService.insertTerminalTimer(terminalTimer));
 	}
 
@@ -124,6 +126,22 @@ public class TerminalTimerController extends BaseController
 	public AjaxResult remove(String ids)
 	{		
 		return toAjax(terminalTimerService.deleteTerminalTimerByIds(ids));
+	}
+
+	/**
+	 * 修改定时设置--终端管理打开定时设置跳转页面
+	 */
+	@GetMapping("/timerEdit/{terminalId}")
+	public String timerEdit(@PathVariable("terminalId") Integer terminalId, ModelMap mmap)
+	{
+		TerminalTimer terminalTimer = terminalTimerService.selectByTerminalId(terminalId);
+		if(terminalTimer != null){
+			mmap.put("terminalTimer", terminalTimer);
+		    return prefix + "/timerEdit";
+		}
+		
+		mmap.put("terminalId", terminalId);
+		return prefix + "/timerAdd";
 	}
 	
 }

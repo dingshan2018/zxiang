@@ -80,5 +80,13 @@ public class TerminalTimerServiceImpl implements ITerminalTimerService
 	{
 		return terminalTimerMapper.deleteTerminalTimerByIds(Convert.toStrArray(ids));
 	}
+
+	/**
+	 * 通过终端ID查找定时设置数据
+	 */
+	@Override
+	public TerminalTimer selectByTerminalId(Integer teminalId) {
+		return terminalTimerMapper.selectByTerminalId(teminalId);
+	}
 	
 }

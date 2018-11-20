@@ -110,4 +110,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    
+    <select id="selectByTerminalId" parameterType="Integer" resultMap="TerminalTimerResult">
+        <include refid="selectTerminalTimerVo"/>
+        where terminal_id = #{terminalId}  ORDER BY create_time DESC LIMIT 1
+    </select>
+    
 </mapper>
