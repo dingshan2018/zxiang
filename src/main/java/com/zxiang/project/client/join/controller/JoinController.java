@@ -132,15 +132,5 @@ public class JoinController extends BaseController
 		List<Join> list = joinService.selectDropBoxList();
 		return getDataTable(list);
     }
-	/**
-	 * 新增业务员
-	 */
-	@GetMapping("/toAddSalesman/{chiendType}/{cliendId}")
-	public String toAddSalesman(@PathVariable("chiendType") String chiendType,@PathVariable("cliendId") Integer cliendId, ModelMap mmap) {
-		mmap.put("chiendType", chiendType);
-		mmap.put("cliendId", cliendId);
-		mmap.put("cliendName", iuserService.saleManClent(chiendType, cliendId));
-		mmap.put("roles", roleService.selectRoleAll());
-		return "client/addSalesman";
-	}
+	
 }

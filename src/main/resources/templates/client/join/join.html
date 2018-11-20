@@ -33,9 +33,6 @@
       <a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="client:join:remove">
         <i class="fa fa-trash-o"></i> 删除
       </a>
-      <a class="btn btn-outline btn-success btn-rounded" onclick="salesman()" shiro:hasPermission="client:join:salesman">
-        <i class="fa fa-plus"></i> 新增业务员
-      </a>
     </div>
 
     <div class="col-sm-12 select-table table-striped">
@@ -47,6 +44,7 @@
     var editFlag = [[${@permission.hasPermi('client:join:edit')}]];
     var removeFlag = [[${@permission.hasPermi('client:join:remove')}]];
     var editParamFlag = [[${@permission.hasPermi('client:join:params')}]];
+    var listFlag = [[${@permission.hasPermi('client:join:params')}]];;
     var prefix = ctx + 'client/join';
 
         $(function() {
@@ -121,7 +119,9 @@
 		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.joinId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.joinId + '\')"><i class="fa fa-remove"></i>删除</a>');
                         actions.push('<a class="btn btn-info btn-xs ' + editParamFlag + '" href="#" onclick="editParam(\'' + row.joinId + '\')"><i class="fa fa-edit"></i>参数</a>');
-						return actions.join('');
+                        actions.push('<a class="btn btn-info btn-xs ' + listFlag + '" href="#" onclick="salesmanList(\'' + row.joinId+
+                        '\')"><i class="fa fa-list-ul"></i>业务员</a> ');
+                        return actions.join('');
 		            }
 		        }]
             };
@@ -133,14 +133,9 @@
         	var url = $.table._option.editParamUrl.replace("{id}", id);
         	$.modal.open($.table._option.modalName + "参数配置", url,800,500);
         }
-        function salesman() {
-        	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
-    		if (rows.length == 0 || rows.length > 1) {
-    			$.modal.alertWarning("请选择一条记录");
-    			return;
-    		}
-    		var url = ctx + "client/join/toAddSalesman/12/"+rows;
-    		$.modal.open($.table._option.modalName + "新增业务员", url,800,500);
+        function salesmanList(cliendId) {
+    		var url = ctx + "client/salesman/12/"+cliendId;
+            createMenuItem(url, $.table._option.modalName+'业务员');
         }
     </script>
 </body>
