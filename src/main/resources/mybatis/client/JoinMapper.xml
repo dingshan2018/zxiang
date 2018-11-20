@@ -35,28 +35,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
           ad_rate,ad_carousel_rate, scan_rate,prom_direct_rate,prom_indirect_rate,prom_paper_rate,promotion_rate,serve_rate,  
           create_by, create_time, update_by, update_time from zx_join
     </sql>
+    
+    <sql id="selectJoinVos">
+        select distinct a.join_id, a.joiner_name, a.joiner_id, a.device_num, a.bank_account, a.bank_receiver, a.bank_name,a.manager_name, a.manager_phone,a.status, a.del_flag,
+          a.ad_rate,a.ad_carousel_rate, a.scan_rate,a.prom_direct_rate,a.prom_indirect_rate,a.prom_paper_rate,a.promotion_rate,a.serve_rate,  
+          a.create_by, a.create_time, a.update_by, a.update_time from zx_join a LEFT JOIN sys_user b ON b.puser_id = a.join_id
+    </sql>
 	
     <select id="selectJoinList" parameterType="Join" resultMap="JoinResult">
-        <include refid="selectJoinVo"/>
+        <include refid="selectJoinVos"/>
         <where>  
-            <if test="joinId != null and joinId != ''"> and join_id = #{joinId}</if>
-             <if test="joinerName != null and joinerName != ''"> and joiner_name like concat('%', #{joinerName}, '%')</if>
-             <if test="joinerId != null and joinerId != ''"> and joiner_id = #{joinerId}</if>
-             <if test="managerName != null  and managerName != ''  ">and manager_name like concat('%', #{managerName}, '%')</if>
-             <if test="managerPhone != null  and managerPhone != ''  ">and manager_phone like concat('%', #{managerPhone}, '%')</if>
-             <if test="deviceNum != null and deviceNum != ''"> and device_num = #{deviceNum}</if>
-             <if test="bankAccount != null and bankAccount != ''"> and bank_account = #{bankAccount}</if>
-             <if test="bankReceiver != null and bankReceiver != ''"> and bank_receiver = #{bankReceiver}</if>
-             <if test="bankName != null and bankName != ''"> and bank_name = #{bankName}</if>
-             <if test="status != null and status != ''"> and status = #{status}</if>
-             <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
-             <if test="promotionRate != null and promotionRate != ''"> and promotion_rate = #{promotionRate}</if>
-             <if test="adRate != null and adRate != ''"> and ad_rate = #{adRate}</if>
-             <if test="scanRate != null and scanRate != ''"> and scan_rate = #{scanRate}</if>
-             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null"> and create_time = #{createTime}</if>
-             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
-             <if test="updateTime != null"> and update_time = #{updateTime}</if>
+          ${filterSql}
+            <if test="joinId != null and joinId != ''"> and a.join_id = #{joinId}</if>
+             <if test="joinerName != null and joinerName != ''"> and a.joiner_name like concat('%', #{joinerName}, '%')</if>
+             <if test="joinerId != null and joinerId != ''"> and a.joiner_id = #{joinerId}</if>
+             <if test="managerName != null  and managerName != ''  ">and a.manager_name like concat('%', #{managerName}, '%')</if>
+             <if test="managerPhone != null  and managerPhone != ''  ">and a.manager_phone like concat('%', #{managerPhone}, '%')</if>
+             <if test="deviceNum != null and deviceNum != ''"> and a.device_num = #{deviceNum}</if>
+             <if test="bankAccount != null and bankAccount != ''"> and a.bank_account = #{bankAccount}</if>
+             <if test="bankReceiver != null and bankReceiver != ''"> and a.bank_receiver = #{bankReceiver}</if>
+             <if test="bankName != null and bankName != ''"> and a.bank_name = #{bankName}</if>
+             <if test="status != null and status != ''"> and a.status = #{status}</if>
+             <if test="delFlag != null and delFlag != ''"> and a.del_flag = #{delFlag}</if>
+             <if test="promotionRate != null and promotionRate != ''"> and a.promotion_rate = #{promotionRate}</if>
+             <if test="adRate != null and adRate != ''"> and a.ad_rate = #{adRate}</if>
+             <if test="scanRate != null and scanRate != ''"> and a.scan_rate = #{scanRate}</if>
+             <if test="createBy != null and createBy != ''"> and a.create_by = #{createBy}</if>
+             <if test="createTime != null"> and a.create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and a.update_by = #{updateBy}</if>
+             <if test="updateTime != null"> and a.update_time = #{updateTime}</if>
          </where>
     </select>
     

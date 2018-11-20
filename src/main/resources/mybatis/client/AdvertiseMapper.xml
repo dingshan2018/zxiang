@@ -26,26 +26,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<sql id="selectAdvertiseVo">
         select advertise_id, advertisor_name, manager_id, manager_name, manager_phone, business, release_num, last_scheduler, status, del_flag, grade, cut_off, create_by, create_time, update_by, update_time from zx_advertise
     </sql>
+    	<sql id="selectAdvertiseVos">
+        select distinct a.advertise_id, a.advertisor_name, a.manager_id, a.manager_name, a.manager_phone, a.business, a.release_num, a.last_scheduler, a.status, a.del_flag, a.grade, a.cut_off, a.create_by, a.create_time, a.update_by, a.update_time from zx_advertise a LEFT JOIN sys_user b ON b.puser_id = a.advertise_id
+    </sql>
 	
     <select id="selectAdvertiseList" parameterType="Advertise" resultMap="AdvertiseResult">
         <include refid="selectAdvertiseVo"/>
         <where>  
-            <if test="advertiseId != null and advertiseId != ''"> and advertise_id = #{advertiseId}</if>
-             <if test="advertisorName != null and advertisorName != ''"> and advertisor_name like concat('%', #{advertisorName}, '%')</if>
-             <if test="managerId != null and managerId != ''"> and manager_id = #{managerId}</if>
-             <if test="managerName != null and managerName != ''"> and manager_name = #{managerName}</if>
-             <if test="managerPhone != null and managerPhone != ''"> and manager_phone like concat('%', #{managerPhone}, '%')</if>
-             <if test="business != null and business != ''"> and business = #{business}</if>
-             <if test="releaseNum != null and releaseNum != ''"> and release_num = #{releaseNum}</if>
-             <if test="lastScheduler != null and lastScheduler != ''"> and last_scheduler = #{lastScheduler}</if>
-             <if test="status != null and status != ''"> and status = #{status}</if>
-             <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
-             <if test="grade != null and grade != ''"> and grade = #{grade}</if>
-             <if test="cutOff != null and cutOff != ''"> and cut_off = #{cutOff}</if>
-             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null"> and create_time = #{createTime}</if>
-             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
-             <if test="updateTime != null"> and update_time = #{updateTime}</if>
+          ${filterSql}
+            <if test="advertiseId != null and advertiseId != ''"> and a.advertise_id = #{advertiseId}</if>
+             <if test="advertisorName != null and advertisorName != ''"> and a.advertisor_name like concat('%', #{advertisorName}, '%')</if>
+             <if test="managerId != null and managerId != ''"> and a.manager_id = #{managerId}</if>
+             <if test="managerName != null and managerName != ''"> and a.manager_name = #{managerName}</if>
+             <if test="managerPhone != null and managerPhone != ''"> and a.manager_phone like concat('%', #{managerPhone}, '%')</if>
+             <if test="business != null and business != ''"> and a.business = #{business}</if>
+             <if test="releaseNum != null and releaseNum != ''"> and a.release_num = #{releaseNum}</if>
+             <if test="lastScheduler != null and lastScheduler != ''"> and a.last_scheduler = #{lastScheduler}</if>
+             <if test="status != null and status != ''"> and a.status = #{status}</if>
+             <if test="delFlag != null and delFlag != ''"> and a.del_flag = #{delFlag}</if>
+             <if test="grade != null and grade != ''"> and a.grade = #{grade}</if>
+             <if test="cutOff != null and cutOff != ''"> and a.cut_off = #{cutOff}</if>
+             <if test="createBy != null and createBy != ''"> and a.create_by = #{createBy}</if>
+             <if test="createTime != null"> and a.create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and a.update_by = #{updateBy}</if>
+             <if test="updateTime != null"> and a.update_time = #{updateTime}</if>
          </where>
     </select>
     

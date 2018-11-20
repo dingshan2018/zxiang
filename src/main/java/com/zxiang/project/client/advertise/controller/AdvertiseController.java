@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.project.client.advertise.domain.Advertise;
@@ -43,6 +45,7 @@ public class AdvertiseController extends BaseController
 	/**
 	 * 查询广告商列表
 	 */
+	@DataFilter(personAlias="b.user_id")
 	@RequiresPermissions("client:advertise:list")
 	@PostMapping("/list")
 	@ResponseBody
