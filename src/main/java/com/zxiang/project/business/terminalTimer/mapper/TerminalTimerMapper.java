@@ -58,5 +58,12 @@ public interface TerminalTimerMapper
      * @return 结果
      */
 	public int deleteTerminalTimerByIds(String[] teminalTimerIds);
+
+	/**
+	 *  通过终端ID查找定时设置数据
+	 * @param teminalId
+	 * @return
+	 */
+	public TerminalTimer selectByTerminalId(Integer teminalId);
 	
 }
