@@ -80,22 +80,20 @@
 				},
 				{
 					field : 'transactionId', 
-					title : '交易订单号' ,
-		            formatter: function (value, row, index) {
-		                return '<a href="#" onclick="detail(\'' + row.transactionId+"\',\'"+row.orderType + '\')">' + value + '</a>';
-		              }
+					title : '交易订单号',
+					visible: false
 				},
 				{
 					field : 'outTradeOrder', 
-					title : '商户订单号' 
-				},
-				{
-					field : 'refundId', 
-					title : '退款订单号' 
+					title : '商户订单号',
+		            formatter: function (value, row, index) {
+		                return '<a href="#" onclick="detail(\'' + row.outTradeOrder+"\',\'"+row.orderType + '\')">' + value + '</a>';
+		              } 
 				},
 				{
 					field : 'openId', 
-					title : '机主微信账号' 
+					title : '机主微信账号' ,
+					visible: false
 				},
 				{
 					field : 'userName', 
@@ -138,12 +136,20 @@
 		            } 
 				},
 				{
+					field : 'refundId', 
+					title : '退款订单号' 
+				},
+				{
 					field : 'remark', 
 					title : '订单备注' 
 				},
 				{
 					field : 'payTime', 
-					title : '支付时间' 
+					title : '支付时间' ,formatter: function(value, row, index) {
+						if(value == null || value == '') {return "-"}
+						
+						return value;
+		            } 
 				},
 				{
 					field : 'createBy', 
@@ -171,7 +177,7 @@
 		            	var actions = [];
 // 		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.tradeOrderId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
 //                      actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.tradeOrderId + '\')"><i class="fa fa-remove"></i>删除</a>');
-                        actions.push('<a class="btn btn-info btn-xs ' + listFlag + '" href="#" onclick="detail(\'' + row.transactionId+"\',\'"+row.orderType  +
+                        actions.push('<a class="btn btn-info btn-xs ' + listFlag + '" href="#" onclick="detail(\'' + row.outTradeOrder+"\',\'"+row.orderType  +
                         '\')"><i class="fa fa-list-ul"></i>列表</a> ');
                         return actions.join('');
 		            }

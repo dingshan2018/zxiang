@@ -19,9 +19,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 	
     <select id="selectScheduleOrderList" parameterType="ScheduleOrder" resultMap="ScheduleOrderResult">
-        select s.schedule_order_id, s.schedule_id, s.trade_order_id, s.order_status, s.create_by, s.create_time, 
-        o.transaction_id,
-       a.schedule_name as scheduleName
+        select s.schedule_order_id, s.schedule_id, s.trade_order_id,
+        o.out_trade_order as outTradeOrder, 
+        s.order_status, s.create_by, s.create_time, 
+        a.schedule_name as scheduleName
         from zx_schedule_order s
         left join zx_trade_order o on s.trade_order_id = o.trade_order_id
         left join zx_ad_schedule a on s.schedule_id = a.ad_schedule_id
@@ -32,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="orderStatus != null and orderStatus != ''"> and s.order_status = #{orderStatus}</if>
              <if test="createBy != null and createBy != ''"> and s.create_by = #{createBy}</if>
              <if test="createTime != null and createTime != ''"> and s.create_time = #{createTime}</if>
-             <if test="transactionId != null and transactionId.trim() != ''"> and o.transaction_id like concat('%', #{transactionId}, '%')</if>
+             <if test="outTradeOrder != null and outTradeOrder.trim() != ''"> and o.out_trade_order like concat('%', #{outTradeOrder}, '%')</if>
          </where>
     </select>
     
