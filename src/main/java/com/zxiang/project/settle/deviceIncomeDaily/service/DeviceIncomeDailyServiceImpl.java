@@ -265,7 +265,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			//--------------------------------------客户昨日收入-----------------------------------------------
 			//获取推广计划
 			HashMap<String, Object> selecadschedule = selecadschedulelist(Integer.valueOf(releaserecord.get("schedule_id").toString()));
-			String release_type = selecadschedule.get("release_type").toString(); //投放方式01终端轮播  02终端视频  03H5广告       (二维码广告还分公司（免费）和外部)
+			String release_type = selecadschedule.get("release_position").toString(); //投放方式01终端轮播  02终端视频  03H5广告       (二维码广告还分公司（免费）和外部)
 			boolean ispromotioner = true; 
 			int	 promotioner = 0;
 			HashMap<String, Object> user = null ;
