@@ -71,7 +71,7 @@ public class TerminalTimerController extends BaseController
 	/**
 	 * 新增保存定时设置
 	 */
-	@RequiresPermissions("business:terminalTimer:add")
+	//@RequiresPermissions("business:terminalTimer:add")
 	@Log(title = "定时设置", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
@@ -102,7 +102,7 @@ public class TerminalTimerController extends BaseController
 	/**
 	 * 修改保存定时设置
 	 */
-	@RequiresPermissions("business:terminalTimer:edit")
+	//@RequiresPermissions("business:terminalTimer:edit")
 	@Log(title = "定时设置", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
@@ -119,7 +119,6 @@ public class TerminalTimerController extends BaseController
 	/**
 	 * 修改保存定时设置
 	 */
-	@RequiresPermissions("business:terminalTimer:edit")
 	@Log(title = "修改定时设置保存和下发", businessType = BusinessType.UPDATE)
 	@PostMapping("/editAndIssued")
 	@ResponseBody

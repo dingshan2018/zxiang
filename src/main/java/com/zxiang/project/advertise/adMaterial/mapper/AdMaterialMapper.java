@@ -82,5 +82,12 @@ public interface AdMaterialMapper
 	 * @return
 	 */
 	public List<AdMaterial> selectListByAdSchId(@Param("adScheduleId") Integer adScheduleId);
+
+	/**
+	 * 通过广告ID删除数据
+	 * @param adIds
+	 * @return
+	 */
+	public int deleteMaterialByAdIds(String[] adIds);
 	
 }

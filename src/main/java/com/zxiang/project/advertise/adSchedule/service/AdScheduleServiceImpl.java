@@ -137,9 +137,19 @@ public class AdScheduleServiceImpl implements IAdScheduleService
      * @return 结果
      */
 	@Override
+	@Transactional
 	public int deleteAdScheduleByIds(String ids)
 	{
-		return adScheduleMapper.deleteAdScheduleByIds(Convert.toStrArray(ids));
+		String[] adIds = Convert.toStrArray(ids);
+		//TODO 删除关联表数据
+		//1.删除zx_ad_release_range表关联数据
+		int delRangeNum = adReleaseRangeMapper.deleteRangeByAdIds(adIds);
+		//2.删除zx_ad_release_timer表关联数据
+		int delTimerNum = adReleaseTimerMapper.deleteTimerByAdIds(adIds);
+		//3.删除zx_ad_material表关联数据
+		int delMaterialNum = adMaterialMapper.deleteMaterialByAdIds(adIds);
+		//4.最后删除广告表数据
+		return adScheduleMapper.deleteAdScheduleByIds(adIds);
 	}
 
 
