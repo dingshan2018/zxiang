@@ -257,9 +257,13 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		if(releaserecordlist.size()==0){
 			return;
 		}
-		int placeId  = Integer.valueOf(map.get("place_id") + ""); //场所Id
+		boolean isplace = false;
 		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
-		HashMap<String, Object> placemap =  selectzxplace(placeId+""); //获取地点
+		HashMap<String, Object> placemap =  null;
+        if(com.zxiang.common.utils.StringUtils.isNotNull(map.get("place_id"))) {
+        	placemap =  selectzxplace(map.get("place_id") + ""); //获取地点
+        	isplace = true;
+		}
 		for(HashMap<String, Object> releaserecord : releaserecordlist) {
 			double price = Double.valueOf(releaserecord.get("price")+""); //广告价格
 			//--------------------------------------客户昨日收入-----------------------------------------------
@@ -293,25 +297,27 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				user = getusedata(buyerid,"","");
 				rate = Double.valueOf(user.get("adCarouselRate")+"");
 				insertdata(rate*price,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,user);
-	
-				//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）
-				 promotionagenmap.put("placeId", placemap.get("county"));
-				 promotionagentlist = iUserIncomeService.selectzxagentlist(promotionagenmap);
-				for(HashMap<String, Object> promotionagent : promotionagentlist) {
-					String agentId = promotionagent.get("agent_id")+"";
-					user = getusedata("",agentId,UserConstants.USER_TYPE_AGENT);
-					rate =  Double.valueOf(user.get("adCarouselRate")+"");
-					insertdata(rate*price,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,user);
+	   
+				if(isplace) {
+					//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）
+					 promotionagenmap.put("placeId", placemap.get("county"));
+					 promotionagentlist = iUserIncomeService.selectzxagentlist(promotionagenmap);
+					for(HashMap<String, Object> promotionagent : promotionagentlist) {
+						String agentId = promotionagent.get("agent_id")+"";
+						user = getusedata("",agentId,UserConstants.USER_TYPE_AGENT);
+						rate =  Double.valueOf(user.get("adCarouselRate")+"");
+						insertdata(rate*price,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,user);
+					}
+					//插入服务商广告数据（所服务的机子视频广告投放金额3%,所服务的机子轮播广告投放金额3%）
+					 repairmap.put("countyId", placemap.get("county"));
+					 repairlist = iUserIncomeService.selectzxrepairarealist(repairmap);
+					 for(HashMap<String, Object> repair : repairlist) {
+						   String repairId = repair.get("repair_id")+"";
+						   user = getusedata("",repairId,UserConstants.USER_TYPE_REPAIR);
+						   rate = Double.valueOf(user.get("adCarouselRate")+"");
+						   insertdata(rate*price,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,user);
+					 }
 				}
-				//插入服务商广告数据（所服务的机子视频广告投放金额3%,所服务的机子轮播广告投放金额3%）
-				 repairmap.put("countyId", placemap.get("county"));
-				 repairlist = iUserIncomeService.selectzxrepairarealist(repairmap);
-				 for(HashMap<String, Object> repair : repairlist) {
-					   String repairId = repair.get("repair_id")+"";
-					   user = getusedata("",repairId,UserConstants.USER_TYPE_REPAIR);
-					   rate = Double.valueOf(user.get("adCarouselRate")+"");
-					   insertdata(rate*price,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,user);
-				 }
 				break;
 			case "02":
 				//--------------推广收益-----------------------
@@ -325,24 +331,26 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				rate =Double.valueOf(user.get("adRate")+"");
 				insertdata(rate*price,"01",RateConstants.RATETYPE_ADINCOME,price,0,user);
 	
-				//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）
-				 promotionagenmap.put("placeId", placemap.get("county"));
-				 promotionagentlist = iUserIncomeService.selectzxagentlist(promotionagenmap);
-				for(HashMap<String, Object> promotionagent : promotionagentlist) {
-					String agentId = promotionagent.get("agent_id")+"";
-					user = getusedata("",agentId,UserConstants.USER_TYPE_AGENT);
-					rate = Double.valueOf(user.get("adRate")+"");
-					insertdata(rate*price,"01",RateConstants.RATETYPE_ADINCOME,price,0,user);
+                if(isplace) {
+                	//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）
+	   				 promotionagenmap.put("placeId", placemap.get("county"));
+	   				 promotionagentlist = iUserIncomeService.selectzxagentlist(promotionagenmap);
+	   				for(HashMap<String, Object> promotionagent : promotionagentlist) {
+	   					String agentId = promotionagent.get("agent_id")+"";
+	   					user = getusedata("",agentId,UserConstants.USER_TYPE_AGENT);
+	   					rate = Double.valueOf(user.get("adRate")+"");
+	   					insertdata(rate*price,"01",RateConstants.RATETYPE_ADINCOME,price,0,user);
+	   				}
+	   				//插入服务商广告数据（所服务的机子视频广告投放金额3%,所服务的机子轮播广告投放金额3%）
+	   				 repairmap.put("countyId", placemap.get("county"));
+	   				 repairlist = iUserIncomeService.selectzxrepairarealist(repairmap);
+	   				 for(HashMap<String, Object> repair : repairlist) {
+	   					   String repairId = repair.get("repair_id")+"";
+	   					   user = getusedata("",repairId,UserConstants.USER_TYPE_REPAIR);
+	   						rate = Double.valueOf(user.get("adRate")+"");
+	   					   insertdata(rate*price,"01",RateConstants.RATETYPE_ADINCOME,price,0,user);
+	   				 }
 				}
-				//插入服务商广告数据（所服务的机子视频广告投放金额3%,所服务的机子轮播广告投放金额3%）
-				 repairmap.put("countyId", placemap.get("county"));
-				 repairlist = iUserIncomeService.selectzxrepairarealist(repairmap);
-				 for(HashMap<String, Object> repair : repairlist) {
-					   String repairId = repair.get("repair_id")+"";
-					   user = getusedata("",repairId,UserConstants.USER_TYPE_REPAIR);
-						rate = Double.valueOf(user.get("adRate")+"");
-					   insertdata(rate*price,"01",RateConstants.RATETYPE_ADINCOME,price,0,user);
-				 }
 				break;
 			case "03":
 				//--------------推广收益-----------------------
@@ -355,25 +363,26 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				user = getusedata(buyerid,"","");
 				rate = Double.valueOf(user.get("scanRate")+"");
 				insertdata(rate*tissuenum,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
-	
-				//插入代理商广告数据（地级市代理地区所服务的机子每次出纸收益0.02元，县区、县级市代理地区所服务的机子每次出纸收益0.05元）
-				 promotionagenmap.put("placeId", placemap.get("county"));
-				 promotionagentlist = iUserIncomeService.selectzxagentlist(promotionagenmap);
-				for(HashMap<String, Object> promotionagent : promotionagentlist) {
-					String agentId = promotionagent.get("agent_id")+"";
-					user = getusedata("",agentId,UserConstants.USER_TYPE_AGENT);
-					rate = Double.valueOf(user.get("scanRate")+"");
-					insertdata(rate*tissuenum,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
+                if(isplace) {
+                	//插入代理商广告数据（地级市代理地区所服务的机子每次出纸收益0.02元，县区、县级市代理地区所服务的机子每次出纸收益0.05元）
+   				    promotionagenmap.put("placeId", placemap.get("county"));
+   				    promotionagentlist = iUserIncomeService.selectzxagentlist(promotionagenmap);
+	   				for(HashMap<String, Object> promotionagent : promotionagentlist) {
+	   					String agentId = promotionagent.get("agent_id")+"";
+	   					user = getusedata("",agentId,UserConstants.USER_TYPE_AGENT);
+	   					rate = Double.valueOf(user.get("scanRate")+"");
+	   					insertdata(rate*tissuenum,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
+	   				}
+	   				//插入服务商广告数据所服务的机子每次出纸收益0.05元
+	   				 repairmap.put("countyId", placemap.get("county"));
+	   				 repairlist = iUserIncomeService.selectzxrepairarealist(repairmap);
+	   				 for(HashMap<String, Object> repair : repairlist) {
+	   					   String repairId = repair.get("repair_id")+"";
+	   					   user = getusedata("",repairId,UserConstants.USER_TYPE_REPAIR);
+	   					   rate = Double.valueOf(user.get("scanRate")+"");
+	   					   insertdata(rate*price,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
+	   				 }
 				}
-				//插入服务商广告数据所服务的机子每次出纸收益0.05元
-				 repairmap.put("countyId", placemap.get("county"));
-				 repairlist = iUserIncomeService.selectzxrepairarealist(repairmap);
-				 for(HashMap<String, Object> repair : repairlist) {
-					   String repairId = repair.get("repair_id")+"";
-					   user = getusedata("",repairId,UserConstants.USER_TYPE_REPAIR);
-					   rate = Double.valueOf(user.get("scanRate")+"");
-					   insertdata(rate*price,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
-				 }
 				break;
 
 			default:

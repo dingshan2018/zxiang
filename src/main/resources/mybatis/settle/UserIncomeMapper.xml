@@ -55,7 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     scan_income, prom_direct_income, prom_indirect_income,promotion_income, paper_income, prom_paper_income, 
     direct_agent_income, subsidy_income, ad_income_rate, promotion_income_rate, scan_income_rate, 
     subsidy_income_rate, ad_rate, ad_carousel_rate, scan_rate, prom_direct_rate, prom_indirect_rate, 
-    prom_paper_rate, promotion_rate, direct_agent_rate, serve_rate, subsidy_rate, refund_income, 
+    concat('-',prom_paper_rate) prom_paper_rate, promotion_rate, direct_agent_rate, serve_rate, subsidy_rate, refund_income, 
     refund_income_rate, create_by, create_time, update_by, update_time from zx_user_income
     </sql>
 	
