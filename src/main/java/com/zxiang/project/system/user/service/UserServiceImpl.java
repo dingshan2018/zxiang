@@ -412,7 +412,9 @@ public class UserServiceImpl implements IUserService
 		}else if(UserConstants.USER_TYPE_AGENT_SALESMAN.equals(userType)) {
 			Agent agent = agentMapper.selectAgentById(cliendId);
 			client = agent == null ? null : agent.getAgentName();
-		}else if(UserConstants.USER_TYPE_REPAIR_SALESMAN.equals(userType)) {
+		}else if(UserConstants.USER_TYPE_REPAIR_SALESMAN.equals(userType)
+				|| UserConstants.USER_TYPE_TISSUE.equals(userType)
+				|| UserConstants.USER_TYPE_SERVICE.equals(userType)) {
 			 Repair repair = repairMapper.selectRepairById(cliendId);
 			 client = repair == null ? null : repair.getRepairName();
 		}else if(UserConstants.USER_TYPE_ADVERTISE_SALESMAN.equals(userType)) {

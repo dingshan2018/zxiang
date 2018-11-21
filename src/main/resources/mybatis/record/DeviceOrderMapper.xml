@@ -44,13 +44,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         v.device_code as deviceCode, 
         d.terminal_id,
         t.terminal_code as terminalCode,
-        o.out_trade_order as outTradeOrder,
+        o.out_trade_order,
          d.promotioner_id,
          (select u.user_name from sys_user u where u.user_id = d.promotioner_id) as promotionerName,
           d.price, d.cut_off, 
           d.seller_id, 
           (select u.user_name from sys_user u where u.user_id = d.seller_id) as sellerName, 
-          d.status, d.buyer_id, d.buyer_name, 
+          d.status, d.buyer_id,  
+          (select u.user_name from sys_user u where u.user_id = d.buyer_id) as buyer_name, 
         d.buyer_open_id, d.create_by, d.create_time, d.update_by, d.update_time 
         from zx_device_order d 
         left join zx_device v on v.device_id = d.device_id 
