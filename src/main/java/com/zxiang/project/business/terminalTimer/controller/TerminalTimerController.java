@@ -117,6 +117,23 @@ public class TerminalTimerController extends BaseController
 	}
 	
 	/**
+	 * 修改保存定时设置
+	 */
+	@RequiresPermissions("business:terminalTimer:edit")
+	@Log(title = "修改定时设置保存和下发", businessType = BusinessType.UPDATE)
+	@PostMapping("/editAndIssued")
+	@ResponseBody
+	public AjaxResult editAndIssued(TerminalTimer terminalTimer)
+	{		
+		String updateor = getUser().getUserName();
+		long userId = getUserId();
+		
+		terminalTimer.setUpdateBy(updateor+"("+userId+")");
+		terminalTimer.setUpdateTime(new Date());
+		return toAjax(terminalTimerService.updateAndIssued(terminalTimer));
+	}
+	
+	/**
 	 * 删除定时设置
 	 */
 	@RequiresPermissions("business:terminalTimer:remove")

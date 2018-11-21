@@ -1,6 +1,8 @@
 package com.zxiang.project.business.terminalTimer.service;
 
 import com.zxiang.project.business.terminalTimer.domain.TerminalTimer;
+
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -57,5 +59,13 @@ public interface ITerminalTimerService
 	 * @return
 	 */
 	public TerminalTimer selectByTerminalId(Integer teminalId);
+
+	/**
+	 * 修改定时设置保存和下发
+	 * @param terminalTimer
+	 * @return
+	 * @throws IOException 
+	 */
+	public int updateAndIssued(TerminalTimer terminalTimer);
 	
 }

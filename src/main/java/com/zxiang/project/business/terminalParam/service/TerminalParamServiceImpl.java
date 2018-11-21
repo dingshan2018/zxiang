@@ -2,13 +2,11 @@ package com.zxiang.project.business.terminalParam.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.support.Convert;
 import com.zxiang.project.business.server.service.IServerService;
 import com.zxiang.project.business.terminal.domain.Terminal;
@@ -110,11 +108,12 @@ public class TerminalParamServiceImpl implements ITerminalParamService
 			Integer terminalId = terminalParam.getTerminalId();
 			Terminal terminal = terminalMapper.selectTerminalById(terminalId);
 			
-			Map<String, String> paramsMap = new HashMap<String,String>();
-			paramsMap.put("termCode",terminal.getTerminalCode());
-			paramsMap.put("terminalParams",list.toString());
+			JSONObject reqJson = new JSONObject();
+			reqJson.put("termCode",terminal.getTerminalCode());
+			reqJson.put("terminalParams",list.toString());
+			reqJson.put("command","20");//参数下发命令0x14,转十进制为20
 			
-			serverService.issuedCommand(terminal,paramsMap);
+			serverService.issuedCommand(terminal,reqJson);
 			issuedNum++;
 		}
 		return issuedNum;

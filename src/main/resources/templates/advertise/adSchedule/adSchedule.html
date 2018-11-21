@@ -146,6 +146,21 @@
 				title : '押金'
 			},
 			{
+				field : 'payStatus',
+				title : '支付状态' ,
+				formatter: function (value) {
+	              if (value === '1') {
+	                return '已支付';
+	              } else if (value === '0') {
+	                return '未支付';
+	              } else if (value === '2') {
+	                return '押金已支付';
+	              } else {
+	                return '-';
+	              }
+	            }
+			},
+			{
 				field : 'releaseTermNum',
 				title : '投放终端数'
 			},
@@ -217,6 +232,8 @@
         $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'prepay');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'adScheduleId');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'pId');
     });
 
 
@@ -480,6 +497,14 @@
   	//二维码支付弹窗
     function adPay (adScheduleId) {
     	var adSchedule = getAdScheduleInfo(adScheduleId);
+    	if (adSchedule.status != toBeReleased) {
+   	        $.modal.alertWarning('广告审核通过后才能支付!');
+   	        return;
+      	}
+    	if (adSchedule.payStatus == hasPay) {
+   	        $.modal.alertWarning('该广告费用已支付,请勿重复支付!');
+   	        return;
+      	}
 		if(adSchedule.totalPay == '' || adSchedule.totalPay == null){
     		$.modal.alertWarning("暂无支付信息!");
     		return;

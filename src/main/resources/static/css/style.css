@@ -35,28 +35,19 @@ a:focus {
     outline: none;
 }
 
-.nav>li>a {
-    color: #a7b1c2;
+.nav li>a {
+    display: block;
     font-weight: 600;
+    color: inherit;
     padding: 14px 20px 14px 25px;
 }
 
-.nav li>a {
-    display: block;
-    /*white-space: nowrap;*/
+.navbar-static-top li>a{
+  color: #fff;
 }
 
-.nav.navbar-right>li>a {
-    color: #999c9e;
-}
-
-.nav>li.active>a {
-    color: #ffffff;
-}
-
-.navbar-default .nav>li>a:hover, .navbar-default .nav>li>a:focus {
-    background-color: #293846;
-    color: white;
+.navbar-static-top .nav>li>a:hover, .navbar-static-top .nav>li>a:focus {
+    background-color: #079079;
 }
 
 .nav .open>a, .nav .open>a:hover, .nav .open>a:focus {
@@ -65,6 +56,8 @@ a:focus {
 
 .nav>li>a i {
     margin-right: 6px;
+    min-width: 17px;
+    text-align: center;
 }
 
 .navbar {
@@ -73,7 +66,7 @@ a:focus {
 
 .navbar-default {
     background-color: transparent;
-    border-color: #2f4050;
+    border-color: #19aa8d;
     position: relative;
 }
 
@@ -188,9 +181,24 @@ body.body-small .navbar-top-links li:last-child {
     transition: all 0.5s;
 }
 
-.nav>li.active {
+#side-menu>li{
+  letter-spacing: 1px;
+}
+
+#side-menu>li.active {
+    padding-left: 0;
     border-left: 4px solid #19aa8d;
-    background: #293846;
+    background: #f7f7f7;
+}
+
+#side-menu>li>a{
+  padding-left: 29px;
+  color: #000;
+}
+
+#side-menu>li.active>a{
+  padding-left: 25px;
+  background-color: #e0e0e0;
 }
 
 .nav.nav-second-level>li.active {
@@ -210,10 +218,17 @@ body.body-small .navbar-top-links li:last-child {
 }
 
 .minimalize-styl-2 {
-    padding: 4px 12px;
-    margin: 14px 5px 5px 20px;
-    font-size: 14px;
     float: left;
+    padding: 4px 13px;
+    margin: 15px 5px 5px 0;
+    border: 1px solid #f7f7f7;
+    font-size: 14px;
+    color: #333;
+    background-color: #fff;
+}
+
+.minimalize-styl-2:hover{
+  background-color: #f2f2f2;
 }
 
 .navbar-form-custom {
@@ -267,8 +282,12 @@ body.body-small .navbar-top-links li:last-child {
 }
 
 .nav-second-level li a {
-    padding: 7px 15px 7px 10px;
-    padding-left: 52px;
+    padding: 7px 15px 7px 52px;
+    color: #444;
+}
+
+.nav-second-level li a:hover, .nav-second-level li a:focus {
+    background-color: #e0e0e0;
 }
 
 .nav-third-level li a {
@@ -361,15 +380,17 @@ body.mini-navbar .navbar-default .nav>li>.nav-second-level li a {
     transition: all 0.5s;
 }
 
+.navbar-fixed-top, .navbar-static-top {
+    /*background: #f3f3f4;*/
+    background: #19aa8d;
+    z-index: 2001;
+}
+
 .navbar-fixed-top {
     background: #fff;
     -webkit-transition-duration: 0.5s;
     transition-duration: 0.5s;
     z-index: 2030;
-}
-
-.navbar-fixed-top, .navbar-static-top {
-    background: #f3f3f4;
 }
 
 .fixed-nav #wrapper {
@@ -478,15 +499,15 @@ body.body-small.fixed-sidebar.mini-navbar .navbar-static-side {
     top: 0px;
     padding: 10px 10px 10px 10px;
     text-align: center;
-    background-color: #243747;
+    font-style: 14px;
+    background-color: #e0e0e0;
     border-bottom: dashed 1px #fff;
 }
 
 .fixed-sidebar.mini-navbar .nav li:hover>.nav-second-level {
     top: 40px;
     font-size: 12px;
-    /*padding: 10px 10px 0 10px;*/
-    background-color: #2f4050;
+    background-color: #f7f7f7;
 }
 
 .fixed-sidebar.mini-navbar .nav li:hover>.nav-second-level, .fixed-sidebar.mini-navbar .nav li:hover>a> span.nav-label {
@@ -3010,8 +3031,9 @@ a.forum-item-title:hover {
 
 body {
     font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 13px;
-    color: #676a6c;
+    font-weight: 500;
+    font-size: 14px;
+    color: #333;
     overflow-x: hidden;
 }
 
@@ -3019,16 +3041,17 @@ html, body {
     height: 100%;
 }
 
-body.full-height-layout #wrapper, body.full-height-layout #page-wrapper {
-    height: 100%;
-}
-
 #page-wrapper {
     min-height: auto;
+    height: calc(100% - 60px);
 }
 
 body.boxed-layout {
     background: url('patterns/shattered.png');
+}
+
+#wrapper{
+  height: 100%;
 }
 
 body.boxed-layout #wrapper {
@@ -3163,7 +3186,6 @@ video {
 #wrapper {
     width: 100%;
     overflow-x: hidden;
-    background-color: #2f4050;
 }
 
 .wrapper {
@@ -3258,8 +3280,8 @@ body.body-small .footer.fixed {
 /*CONTENTTABS*/
 .content-tabs {
     position: relative;
-    height: 42px;
-    background: #fafafa;
+    height: 40px;
+    background: #fff;
     line-height: 40px;
 }
 
@@ -3306,17 +3328,6 @@ nav.page-tabs .page-tabs-content {
     float: left;
 }
 
-.page-tabs a {
-    display: block;
-    float: left;
-    border-right: solid 1px #eee;
-    padding: 0 15px;
-}
-
-.page-tabs a i:hover {
-    color: #c00;
-}
-
 .page-tabs a:hover, .content-tabs .roll-nav:hover {
     color: #777;
     background: #f2f2f2;
@@ -3349,7 +3360,7 @@ nav.page-tabs .page-tabs-content {
 }
 
 #content-main {
-    height: calc(100% - 140px);
+    height: calc(100% - 40px - 36px);
     overflow: hidden;
 }
 
@@ -6643,10 +6654,15 @@ body.rtls .top-navigation .footer.fixed, body.rtls.top-navigation .footer.fixed 
 }
 
 .content-tabs {
-    border-bottom: solid 2px #2f4050;
+    box-shadow: 0 0px 2px 0 #bfbfbf;
 }
 
 .page-tabs a {
+    display: block;
+    float: left;
+    border-right: solid 1px #eee;
+    padding: 0 15px;
+    letter-spacing: 1px;
     color: #999;
 }
 
@@ -6654,21 +6670,29 @@ body.rtls .top-navigation .footer.fixed, body.rtls.top-navigation .footer.fixed 
     color: #ccc;
 }
 
-.page-tabs a.active {
-    background: #2f4050;
-    color: #a7b1c2;
+.page-tabs a i:hover {
+  color: #c00 !important;
 }
 
-.page-tabs a.active:hover, .page-tabs a.active i:hover {
-    background: #293846;
-    color: #fff;
+.page-tabs a.active {
+    background: #e0e0e0;
+    color: #000;
 }
-/*
- *
- *   SKIN blue 若依管理系统
- *   NAME - blue/purple
- *
-*/
+
+.page-tabs a.active:hover {
+    background: #efefef;
+}
+
+.page-tabs a.active i{
+    color: #ed5565;
+}
+
+  /*
+   *
+   *   SKIN blue 若依管理系统
+   *   NAME - blue/purple
+   *
+  */
 .skin-blue .minimalize-styl-2 {
     margin: 14px 5px 5px 30px;
 }
@@ -7029,7 +7053,7 @@ body.skin-yellow {
 }
 
 .navbar-static-side {
-    background: #2f4050;
+    background: #fff;
 }
 
 .nav-close {
@@ -7284,6 +7308,23 @@ body.skin-yellow {
 
 .navbar-header {
     width: 60%;
+}
+
+.navbar-header .navbar-brand{
+    width: 220px;
+    height: 60px;
+    line-height: 30px;
+    text-align: center;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    font-weight: 600;
+    font-size: 20px;
+    color: #fff;
+}
+
+.mini-navbar .navbar-header .navbar-brand{
+  width: 70px;
+  visibility: hidden;
 }
 
 .bs-glyphicons {
