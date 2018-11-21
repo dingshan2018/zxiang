@@ -56,4 +56,13 @@ public class AdConstant {
 	
 	public final static float PREPAY = 0.3f;
 	
+	
+	/******************** 广告订单支付	*******************/
+	/** 生成广告支付二维码前缀	 */
+	public final static String AD_PAY_PREFIX = "http://mp.bp.zcloudtechs.cn/wx/wxpay/dingshanScheduleCode";
+	/** 广告支付类型 全额支付 2	 */
+	public final static String PAY_TYPE_ALL = "2";
+	/** 广告支付类型 押金支付 3	 */
+	public final static String PAY_TYPE_PRE = "3";
+	
 }

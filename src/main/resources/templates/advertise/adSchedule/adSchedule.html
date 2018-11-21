@@ -200,6 +200,8 @@
                     actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="preview(\'' + row.adScheduleId +
                     	'\')"><i class="fa fa-search"></i>素材预览</a> ');
 
+                    actions.push('<a class="btn btn-warning btn-xs" onclick="adPay(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>支付</a> ');
+                    
                     actions.push(
                         	'<a class="btn btn-info btn-xs ' + editFlag + '" href="#" onclick="adDetail(\'' + row.adScheduleId +
                         	'\')"><i class="fa fa-edit"></i>详情</a> ');
@@ -462,6 +464,30 @@
 					+'&startTime='+startTime+'&endTime='+endTime
     		$.modal.alert("导出成功!");
 		});
+    }
+  	
+  	//二维码支付弹窗
+    function adPay (adScheduleId) {
+    	var adSchedule;
+    	$.ajax({
+	        url: ctx + "advertise/adSchedule/selectInfo/" + adScheduleId,
+	        type: "post",
+	        async:false,
+	        success: function (data) {
+	        	adSchedule = data;
+	        	//console.log("adSchedule:",adSchedule);
+	        },
+	        error: function (data) {
+	        	console.log("selectInfo:",data);
+	            alert("查询广告金额失败");
+	        }
+		})
+		if(adSchedule.totalPay == '' || adSchedule.totalPay == null){
+    		$.modal.alertWarning("暂无支付信息!");
+    		return;
+    	}
+    	var url = ctx + "advertise/adSchedule/adPay/" + adScheduleId;
+        $.modal.open("广告支付二维码", url, 400, 400);
     }
 
 </script>
