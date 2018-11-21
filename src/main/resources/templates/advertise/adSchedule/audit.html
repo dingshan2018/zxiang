@@ -11,6 +11,7 @@
                 <div class="col-sm-8">
                 	<input id="adScheduleId" name="adScheduleId" th:field="*{adScheduleId}"  type="hidden">
                     <input id="scheduleName" name="scheduleName" th:field="*{scheduleName}" class="form-control" type="text" readonly="readonly">
+                    <input id="sxScheduleId" name="sxScheduleId" th:field="*{sxScheduleId}" class="form-control" type="hidden">
                 </div>
             </div>
             <div class="form-group">	
@@ -30,7 +31,8 @@
             <div class="form-group">	
                 <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>预览素材：</label>
                 <div class="col-sm-8">
-                	<button type="button" class="btn btn-primary" onclick="preview()">&nbsp;预览广告素材</button>
+                	<!-- <button type="button" class="btn btn-primary" onclick="preview()">&nbsp;预览广告素材</button> -->
+                	<button type="button" class="btn btn-primary" onclick="adView()">&nbsp;广告预览</button>
                 </div>
             </div>            
             <div class="form-group">	
@@ -107,6 +109,20 @@
 		        }
 			})
 			return previewUrls;
+		}
+		
+		function adView(){
+			var http = "http://mmedia.bp.zcloudtechs.cn/mmedia/pageJump/go_programme_view.action?scheduleId=";
+			var sxScheduleId = $("#sxScheduleId").val();
+			//console.log("http + sxScheduleId:",http + sxScheduleId);
+			if(sxScheduleId != '' && sxScheduleId != null){
+				var url = http + sxScheduleId;
+				window.open(url);
+		    	//$.modal.openFull("素材预览", url);
+			}else{
+				$.modal.alertWarning("暂无广告素材!");
+			}
+			
 		}
 	</script>
 </body>

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.common.utils.StringUtils;
 import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
@@ -127,5 +128,21 @@ public class TradeOrderController extends BaseController
 		TradeOrder tradeOrder = tradeOrderService.selectTradeOrderById(Integer.parseInt(tradeId));
 		list.add(tradeOrder);
 		return getDataTable(list);
+    }
+	
+	/**
+	 * 根据机主ID查找待发货订单数据
+	 */
+	@RequestMapping("/getListByUserId")
+    @ResponseBody
+    public TableDataInfo getListByUserId(@RequestBody Map<String, Object> params) {
+		String userId = (String) params.get("userId");
+		List<TradeOrder> tradeOrderList = new ArrayList<TradeOrder>();
+		if(StringUtils.isNotEmpty(userId)){
+			tradeOrderList = tradeOrderService.selectUnSendList(Integer.parseInt(userId));
+		}else{
+			tradeOrderList = tradeOrderService.selectUnSendList(null);
+		}
+		return getDataTable(tradeOrderList);
     }
 }

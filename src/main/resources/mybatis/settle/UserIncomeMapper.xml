@@ -297,7 +297,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	      </if>
 	       <if test="adIncomeRate != null  ">ad_income_rate =ad_income_rate+ #{adIncomeRate},</if>
 	       <if test="promotionIncomeRate != null  ">promotion_income_rate =promotion_income_rate+ #{promotionIncomeRate},</if>
-	       <if test="scanIncomeRate != null  ">scan_income_rate =scan_income_rate+#{scanIncomeRate},</if>
+	       <if test="scanIncomeRate != null  ">scan_income_rate =scan_income_rate+#{scanIncomeRate,jdbcType=DOUBLE},</if>
 	       <if test="subsidyIncomeRate != null" >
 	          subsidy_income_rate = subsidy_income_rate+#{subsidyIncomeRate,jdbcType=DOUBLE},
 	      </if>

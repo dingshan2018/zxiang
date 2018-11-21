@@ -159,4 +159,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT COUNT(1) FROM `zx_terminal` WHERE BINARY terminal_code=#{terminalCode}
 	</select>
 	
+	<!-- 通过deviceId查找终端设备 -->
+	<select id="selectTerByDeviceId"  resultMap="TerminalResult">
+		SELECT * FROM `zx_terminal` WHERE terminal_id=(SELECT terminal_id FROM `zx_device` WHERE device_id=#{deviceId})
+    </select>
+    
 </mapper>

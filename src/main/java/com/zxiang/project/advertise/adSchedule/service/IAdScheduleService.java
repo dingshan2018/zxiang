@@ -112,8 +112,9 @@ public interface IAdScheduleService
 	/**
 	 * 广告投放发布
 	 * @param adSchedule
+	 * @throws IOException 
 	 */
-	public int releaseOnlineSave(AdSchedule adSchedule);
+	public int releaseOnlineSave(AdSchedule adSchedule) throws IOException;
 
 	/**
 	 * 导出Excel

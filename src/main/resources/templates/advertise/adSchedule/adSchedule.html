@@ -146,6 +146,21 @@
 				title : '押金'
 			},
 			{
+				field : 'payStatus',
+				title : '支付状态' ,
+				formatter: function (value) {
+	              if (value === '1') {
+	                return '已支付';
+	              } else if (value === '0') {
+	                return '未支付';
+	              } else if (value === '2') {
+	                return '押金已支付';
+	              } else {
+	                return '-';
+	              }
+	            }
+			},
+			{
 				field : 'releaseTermNum',
 				title : '投放终端数'
 			},
@@ -200,6 +215,8 @@
                     actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="preview(\'' + row.adScheduleId +
                     	'\')"><i class="fa fa-search"></i>素材预览</a> ');
 
+                    actions.push('<a class="btn btn-warning btn-xs" onclick="adPay(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>支付</a> ');
+                    
                     actions.push(
                         	'<a class="btn btn-info btn-xs ' + editFlag + '" href="#" onclick="adDetail(\'' + row.adScheduleId +
                         	'\')"><i class="fa fa-edit"></i>详情</a> ');
@@ -214,14 +231,44 @@
         $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'prepay');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'adScheduleId');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'pId');
     });
 
 
   	//素材预览
     function preview(adScheduleId) {
-		var url = ctx + "advertise/adSchedule/preview/" + adScheduleId;
+		//用插件的方式预览
+  		//var url = ctx + "advertise/adSchedule/preview/" + adScheduleId;
     	//$.modal.openFull("素材预览", url);
-		$.modal.open("素材预览", url);
+		//$.modal.open("素材预览", url);
+		
+		//用直接跳转页面链接的方式预览
+    	var http = "http://mmedia.bp.zcloudtechs.cn/mmedia/pageJump/go_programme_view.action?scheduleId=";
+		var sxScheduleId;
+		$.ajax({
+	        url: ctx + "advertise/adSchedule/selectSxScheduleId/" + adScheduleId,
+	        type: "post",
+	        //contentType:"application/json",
+	        //dataType: "json",
+	        //data: JSON.stringify({ "adScheduleId": adScheduleId}),
+	        async:false,
+	        success: function (data) {
+	        	sxScheduleId = data;
+	        	//console.log("http + sxScheduleId:",http + sxScheduleId);
+	    		if(sxScheduleId != '' && sxScheduleId != null){
+	    			var url = http + sxScheduleId;
+	    			window.open(url);
+	    		}else{
+	    			$.modal.alertWarning("暂无广告素材!");
+	    		}
+	        },
+	        error: function (data) {
+	        	console.log("selectSxScheduleId:",data);
+	            alert("查询排期失败");
+	        }
+		})
   	}
 
     //
@@ -231,6 +278,7 @@
     var toAudit= "02";//待审核
     var toBeReleased= "03";//待发布
     var toPlay= "04";//待播放
+    var hasPay = "1";//已支付
     var hasMaterial = "该广告已上传过素材!";
     var noMaterial = "该广告无素材,请先上传素材!";
 
@@ -306,18 +354,20 @@
    			$.modal.alertWarning(onlyOneRecord);
    			return;
    		}
-   		var status = $.table.selectColumns($.table._option.columns[5].field);
+   		
+   		var adSchedule = getAdScheduleInfo(rows);
+   		//var status = $.table.selectColumns($.table._option.columns[5].field);
    		var batch = getMaxBatch(rows);
    		if (batch <= 0) {
    			$.modal.alertWarning(noMaterial);
    	        return;
    		}
 
-   		if (status == toPlay || status == toBeReleased) {
+   		if (adSchedule.status == toPlay || adSchedule.status == toBeReleased) {
    	        $.modal.alertWarning('该广告已审核通过!');
    	        return;
       	}
-   		if (status != toAudit) {
+   		if (adSchedule.status != toAudit) {
    	        $.modal.alertWarning('当前非待审核状态,只有投放状态为待审核的广告才能审核!');
    	        return;
       	}
@@ -337,18 +387,25 @@
    			$.modal.alertWarning(onlyOneRecord);
    			return;
    		}
-   		var status = $.table.selectColumns($.table._option.columns[5].field);
-   		var pId = $.table.selectColumns($.table._option.columns[8].field);
+   		
+   		var adSchedule = getAdScheduleInfo(rows);
+   		//var status = $.table.selectColumns($.table._option.columns[5].field);
+   		//var pId = $.table.selectColumns($.table._option.columns[8].field);
+   		
    		var batch = getMaxBatch(rows);
    		if (batch <= 0) {
    			$.modal.alertWarning(noMaterial);
    	        return;
    		}
-   		if (status != toBeReleased) {
+   		if (adSchedule.status != toBeReleased) {
    	        $.modal.alertWarning('当前非待发布状态,只有投放状态为待发布的广告才能发布!');
    	        return;
       	}
-
+   		if (adSchedule.payStatus != hasPay) {
+   	        $.modal.alertWarning('支付广告费用后才能发布!');
+   	        return;
+      	}
+   		
    		$.modal.confirm("确定发布该条" + $.table._option.modalName + "信息吗？", function() {
 
         	$.ajax({
@@ -436,7 +493,43 @@
     		$.modal.alert("导出成功!");
 		});
     }
+  	
+  	//二维码支付弹窗
+    function adPay (adScheduleId) {
+    	var adSchedule = getAdScheduleInfo(adScheduleId);
+    	if (adSchedule.status != toBeReleased) {
+   	        $.modal.alertWarning('广告审核通过后才能支付!');
+   	        return;
+      	}
+    	if (adSchedule.payStatus == hasPay) {
+   	        $.modal.alertWarning('该广告费用已支付,请勿重复支付!');
+   	        return;
+      	}
+		if(adSchedule.totalPay == '' || adSchedule.totalPay == null){
+    		$.modal.alertWarning("暂无支付信息!");
+    		return;
+    	}
+    	var url = ctx + "advertise/adSchedule/adPay/" + adScheduleId;
+        $.modal.open("广告支付二维码", url, 400, 400);
+    }
 
+  	//获取广告数据信息--公共方法
+    function getAdScheduleInfo(adScheduleId) {
+    	var adSchedule;
+    	$.ajax({
+	        url: ctx + "advertise/adSchedule/selectInfo/" + adScheduleId,
+	        type: "post",
+	        async:false,
+	        success: function (data) {
+	        	adSchedule = data;
+	        },
+	        error: function (data) {
+	        	console.log("selectInfo:",data);
+	            alert("查询广告信息失败");
+	        }
+		})
+		return adSchedule;
+    }
 </script>
 </body>
 </html>

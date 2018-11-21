@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +22,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.alibaba.fastjson.JSONObject;
+import com.zxiang.common.exception.RRException;
+import com.zxiang.common.utils.StringUtils;
 import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
@@ -34,6 +38,8 @@ import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
 import com.zxiang.project.advertise.adSchedule.domain.ElementType;
 import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
 import com.zxiang.project.advertise.adSchedule.service.IAdScheduleService;
+import com.zxiang.project.advertise.utils.AdHttpResult;
+import com.zxiang.project.advertise.utils.Tools;
 import com.zxiang.project.advertise.utils.constant.AdConstant;
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.mapper.DeviceMapper;
@@ -42,7 +48,6 @@ import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
 import com.zxiang.project.system.area.domain.Area;
 import com.zxiang.project.system.area.mapper.AreaMapper;
-import com.zxiang.project.system.area.service.IAreaService;
 
 /**
  * 广告投放 信息操作处理
@@ -70,9 +75,6 @@ public class AdScheduleController extends BaseController
 	private AdReleaseRangeMapper adReleaseRangeMapper;
 	@Autowired
 	private AreaMapper areaMapper;
-	
-	 //01待预约；02待审核；03待发布；04待播放；05已播放；06审核失败；07排期失败
-    
 	
 	@RequiresPermissions("advertise:adSchedule:view")
 	@GetMapping()
@@ -283,12 +285,17 @@ public class AdScheduleController extends BaseController
 	@ResponseBody
 	public AjaxResult releaseOnlineSave(AdSchedule adSchedule)
 	{
-		String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
-		adSchedule.setUpdateBy(operatorUser);
-		adSchedule.setUpdateTime(new Date());
-		
-		int releaseNumber = adScheduleService.releaseOnlineSave(adSchedule);
-		return success("成功发布 "+ releaseNumber + " 条广告");
+		try {
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			adSchedule.setUpdateBy(operatorUser);
+			adSchedule.setUpdateTime(new Date());
+			
+			int releaseNumber = adScheduleService.releaseOnlineSave(adSchedule);
+			return success("成功发布 "+ releaseNumber + " 条广告");
+		} catch (IOException e) {
+			e.printStackTrace();
+			return error();
+		}
 	}
 	
 	/**
@@ -342,4 +349,56 @@ public class AdScheduleController extends BaseController
 		}
 		
 	}
+	
+	/**
+     * 获取视讯排期ID查看信息
+     */
+    @RequestMapping("/selectSxScheduleId/{adScheduleId}")
+    @ResponseBody
+    public String selectSxScheduleId(@PathVariable("adScheduleId") Integer adScheduleId) {
+    	AdSchedule adSchedule = adScheduleService.selectAdScheduleById(adScheduleId);
+        return adSchedule.getSxScheduleId();
+    }
+    
+    /**
+     * 获取广告数据信息
+     */
+    @RequestMapping("/selectInfo/{adScheduleId}")
+    @ResponseBody
+    public AdSchedule selectInfo(@PathVariable("adScheduleId") Integer adScheduleId) {
+    	AdSchedule adSchedule = adScheduleService.selectAdScheduleById(adScheduleId);
+        return adSchedule;
+    }
+    
+    /**
+     * 获取广告支付二维码
+     */
+    @GetMapping("/adPay/{adScheduleId}")
+    public String adPay(@PathVariable("adScheduleId") Integer adScheduleId,ModelMap mmap)  {
+    	
+    	try {
+			AdSchedule adSchedule = adScheduleService.selectAdScheduleById(adScheduleId);
+			float totalFee = adSchedule.getTotalPay();
+			
+			String url = AdConstant.AD_PAY_PREFIX;
+			Map<String, String> paramsMap = new HashMap<String, String>();
+			paramsMap.put("total_fee", String.valueOf(totalFee));
+			paramsMap.put("scheduleId", adScheduleId.toString());
+			paramsMap.put("order_type", AdConstant.PAY_TYPE_ALL);
+			
+			String requst = Tools.paramsToString(paramsMap);
+			String result = Tools.doPostForm(url, requst);
+			AdHttpResult adHttp = Tools.analysisResult(result);
+			JSONObject jsonResult =  (JSONObject) adHttp.get("data");
+			String qrCode = jsonResult.getString("qrCode");
+			if(StringUtils.isNotEmpty(qrCode)){
+				mmap.put("qrCodeUrl", qrCode);
+				return prefix + "/qrCode";
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	
+    	throw new RRException("生成支付二维码失败!");
+    }
 }

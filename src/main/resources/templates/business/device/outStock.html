@@ -6,6 +6,16 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-device-outStock">
 			<div class="form-group">	
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>机主：</label>
+				<div class="col-sm-8">
+					<select id="userId" name="userId" class="form-control" 
+					onchange="showTradeList(this.options[this.options.selectedIndex].value)">
+						<option value="">---请选择---</option>
+						<option th:each="u:${userListJoin}"  th:value="${u.userId}" th:text="${u.userName}"/>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">	
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>商户订单号：</label>
 				<div class="col-sm-8">
 					<select id="tradeOrderId" name="tradeOrderId" class="form-control" 
@@ -21,12 +31,12 @@
 					<input id="transactionId" name="transactionId" class="form-control" type="text" readonly="readonly">
 				</div>
 			</div>
-			<div class="form-group">	
+			<!-- <div class="form-group">	
 				<label class="col-sm-3 control-label">机主：</label>
 				<div class="col-sm-8">
 					<input id="userId" name="userId" class="form-control" type="text" readonly="readonly">
 				</div>
-			</div>
+			</div> -->
 			<div class="form-group">	
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>订单数量：</label>
 				<div class="col-sm-8">
@@ -49,6 +59,15 @@
 				<label class="col-sm-3 control-label">订单备注：</label>
 				<div class="col-sm-8">
 					<input id="remark" name="remark" class="form-control" type="text" readonly="readonly">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>推荐人：</label>
+				<div class="col-sm-8">
+					<select id="promotionerId" name="promotionerId" class="form-control">
+						<option value="">---请选择---</option>
+						<option th:each="u:${userList}"  th:value="${u.userId}" th:text="${u.userName}"/>
+					</select>
 				</div>
 			</div>
 			<div class="form-group">
@@ -78,7 +97,13 @@
 		var prefix = ctx + 'business/deviceStock';
 		$("#form-device-outStock").validate({
 			rules:{
+				userId:{
+					required:true,
+				},
 				tradeOrderId:{
+					required:true,
+				},
+				promotionerId:{
 					required:true,
 				},
 			},
@@ -90,8 +115,9 @@
 		//提交投放设备请求
 		function outStockByTradeId() {
 			var tradeOrderId = $("#tradeOrderId").val();
-			//var deviceIds = $.form.selectSelects("device");
 			var deviceIds = $.form.selectCheckeds("device");
+			var promotionerId = $.form.selectSelects("promotionerId");
+			
 			if(deviceIds.length <= 0){
         		$.modal.alertWarning("没有选择出库设备!");
 				return;
@@ -110,7 +136,8 @@
 	        		url : prefix + "/outStockByTradeId",
 	        		data : {
 	        			"ids": deviceIds,
-	        			"tradeOrderId":tradeOrderId
+	        			"tradeOrderId":tradeOrderId,
+	        			"promotionerId": promotionerId
 	        		},
 	        		async : false,
 	        		error : function(request) {
@@ -123,10 +150,39 @@
 			});
         }
 		
+		//选择机主加载订单列表
+		function showTradeList(value){
+			$("#tradeOrderId").html("");
+	        var str = "<option value=''>---请选择---</option>";
+	        $("#tradeOrderId").append(str);
+	        
+			if(value != "" && value != null){
+				$.ajax({
+			         url: ctx + "record/tradeOrder/getListByUserId",
+			         type: "post",
+			         contentType:"application/json",
+			         dataType: "json",
+			         data: JSON.stringify({ "userId": value}),
+			         async:false,
+			         success: function (data) {
+			        	 if(data.rows.length > 0){
+			        		 var tradeOrderList = data.rows;
+			        		 $.each(tradeOrderList, function (i) {
+			     	        	$('#tradeOrderId').append("<option value=" + tradeOrderList[i].tradeOrderId + ">"
+			     	        			+ tradeOrderList[i].outTradeOrder + "</option>");
+			     	        });
+			        	 }
+			         },
+			         error: function (data) {
+			             alert("查询订单列表失败");
+			         }
+			    })
+			}
+		}
+		
 		//选择订单加载订单数据事件
 		function showTrade(value){
 			$("#transactionId").val("");
-    		$("#userId").val("");
     		$("#totalCnt").val("");
     		$("#remark").val("");
 			if(value != "" && value != null){
@@ -141,7 +197,6 @@
 			        	 if(data.rows.length > 0){
 			        		 var tradeOrder = data.rows[0];
 			        		 $("#transactionId").val(tradeOrder.transactionId);
-			        		 $("#userId").val(tradeOrder.userId);
 			        		 $("#totalCnt").val(tradeOrder.totalCnt);
 			        		 $("#remark").val(tradeOrder.remark);
 			        		 getSendNum(value);

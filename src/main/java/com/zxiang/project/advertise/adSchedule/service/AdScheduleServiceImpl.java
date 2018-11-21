@@ -31,7 +31,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
-import com.zxiang.common.utils.DateUtils;
 import com.zxiang.common.utils.excel.EXCELObject;
 import com.zxiang.project.advertise.adMaterial.domain.AdMaterial;
 import com.zxiang.project.advertise.adMaterial.mapper.AdMaterialMapper;
@@ -49,6 +48,9 @@ import com.zxiang.project.advertise.utils.AdHttpResult;
 import com.zxiang.project.advertise.utils.Tools;
 import com.zxiang.project.advertise.utils.constant.AdConstant;
 import com.zxiang.project.business.device.mapper.DeviceMapper;
+import com.zxiang.project.business.server.service.IServerService;
+import com.zxiang.project.business.terminal.domain.Terminal;
+import com.zxiang.project.business.terminal.mapper.TerminalMapper;
 
 /**
  * 广告投放 服务层实现
@@ -75,7 +77,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	private AdMaterialMapper adMaterialMapper;
 	@Autowired
 	private AdPriceCfgMapper adPriceCfgMapper;
-
+	@Autowired
+	private IServerService serverService;
+	@Autowired
+	private TerminalMapper terminalMapper;
+	
 	/**
      * 查询广告投放信息
      * 
@@ -220,7 +226,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			
 			AdSchedule adSchedule = adScheduleMapper.selectAdScheduleById(Integer.parseInt(adScheduleId));
 			String tId = adSchedule.gettId();
-			//TODO 这里的eid是模板元素的ID，而不是模板ID
+			//这里的eid是模板元素的ID，而不是模板ID
 			//String elementId = adSchedule.getElementId();
 			logger.info("elementId:"+elementId);
 			
@@ -407,27 +413,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	@Transactional
 	public int auditSave(AdSchedule adSchedule,String operatorUser) throws Exception{
 		try {
-			//审核通过下发排期计划
 			if(AdConstant.AD_ADUIT_PASS.equals(adSchedule.getApproved())){
 				adSchedule.setStatus(AdConstant.AD_WAIT_PUBLISH);
-				String result = publishSchedule(adSchedule.getSxScheduleId());
-				//返回结果封装
-				AdHttpResult adHttp = Tools.analysisResult(result);
-				if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
-					JSONObject data = (JSONObject) adHttp.get("data");
-					List<JSONObject> adUrls = (List<JSONObject>) data.get("adUrls");
-					for (JSONObject jsonObject : adUrls) {
-						String adUrl = jsonObject.getString("adUrl");
-						String terminalId = jsonObject.getString("terminalId");
-						//保存广告URL链接
-						
-						int updateNum = deviceMapper.updateAdUrlByTid(adUrl,Convert.toStrArray(terminalId));
-						logger.info("成功更新:"+updateNum+" 条设备adUrl数据");
-					}
-				} else{
-					logger.error("调用审核通过下发排期计划接口失败!" + adHttp.toString());
-					throw new RRException("调用排期接口失败!");
-				}
 				
 			}else if(AdConstant.AD_ADUIT_NO_PASS.equals(adSchedule.getApproved())){
 				//审核不通过则不下发排期计划
@@ -447,7 +434,39 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	
 
 	@Override
-	public int releaseOnlineSave(AdSchedule adSchedule) {
+	@Transactional
+	public int releaseOnlineSave(AdSchedule adSchedule) throws IOException {
+		//1.发布时下发排期计划
+		String result = publishSchedule(adSchedule.getSxScheduleId());
+		//返回结果封装
+		AdHttpResult adHttp = Tools.analysisResult(result);
+		if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
+			JSONObject data = (JSONObject) adHttp.get("data");
+			List<JSONObject> adUrls = (List<JSONObject>) data.get("adUrls");
+			for (JSONObject jsonObject : adUrls) {
+				String adUrl = jsonObject.getString("adUrl");
+				String terminalId = jsonObject.getString("terminalId");
+				//2.下发更改广告主题	
+				String[] deviceIds = Convert.toStrArray(terminalId);
+				if(deviceIds.length > 0){
+					//保存广告URL链接
+					int updateNum = deviceMapper.updateAdUrlByTid(adUrl,deviceIds);
+					logger.info("成功更新:"+updateNum+" 条设备adUrl数据");
+					for (String deviceId : deviceIds) {
+						try {
+							//下发广告更新主题命令
+							adIssued(deviceId, adUrl);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		} else{
+			logger.error("调用审核通过下发排期计划接口失败!" + adHttp.toString());
+			throw new RRException("调用排期接口失败!");
+		}
+		
 		//若广告的status已经为04则已经发布过不再更新，若没有发布则进行发布操作
 		AdSchedule ad  = adScheduleMapper.selectAdScheduleById(adSchedule.getAdScheduleId());
 		if(AdConstant.AD_WAIT_PLAY.equals(ad.getStatus())){
@@ -459,6 +478,26 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		
 	}
 
+	/**
+	 * 更改广告主题下发命令
+	 * 参数封装方法
+	 * @param terminal
+	 * @param terminalTimer
+	 * @throws IOException
+	 */
+	private void adIssued(String deviceId,String adUrl) throws IOException{
+		
+		Terminal terminal = terminalMapper.selectTerByDeviceId(Integer.parseInt(deviceId));
+		if(terminal != null){
+			JSONObject reqJson = new JSONObject();
+			reqJson.put("termCode",terminal.getTerminalCode());
+			reqJson.put("adUrl",adUrl);
+			reqJson.put("command","25");//参数下发命令0x19,转十进制为25
+			
+			serverService.issuedCommand(terminal,reqJson);
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ThemeTemplate> getThemeList() {

@@ -1,13 +1,13 @@
 package com.zxiang.project.business.server.service;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.support.Convert;
 import com.zxiang.project.advertise.utils.Tools;
 import com.zxiang.project.business.server.domain.Server;
@@ -91,7 +91,7 @@ public class ServerServiceImpl implements IServerService
 	 * @throws IOException 
 	 */
 	@Override
-	public String issuedCommand(Terminal terminal,Map<String, String> paramsMap) throws IOException {
+	public String issuedCommand(Terminal terminal,JSONObject reqJson) throws IOException {
 		String result = null;
 		Server server = new Server();
 		server.setAccessIp(terminal.getAccSysIp());
@@ -101,7 +101,9 @@ public class ServerServiceImpl implements IServerService
 			server = servers.get(0);
 			
 			String url = "http://" + server.getHttpIp() + ":" + server.getHttpPort()+ "/tm/terminal/sendCommand";
-			String requst = Tools.paramsToString(paramsMap);
+			//String requst = Tools.paramsToString(paramsMap);
+			//需要使用json格式的参数
+			String requst = JSONObject.toJSONString(reqJson);
 			result = Tools.doPost(url, requst);
 		}
 		return result;

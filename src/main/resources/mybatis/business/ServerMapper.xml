@@ -10,6 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="accessPort"    column="access_port"    />
         <result property="localIp"    column="local_ip"    />
         <result property="localPort"    column="local_port"    />
+        <result property="httpIp"    column="http_ip"    />
         <result property="httpPort"    column="http_port"    />
         <result property="connection"    column="connection"    />
         <result property="status"    column="status"    />
@@ -18,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectServerVo">
-        select server_id, access_ip, access_port, local_ip, local_port, http_port, connection, status, create_time, update_time from zx_server
+        select server_id, access_ip, access_port, local_ip, local_port,http_ip, http_port, connection, status, create_time, update_time from zx_server
     </sql>
 	
     <select id="selectServerList" parameterType="Server" resultMap="ServerResult">
@@ -29,6 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="accessPort != null and accessPort != ''"> and access_port = #{accessPort}</if>
              <if test="localIp != null and localIp != ''"> and local_ip = #{localIp}</if>
              <if test="localPort != null and localPort != ''"> and local_port = #{localPort}</if>
+             <if test="httpIp != null and httpIp != ''"> and http_ip = #{httpIp}</if>
              <if test="httpPort != null and httpPort != ''"> and http_port = #{httpPort}</if>
              <if test="connection != null and connection != ''"> and connection = #{connection}</if>
              <if test="status != null and status != ''"> and status = #{status}</if>
@@ -50,6 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="accessPort != null and accessPort != '' ">access_port,</if>
 			<if test="localIp != null and localIp != '' ">local_ip,</if>
 			<if test="localPort != null and localPort != '' ">local_port,</if>
+			<if test="httpIp != null and httpIp != '' ">http_ip,</if>
 			<if test="httpPort != null and httpPort != '' ">http_port,</if>
 			<if test="connection != null and connection != '' ">connection,</if>
 			<if test="status != null and status != '' ">status,</if>
@@ -62,6 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="accessPort != null and accessPort != ''">#{accessPort},</if>
 			<if test="localIp != null and localIp != ''">#{localIp},</if>
 			<if test="localPort != null and localPort != ''">#{localPort},</if>
+			<if test="httpIp != null and httpIp != ''">#{httpIp},</if>
 			<if test="httpPort != null and httpPort != ''">#{httpPort},</if>
 			<if test="connection != null and connection != ''">#{connection},</if>
 			<if test="status != null and status != ''">#{status},</if>
@@ -77,6 +81,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="accessPort != null  and accessPort != ''  ">access_port = #{accessPort},</if>
             <if test="localIp != null  and localIp != ''  ">local_ip = #{localIp},</if>
             <if test="localPort != null  and localPort != ''  ">local_port = #{localPort},</if>
+            <if test="httpIp != null  and httpIp != ''  ">http_ip = #{httpIp},</if>
             <if test="httpPort != null  and httpPort != ''  ">http_port = #{httpPort},</if>
             <if test="connection != null  ">connection = #{connection},</if>
             <if test="status != null  and status != ''  ">status = #{status},</if>
