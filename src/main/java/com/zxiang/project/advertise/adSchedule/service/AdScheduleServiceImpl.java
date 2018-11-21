@@ -406,27 +406,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	@Transactional
 	public int auditSave(AdSchedule adSchedule,String operatorUser) throws Exception{
 		try {
-			//审核通过下发排期计划
 			if(AdConstant.AD_ADUIT_PASS.equals(adSchedule.getApproved())){
 				adSchedule.setStatus(AdConstant.AD_WAIT_PUBLISH);
-				String result = publishSchedule(adSchedule.getSxScheduleId());
-				//返回结果封装
-				AdHttpResult adHttp = Tools.analysisResult(result);
-				if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
-					JSONObject data = (JSONObject) adHttp.get("data");
-					List<JSONObject> adUrls = (List<JSONObject>) data.get("adUrls");
-					for (JSONObject jsonObject : adUrls) {
-						String adUrl = jsonObject.getString("adUrl");
-						String terminalId = jsonObject.getString("terminalId");
-						//保存广告URL链接
-						
-						int updateNum = deviceMapper.updateAdUrlByTid(adUrl,Convert.toStrArray(terminalId));
-						logger.info("成功更新:"+updateNum+" 条设备adUrl数据");
-					}
-				} else{
-					logger.error("调用审核通过下发排期计划接口失败!" + adHttp.toString());
-					throw new RRException("调用排期接口失败!");
-				}
 				
 			}else if(AdConstant.AD_ADUIT_NO_PASS.equals(adSchedule.getApproved())){
 				//审核不通过则不下发排期计划
@@ -446,7 +427,27 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	
 
 	@Override
-	public int releaseOnlineSave(AdSchedule adSchedule) {
+	@Transactional
+	public int releaseOnlineSave(AdSchedule adSchedule) throws IOException {
+		//审核通过下发排期计划
+		String result = publishSchedule(adSchedule.getSxScheduleId());
+		//返回结果封装
+		AdHttpResult adHttp = Tools.analysisResult(result);
+		if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
+			JSONObject data = (JSONObject) adHttp.get("data");
+			List<JSONObject> adUrls = (List<JSONObject>) data.get("adUrls");
+			for (JSONObject jsonObject : adUrls) {
+				String adUrl = jsonObject.getString("adUrl");
+				String terminalId = jsonObject.getString("terminalId");
+				//保存广告URL链接
+				int updateNum = deviceMapper.updateAdUrlByTid(adUrl,Convert.toStrArray(terminalId));
+				logger.info("成功更新:"+updateNum+" 条设备adUrl数据");
+			}
+		} else{
+			logger.error("调用审核通过下发排期计划接口失败!" + adHttp.toString());
+			throw new RRException("调用排期接口失败!");
+		}
+		
 		//若广告的status已经为04则已经发布过不再更新，若没有发布则进行发布操作
 		AdSchedule ad  = adScheduleMapper.selectAdScheduleById(adSchedule.getAdScheduleId());
 		if(AdConstant.AD_WAIT_PLAY.equals(ad.getStatus())){

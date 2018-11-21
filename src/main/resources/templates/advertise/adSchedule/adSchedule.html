@@ -495,6 +495,10 @@
   	//二维码支付弹窗
     function adPay (adScheduleId) {
     	var adSchedule = getAdScheduleInfo(adScheduleId);
+    	if (adSchedule.status != toBeReleased) {
+   	        $.modal.alertWarning('广告审核通过后才能支付!');
+   	        return;
+      	}
     	if (adSchedule.payStatus == hasPay) {
    	        $.modal.alertWarning('该广告费用已支付,请勿重复支付!');
    	        return;

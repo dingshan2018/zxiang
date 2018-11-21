@@ -285,12 +285,17 @@ public class AdScheduleController extends BaseController
 	@ResponseBody
 	public AjaxResult releaseOnlineSave(AdSchedule adSchedule)
 	{
-		String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
-		adSchedule.setUpdateBy(operatorUser);
-		adSchedule.setUpdateTime(new Date());
-		
-		int releaseNumber = adScheduleService.releaseOnlineSave(adSchedule);
-		return success("成功发布 "+ releaseNumber + " 条广告");
+		try {
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			adSchedule.setUpdateBy(operatorUser);
+			adSchedule.setUpdateTime(new Date());
+			
+			int releaseNumber = adScheduleService.releaseOnlineSave(adSchedule);
+			return success("成功发布 "+ releaseNumber + " 条广告");
+		} catch (IOException e) {
+			e.printStackTrace();
+			return error();
+		}
 	}
 	
 	/**
