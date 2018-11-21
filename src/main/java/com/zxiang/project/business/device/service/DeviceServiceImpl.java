@@ -401,7 +401,8 @@ public class DeviceServiceImpl implements IDeviceService
 	}
 
 	@Override
-	public int outStockByTradeId(String ids, TradeOrder tradeOrder,String operatorUser) throws Exception{
+	public int outStockByTradeId(String ids, TradeOrder tradeOrder,
+			String operatorUser,Integer promotionerId) throws Exception{
 		//(js校验)2.界面选择订单设备数量，最多只能选择订单数量total_cnt台数的设备进行出库
 		//3.将选择的设备置为出库状态；订单数量累加，判断是否达到total_cnt若达到订单数量则将send_status置为1，否则置为2
 		//此处需要注意，要先判断设备当前状态是否为库存，避免并发时被其他人出库了,或使用下述SQL简单 ;如果更新的设备数量与选择设备数量相同则为成功，否则报失败回滚
@@ -443,6 +444,7 @@ public class DeviceServiceImpl implements IDeviceService
 				deviceOrder.setDeviceId(Integer.parseInt(device));
 				deviceOrder.setTradeOrderId(tradeOrder.getTradeOrderId());
 				deviceOrder.setTerminalCode(dev.getTerminalCode());
+				deviceOrder.setPromotionerId(promotionerId);
 				deviceOrder.setPrice(tradeOrder.getTotalFee());
 				deviceOrder.setStatus(tradeOrder.getOrderStatus());
 				deviceOrder.setBuyerId(tradeOrder.getUserId());

@@ -160,17 +160,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
-    <!-- ͨ��������ID�жϳ��˶���̨�豸 -->
+    <!-- 通过订单号ID判断出了多少台设备 -->
     <select id="selectByTradeId" resultType="int" parameterType="Integer">
     	SELECT COUNT(1) FROM zx_device_order WHERE trade_order_id=#{tradeOrderId}
     </select>
     
-    <!-- �����������۶�����  -->
+    <!-- 批量插入销售订单表  -->
     <insert id="batchInsert">
-		insert into zx_device_order(device_id, terminal_id,price,status,buyer_id,buyer_open_id,
+		insert into zx_device_order(device_id, terminal_id,promotioner_id,price,status,buyer_id,buyer_open_id,
 		create_by,create_time,trade_order_id) values
 		<foreach item="item" index="index" collection="list" separator=",">
-			(#{item.deviceId},#{item.terminalId},#{item.price},#{item.status},#{item.buyerId},#{item.buyerOpenId},
+			(#{item.deviceId},#{item.terminalId},#{item.promotionerId},#{item.price},#{item.status},#{item.buyerId},#{item.buyerOpenId},
 			 #{item.createBy},#{item.createTime},#{item.tradeOrderId})
 		</foreach>
 	</insert>

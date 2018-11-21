@@ -137,6 +137,9 @@ public class DeviceStockController extends BaseController
 		//查询机主
 		List<User> userListJoin = userService.selectJoinSaleMan();
 		mmap.put("userListJoin", userListJoin);
+		//查询推荐人（目前用所有用户）
+		List<User> userList = userService.selectUserList(new User());
+		mmap.put("userList", userList);
 		//查询购机已付款订单
 		//List<TradeOrder> tradeOrderList = tradeOrderService.selectUnSendList(null);
 		//mmap.put("tradeOrderList", tradeOrderList);
@@ -152,9 +155,9 @@ public class DeviceStockController extends BaseController
 	@Log(title = "库存设备出库", businessType = BusinessType.UPDATE)
 	@PostMapping("/outStockByTradeId")
 	@ResponseBody
-	public AjaxResult outStockByTradeId(String ids,Integer tradeOrderId)
+	public AjaxResult outStockByTradeId(String ids,Integer tradeOrderId,Integer promotionerId)
 	{
-		logger.info("devices:"+ids+",tradeOrderId"+tradeOrderId);
+		logger.info("devices:"+ids+",tradeOrderId:"+tradeOrderId+",promotionerId:"+promotionerId);
 		String operatorUser = getUser().getUserName()+"("+getUserId()+")";
 		
 		TradeOrder tradeOrder = tradeOrderService.selectTradeOrderById(tradeOrderId);
@@ -169,7 +172,7 @@ public class DeviceStockController extends BaseController
 			}
 			
 			try {
-				int num = deviceService.outStockByTradeId(ids, tradeOrder,operatorUser);
+				int num = deviceService.outStockByTradeId(ids, tradeOrder,operatorUser,promotionerId);
 				return success("成功出库" + num + " 台设备");
 			} catch (Exception e) {
 				e.printStackTrace();

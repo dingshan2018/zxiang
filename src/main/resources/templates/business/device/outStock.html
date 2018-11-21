@@ -61,6 +61,15 @@
 					<input id="remark" name="remark" class="form-control" type="text" readonly="readonly">
 				</div>
 			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>推荐人：</label>
+				<div class="col-sm-8">
+					<select id="promotionerId" name="promotionerId" class="form-control">
+						<option value="">---请选择---</option>
+						<option th:each="u:${userList}"  th:value="${u.userId}" th:text="${u.userName}"/>
+					</select>
+				</div>
+			</div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>可出库设备：</label>
 				<div class="col-sm-8">
@@ -94,6 +103,9 @@
 				tradeOrderId:{
 					required:true,
 				},
+				promotionerId:{
+					required:true,
+				},
 			},
 			submitHandler: function(form) {
 				outStockByTradeId();
@@ -103,8 +115,9 @@
 		//提交投放设备请求
 		function outStockByTradeId() {
 			var tradeOrderId = $("#tradeOrderId").val();
-			//var deviceIds = $.form.selectSelects("device");
 			var deviceIds = $.form.selectCheckeds("device");
+			var promotionerId = $.form.selectSelects("promotionerId");
+			
 			if(deviceIds.length <= 0){
         		$.modal.alertWarning("没有选择出库设备!");
 				return;
@@ -123,7 +136,8 @@
 	        		url : prefix + "/outStockByTradeId",
 	        		data : {
 	        			"ids": deviceIds,
-	        			"tradeOrderId":tradeOrderId
+	        			"tradeOrderId":tradeOrderId,
+	        			"promotionerId": promotionerId
 	        		},
 	        		async : false,
 	        		error : function(request) {
@@ -153,7 +167,6 @@
 			         success: function (data) {
 			        	 if(data.rows.length > 0){
 			        		 var tradeOrderList = data.rows;
-			        		 console.log("tradeOrderList：",tradeOrderList);
 			        		 $.each(tradeOrderList, function (i) {
 			     	        	$('#tradeOrderId').append("<option value=" + tradeOrderList[i].tradeOrderId + ">"
 			     	        			+ tradeOrderList[i].outTradeOrder + "</option>");

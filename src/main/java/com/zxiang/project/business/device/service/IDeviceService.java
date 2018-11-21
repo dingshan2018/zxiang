@@ -133,10 +133,11 @@ public interface IDeviceService
 	
 	/**
 	 * 通过订单号选择出库设备
-	 * @param ids
-	 * @param tradeOrder
+	 * @param ids 出库设备
+	 * @param tradeOrder 订单号
+	 * @param promotionerId 推荐人
 	 * @return
 	 */
-	public int outStockByTradeId(String ids,TradeOrder tradeOrder,String operatorUser) throws Exception;
+	public int outStockByTradeId(String ids,TradeOrder tradeOrder,String operatorUser, Integer promotionerId) throws Exception;
 	
 }
