@@ -148,7 +148,7 @@ public class UserIncomeServiceImpl implements IUserIncomeService
 		s.seteFilePath(realPath);
 		String[] titH = {"日期", "合作客户", "合作类型", "视频广告基数","轮播广告基数","推广二维码广告基数", "推广广告基数","直推机子数量","间推机子数量",
 				          "出纸数量", "直推代理基数", "视频广告系数", "轮播广告系数","二维码广告系数", "直推机子分润系数","间推机子分润系数",
-				          "推广二维码广告系数","推广广告系数","直推代理分润系数","服务出纸系数", "广告收入值","推广收入值","扫码收入值"};
+				          "推广二维码广告系数","推广广告系数","直推代理分润系数","服务出纸系数", "广告收益","推广收益","服务收益"};
 		String[] titN = { "sum_date","coperator_name","coperator_type","ad_income","ad_carousel_income","prom_paper_income","promotion_income","prom_direct_income","prom_indirect_income",
 				           "paper_income","direct_agent_income","ad_rate","ad_carousel_rate","scan_rate","prom_direct_rate","prom_indirect_rate",
 				           "prom_paper_rate","promotion_rate","direct_agent_rate","serve_rate","ad_income_rate","promotion_income_rate","scan_income_rate"};
