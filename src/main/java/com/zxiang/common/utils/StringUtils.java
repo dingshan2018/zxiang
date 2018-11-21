@@ -118,27 +118,20 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
         return !isEmpty(str);
     }
 
-    /**
-     * * 判断一个对象是否为空
-     * 
-     * @param object Object
-     * @return true：为空 false：非空
-     */
-    public static boolean isNull(Object object)
-    {
-        return object == null;
-    }
-
-    /**
-     * * 判断一个对象是否非空
-     * 
-     * @param object Object
-     * @return true：非空 false：空
-     */
-    public static boolean isNotNull(Object object)
-    {
-        return !isNull(object);
-    }
+    /** 不为空判断 */
+    public static boolean isNotNull(Object o) {
+		if (o != null) {
+			if (!"".equals(o) && !"null".equals(o) && !"undefined".equals(o)) {
+				return true;
+			}
+		}
+		return false;
+	}
+    
+    /** 空判断 */
+	public static boolean isNull(Object o) {
+		return !isNotNull(o);
+	}
 
     /**
      * * 判断一个对象是否是数组类型（Java基本型别的数组）

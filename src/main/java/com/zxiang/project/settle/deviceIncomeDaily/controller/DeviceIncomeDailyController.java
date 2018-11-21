@@ -51,7 +51,7 @@ public class DeviceIncomeDailyController extends BaseController
 	@ResponseBody
 	public TableDataInfo list(DeviceIncomeDaily deviceIncomeDaily)
 	{
-		//deviceIncomeDailyService.statisticaldata();
+		deviceIncomeDailyService.statisticaldata();
 		startPage();
         List<DeviceIncomeDaily> list = deviceIncomeDailyService.selectDeviceIncomeDailyList(deviceIncomeDaily);
 		return getDataTable(list);
