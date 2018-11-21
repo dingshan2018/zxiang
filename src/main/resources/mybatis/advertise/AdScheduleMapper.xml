@@ -28,6 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
         <result property="advertiseId"    column="advertise_id"    />
         <result property="totalTime"    column="total_time"    />
+        <result property="payStatus"    column="pay_status"    />
     </resultMap>
 	
 	<sql id="selectAdScheduleVo">
@@ -46,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         is_del, release_note, create_by, create_time, update_by, update_time,
         advertise_id,
         (SELECT DISTINCT za.advertisor_name FROM zx_advertise za WHERE za.advertise_id =zas.`advertise_id`) advertiseName,
-        total_time from zx_ad_schedule zas
+        total_time,pay_status from zx_ad_schedule zas
     </sql>
     
     <sql id="selectAdScheduleVos">
@@ -63,7 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         zas.is_del, zas.release_note, zas.create_by, zas.create_time, zas.update_by, zas.update_time,
         zas.advertise_id,
         (SELECT DISTINCT za.advertisor_name FROM zx_advertise za WHERE za.advertise_id =zas.`advertise_id`) advertiseName,
-        total_time FROM zx_ad_schedule zas  LEFT JOIN zx_ad_release_record a ON a.schedule_id = zas.ad_schedule_id LEFT JOIN zx_device b ON a.device_id=b.device_id
+        total_time,pay_status FROM zx_ad_schedule zas  LEFT JOIN zx_ad_release_record a ON a.schedule_id = zas.ad_schedule_id LEFT JOIN zx_device b ON a.device_id=b.device_id
     </sql>
 	
     <select id="selectAdScheduleList" parameterType="AdSchedule" resultMap="AdScheduleResult">
@@ -100,6 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="updateTime != null "> and zas.update_time = #{updateTime}</if>
              <if test="advertiseId != null and advertiseId != ''"> and zas.advertise_id = #{advertiseId}</if>
              <if test="totalTime != null and totalTime != ''"> and zas.total_time = #{totalTime}</if>
+             <if test="payStatus != null and payStatus != ''"> and zas.pay_status = #{payStatus}</if>
          </where>
     </select>
     
@@ -134,6 +136,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateTime != null ">update_time,</if>
 			<if test="advertiseId != null ">advertise_id,</if>
 			<if test="totalTime != null ">total_time,</if>
+			<if test="payStatus != null ">pay_status,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="adScheduleId != null and adScheduleId != ''">#{adScheduleId},</if>
@@ -159,6 +162,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateTime != null ">#{updateTime},</if>
 			<if test="advertiseId != null ">#{advertiseId},</if>
 			<if test="totalTime != null ">#{totalTime},</if>
+			<if test="payStatus != null ">#{payStatus},</if>
          </trim>
     </insert>
 	 
@@ -187,6 +191,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
             <if test="advertiseId != null  ">advertise_id = #{advertiseId},</if>
             <if test="totalTime != null  ">total_time = #{totalTime},</if>
+            <if test="payStatus != null  ">pay_status = #{payStatus},</if>
         </trim>
         where ad_schedule_id = #{adScheduleId}
     </update>
@@ -235,6 +240,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="updateTime != null "> and update_time = #{updateTime}</if>
              <if test="advertiseId != null and advertiseId != ''"> and advertise_id = #{advertiseId}</if>
              <if test="totalTime != null and totalTime != ''"> and total_time = #{totalTime}</if>
+             <if test="payStatus != null and payStatus != ''"> and pay_status = #{payStatus}</if>
          </where>
     </select>
 </mapper>
