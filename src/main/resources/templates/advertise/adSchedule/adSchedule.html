@@ -219,9 +219,36 @@
 
   	//素材预览
     function preview(adScheduleId) {
-		var url = ctx + "advertise/adSchedule/preview/" + adScheduleId;
+		//用插件的方式预览
+  		//var url = ctx + "advertise/adSchedule/preview/" + adScheduleId;
     	//$.modal.openFull("素材预览", url);
-		$.modal.open("素材预览", url);
+		//$.modal.open("素材预览", url);
+		
+		//用直接跳转页面链接的方式预览
+    	var http = "http://mmedia.bp.zcloudtechs.cn/mmedia/pageJump/go_programme_view.action?scheduleId=";
+		var sxScheduleId;
+		$.ajax({
+	        url: ctx + "advertise/adSchedule/selectSxScheduleId/" + adScheduleId,
+	        type: "post",
+	        //contentType:"application/json",
+	        //dataType: "json",
+	        //data: JSON.stringify({ "adScheduleId": adScheduleId}),
+	        async:false,
+	        success: function (data) {
+	        	sxScheduleId = data;
+	        	//console.log("http + sxScheduleId:",http + sxScheduleId);
+	    		if(sxScheduleId != '' && sxScheduleId != null){
+	    			var url = http + sxScheduleId;
+	    			window.open(url);
+	    		}else{
+	    			$.modal.alertWarning("暂无广告素材!");
+	    		}
+	        },
+	        error: function (data) {
+	        	console.log("selectSxScheduleId:",data);
+	            alert("查询排期失败");
+	        }
+		})
   	}
 
     //

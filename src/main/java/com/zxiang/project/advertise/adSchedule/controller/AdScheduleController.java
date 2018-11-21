@@ -42,7 +42,6 @@ import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
 import com.zxiang.project.system.area.domain.Area;
 import com.zxiang.project.system.area.mapper.AreaMapper;
-import com.zxiang.project.system.area.service.IAreaService;
 
 /**
  * 广告投放 信息操作处理
@@ -70,9 +69,6 @@ public class AdScheduleController extends BaseController
 	private AdReleaseRangeMapper adReleaseRangeMapper;
 	@Autowired
 	private AreaMapper areaMapper;
-	
-	 //01待预约；02待审核；03待发布；04待播放；05已播放；06审核失败；07排期失败
-    
 	
 	@RequiresPermissions("advertise:adSchedule:view")
 	@GetMapping()
@@ -342,4 +338,14 @@ public class AdScheduleController extends BaseController
 		}
 		
 	}
+	
+	/**
+     * 获取视讯排期ID查看信息
+     */
+    @RequestMapping("/selectSxScheduleId/{adScheduleId}")
+    @ResponseBody
+    public String selectSxScheduleId(@PathVariable("adScheduleId") Integer adScheduleId) {
+    	AdSchedule adSchedule = adScheduleService.selectAdScheduleById(adScheduleId);
+        return adSchedule.getSxScheduleId();
+    }
 }
