@@ -1,11 +1,16 @@
 package com.zxiang.project.business.terminalTimer.service;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.support.Convert;
+import com.zxiang.project.business.server.service.IServerService;
+import com.zxiang.project.business.terminal.domain.Terminal;
+import com.zxiang.project.business.terminal.mapper.TerminalMapper;
 import com.zxiang.project.business.terminalTimer.domain.TerminalTimer;
 import com.zxiang.project.business.terminalTimer.mapper.TerminalTimerMapper;
 
@@ -20,6 +25,10 @@ public class TerminalTimerServiceImpl implements ITerminalTimerService
 {
 	@Autowired
 	private TerminalTimerMapper terminalTimerMapper;
+	@Autowired
+	private IServerService serverService;
+	@Autowired
+	private TerminalMapper terminalMapper;
 
 	/**
      * 查询定时设置信息
@@ -54,7 +63,14 @@ public class TerminalTimerServiceImpl implements ITerminalTimerService
 	@Override
 	public int insertTerminalTimer(TerminalTimer terminalTimer)
 	{
-	    return terminalTimerMapper.insertTerminalTimer(terminalTimer);
+		int insert = terminalTimerMapper.insertTerminalTimer(terminalTimer);
+		try {
+			Terminal terminal = terminalMapper.selectTerminalById(terminalTimer.getTerminalId());
+			timerIssued(terminal,terminalTimer);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	    return insert;
 	}
 	
 	/**
@@ -69,6 +85,44 @@ public class TerminalTimerServiceImpl implements ITerminalTimerService
 	    return terminalTimerMapper.updateTerminalTimer(terminalTimer);
 	}
 
+	/**
+	 * 修改定时设置保存和下发
+	 * @throws IOException 
+	 */
+	@Override
+	public int updateAndIssued(TerminalTimer terminalTimer){
+		int update = terminalTimerMapper.updateTerminalTimer(terminalTimer);
+		
+		try {
+			Terminal terminal = terminalMapper.selectTerminalById(terminalTimer.getTerminalId());
+			timerIssued(terminal,terminalTimer);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return update;
+	}
+	
+	/**
+	 * 终端定时设置下发命令
+	 * 参数封装方法
+	 * @param terminal
+	 * @param terminalTimer
+	 * @throws IOException
+	 */
+	private void timerIssued(Terminal terminal,TerminalTimer terminalTimer) throws IOException{
+		
+		List<TerminalTimer> list = new ArrayList<TerminalTimer>();
+		list.add(terminalTimer);
+		
+		JSONObject reqJson = new JSONObject();
+		reqJson.put("termCode",terminal.getTerminalCode());
+		reqJson.put("terminalTimers",list);
+		reqJson.put("command","21");//参数下发命令0x14,转十进制为20
+		
+		serverService.issuedCommand(terminal,reqJson);
+	}
+	
 	/**
      * 删除定时设置对象
      * 
@@ -88,5 +142,6 @@ public class TerminalTimerServiceImpl implements ITerminalTimerService
 	public TerminalTimer selectByTerminalId(Integer teminalId) {
 		return terminalTimerMapper.selectByTerminalId(teminalId);
 	}
+
 	
 }

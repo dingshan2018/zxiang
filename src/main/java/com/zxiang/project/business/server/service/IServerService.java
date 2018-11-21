@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zxiang.project.business.server.domain.Server;
 import com.zxiang.project.business.terminal.domain.Terminal;
 
@@ -63,6 +64,6 @@ public interface IServerService
 	 * @return
 	 * @throws IOException 
 	 */
-	public String issuedCommand(Terminal terminal,Map<String, String> paramsMap) throws IOException;
+	public String issuedCommand(Terminal terminal,JSONObject reqJson) throws IOException;
 	
 }
