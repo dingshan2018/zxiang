@@ -216,6 +216,7 @@
         $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'prepay');
     });
 
 
@@ -260,6 +261,7 @@
     var toAudit= "02";//待审核
     var toBeReleased= "03";//待发布
     var toPlay= "04";//待播放
+    var hasPay = "1";//已支付
     var hasMaterial = "该广告已上传过素材!";
     var noMaterial = "该广告无素材,请先上传素材!";
 
@@ -335,18 +337,20 @@
    			$.modal.alertWarning(onlyOneRecord);
    			return;
    		}
-   		var status = $.table.selectColumns($.table._option.columns[5].field);
+   		
+   		var adSchedule = getAdScheduleInfo(rows);
+   		//var status = $.table.selectColumns($.table._option.columns[5].field);
    		var batch = getMaxBatch(rows);
    		if (batch <= 0) {
    			$.modal.alertWarning(noMaterial);
    	        return;
    		}
 
-   		if (status == toPlay || status == toBeReleased) {
+   		if (adSchedule.status == toPlay || adSchedule.status == toBeReleased) {
    	        $.modal.alertWarning('该广告已审核通过!');
    	        return;
       	}
-   		if (status != toAudit) {
+   		if (adSchedule.status != toAudit) {
    	        $.modal.alertWarning('当前非待审核状态,只有投放状态为待审核的广告才能审核!');
    	        return;
       	}
@@ -366,18 +370,25 @@
    			$.modal.alertWarning(onlyOneRecord);
    			return;
    		}
-   		var status = $.table.selectColumns($.table._option.columns[5].field);
-   		var pId = $.table.selectColumns($.table._option.columns[8].field);
+   		
+   		var adSchedule = getAdScheduleInfo(rows);
+   		//var status = $.table.selectColumns($.table._option.columns[5].field);
+   		//var pId = $.table.selectColumns($.table._option.columns[8].field);
+   		
    		var batch = getMaxBatch(rows);
    		if (batch <= 0) {
    			$.modal.alertWarning(noMaterial);
    	        return;
    		}
-   		if (status != toBeReleased) {
+   		if (adSchedule.status != toBeReleased) {
    	        $.modal.alertWarning('当前非待发布状态,只有投放状态为待发布的广告才能发布!');
    	        return;
       	}
-
+   		if (adSchedule.payStatus != hasPay) {
+   	        $.modal.alertWarning('支付广告费用后才能发布!');
+   	        return;
+      	}
+   		
    		$.modal.confirm("确定发布该条" + $.table._option.modalName + "信息吗？", function() {
 
         	$.ajax({
@@ -468,20 +479,7 @@
   	
   	//二维码支付弹窗
     function adPay (adScheduleId) {
-    	var adSchedule;
-    	$.ajax({
-	        url: ctx + "advertise/adSchedule/selectInfo/" + adScheduleId,
-	        type: "post",
-	        async:false,
-	        success: function (data) {
-	        	adSchedule = data;
-	        	//console.log("adSchedule:",adSchedule);
-	        },
-	        error: function (data) {
-	        	console.log("selectInfo:",data);
-	            alert("查询广告金额失败");
-	        }
-		})
+    	var adSchedule = getAdScheduleInfo(adScheduleId);
 		if(adSchedule.totalPay == '' || adSchedule.totalPay == null){
     		$.modal.alertWarning("暂无支付信息!");
     		return;
@@ -490,6 +488,23 @@
         $.modal.open("广告支付二维码", url, 400, 400);
     }
 
+  	//获取广告数据信息--公共方法
+    function getAdScheduleInfo(adScheduleId) {
+    	var adSchedule;
+    	$.ajax({
+	        url: ctx + "advertise/adSchedule/selectInfo/" + adScheduleId,
+	        type: "post",
+	        async:false,
+	        success: function (data) {
+	        	adSchedule = data;
+	        },
+	        error: function (data) {
+	        	console.log("selectInfo:",data);
+	            alert("查询广告信息失败");
+	        }
+		})
+		return adSchedule;
+    }
 </script>
 </body>
 </html>

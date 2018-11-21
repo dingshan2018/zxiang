@@ -61,6 +61,9 @@ public class AdSchedule extends BaseEntity
 	private Integer advertiseId;
 	/**总共播放时长  */
 	private String totalTime;
+	/**支付状态:0未支付；1已全部支付；2押金已支付  */
+	private String payStatus;
+	
 	/**HTTP接口返回的tid  */
 	private String tId;
 	
@@ -363,6 +366,14 @@ public class AdSchedule extends BaseEntity
 
 	public void setElementId(String elementId) {
 		this.elementId = elementId;
+	}
+
+	public String getPayStatus() {
+		return payStatus;
+	}
+
+	public void setPayStatus(String payStatus) {
+		this.payStatus = payStatus;
 	}
 
 	public String toString() {
