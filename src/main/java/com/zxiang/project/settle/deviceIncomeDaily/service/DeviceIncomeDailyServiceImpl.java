@@ -108,7 +108,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	}
 
 	@Override
-	public int selectzxtissuerecordlist(String deviceId,String scheduleId) {
+	public List<HashMap<String, Object>> selectzxtissuerecordlist(String deviceId,String scheduleId) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("deviceId", deviceId);
 		map.put("scheduleId", scheduleId);
@@ -138,11 +138,15 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				String buyer_id = order.get("buyer_id")+"";//机主
 				String isincome = order.get("isincome")+""; //是否是当天售出
 				
-				int tissuenum = selectzxtissuerecordlist(device.get("device_id")+"",""); //出纸数量
+				List<HashMap<String, Object>> tissuenumlist= selectzxtissuerecordlist(device.get("device_id")+"",""); //出纸数量
+				int tissuenum = tissuenumlist.size();
 				//计算每日设备推广费用
 				deviceorder(isincome,promotioner_id,device,order);
-				//计算每日出纸费用
-				tissuedata(device,buyer_id,tissuenum);
+				if(tissuenum>0) {
+					String	promotionerh5 = tissuenumlist.get(0).get("promotioner").toString();
+					//计算每日出纸费用
+					tissuedata(device,buyer_id,tissuenum,promotionerh5);
+				}
 				//计算广告费用
 				addata(device,buyer_id,tissuenum);
 			}
@@ -163,7 +167,6 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			//获取推荐人人员信息
 			HashMap<String, Object> user = getusedata(seller_id,"","");
 			if(com.zxiang.common.utils.StringUtils.isNotNull(user)){
-				int num = 0;
 				String type = RateConstants.RATETYPE_PROMDIRECTINCOME;
 				if(isincome.equals("01")){
 					fee = Double.valueOf(user.get("promDirectRate")+"");
@@ -171,41 +174,40 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 						fee = Double.valueOf(user.get("promIndirectRate")+"");
 						type = RateConstants.RATETYPE_PROMINDIRECTINCOME;
 					}
-					num++;
+					//插入数据
+					insertdata(fee,"02",type,0.0,1,user);
 				}
-				//插入数据
-				insertdata(fee,"02",type,0.0,num,user);
+				
 			}
 		}
 		
 		//---------------------设备昨日销售价格收入---------------------------------
 		if(isincome.equals("01")){
 			price = Double.valueOf(order.get("price")+"");
-		}
-		DeviceIncomeDaily deviceIncomeDaily = new DeviceIncomeDaily();
-		deviceIncomeDaily.setDeviceId(deviceId);
-		List<DeviceIncomeDaily> deviceIncomeDailylist = deviceIncomeDailyMapper.selectDeviceIncomeDaily(deviceIncomeDaily);
-		deviceIncomeDaily.setSellIncome(price);//销售价格
-		if(deviceIncomeDailylist.size()>0){
-			DeviceIncomeDaily income = deviceIncomeDailylist.get(0);
-			deviceIncomeDaily.setIncomeId(income.getIncomeId());
-			updateDeviceIncomeDaily(deviceIncomeDaily);
-		}else{
-			if(com.zxiang.common.utils.StringUtils.isNotNull(map.get("terminal_id"))) {
-				deviceIncomeDaily.setTerminalId(Integer.valueOf(map.get("terminal_id")+""));
+			DeviceIncomeDaily deviceIncomeDaily = new DeviceIncomeDaily();
+			deviceIncomeDaily.setDeviceId(deviceId);
+			List<DeviceIncomeDaily> deviceIncomeDailylist = deviceIncomeDailyMapper.selectDeviceIncomeDaily(deviceIncomeDaily);
+			deviceIncomeDaily.setSellIncome(price);//销售价格
+			if(deviceIncomeDailylist.size()>0){
+				DeviceIncomeDaily income = deviceIncomeDailylist.get(0);
+				deviceIncomeDaily.setIncomeId(income.getIncomeId());
+				updateDeviceIncomeDaily(deviceIncomeDaily);
+			}else{
+				if(com.zxiang.common.utils.StringUtils.isNotNull(map.get("terminal_id"))) {
+					deviceIncomeDaily.setTerminalId(Integer.valueOf(map.get("terminal_id")+""));
+				}
+				if(com.zxiang.common.utils.StringUtils.isNotNull(map.get("place_id"))) {
+					deviceIncomeDaily.setPlaceId(Integer.valueOf(map.get("place_id") + ""));
+				}
+				insertDeviceIncomeDaily(deviceIncomeDaily);
 			}
-			if(com.zxiang.common.utils.StringUtils.isNotNull(map.get("place_id"))) {
-				deviceIncomeDaily.setPlaceId(Integer.valueOf(map.get("place_id") + ""));
-			}
-			insertDeviceIncomeDaily(deviceIncomeDaily);
 		}
-		
 	}
 	
 	/**
 	 * 计算每日出纸费用服务收益
 	 * */
-	public void tissuedata(HashMap<String, Object> map,String buyerid,int tissuenum) {
+	public void tissuedata(HashMap<String, Object> map,String buyerid,int tissuenum,String promotionerh5) {
 		//获取机主的信息
 		HashMap<String, Object> user = getusedata(buyerid,"","");
 		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
@@ -228,6 +230,41 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				insertdata(tissuenum*serve_rate,"03",RateConstants.RATETYPE_PAPERINCOME,0.0,0,user);
 			}
 		}
+		//h5广告费用
+			HashMap<String, Object> promotionagenmap = new HashMap<String, Object>();
+			HashMap<String, Object> repairmap = new HashMap<String, Object>();
+			List<HashMap<String, Object>> promotionagentlist = new ArrayList<HashMap<String, Object>>();
+			List<HashMap<String, Object>> repairlist = new ArrayList<HashMap<String, Object>>();
+			//--------------推广收益-----------------------
+		    user = getusedata(promotionerh5,"","");
+		    double rate =  Double.valueOf(user.get("promPaperRate")+"");
+			insertdata(-tissuenum*rate,"02",RateConstants.RATETYPE_PROMPAPERINCOME,0.0,tissuenum,user);
+			//-----------------------广告收益--------------
+			//插入机主广告数据每次出纸收益0.3元
+			user = getusedata(buyerid,"","");
+			rate = Double.valueOf(user.get("scanRate")+"");
+			insertdata(rate*tissuenum,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
+            if(com.zxiang.common.utils.StringUtils.isNotNull(map.get("place_id"))) {
+            	HashMap<String, Object> placemap =  selectzxplace(map.get("place_id") + ""); //获取地点
+            	//插入代理商广告数据（地级市代理地区所服务的机子每次出纸收益0.02元，县区、县级市代理地区所服务的机子每次出纸收益0.05元）
+				    promotionagenmap.put("placeId", placemap.get("county"));
+				    promotionagentlist = iUserIncomeService.selectzxagentlist(promotionagenmap);
+   				for(HashMap<String, Object> promotionagent : promotionagentlist) {
+   					String agentId = promotionagent.get("agent_id")+"";
+   					user = getusedata("",agentId,UserConstants.USER_TYPE_AGENT);
+   					rate = Double.valueOf(user.get("scanRate")+"");
+   					insertdata(rate*tissuenum,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
+   				}
+   				//插入服务商广告数据所服务的机子每次出纸收益0.05元
+   				 repairmap.put("countyId", placemap.get("county"));
+   				 repairlist = iUserIncomeService.selectzxrepairarealist(repairmap);
+   				 for(HashMap<String, Object> repair : repairlist) {
+   					   String repairId = repair.get("repair_id")+"";
+   					   user = getusedata("",repairId,UserConstants.USER_TYPE_REPAIR);
+   					   rate = Double.valueOf(user.get("scanRate")+"");
+   					   insertdata(rate*tissuenum,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
+   				 }
+			}
 		
 		//---------------------设备昨日出纸数量---------------------------------
 		DeviceIncomeDaily deviceIncomeDaily = new DeviceIncomeDaily();
@@ -253,10 +290,6 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	 * 计算广告费用
 	 * */
 	public void addata(HashMap<String, Object> map,String buyerid,int tissuenum) {
-		List<HashMap<String, Object>> releaserecordlist =selectreleaserecordlist(map);//广告投放设备
-		if(releaserecordlist.size()==0){
-			return;
-		}
 		boolean isplace = false;
 		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
 		HashMap<String, Object> placemap =  null;
@@ -264,6 +297,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
         	placemap =  selectzxplace(map.get("place_id") + ""); //获取地点
         	isplace = true;
 		}
+        List<HashMap<String, Object>> releaserecordlist =selectreleaserecordlist(map);//广告投放设备
 		for(HashMap<String, Object> releaserecord : releaserecordlist) {
 			double price = Double.valueOf(releaserecord.get("price")+""); //广告价格
 			//--------------------------------------客户昨日收入-----------------------------------------------
@@ -352,39 +386,6 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	   				 }
 				}
 				break;
-			case "03":
-				//--------------推广收益-----------------------
-				if(ispromotioner) {
-					rate =  Double.valueOf(user.get("promPaperRate")+"");
-					insertdata(-tissuenum*rate,"02",RateConstants.RATETYPE_PROMPAPERINCOME,0.0,tissuenum,user);
-				}
-				//-----------------------广告收益--------------
-				//插入机主广告数据每次出纸收益0.3元
-				user = getusedata(buyerid,"","");
-				rate = Double.valueOf(user.get("scanRate")+"");
-				insertdata(rate*tissuenum,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
-                if(isplace) {
-                	//插入代理商广告数据（地级市代理地区所服务的机子每次出纸收益0.02元，县区、县级市代理地区所服务的机子每次出纸收益0.05元）
-   				    promotionagenmap.put("placeId", placemap.get("county"));
-   				    promotionagentlist = iUserIncomeService.selectzxagentlist(promotionagenmap);
-	   				for(HashMap<String, Object> promotionagent : promotionagentlist) {
-	   					String agentId = promotionagent.get("agent_id")+"";
-	   					user = getusedata("",agentId,UserConstants.USER_TYPE_AGENT);
-	   					rate = Double.valueOf(user.get("scanRate")+"");
-	   					insertdata(rate*tissuenum,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
-	   				}
-	   				//插入服务商广告数据所服务的机子每次出纸收益0.05元
-	   				 repairmap.put("countyId", placemap.get("county"));
-	   				 repairlist = iUserIncomeService.selectzxrepairarealist(repairmap);
-	   				 for(HashMap<String, Object> repair : repairlist) {
-	   					   String repairId = repair.get("repair_id")+"";
-	   					   user = getusedata("",repairId,UserConstants.USER_TYPE_REPAIR);
-	   					   rate = Double.valueOf(user.get("scanRate")+"");
-	   					   insertdata(rate*price,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
-	   				 }
-				}
-				break;
-
 			default:
 				break;
 			}

@@ -93,7 +93,7 @@ public interface DeviceIncomeDailyMapper
 	/** 
 	 * 出纸记录表查询
 	 * */
-	public int selectzxtissuerecordlist(HashMap<String, Object> map);
+	public List<HashMap<String, Object>> selectzxtissuerecordlist(HashMap<String, Object> map);
 	
 	public List<HashMap<String, Object>> selectzxplace(HashMap<String, Object> map);
 	
