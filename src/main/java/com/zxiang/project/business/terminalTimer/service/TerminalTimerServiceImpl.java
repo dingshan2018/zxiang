@@ -118,7 +118,7 @@ public class TerminalTimerServiceImpl implements ITerminalTimerService
 		JSONObject reqJson = new JSONObject();
 		reqJson.put("termCode",terminal.getTerminalCode());
 		reqJson.put("terminalTimers",list);
-		reqJson.put("command","21");//参数下发命令0x14,转十进制为20
+		reqJson.put("command","21");//参数下发命令0x15,转十进制为21
 		
 		serverService.issuedCommand(terminal,reqJson);
 	}

@@ -1,7 +1,9 @@
 package com.zxiang.project.business.terminal.mapper;
 
 import com.zxiang.project.business.terminal.domain.Terminal;
-import java.util.List;	
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;	
 
 /**
  * 终端管理 数据层
@@ -73,6 +75,13 @@ public interface TerminalMapper
 	 * 校验终端编号唯一
 	 */
 	public int checkTerminalCodeUnique(String terminalCode);
+
+	/**
+	 * 通过deviceId查找终端设备
+	 * @param parseInt
+	 * @return
+	 */
+	public Terminal selectTerByDeviceId(@Param("deviceId") int deviceId);
 
 	
 }
