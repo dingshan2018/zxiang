@@ -110,6 +110,11 @@ public class UserConstants
     public static final String USER_TYPE_REPAIR_SALESMAN = "14";
     /** 用户类型：广告商业务员 * */
     public static final String USER_TYPE_ADVERTISE_SALESMAN = "15";
+    /** 用户类型：服务商补纸员 * */
+    public static final String USER_TYPE_TISSUE = "16";
+    /** 用户类型：服务商维修员 * */
+    public static final String USER_TYPE_SERVICE = "17";
+    
     
     public static final String DEPT_NAME = "合作伙伴";
     public static final String ROLE_NAME_AGENT = "代理商";
