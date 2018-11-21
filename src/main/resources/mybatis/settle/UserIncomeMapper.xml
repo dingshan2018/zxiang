@@ -332,7 +332,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select income_id from zx_user_income
         <where>  
              <if test="coperatorId != null and coperatorId != ''"> and coperator_id = #{coperatorId}</if>
-              <if test="coperatorType != null and coperatorType != ''"> and coperator_type = #{coperatorId}</if>
+              <if test="coperatorType != null and coperatorType != ''"> and coperator_type = #{coperatorType}</if>
              and DATE_FORMAT(sum_date, '%Y-%m-%d') = DATE_FORMAT(
 			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
 			    '%Y-%m-%d'
@@ -363,7 +363,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  z.agency_fee,
 		  z.create_time 
 		FROM
-		  sys_user t,
 		  zx_agent z 
 		  WHERE 
 	       1=1
