@@ -31,7 +31,7 @@ public class ScheduleOrder extends BaseEntity
 	private String scheduleName;
 	/**  */
 	private Date createTime;
-	private String transactionId;
+	private String outTradeOrder;
 
 	public void setScheduleOrderId(Integer scheduleOrderId) 
 	{
@@ -88,12 +88,12 @@ public class ScheduleOrder extends BaseEntity
 		return createTime;
 	}
 
-    public String getTransactionId() {
-		return transactionId;
+	public String getOutTradeOrder() {
+		return outTradeOrder;
 	}
 
-	public void setTransactionId(String transactionId) {
-		this.transactionId = transactionId;
+	public void setOutTradeOrder(String outTradeOrder) {
+		this.outTradeOrder = outTradeOrder;
 	}
 
 	public String getScheduleName() {

@@ -1,8 +1,11 @@
 package com.zxiang.project.business.device.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.StringUtils;
+import com.zxiang.project.advertise.utils.Tools;
+import com.zxiang.project.advertise.utils.constant.AdConstant;
 import com.zxiang.project.business.changeTerminal.domain.ChangeTerminal;
 import com.zxiang.project.business.changeTerminal.mapper.ChangeTerminalMapper;
 import com.zxiang.project.business.device.domain.Device;
@@ -100,6 +105,12 @@ public class DeviceServiceImpl implements IDeviceService
 		/*Terminal terminal = terminalMapper.selectTerminalById(device.getTerminalId());
 		terminal.setDeviceId(device.getDeviceId());
 		terminalMapper.updateTerminal(terminal);*/
+		try {
+			this.saveTerminal(device);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return deviceSave;
 	}
@@ -126,6 +137,17 @@ public class DeviceServiceImpl implements IDeviceService
 	@Override
 	public int deleteDeviceByIds(String ids)
 	{
+		String[] idArr = Convert.toStrArray(ids);
+		if(idArr.length>0) {
+			for(String id : idArr) {
+				try {
+					this.delTerminal(id);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		return deviceMapper.deleteDeviceByIds(Convert.toStrArray(ids));
 	}
 
@@ -307,17 +329,61 @@ public class DeviceServiceImpl implements IDeviceService
 		String codeExist = checkDeviceSnUnique(deviceSn);
 		//设备资产编号不存在则保存,返回插入成功数量
 		if("0".equals(codeExist)){
+			
 			Device device = new Device();
 			device.setDeviceSn(deviceSn);
 			device.setStatus("04");
 			device.setDeviceType("共享纸巾机");
 			device.setCreateBy(operatorUser);
 			device.setCreateTime(new Date());
-		    return deviceMapper.insertDevice(device);
+		    int ret = deviceMapper.insertDevice(device);
+		    //将设备同步到视讯系统
+			try {
+				this.saveTerminal(device);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//end	
+		    return ret;
 		}
 		//终端编号存在则不保存，直接返回0
 		return 0;
 	}
+	
+	/**
+	 * 接口7：调用下发排期计划  HTTP application/x-www-form-urlencoded接口
+	 * @param adScheduleId 排期计划ID
+	 * @throws IOException 
+	 */
+	private String saveTerminal(Device device) throws IOException {
+		Map<String, String> paramsMap = new HashMap<String, String>();
+		paramsMap.put("deviceId", device.getDeviceId()+"");
+		paramsMap.put("devCode", device.getDeviceSn());
+		paramsMap.put("deviceName", "纸巾机"+device.getDeviceSn());
+		paramsMap.put("province", "");
+		paramsMap.put("city", "");
+		String param = Tools.paramsToString(paramsMap);
+		
+		String result = Tools.doPostForm(AdConstant.AD_URL_SAVETERMINAL, param);
+		return result;
+	}
+	
+	/**
+	 * 接口7：调用下发排期计划  HTTP application/x-www-form-urlencoded接口
+	 * @param adScheduleId 排期计划ID
+	 * @throws IOException 
+	 */
+	private String delTerminal(String  deviceId) throws IOException {
+		Map<String, String> paramsMap = new HashMap<String, String>();
+		paramsMap.put("terminalId", deviceId);
+		String param = Tools.paramsToString(paramsMap);
+		
+		String result = Tools.doPostForm(AdConstant.AD_URL_DELETETERMINAL, param);
+		return result;
+	}
+	
+	
 
 	@Override
 	public String checkDeviceSnUnique(String deviceSn) {

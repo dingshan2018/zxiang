@@ -46,8 +46,6 @@ public class AdConstant {
 	public final static String 	AD_URL_ADDSCHEDULE = "http://mmedia.bp.zcloudtechs.cn/mmedia/adpublish/api/addSchedule.action";
 	/** 审核通过下发排期计划URL	 */
 	public final static String 	AD_URL_PUBLISHSCHEDULE = "http://mmedia.bp.zcloudtechs.cn/mmedia/adpublish/api/publishSchedule.action";
-	
-	
 	/******************** 广告HTTP接口返回状态	*******************/
 	
 	/** 接口返回成功码	 */

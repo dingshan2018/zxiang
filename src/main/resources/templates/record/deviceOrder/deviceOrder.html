@@ -9,7 +9,7 @@
 				<div class="select-list">
 					<ul>
 						<li>
-							交易订单号： <input type="text" name="transactionId" id="transactionId" th:value="${transactionId}"/>
+							商户订单号： <input type="text" name="outTradeOrder" id="outTradeOrder" th:value="${outTradeOrder}"/>
 						</li>
 						<li>
 							设备编码： <input type="text" name="deviceCode" id="deviceCode"/>
@@ -73,8 +73,8 @@
 					visible: false
 				},
 				{
-					field : 'transactionId', 
-					title : '交易订单号'
+					field : 'outTradeOrder', 
+					title : '商户订单号'
 				},	
 				{
 					field : 'deviceCode', 
@@ -154,7 +154,7 @@
         });
         function queryParams (params) {
             return {
-            	transactionId: $('#transactionId').val()
+            	outTradeOrder: $('#outTradeOrder').val()
             };
           }
     </script>
