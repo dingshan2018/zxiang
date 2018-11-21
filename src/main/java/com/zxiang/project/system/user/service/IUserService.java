@@ -166,4 +166,11 @@ public interface IUserService
 	 * @return
 	 */
 	public User selectUserByOpenId(String openId);
+
+	/**
+	 * 查找加盟商业务员（机主）
+	 * @return
+	 */
+	public List<User> selectJoinSaleMan();
+	
 }

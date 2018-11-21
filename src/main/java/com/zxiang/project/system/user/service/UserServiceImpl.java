@@ -429,4 +429,12 @@ public class UserServiceImpl implements IUserService
 	public User selectUserByOpenId(String openId) {
 		return userMapper.selectUserByOpenId(openId);
 	}
+
+	/**
+	 * 查找加盟商业务员（机主）
+	 */
+	@Override
+	public List<User> selectJoinSaleMan() {
+		return userMapper.selectJoinSaleMan();
+	}
 }

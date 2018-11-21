@@ -2,6 +2,8 @@ package com.zxiang.project.record.tradeOrder.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.zxiang.project.record.tradeOrder.domain.TradeOrder;	
 
 /**
@@ -61,9 +63,9 @@ public interface TradeOrderMapper
 	public int deleteTradeOrderByIds(String[] tradeOrderIds);
 
 	/**
-	 *  查询未发货或部分发货的订单且支付完成且订单类型为购机订单的数据
+	 *  根据机主ID查询未发货或部分发货的订单且支付完成且订单类型为购机订单的数据
 	 * @return
 	 */
-	public List<TradeOrder> selectUnSendList();
+	public List<TradeOrder> selectUnSendList(@Param("userId")Integer userId);
 	
 }

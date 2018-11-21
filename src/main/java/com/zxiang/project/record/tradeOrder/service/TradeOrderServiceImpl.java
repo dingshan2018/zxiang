@@ -85,8 +85,8 @@ public class TradeOrderServiceImpl implements ITradeOrderService
 	 * 查询未发货或部分发货的订单且支付完成且订单类型为购机订单的数据
 	 */
 	@Override
-	public List<TradeOrder> selectUnSendList() {
-		return tradeOrderMapper.selectUnSendList();
+	public List<TradeOrder> selectUnSendList(Integer userId) {
+		return tradeOrderMapper.selectUnSendList(userId);
 	}
 	
 }

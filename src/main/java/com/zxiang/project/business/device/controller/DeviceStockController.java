@@ -134,8 +134,12 @@ public class DeviceStockController extends BaseController
 	@GetMapping("/outStockByTradeId")
 	public String outStockByTradeId(ModelMap mmap)
 	{
-		List<TradeOrder> tradeOrderList = tradeOrderService.selectUnSendList();
-		mmap.put("tradeOrderList", tradeOrderList);
+		//查询机主
+		List<User> userListJoin = userService.selectJoinSaleMan();
+		mmap.put("userListJoin", userListJoin);
+		//查询购机已付款订单
+		//List<TradeOrder> tradeOrderList = tradeOrderService.selectUnSendList(null);
+		//mmap.put("tradeOrderList", tradeOrderList);
 		Device device = new Device();
 		mmap.put("deviceList", deviceService.selectDeviceStockList(device));
 		
