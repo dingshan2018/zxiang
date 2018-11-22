@@ -113,14 +113,4 @@ public class DeviceIncomeDailyController extends BaseController
 		return toAjax(deviceIncomeDailyService.deleteDeviceIncomeDailyByIds(ids));
 	}
 	
-	
-	/**
-	 * 每日统计数据
-	 */
-	@PostMapping( "/statisticaldata")
-	@ResponseBody
-	public void statisticaldata()
-	{		
-		deviceIncomeDailyService.statisticaldata();
-	}
 }
