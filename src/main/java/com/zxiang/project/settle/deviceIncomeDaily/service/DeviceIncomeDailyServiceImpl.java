@@ -26,7 +26,7 @@ import com.zxiang.project.settle.userIncome.service.IUserIncomeService;
  * @author ZXiang
  * @date 2018-09-11
  */
-@Service
+@Service("deviceIncomeDailyService")
 public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService 
 {
 	private static final Logger logger = LoggerFactory.getLogger(DeviceIncomeDailyServiceImpl.class);

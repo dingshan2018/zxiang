@@ -123,5 +123,4 @@ public class DeviceIncomeDailyController extends BaseController
 	{		
 		deviceIncomeDailyService.statisticaldata();
 	}
-	
 }
