@@ -63,6 +63,8 @@ public class AdSchedule extends BaseEntity
 	private String totalTime;
 	/**支付状态:0未支付；1已全部支付；2押金已支付  */
 	private String payStatus;
+	/**H5广告URL  */
+	private String qrUrl;
 	
 	/**HTTP接口返回的tid  */
 	private String tId;
@@ -374,6 +376,14 @@ public class AdSchedule extends BaseEntity
 
 	public void setPayStatus(String payStatus) {
 		this.payStatus = payStatus;
+	}
+
+	public String getQrUrl() {
+		return qrUrl;
+	}
+
+	public void setQrUrl(String qrUrl) {
+		this.qrUrl = qrUrl;
 	}
 
 	public String toString() {

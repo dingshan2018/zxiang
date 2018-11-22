@@ -328,6 +328,13 @@
    	        $.modal.alertWarning(hasMaterial);
    	        return;
       	} */
+      	//H5广告不需要上传素材不需要审核不需要支付
+      	var adSchedule = getAdScheduleInfo(rows);
+      	if(adSchedule.release_position == "02"){
+      		$.modal.alertWarning("页面H5广告不能上传素材!");
+   	        return;
+      	}
+      	
       	//改成在未预约之前可以上传多次素材，每次模板元素只能单选，即同一批次上传的文件都是同一模板元素的
       	var hasOrder = getOrderNum(rows);
    		if (hasOrder > 0) {
@@ -445,22 +452,25 @@
    			return;
    		}
    		
-   		var adSchedule = getAdScheduleInfo(rows);
    		//var status = $.table.selectColumns($.table._option.columns[5].field);
    		//var pId = $.table.selectColumns($.table._option.columns[8].field);
    		
-   		var batch = getMaxBatch(rows);
-   		if (batch <= 0) {
-   			$.modal.alertWarning(noMaterial);
-   	        return;
-   		}
-   		if (adSchedule.status != toBeReleased) {
-   	        $.modal.alertWarning('当前非待发布状态,只有投放状态为待发布的广告才能发布!');
-   	        return;
-      	}
-   		if (adSchedule.payStatus != hasPay) {
-   	        $.modal.alertWarning('支付广告费用后才能发布!');
-   	        return;
+   		//H5广告不需要上传素材不需要审核不需要支付
+      	var adSchedule = getAdScheduleInfo(rows);
+      	if(adSchedule.release_position == "01"){
+      		var batch = getMaxBatch(rows);
+       		if (batch <= 0) {
+       			$.modal.alertWarning(noMaterial);
+       	        return;
+       		}
+       		if (adSchedule.status != toBeReleased) {
+       	        $.modal.alertWarning('当前非待发布状态,只有投放状态为待发布的广告才能发布!');
+       	        return;
+          	}
+       		if (adSchedule.payStatus != hasPay) {
+       	        $.modal.alertWarning('支付广告费用后才能发布!');
+       	        return;
+          	}
       	}
    		
    		$.modal.confirm("确定发布该条" + $.table._option.modalName + "信息吗？", function() {
@@ -487,19 +497,21 @@
   	//行数据发布方法
     function releaseOnline(adScheduleId) {
    		var adSchedule = getAdScheduleInfo(adScheduleId);
-   		var batch = getMaxBatch(adScheduleId);
-   		if (batch <= 0) {
-   			$.modal.alertWarning(noMaterial);
-   	        return;
+   		if(adSchedule.release_position == "01"){
+   			var batch = getMaxBatch(adScheduleId);
+   	   		if (batch <= 0) {
+   	   			$.modal.alertWarning(noMaterial);
+   	   	        return;
+   	   		}
+   	   		if (adSchedule.status != toBeReleased) {
+   	   	        $.modal.alertWarning('当前非待发布状态,只有投放状态为待发布的广告才能发布!');
+   	   	        return;
+   	      	}
+   	   		if (adSchedule.payStatus != hasPay) {
+   	   	        $.modal.alertWarning('支付广告费用后才能发布!');
+   	   	        return;
+   	      	}	
    		}
-   		if (adSchedule.status != toBeReleased) {
-   	        $.modal.alertWarning('当前非待发布状态,只有投放状态为待发布的广告才能发布!');
-   	        return;
-      	}
-   		if (adSchedule.payStatus != hasPay) {
-   	        $.modal.alertWarning('支付广告费用后才能发布!');
-   	        return;
-      	}
    		
    		$.modal.confirm("确定发布" + adSchedule.scheduleName + " 广告信息吗？", function() {
 

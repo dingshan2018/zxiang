@@ -65,4 +65,12 @@ public class AdConstant {
 	/** 广告支付类型 押金支付 3	 */
 	public final static String PAY_TYPE_PRE = "3";
 	
+	/******************** 广告投放位置（类型）	*******************/
+	/** 终端广告	 */
+	public final static String RELEASE_TYPE_TERMINAL = "01";
+	/** 页面广告H5 */
+	public final static String RELEASE_TYPE_H5 = "02";
+	
+	
+	
 }
