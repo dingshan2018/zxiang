@@ -134,7 +134,7 @@ public class TerminalParamController extends BaseController
 	{
 		try {
 			int paramIssued = terminalParamService.paramIssued(ids);
-			return success("成功下发 "+ paramIssued + " 条终端参数!");
+			return success("已下发!");
 			
 		} catch (IOException e) {
 			e.printStackTrace();

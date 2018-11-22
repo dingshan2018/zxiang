@@ -275,6 +275,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </update>
     
+    <!-- 更新设备的qrUrl -->
+    <update id="updateQrUrl">
+        update zx_device set qr_url=#{qrUrl},qr_schedule_id=#{adScheduleId} where device_id in 
+        <foreach item="deviceId" collection="deviceIds" open="(" separator="," close=")">
+            #{deviceId}
+        </foreach>
+    </update>
+    
     <select id="checkDeviceSnUnique" parameterType="String" resultType="int">
 		SELECT COUNT(1) FROM `zx_device` WHERE BINARY device_sn=#{deviceSn}
 	</select>

@@ -31,6 +31,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.StringUtils;
 import com.zxiang.common.utils.excel.EXCELObject;
 import com.zxiang.project.advertise.adMaterial.domain.AdMaterial;
 import com.zxiang.project.advertise.adMaterial.mapper.AdMaterialMapper;
@@ -44,6 +45,8 @@ import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
 import com.zxiang.project.advertise.adSchedule.domain.ElementType;
 import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
 import com.zxiang.project.advertise.adSchedule.mapper.AdScheduleMapper;
+import com.zxiang.project.advertise.releaseDevice.domain.ReleaseDevice;
+import com.zxiang.project.advertise.releaseDevice.mapper.ReleaseDeviceMapper;
 import com.zxiang.project.advertise.utils.AdHttpResult;
 import com.zxiang.project.advertise.utils.Tools;
 import com.zxiang.project.advertise.utils.constant.AdConstant;
@@ -81,6 +84,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	private IServerService serverService;
 	@Autowired
 	private TerminalMapper terminalMapper;
+	@Autowired
+	private ReleaseDeviceMapper releaseDeviceMapper;
 	
 	/**
      * 查询广告投放信息
@@ -137,9 +142,19 @@ public class AdScheduleServiceImpl implements IAdScheduleService
      * @return 结果
      */
 	@Override
+	@Transactional
 	public int deleteAdScheduleByIds(String ids)
 	{
-		return adScheduleMapper.deleteAdScheduleByIds(Convert.toStrArray(ids));
+		String[] adIds = Convert.toStrArray(ids);
+		//删除关联表数据
+		//1.删除zx_ad_release_range表关联数据
+		int delRangeNum = adReleaseRangeMapper.deleteRangeByAdIds(adIds);
+		//2.删除zx_ad_release_timer表关联数据
+		int delTimerNum = adReleaseTimerMapper.deleteTimerByAdIds(adIds);
+		//3.删除zx_ad_material表关联数据
+		int delMaterialNum = adMaterialMapper.deleteMaterialByAdIds(adIds);
+		//4.最后删除广告表数据
+		return adScheduleMapper.deleteAdScheduleByIds(adIds);
 	}
 
 
@@ -149,25 +164,35 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		logger.info("adSchedule:"+adSchedule.toString());
 		try {
 			String scheduleName = adSchedule.getScheduleName();
-			String templateId = adSchedule.getThemeTemplateId();
-			Integer advertiser = adSchedule.getAdvertiseId();
-			String totalTime = adSchedule.getTotalTime();
-			
-			String result = savePlaybill(scheduleName, templateId, advertiser.toString(), totalTime);
-			//返回结果封装
-			AdHttpResult adHttp = Tools.analysisResult(result);
-			if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
-				JSONObject jsonResult =  (JSONObject) adHttp.get("data");
-				String pId = jsonResult.getString("pid");
-				String tId = jsonResult.getString("tid");
+			String releasePosition = adSchedule.getReleasePosition();
+			//是终端广告还是页面广告，页面H5广告不需要模板不需要审核不需要支付
+			if(AdConstant.RELEASE_TYPE_TERMINAL.equals(releasePosition)){
+				String templateId = adSchedule.getThemeTemplateId();
+				Integer advertiser = adSchedule.getAdvertiseId();
+				String totalTime = adSchedule.getTotalTime();
+				
+				String result = savePlaybill(scheduleName, templateId, advertiser.toString(), totalTime);
+				//返回结果封装
+				AdHttpResult adHttp = Tools.analysisResult(result);
+				if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
+					JSONObject jsonResult =  (JSONObject) adHttp.get("data");
+					String pId = jsonResult.getString("pid");
+					String tId = jsonResult.getString("tid");
 
-				adSchedule.setpId(pId);
-				adSchedule.settId(tId);
+					adSchedule.setpId(pId);
+					adSchedule.settId(tId);
+				}else{
+					logger.error("调用新增推广计划接口失败!" + adHttp.toString());
+					throw new RRException("调用新增推广计划接口失败!");
+				}
+			}else if(AdConstant.RELEASE_TYPE_H5.equals(releasePosition)){
+				//页面H5广告不需要模板不需要审核不需要支付
+				//adSchedule.setPayStatus("1");
+				
 			}else{
-				logger.error("调用新增推广计划接口失败!" + adHttp.toString());
-				throw new RRException("调用新增推广计划接口失败!");
+				logger.error("广告投放位置类型错误!" + releasePosition);
+				throw new RRException("广告投放位置类型错误!");
 			}
-			
 		} catch (Exception e) {
 			logger.error("saveAdTemplates error:" + e);
 			throw e;
@@ -219,7 +244,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	@Override
 	@Transactional
 	public int materialUpload(List<MultipartFile> files,String adScheduleId,
-			String elementId,String operatorUser) throws Exception{
+			String elementId,String elementName,String operatorUser) throws Exception{
 
 		int saveNum = 0;
 		try {
@@ -250,7 +275,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 						logger.info("teid:"+teid+",tresid:"+tresid+",\tpreview:"+preview);
 						//业务处理 保存素材文件
 						saveNum += insertMaterial(adSchedule.getAdScheduleId(),teid,
-								tresid,preview,maxBatch,(i+1),operatorUser);
+								tresid,preview,maxBatch,(i+1),operatorUser,elementName);
 						
 					}else{
 						logger.error("调用上传素材信息接口失败!" + adHttp.toString());
@@ -279,10 +304,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	 * @param batch	上传批次号
 	 * @param sequence	上传顺序
 	 * @param operator	操作者
+	 * @param elementName	素材类型,保存在ad_material表remark字段用来判断价格
 	 * @return
 	 */
 	private int insertMaterial(Integer adScheduleId, String teid, 
-			String tresid, String preview,int batch,int sequence,String operator) {
+			String tresid, String preview,int batch,int sequence,String operator,String elementName) {
 		AdMaterial adMaterial = new AdMaterial();
 		adMaterial.setAdScheduleId(adScheduleId);
 		adMaterial.setPreview(preview);
@@ -292,6 +318,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		adMaterial.setSequence(sequence);
 		adMaterial.setCreateBy(operator);
 		adMaterial.setCreateTime(new Date());
+		adMaterial.setRemark(elementName);
 		return adMaterialMapper.insertAdMaterial(adMaterial);
 	}
 
@@ -300,10 +327,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	public int orderSave(AdSchedule adSchedule,String operatorUser) throws Exception{
 		
 		try {
+			Integer adScheduleId = adSchedule.getAdScheduleId();
 			Date createDate = new Date();
 			//1.插入广告投放范围表	 一对一
 			AdReleaseRange adReleaseRange = new AdReleaseRange();
-			adReleaseRange.setAdScheduleId(adSchedule.getAdScheduleId());
+			adReleaseRange.setAdScheduleId(adScheduleId);
 			String releaseType = adSchedule.getReleaseType();
 			adReleaseRange.setReleaseType(releaseType);
 			adReleaseRange.setCreateBy(operatorUser);
@@ -319,6 +347,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 				adReleaseRange.setPlaceGrade(adSchedule.getPlaceGrade());
 			}
 			String deviceIds = adSchedule.getDeviceIds();
+			int deviceNum = deviceIds.split(",").length;
+			
 			adReleaseRange.setDevices(deviceIds);
 			adReleaseRangeMapper.insertAdReleaseRange(adReleaseRange);
 			
@@ -336,77 +366,137 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 				String lastTime = time.getString("endTime");
 				
 				AdReleaseTimer adReleaseTimer = new AdReleaseTimer();
-				adReleaseTimer.setAdScheduleId(adSchedule.getAdScheduleId());
-				adReleaseTimer.setReleaseBeginTime(yyyyMMddHHmmSFormat.parse(beginTime));
-				adReleaseTimer.setReleaseEndTime(yyyyMMddHHmmSFormat.parse(lastTime));
+				adReleaseTimer.setAdScheduleId(adScheduleId);
+				adReleaseTimer.setReleaseBeginTime(yyyyMMddSFormat.parse(beginTime));
+				adReleaseTimer.setReleaseEndTime(yyyyMMddSFormat.parse(lastTime));
 				adReleaseTimer.setCreateBy(operatorUser);
 				adReleaseTimer.setCreateTime(createDate);
 				adReleaseTimerMapper.insertAdReleaseTimer(adReleaseTimer);
 				
-				//处理时间
+				
+				/*//处理时间
 				String startDate = beginTime.substring(0, beginTime.lastIndexOf(" "));
 				String startTime = beginTime.substring(beginTime.lastIndexOf(" ") + 1);
-
 				String endDate = lastTime.substring(0, lastTime.lastIndexOf(" "));
-				String endTime = lastTime.substring(lastTime.lastIndexOf(" ") + 1);
+				String endTime = lastTime.substring(lastTime.lastIndexOf(" ") + 1);*/
+				//现在原来的yyyymmddhhmm改成yyyymmdd,开始时间默认00:00,结束时间2359
 				
 				HashMap<String, Object> timeSlot = new HashMap<>();
-				timeSlot.put("startDate", startDate);
-				timeSlot.put("endDate", endDate);
-				timeSlot.put("startTime", startTime);
-				timeSlot.put("endTime", endTime);
+				timeSlot.put("startDate", beginTime);
+				timeSlot.put("endDate", lastTime);
+				timeSlot.put("startTime", "00:00");
+				timeSlot.put("endTime", "23:59");
 				//Map转换成JSON
 				String jsonTimeSlot = JSON.toJSONString(timeSlot); 
 				timeSlots.add(jsonTimeSlot);
 				
 				if(deadLineDate == null){
-					deadLineDate = yyyyMMddSFormat.parse(endDate);
+					deadLineDate = yyyyMMddSFormat.parse(lastTime);
 				}
 				
 				//取最后日期
-				deadLineDate = compareDate(deadLineDate, yyyyMMddSFormat.parse(endDate));
+				deadLineDate = compareDate(deadLineDate, yyyyMMddSFormat.parse(lastTime));
 				
 				//获取时间段之间的相差天数
-				days += differentDaysByMillisecond(yyyyMMddSFormat.parse(startDate), yyyyMMddSFormat.parse(endDate));
+				days += differentDaysByMillisecond(yyyyMMddSFormat.parse(beginTime), yyyyMMddSFormat.parse(lastTime));
 			}
 			
-			//这边的参数tid是设备的ID，而不是广告表的tid，需要修改!
-			String pIds = adSchedule.getpId();
-			String result = addSchedule(pIds, deviceIds, timeSlots.toString(), yyyyMMddSFormat.format(deadLineDate));
-			//返回结果封装
-			AdHttpResult adHttp = Tools.analysisResult(result);
-			//保存排期ID
-			if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
-				JSONObject data = (JSONObject) adHttp.get("data");
-				String scheduleId = (String) data.get("scheduleId");
-				adSchedule.setSxScheduleId(scheduleId);
+			//3.终端广告需要生成排期,页面H5广告不需要生成排期
+			String releasePosition = adSchedule.getReleasePosition();
+			String priceType = null;
+			if(AdConstant.RELEASE_TYPE_TERMINAL.equals(releasePosition)){
+				//终端广告预约设备后广告状态变为待审核
+				adSchedule.setStatus(AdConstant.AD_WAIT_ADUIT);
+				//终端广告预约设备后计算价格,按照素材表显性文字展示判断,图片/视频/图片视频
+				priceType = getPriceType(adScheduleId);
+				
+				//这边的参数tid是设备的ID，而不是广告表的tid，需要修改!
+				String pIds = adSchedule.getpId();
+				String result = addSchedule(pIds, deviceIds, timeSlots.toString(), yyyyMMddSFormat.format(deadLineDate));
+				//返回结果封装
+				AdHttpResult adHttp = Tools.analysisResult(result);
+				//保存排期ID
+				if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
+					JSONObject data = (JSONObject) adHttp.get("data");
+					String scheduleId = (String) data.get("scheduleId");
+					adSchedule.setSxScheduleId(scheduleId);
 
-			}else{
-				logger.error("调用排期接口失败!" + adHttp.toString());
-				throw new RRException("调用排期接口失败!");
+				}else{
+					logger.error("调用排期接口失败!" + adHttp.toString());
+					throw new RRException("调用排期接口失败!");
+				}
+			}else if(AdConstant.RELEASE_TYPE_H5.equals(releasePosition)){
+				//页面H5广告预约设备后广告状态变为待发布
+				adSchedule.setStatus(AdConstant.AD_WAIT_PUBLISH);
+				//页面H5广告预约设备后计算价格;
+				priceType = AdConstant.AD_TYPE_H5;
 			}
 			
-			//预约设备后广告状态变为待审核
-			adSchedule.setStatus(AdConstant.AD_WAIT_ADUIT);
+			//计算总价和押金  总价= 计费类型*days*播放设备数量,押金=总价*比率
+			if (StringUtils.isNotEmpty(priceType)) {
+				AdPriceCfg adPriceCfg = adPriceCfgMapper.getPriceByType(priceType);
+				if(adPriceCfg != null){
+					float totalPay = adPriceCfg.getDailyPrice() * days * deviceNum;
+					float prepay = totalPay * AdConstant.PREPAY;
+					adSchedule.setTotalPay(totalPay);
+					adSchedule.setPrepay(prepay);
+				}
+			}
+			
+			//4.插入zx_release_device表
+			List<ReleaseDevice> releaseDeviceList = new ArrayList<ReleaseDevice>();
+			String[] devices = Convert.toStrArray(deviceIds);
+			for (String deviceId : devices) {
+				ReleaseDevice releaseDevice = new ReleaseDevice();
+				releaseDevice.setScheduleId(adScheduleId);
+				releaseDevice.setReleasePosition(releasePosition);
+				releaseDevice.setDeviceId(Integer.parseInt(deviceId));
+				releaseDeviceList.add(releaseDevice);
+			}
+			//批量插入ReleaseDevice表数据
+			releaseDeviceMapper.batchInsert(releaseDeviceList);
+			
+			//5.修改广告计划数据
 			//投放终端数
-			int deviceNum = deviceIds.split(",").length;
 			adSchedule.setReleaseTermNum(deviceNum);
-			// 计算总价和押金  总价= 计费类型*days*播放设备数量,押金=总价*比率
-			// 先获取该投放位置的单价
-			AdPriceCfg adPriceCfg = adPriceCfgMapper.getPriceByType(adSchedule.getReleasePosition());
-			
-			if(adPriceCfg != null){
-				float totalPay = adPriceCfg.getDailyPrice() * days * deviceNum;
-				float prepay = totalPay * AdConstant.PREPAY;
-				adSchedule.setTotalPay(totalPay);
-				adSchedule.setPrepay(prepay);
-			}
 			
 			return updateAdSchedule(adSchedule);
 			
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+	
+	/**
+	 *  获取终端广告的计费价格类型
+	 *  包含图片01;包含视频02;包含图片和视频返回04
+	 * @param adScheduleId
+	 * @return
+	 */
+	public String getPriceType(Integer adScheduleId){
+		
+		String priceType = null;
+		List<String> typeList = new ArrayList<String>();
+		
+		List<AdMaterial> materialList = adMaterialMapper.getDistinctList(adScheduleId);
+		if(materialList != null && materialList.size() > 0){
+			for (AdMaterial adMaterial : materialList) {
+				String materialType = adMaterial.getRemark();
+				typeList.add(materialType);
+			}
+			if(typeList.contains(AdConstant.MATERIAL_TYPE_PHOTO)){
+				priceType = AdConstant.AD_TYPE_PHOTO;
+			}
+			if(typeList.contains(AdConstant.MATERIAL_TYPE_VIDEO)){
+				priceType = AdConstant.AD_TYPE_VIDEO;
+			}
+			if(typeList.contains(AdConstant.MATERIAL_TYPE_PHOTO) && 
+					typeList.contains(AdConstant.MATERIAL_TYPE_VIDEO)){
+				priceType = AdConstant.AD_TYPE_PHOTO_VIDEO;
+			}
+		}
+		
+		return priceType;
 	}
 	
 	@Override
@@ -436,39 +526,65 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	@Override
 	@Transactional
 	public int releaseOnlineSave(AdSchedule adSchedule) throws IOException {
-		//1.发布时下发排期计划
-		String result = publishSchedule(adSchedule.getSxScheduleId());
-		//返回结果封装
-		AdHttpResult adHttp = Tools.analysisResult(result);
-		if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
-			JSONObject data = (JSONObject) adHttp.get("data");
-			List<JSONObject> adUrls = (List<JSONObject>) data.get("adUrls");
-			for (JSONObject jsonObject : adUrls) {
-				String adUrl = jsonObject.getString("adUrl");
-				String terminalId = jsonObject.getString("terminalId");
-				//2.下发更改广告主题	
-				String[] deviceIds = Convert.toStrArray(terminalId);
-				if(deviceIds.length > 0){
-					//保存广告URL链接
-					int updateNum = deviceMapper.updateAdUrlByTid(adUrl,deviceIds);
-					logger.info("成功更新:"+updateNum+" 条设备adUrl数据");
-					for (String deviceId : deviceIds) {
-						try {
-							//下发广告更新主题命令
-							adIssued(deviceId, adUrl);
-						} catch (Exception e) {
-							e.printStackTrace();
+		
+		//如果是H5广告不需要下发排期计划
+		Integer adScheduleId = adSchedule.getAdScheduleId();
+		String releasePosition = adSchedule.getReleasePosition();
+		String qrCodeUrl = adSchedule.getQrUrl();
+		
+		if(AdConstant.RELEASE_TYPE_TERMINAL.equals(releasePosition)){
+			//1.发布时下发排期计划
+			String result = publishSchedule(adSchedule.getSxScheduleId());
+			//返回结果封装
+			AdHttpResult adHttp = Tools.analysisResult(result);
+			if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
+				JSONObject data = (JSONObject) adHttp.get("data");
+				List<JSONObject> adUrls = (List<JSONObject>) data.get("adUrls");
+				for (JSONObject jsonObject : adUrls) {
+					String adUrl = jsonObject.getString("adUrl");
+					String terminalId = jsonObject.getString("terminalId");
+					//2.下发更改广告主题	
+					String[] deviceIds = Convert.toStrArray(terminalId);
+					if(deviceIds.length > 0){
+						//保存广告URL链接
+						int updateNum = deviceMapper.updateAdUrlByTid(adUrl,deviceIds);
+						logger.info("成功更新:"+updateNum+" 条设备adUrl数据");
+						for (String deviceId : deviceIds) {
+							try {
+								//下发广告更新主题命令
+								adIssued(deviceId, adUrl);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
 					}
 				}
+			} else{
+				logger.error("调用审核通过下发排期计划接口失败!" + adHttp.toString());
+				throw new RRException("调用排期接口失败!");
 			}
-		} else{
-			logger.error("调用审核通过下发排期计划接口失败!" + adHttp.toString());
-			throw new RRException("调用排期接口失败!");
+		}else if(AdConstant.RELEASE_TYPE_H5.equals(releasePosition)){
+			//更新H5的二维码URL
+			//保存qrURL链接,deviceIds通过设备投放范围关联
+			AdReleaseRange range = adReleaseRangeMapper.selectAdRangeByAd(adScheduleId);
+			if(range != null){
+				String devices = range.getDevices();
+				String[] deviceIds = Convert.toStrArray(devices);
+				int updateQrUrl = deviceMapper.updateQrUrl(qrCodeUrl, deviceIds,adScheduleId);
+				logger.info("成功更新:"+updateQrUrl+" 条设备qrUrl数据");
+				for (String deviceId : deviceIds) {
+					try {
+						//下发更新终端二维码 
+						qrCodeIssued(deviceId,qrCodeUrl);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 		
 		//若广告的status已经为04则已经发布过不再更新，若没有发布则进行发布操作
-		AdSchedule ad  = adScheduleMapper.selectAdScheduleById(adSchedule.getAdScheduleId());
+		AdSchedule ad  = adScheduleMapper.selectAdScheduleById(adScheduleId);
 		if(AdConstant.AD_WAIT_PLAY.equals(ad.getStatus())){
 			return 0;
 		}else{
@@ -481,8 +597,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	/**
 	 * 更改广告主题下发命令
 	 * 参数封装方法
-	 * @param terminal
-	 * @param terminalTimer
+	 * @param deviceId 
+	 * @param adUrl
 	 * @throws IOException
 	 */
 	private void adIssued(String deviceId,String adUrl) throws IOException{
@@ -498,6 +614,25 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		}
 	}
 	
+	/**
+	 *  下发更新终端二维码 下发命令
+	 *  参数封装方法
+	 * @param deviceId
+	 * @param qrCodeUrl
+	 * @throws IOException
+	 */
+	private void qrCodeIssued(String deviceId,String qrCodeUrl) throws IOException{
+		
+		Terminal terminal = terminalMapper.selectTerByDeviceId(Integer.parseInt(deviceId));
+		if(terminal != null){
+			JSONObject reqJson = new JSONObject();
+			reqJson.put("termCode",terminal.getTerminalCode());
+			reqJson.put("QrUrl",qrCodeUrl);
+			reqJson.put("command","18");//参数下发命令0x12,转十进制为18
+			
+			serverService.issuedCommand(terminal,reqJson);
+		}
+	}
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ThemeTemplate> getThemeList() {

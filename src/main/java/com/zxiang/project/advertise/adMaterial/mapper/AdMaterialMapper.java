@@ -82,5 +82,20 @@ public interface AdMaterialMapper
 	 * @return
 	 */
 	public List<AdMaterial> selectListByAdSchId(@Param("adScheduleId") Integer adScheduleId);
+
+	/**
+	 * 根据广告ID查询该广告下不同的素材类型
+	 * @param adScheduleId
+	 * @return
+	 */
+	public List<AdMaterial> getDistinctList(@Param("adScheduleId")Integer adScheduleId);
+	
+	/**
+	 * 通过广告ID删除数据
+	 * @param adIds
+	 * @return
+	 */
+	public int deleteMaterialByAdIds(String[] adIds);
+
 	
 }

@@ -65,4 +65,33 @@ public class AdConstant {
 	/** 广告支付类型 押金支付 3	 */
 	public final static String PAY_TYPE_PRE = "3";
 	
+	/******************** 广告投放位置（类型）	*******************/
+	/** 终端广告	 */
+	public final static String RELEASE_TYPE_TERMINAL = "01";
+	/** 页面广告H5 */
+	public final static String RELEASE_TYPE_H5 = "02";
+	
+	
+	/******************** 广告类型（字典表ad_type）	*******************/
+	/** 终端轮播广告	 */
+	public final static String AD_TYPE_PHOTO = "01";
+	/** 终端视频广告 */
+	public final static String AD_TYPE_VIDEO = "02";
+	/** 页面广告H5 */
+	public final static String AD_TYPE_H5 = "03";
+	/** 终端页面和轮播两种类型广告 */
+	public final static String AD_TYPE_PHOTO_VIDEO = "04";
+	
+	
+	/******************** 广告素材包含的文件类型	*******************/
+	/** 图片 */
+	public final static String MATERIAL_TYPE_PHOTO = "图片";
+	/** 视频 */
+	public final static String MATERIAL_TYPE_VIDEO = "视频";
+	
+	
+	
+	
+	
+	
 }

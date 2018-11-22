@@ -104,6 +104,10 @@
         		'name' : 'elementId',
         		/* 'value': $.form.selectCheckeds("element") */
         		'value': $("#element").val()
+        	},
+        	{
+        		'name' : 'elementName',
+        		'value': $("#element option:selected").text()
         	}];
     }
 
@@ -119,6 +123,7 @@
 
     function submitUpload () {
     	//var elements = $.form.selectCheckeds("element");
+    	//console.log("text:",$("#element option:selected").text());
     	var elements = $("#element").val();
     	if(elements.length <= 0){
     		$.modal.alertWarning("请先选择模板元素!");
