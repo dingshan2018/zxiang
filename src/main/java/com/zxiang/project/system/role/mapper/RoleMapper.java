@@ -2,6 +2,8 @@ package com.zxiang.project.system.role.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.zxiang.project.system.role.domain.Role;
 
 /**
@@ -91,5 +93,9 @@ public interface RoleMapper
      * @return 角色信息
      */
     public Role checkRoleKeyUnique(String roleKey);
+
+	public List<Role> selectByUserId(Long puserId);
+
+	public List<Role> selectByRoleName(@Param("roleNameList")List<String> roleNameList);
 
 }

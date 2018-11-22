@@ -34,7 +34,7 @@
         <i class="fa fa-trash-o"></i> 删除
       </a>
       <a class="btn btn-outline btn-info btn-rounded" onclick="salesmanList()" shiro:hasPermission="client:join:salesman">
-        <i class="fa fa-list-ul"></i> 业务员
+        <i class="fa fa-list-ul"></i> 员工管理
       </a>
     </div>
 
@@ -141,8 +141,8 @@
         		$.modal.alertWarning("请选择一条记录");
     			return;
         	}
-    		var url = ctx + "client/salesman/12/"+rowsData[0].joinId;
-            createMenuItem(url, $.table._option.modalName+'业务员');
+    		var url = ctx + "client/salesman/02/"+rowsData[0].joinId;
+            createMenuItem(url, $.table._option.modalName+'员工管理');
         }
     </script>
 </body>

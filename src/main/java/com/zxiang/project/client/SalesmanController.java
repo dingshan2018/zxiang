@@ -30,7 +30,7 @@ import com.zxiang.project.system.user.domain.User;
 import com.zxiang.project.system.user.service.IUserService;
 
 /**
- * 业务员信息
+ * 员工信息
  * 
  * @author zxiang
  */
@@ -54,7 +54,7 @@ public class SalesmanController extends BaseController
     private IPostService postService;
 
     @RequiresPermissions("client:salesman:view")
-    @GetMapping("/{userType}/{puserId}") // chiendType:业务员类型   业务员对应主体id
+    @GetMapping("/{userType}/{puserId}") // chiendType:员工类型   员工对应主体id
     public String salesman(@PathVariable String userType,@PathVariable Integer puserId, ModelMap mmap) {
     	mmap.put("userType", userType);
     	mmap.put("puserId", puserId);
@@ -68,20 +68,21 @@ public class SalesmanController extends BaseController
         startPage();
         List<User> list = userService.selectUserList(user);
         wxUserService.setbindStatus(list);
+        userService.setRoleName(list);
         return getDataTable(list);
     }
     /**
-	 * 新增业务员
+	 * 新增员工
 	 */
 	@GetMapping("/toAddSalesman/{userType}/{puserId}")
 	public String toAddSalesman(@PathVariable String userType,@PathVariable Integer puserId, ModelMap mmap) {
 		mmap.put("userType", userType);
 		mmap.put("puserId", puserId);
 		mmap.put("cliendName", userService.saleManClent(userType, puserId));
-		mmap.put("roles", roleService.selectRoleAll());
+		mmap.put("roles", roleService.selectRoleByUserType(userType,null,1));
 		return prefix+"/addSalesman";
 	}
-    @Log(title = "业务员管理", businessType = BusinessType.EXPORT)
+    @Log(title = "员工管理", businessType = BusinessType.EXPORT)
     @RequiresPermissions("client:salesman:export")
     @PostMapping("/export")
     @ResponseBody
@@ -124,16 +125,14 @@ public class SalesmanController extends BaseController
 
 
     /**
-     * 修改业务员
+     * 修改员工
      */
     @GetMapping("/edit/{userId}")
     public String edit(@PathVariable("userId") Long userId, ModelMap mmap) {
     	User user = userService.selectUserById(userId);
     	mmap.put("user", user);
-    	if(user.getUserType().startsWith("1")) { // 1开头表示业务员
-    		mmap.put("clientName", userService.saleManClent(user.getUserType(), user.getPuserId()));
-    	}
-        mmap.put("roles", roleService.selectRolesByUserId(userId));
+    	mmap.put("clientName", userService.saleManClent(user.getUserType(), user.getPuserId()));
+    	mmap.put("roles", roleService.selectRoleByUserType(user.getUserType(),user.getUserId(),2));
         mmap.put("posts", postService.selectPostsByUserId(userId));
         List<User> userList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
 				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
@@ -142,22 +141,22 @@ public class SalesmanController extends BaseController
     }
 
     /**
-     * 修改保存业务员
+     * 修改保存员工
      */
     @RequiresPermissions("client:salesman:edit")
-    @Log(title = "业务员管理", businessType = BusinessType.UPDATE)
+    @Log(title = "员工管理", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @Transactional(rollbackFor = Exception.class)
     @ResponseBody
     public AjaxResult editSave(User user)  {
         if (StringUtils.isNotNull(user.getUserId()) && User.isAdmin(user.getUserId())) {
-            return error("不允许修改超级管理员业务员");
+            return error("不允许修改超级管理员员工");
         }
         return toAjax(userService.updateUser(user));
     }
 
     @RequiresPermissions("client:salesman:remove")
-    @Log(title = "业务员管理", businessType = BusinessType.DELETE)
+    @Log(title = "员工管理", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody
     public AjaxResult remove(String ids)
@@ -170,5 +169,21 @@ public class SalesmanController extends BaseController
         {
             return error(e.getMessage());
         }
+    }
+    /**
+     * 新增保存用户
+     */
+    @RequiresPermissions("system:user:add")
+    @Log(title = "用户管理", businessType = BusinessType.INSERT)
+    @PostMapping("/add")
+    @Transactional(rollbackFor = Exception.class)
+    @ResponseBody
+    public AjaxResult addSave(User user)
+    {
+        if (StringUtils.isNotNull(user.getUserId()) && User.isAdmin(user.getUserId()))
+        {
+            return error("不允许修改超级管理员用户");
+        }
+        return toAjax(userService.insertUser(user));
     }
 }

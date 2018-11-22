@@ -123,6 +123,8 @@ public class UserConstants
     public static final String ROLE_NAME_JOIN_SALESMAN = "加盟商业务员";
     public static final String ROLE_NAME_REPAIR = "服务商";
     public static final String ROLE_NAME_REPAIR_SALESMAN = "服务商业务员";
+    public static final String ROLE_NAME_TISSUESMAN = "补纸员";
+    public static final String ROLE_NAME_SERVICEMAN = "维修员";
     public static final String ROLE_NAME_AD = "广告商";
     public static final String ROLE_NAME_AD_SALESMAN = "广告商业务员";
     

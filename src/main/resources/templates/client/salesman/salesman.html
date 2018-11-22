@@ -63,6 +63,7 @@
   <script th:inline="javascript">
     var editFlag = [[${@permission.hasPermi('client:salesman:edit')}]];
     var removeFlag = [[${@permission.hasPermi('client:salesman:remove')}]];
+    var resetPwdFlag = [[${@permission.hasPermi('system:user:resetPwd')}]];
     var datas = [[${@dict.getType('sys_normal_disable')}]];
     var prefix = ctx + 'client/salesman';
 
@@ -81,7 +82,7 @@
 	        exportUrl: prefix + "/export",
 	        sortName: "createTime",
 	        sortOrder: "desc",
-	        modalName: "业务员",
+	        modalName: "员工",
 	        queryParams: queryParams,
 	        search: false,
 	        showExport: false,
@@ -104,7 +105,12 @@
 	        },
 	        {
 	            field: 'dept.deptName',
-	            title: '部门'
+	            title: '部门',
+	            visible: false
+	        },
+	        {
+	            field: 'roleNames',
+	            title: '角色'
 	        },
 	        {
 	            field: 'email',
@@ -148,6 +154,7 @@
 	                var actions = [];
 	                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.userId + '\')"><i class="fa fa-edit"></i> 编辑</a> ');
 	                actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.userId + '\')"><i class="fa fa-remove"></i> 删除</a> ');
+	                actions.push('<a class="btn btn-info btn-xs ' + resetPwdFlag + '" href="#" onclick="resetPwd(\'' + row.userId + '\')"><i class="fa fa-key"></i>重置</a>');
 	                return actions.join('');
 	            }
 	        }]
@@ -177,6 +184,11 @@
         	puserId: $('#puserId').val()
         };
       }
+    /*用户管理-重置密码*/
+    function resetPwd (userId) {
+      var url = ctx + 'system/user' + '/resetPwd/' + userId;
+      $.modal.open('重置密码', url, '800', '300');
+    }
   </script>
 </body>
 </html>
