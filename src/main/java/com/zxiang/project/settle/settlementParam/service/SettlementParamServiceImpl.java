@@ -1,6 +1,9 @@
 package com.zxiang.project.settle.settlementParam.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.zxiang.project.settle.settlementParam.mapper.SettlementParamMapper;
@@ -78,6 +81,28 @@ public class SettlementParamServiceImpl implements ISettlementParamService
 	public int deleteSettlementParamByIds(String ids)
 	{
 		return settlementParamMapper.deleteSettlementParamByIds(Convert.toStrArray(ids));
+	}
+
+	
+	
+	
+	
+	/***********************************手机数据接口*****************************************************/
+	
+	
+	@Override
+	public List<HashMap<String, Object>> selectzxplace(Map<String, Object> map) {
+		return settlementParamMapper.selectzxplace(map);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> selecadschedulelist(Map<String, Object> map) {
+		return settlementParamMapper.selecadschedulelist(map);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> selectzxtissuerecordlist(Map<String, Object> map) {
+		return settlementParamMapper.selectzxtissuerecordlist(map);
 	}
 	
 }

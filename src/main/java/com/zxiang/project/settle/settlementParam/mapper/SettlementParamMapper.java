@@ -1,7 +1,10 @@
 package com.zxiang.project.settle.settlementParam.mapper;
 
 import com.zxiang.project.settle.settlementParam.domain.SettlementParam;
-import java.util.List;	
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;	
 
 /**
  * 结算系数配置 数据层
@@ -58,5 +61,24 @@ public interface SettlementParamMapper
      * @return 结果
      */
 	public int deleteSettlementParamByIds(String[] settlementParamIds);
+	
+	
+	
+	/***********************************手机数据接口*****************************************************/
+	
+	public List<HashMap<String, Object>> selectzxplace(Map<String, Object> map);
+	public List<HashMap<String, Object>> selecadschedulelist(Map<String, Object> map);
+	public List<HashMap<String, Object>> selectzxtissuerecordlist(Map<String, Object> map);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

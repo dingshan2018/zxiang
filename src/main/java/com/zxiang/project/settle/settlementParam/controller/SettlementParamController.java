@@ -1,6 +1,9 @@
 package com.zxiang.project.settle.settlementParam.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,13 +13,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.zxiang.common.utils.Query;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
+import com.zxiang.framework.web.controller.BaseController;
+import com.zxiang.framework.web.domain.AjaxResult;
+import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.settle.settlementParam.domain.SettlementParam;
 import com.zxiang.project.settle.settlementParam.service.ISettlementParamService;
-import com.zxiang.framework.web.controller.BaseController;
-import com.zxiang.framework.web.page.TableDataInfo;
-import com.zxiang.framework.web.domain.AjaxResult;
 
 /**
  * 结算系数配置 信息操作处理
@@ -109,4 +114,33 @@ public class SettlementParamController extends BaseController
 		return toAjax(settlementParamService.deleteSettlementParamByIds(ids));
 	}
 	
+	
+	
+	
+	@PostMapping("/selectzxplacelist")
+	@ResponseBody
+	public List selectzxplacelist(Map<String, Object> params)
+	{
+		Query query = new Query(params);
+		List<HashMap<String, Object>> list = settlementParamService.selectzxplace(params);
+		return list;
+	}
+	
+	@PostMapping("/selecadschedulelist")
+	@ResponseBody
+	public List selecadschedulelist(Map<String, Object> params)
+	{
+		Query query = new Query(params);
+		List<HashMap<String, Object>> list = settlementParamService.selectzxplace(params);
+		return list;
+	}
+	
+	@PostMapping("/selectzxtissuerecordlist")
+	@ResponseBody
+	public List selectzxtissuerecordlist(Map<String, Object> params)
+	{
+		Query query = new Query(params);
+		List<HashMap<String, Object>> list = settlementParamService.selectzxplace(params);
+		return list;
+	}
 }

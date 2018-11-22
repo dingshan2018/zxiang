@@ -97,4 +97,72 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    
+    <!-- 手机端数据接口  -->
+    
+     <!-- 场所列表 -->
+     <select id="selectzxplace"  resultType="java.util.HashMap">
+        SELECT 
+		  name,
+		  device_count count,
+		  DATE_FORMAT(`create_time`,'%Y-%m-%d %H:%i:%s') time 
+		FROM
+		  zx_place 
+          <if test="offset != null and limit != null">
+			    limit #{offset}, #{limit}
+		  </if>
+     </select>
+    
+      <!-- 广告计划 -->
+    <select id="selecadschedulelist"  resultType="java.util.HashMap">
+       SELECT 
+		  schedule_name name,
+		  'H5广告' position,
+		   release_term_num num,
+		   '使用' status
+		FROM
+		  zx_ad_schedule 
+		  WHERE 
+		  STATUS = '04'
+		  AND release_position = '03'
+		  <if test="offset != null and limit != null">
+			   limit #{offset}, #{limit}
+		  </if>
+    </select>
+    
+    <!-- 出纸记录 -->
+      <select id="selectzxtissuerecordlist"  resultType="java.util.HashMap">
+	        SELECT 
+			  DATE_FORMAT(a.`create_time`,'%Y-%m-%d %H:%i:%s') TIME ,
+			  c.name placeName,
+			  b.device_sn deviceSn
+			FROM
+			  zx_tissue_record a,
+			  zx_device b,
+			  zx_place c 
+			WHERE a.status = '1' 
+			  AND a.`device_id` = b.`device_id` 
+			  AND a.`place_id` = c.place_id 
+			  AND DATE_FORMAT(a.create_time, '%Y-%m-%d') = CURDATE()
+			  <if test="offset != null and limit != null">
+			     limit #{offset}, #{limit}
+		      </if>
+    </select>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 </mapper>
