@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="WxUser" id="WxUserResult">
         <result property="wxUserId"    column="wx_user_id"    />
         <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
         <result property="subscribe"    column="subscribe"    />
         <result property="openId"    column="open_id"    />
         <result property="nickname"    column="nickname"    />
@@ -27,7 +28,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectWxUserVo">
-        select wx_user_id, user_id, subscribe, open_id, nickname, sex_desc, sex, language, city, province, country, head_img_url, subscribe_time, union_id, remark, create_by, create_time, update_by, update_time from zx_wx_user
+        select wx_user_id, user_id,
+        (select user_name from sys_user u where u.user_id = w.user_id) as user_name,
+         subscribe, open_id, nickname, sex_desc, sex, language, city, province, country, head_img_url, subscribe_time, union_id, remark, create_by, create_time, update_by, update_time 
+         from zx_wx_user w
     </sql>
 	
     <select id="selectWxUserList" parameterType="WxUser" resultMap="WxUserResult">
