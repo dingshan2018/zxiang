@@ -117,4 +117,6 @@ public interface IRoleService
      */
     public void setDefaultRole(User user,String clientName);
 
+	public List<Role> selectRoleByUserType(String userType, Long userId,int flag);
+
 }

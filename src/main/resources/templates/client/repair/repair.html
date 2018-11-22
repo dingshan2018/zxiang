@@ -37,13 +37,7 @@
         <i class="fa fa-list-ul"></i> 服务地区管理
       </a>
       <a class="btn btn-outline btn-info btn-rounded" onclick="salesmanList()" shiro:hasPermission="client:repair:salesman">
-        <i class="fa fa-list-ul"></i> 业务员
-      </a>
-      <a class="btn btn-outline btn-warning btn-rounded" onclick="tissuemanList()" shiro:hasPermission="client:repair:tissueman">
-        <i class="fa fa-list-ul"></i> 补纸员
-      </a>
-      <a class="btn btn-outline btn-success btn-rounded" onclick="servicemanList()" shiro:hasPermission="client:repair:serviceman">
-        <i class="fa fa-list-ul"></i> 维修员
+        <i class="fa fa-list-ul"></i> 员工管理
       </a>
     </div>
 
@@ -178,30 +172,8 @@
         		$.modal.alertWarning("请选择一条记录");
     			return;
         	}
-    		var url = ctx + "client/salesman/14/"+rowsData[0].repairId;
-            createMenuItem(url, $.table._option.modalName+'业务员');
-        }
-        function tissuemanList() {
-        	var rowsData = $("#bootstrap-table").bootstrapTable('getSelections', function (row) {
-        		return row;
-	  		});
-        	if(rowsData.length == 0 || rowsData.length > 1){
-        		$.modal.alertWarning("请选择一条记录");
-    			return;
-        	}
-    		var url = ctx + "client/salesman/16/"+rowsData[0].repairId;
-            createMenuItem(url, $.table._option.modalName+'补纸员');
-        }
-        function servicemanList() {
-        	var rowsData = $("#bootstrap-table").bootstrapTable('getSelections', function (row) {
-        		return row;
-	  		});
-        	if(rowsData.length == 0 || rowsData.length > 1){
-        		$.modal.alertWarning("请选择一条记录");
-    			return;
-        	}
-    		var url = ctx + "client/salesman/17/"+rowsData[0].repairId;
-            createMenuItem(url, $.table._option.modalName+'维修员');
+    		var url = ctx + "client/salesman/04/"+rowsData[0].repairId;
+            createMenuItem(url, $.table._option.modalName+'员工管理');
         }
     </script>
 </body>
