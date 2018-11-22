@@ -92,6 +92,7 @@ public class User extends BaseEntity
 
     /** 角色组 */
     private Long[] roleIds;
+    private String[] roleNames;
 
     /** 岗位组 */
     private Long[] postIds;
@@ -352,6 +353,14 @@ public class User extends BaseEntity
 
 	public void setWxUserId(Integer wxUserId) {
 		this.wxUserId = wxUserId;
+	}
+
+	public String[] getRoleNames() {
+		return roleNames;
+	}
+
+	public void setRoleNames(String[] roleNames) {
+		this.roleNames = roleNames;
 	}
 
 	@Override

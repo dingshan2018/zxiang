@@ -172,5 +172,7 @@ public interface IUserService
 	 * @return
 	 */
 	public List<User> selectJoinSaleMan();
+
+	public void setRoleName(List<User> list);
 	
 }
