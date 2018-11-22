@@ -72,5 +72,14 @@ public class AdConstant {
 	public final static String RELEASE_TYPE_H5 = "02";
 	
 	
+	/******************** 广告类型（字典表ad_type）	*******************/
+	/** 终端轮播广告	 */
+	public final static String AD_TYPE_PHOTO = "01";
+	/** 终端视频广告 */
+	public final static String AD_TYPE_VIDEO = "02";
+	/** 页面广告H5 */
+	public final static String AD_TYPE_H5 = "03";
+	
+	
 	
 }

@@ -67,4 +67,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <!-- 批量插入ReleaseDevice表数据  -->
+    <insert id="batchInsert">
+		insert into zx_release_device(schedule_id, release_position,device_id) values
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.scheduleId},#{item.releasePosition},#{item.deviceId})
+		</foreach>
+	</insert>
+	
 </mapper>

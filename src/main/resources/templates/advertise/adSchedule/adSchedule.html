@@ -235,9 +235,7 @@
                     actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.adScheduleId + '\')"><i class="fa fa-remove"></i>删除</a>'); */
                     actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="preview(\'' + row.adScheduleId +
                     	'\')"><i class="fa fa-search"></i>素材预览</a> ');
-
                     actions.push('<a class="btn btn-warning btn-xs" onclick="adPay(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>支付</a> ');
-                    
                     actions.push(
                         	'<a class="btn btn-info btn-xs ' + editFlag + '" href="#" onclick="adDetail(\'' + row.adScheduleId +
                         	'\')"><i class="fa fa-edit"></i>详情</a> ');
@@ -258,6 +256,22 @@
     });
 
 
+  //=======================本页面的公共常量=================================================
+    var selectOneRecord= "请选择一条记录";
+    var onlyOneRecord= "只能选择一条记录";
+    //01待预约；02待审核；03待发布；04待播放；05已播放；06审核失败；07排期失败
+    var toWaitOrder= "01";//待审核
+    var toAudit= "02";//待审核
+    var toBeReleased= "03";//待发布
+    var toPlay= "04";//待播放
+    var hasPay = "1";//已支付
+    //终端广告01,页面H5广告02
+    var type_terminal = "01";
+    var type_h5 = "02";
+    var hasMaterial = "该广告已上传过素材!";
+    var noMaterial = "该广告无素材,请先上传素材!";
+    
+  	//=======================本页面的函数方法=================================================
   	//素材预览
     function preview(adScheduleId) {
 		//用插件的方式预览
@@ -292,24 +306,6 @@
 		})
   	}
 
-    //
-    var selectOneRecord= "请选择一条记录";
-    var onlyOneRecord= "只能选择一条记录";
-    //01待预约；02待审核；03待发布；04待播放；05已播放；06审核失败；07排期失败
-    var toWaitOrder= "01";//待审核
-    var toAudit= "02";//待审核
-    var toBeReleased= "03";//待发布
-    var toPlay= "04";//待播放
-    var hasPay = "1";//已支付
-    var hasMaterial = "该广告已上传过素材!";
-    var noMaterial = "该广告无素材,请先上传素材!";
-
-  	//导出
-    function exportModule() {
-		//TODO
-    	console.log("TODO exportModule");
-  	}
-
   	//素材上传弹窗函数
     function materialUpload() {
     	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
@@ -322,15 +318,9 @@
    			return;
    		}
 
-   		/**判断是否上传过素材*/
-		/* var batch = getMaxBatch(rows);
-   		if (batch > 0) {
-   	        $.modal.alertWarning(hasMaterial);
-   	        return;
-      	} */
       	//H5广告不需要上传素材不需要审核不需要支付
       	var adSchedule = getAdScheduleInfo(rows);
-      	if(adSchedule.release_position == "02"){
+      	if(adSchedule.releasePosition == type_h5){
       		$.modal.alertWarning("页面H5广告不能上传素材!");
    	        return;
       	}
@@ -345,7 +335,7 @@
     	$.modal.open("素材上传", url);
 	}
 
-  	//预约
+  	//预约,未使用，同function order(adScheduleId)
     function order() {
 		var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
    		if (rows.length == 0) {
@@ -373,22 +363,26 @@
   	}
   	//行数据预约方法
     function order(adScheduleId) {
-   		var batch = getMaxBatch(adScheduleId);
-   		if (batch <= 0) {
-   			$.modal.alertWarning(noMaterial);
-   	        return;
-   		}
-   		var hasOrder = getOrderNum(adScheduleId);
+    	var adSchedule = getAdScheduleInfo(adScheduleId);
+    	//终端广告才判断是否有素材，H5广告不判断是否有素材
+      	if(adSchedule.releasePosition == type_terminal){
+      		var batch = getMaxBatch(adScheduleId);
+       		if (batch <= 0) {
+       			$.modal.alertWarning(noMaterial);
+       	        return;
+       		}
+      	}
+      	
+      	var hasOrder = getOrderNum(adScheduleId);
    		if (hasOrder > 0) {
    			$.modal.alertWarning("该广告已预约过!");
    	        return;
    		}
-
    		var url = ctx + "advertise/adSchedule/order/" + adScheduleId;
     	$.modal.open("广告投放预约", url);
   	}
 
-  	//审核
+  	//审核,未使用,同function audit(adScheduleId) {
     function audit() {
     	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
    		if (rows.length == 0) {
@@ -423,24 +417,30 @@
   	//行数据审核方法
     function audit(adScheduleId) {
    		var adSchedule = getAdScheduleInfo(adScheduleId);
-   		var batch = getMaxBatch(adScheduleId);
-   		if (batch <= 0) {
-   			$.modal.alertWarning(noMaterial);
-   	        return;
-   		}
-   		if (adSchedule.status == toPlay || adSchedule.status == toBeReleased) {
-   	        $.modal.alertWarning('该广告已审核通过!');
+      	if(adSchedule.releasePosition == type_terminal){
+      		var batch = getMaxBatch(adScheduleId);
+       		if (batch <= 0) {
+       			$.modal.alertWarning(noMaterial);
+       	        return;
+       		}
+       		if (adSchedule.status == toPlay || adSchedule.status == toBeReleased) {
+       	        $.modal.alertWarning('该广告已审核通过!');
+       	        return;
+          	}
+       		if (adSchedule.status != toAudit) {
+       	        $.modal.alertWarning('当前非待审核状态,只有投放状态为待审核的广告才能审核!');
+       	        return;
+          	}
+      	}else if(adSchedule.releasePosition == type_h5){
+      		$.modal.alertWarning("页面H5广告不需要审核!");
    	        return;
       	}
-   		if (adSchedule.status != toAudit) {
-   	        $.modal.alertWarning('当前非待审核状态,只有投放状态为待审核的广告才能审核!');
-   	        return;
-      	}
+   		
    		var url = ctx + "advertise/adSchedule/audit/" + adScheduleId;
     	$.modal.open("广告投放审核", url);
   	}
 
-  	//发布
+  	//发布,未使用,同function releaseOnline(adScheduleId) {
     function releaseOnline() {
     	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
    		if (rows.length == 0) {
@@ -457,7 +457,7 @@
    		
    		//H5广告不需要上传素材不需要审核不需要支付
       	var adSchedule = getAdScheduleInfo(rows);
-      	if(adSchedule.release_position == "01"){
+      	if(adSchedule.releasePosition == type_terminal){
       		var batch = getMaxBatch(rows);
        		if (batch <= 0) {
        			$.modal.alertWarning(noMaterial);
@@ -497,21 +497,23 @@
   	//行数据发布方法
     function releaseOnline(adScheduleId) {
    		var adSchedule = getAdScheduleInfo(adScheduleId);
-   		if(adSchedule.release_position == "01"){
+   		if(adSchedule.releasePosition == type_terminal){
+   			//终端广告才有判断是否有素材及是否支付,页面H5广告不判断
    			var batch = getMaxBatch(adScheduleId);
    	   		if (batch <= 0) {
    	   			$.modal.alertWarning(noMaterial);
    	   	        return;
    	   		}
-   	   		if (adSchedule.status != toBeReleased) {
-   	   	        $.modal.alertWarning('当前非待发布状态,只有投放状态为待发布的广告才能发布!');
-   	   	        return;
-   	      	}
    	   		if (adSchedule.payStatus != hasPay) {
    	   	        $.modal.alertWarning('支付广告费用后才能发布!');
    	   	        return;
    	      	}	
    		}
+   		
+   		if (adSchedule.status != toBeReleased) {
+	   	        $.modal.alertWarning('当前非待发布状态,只有投放状态为待发布的广告才能发布!');
+	   	        return;
+	    }
    		
    		$.modal.confirm("确定发布" + adSchedule.scheduleName + " 广告信息吗？", function() {
 
@@ -604,18 +606,24 @@
   	//二维码支付弹窗
     function adPay (adScheduleId) {
     	var adSchedule = getAdScheduleInfo(adScheduleId);
-    	if (adSchedule.status != toBeReleased) {
-   	        $.modal.alertWarning('广告审核通过后才能支付!');
-   	        return;
-      	}
-    	if (adSchedule.payStatus == hasPay) {
-   	        $.modal.alertWarning('该广告费用已支付,请勿重复支付!');
-   	        return;
-      	}
-		if(adSchedule.totalPay == '' || adSchedule.totalPay == null){
-    		$.modal.alertWarning("暂无支付信息!");
+    	if(adSchedule.releasePosition == type_terminal){
+    		if (adSchedule.status != toBeReleased) {
+       	        $.modal.alertWarning('广告审核通过后才能支付!');
+       	        return;
+          	}
+        	if (adSchedule.payStatus == hasPay) {
+       	        $.modal.alertWarning('该广告费用已支付,请勿重复支付!');
+       	        return;
+          	}
+    		if(adSchedule.totalPay == '' || adSchedule.totalPay == null){
+        		$.modal.alertWarning("暂无支付信息!");
+        		return;
+        	}
+    	}else{
+    		$.modal.alertWarning("页面H5广告不需要支付!");
     		return;
     	}
+    	
     	var url = ctx + "advertise/adSchedule/adPay/" + adScheduleId;
         $.modal.open("广告支付二维码", url, 400, 400);
     }

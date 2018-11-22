@@ -65,7 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         zas.is_del, zas.release_note, zas.create_by, zas.create_time, zas.update_by, zas.update_time,
         zas.advertise_id,
         (SELECT DISTINCT za.advertisor_name FROM zx_advertise za WHERE za.advertise_id =zas.`advertise_id`) advertiseName,
-        total_time,pay_status,qr_url FROM zx_ad_schedule zas  LEFT JOIN zx_ad_release_record a ON a.schedule_id = zas.ad_schedule_id LEFT JOIN zx_device b ON a.device_id=b.device_id
+        total_time,pay_status,zas.qr_url FROM zx_ad_schedule zas  LEFT JOIN zx_ad_release_record a ON a.schedule_id = zas.ad_schedule_id LEFT JOIN zx_device b ON a.device_id=b.device_id
     </sql>
 	
     <select id="selectAdScheduleList" parameterType="AdSchedule" resultMap="AdScheduleResult">

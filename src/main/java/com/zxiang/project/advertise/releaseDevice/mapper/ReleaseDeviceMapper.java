@@ -59,5 +59,12 @@ public interface ReleaseDeviceMapper
      * @return 结果
      */
 	public int deleteReleaseDeviceByIds(String[] releaseDeviceIds);
+
+	/**
+	 * 批量插入ReleaseDevice表数据
+	 * @param releaseDeviceList
+	 * @return
+	 */
+	public int batchInsert(List<ReleaseDevice> releaseDeviceList);
 	
 }
