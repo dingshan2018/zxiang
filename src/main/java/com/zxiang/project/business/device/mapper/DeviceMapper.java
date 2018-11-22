@@ -91,11 +91,20 @@ public interface DeviceMapper
 	public List<Device> getDeviceByareaId(@Param("province")String province,@Param("city") String city, @Param("county")String county);
 
 	/**
-	 * 更新设备的adUrl
-	 * @param adUrl
-	 * @param terminalId
+	 * 更新设备的adUrl	
+	 * @param adUrl 广告URL
+	 * @param terminalId 设备ID
 	 */
-	public int updateAdUrlByTid(@Param("adUrl")String adUrl, @Param("terminalIds")String[] terminalIds);
+	public int updateAdUrlByTid(@Param("adUrl")String adUrl,@Param("terminalIds")String[] terminalIds);
+	
+	/**
+	 * 更新设备的qrUrl
+	 * @param qrUrl 二维码URL
+	 * @param deviceIds  设备ID
+	 * @param adScheduleId  广告计划ID
+	 */
+	public int updateQrUrl(@Param("qrUrl")String qrUrl, 
+			@Param("deviceIds")String[] deviceIds, @Param("adScheduleId")Integer adScheduleId);
 
 	/**
 	 * 校验设备资产编号是否唯一

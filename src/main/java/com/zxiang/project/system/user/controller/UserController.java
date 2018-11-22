@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.utils.StringUtils;
 import com.zxiang.common.utils.poi.ExcelUtil;
-import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -53,7 +52,6 @@ public class UserController extends BaseController
     {
         return prefix + "/user";
     }
-    @DataFilter(personAlias="u.user_id")
     @RequiresPermissions("system:user:list")
     @PostMapping("/list")
     @ResponseBody

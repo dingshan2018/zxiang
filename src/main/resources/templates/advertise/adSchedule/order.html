@@ -166,7 +166,7 @@
 	    		endTime = endTime.replace(/-/g,'/'); 
 	    		var beginTimestamp = new Date(beginTime).getTime();
 	    		var endTimestamp = new Date(endTime).getTime();
-	    		if( beginTime >= endTime){
+	    		if( beginTime > endTime){
 	    			timeFlag = true;
 	    			break;
 	    		}
@@ -352,7 +352,7 @@
 	
 	      	for (var i = 0; i < deviceList.length; i++) {
 	       	 html += `<label class="checkbox-inline i-checks">
-	         	<input name="device" type="checkbox" value="${deviceList[i].deviceId}" >${deviceList[i].deviceCode}
+	         	<input name="device" type="checkbox" value="${deviceList[i].deviceId}" >${deviceList[i].deviceSn}
 	          	</label>`;
 	      	}
 	
@@ -451,11 +451,13 @@
 	    function initDateTimePicker (select) {
 	      $(select || '.date-time-picker').datetimepicker({
 	        language:  'zh-CN',
-	        format: 'yyyy-mm-dd hh:ii',
+	        //format: 'yyyy-mm-dd hh:ii',
+	        format: 'yyyy-mm-dd',
 	        todayBtn:  1,
 	        autoclose: true,
 	        todayHighlight: 1,
-	        startView: 3,
+	        startView: 2,
+	        minView:2,
 	        showMeridian: 1,
 	        minuteStep: 1
 	      }).on('changeDate', function(ev){

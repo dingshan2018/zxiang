@@ -20,6 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="updateTime"     column="update_time"    />
 		<result property="updateBy"       column="update_by"      />
 		<result property="remark"         column="remark"         />
+		<result property="isPhone"         column="is_phone"         />
 	</resultMap>
 	
 	<sql id="selectMenuVo">
@@ -27,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
 	<select id="selectMenusByUserId" parameterType="Long" resultMap="MenuResult">
-		select distinct m.menu_id, m.parent_id, m.menu_name, m.url, m.perms , m.menu_type, m.icon, m.order_num, m.create_time
+		select distinct m.menu_id, m.parent_id, m.menu_name, m.url, m.perms , m.menu_type, m.icon, m.order_num, m.create_time,m.is_phone
 		from sys_menu m
 			 left join sys_role_menu rm on m.menu_id = rm.menu_id
 			 left join sys_user_role ur on rm.role_id = ur.role_id
@@ -74,7 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="selectMenuById" parameterType="Long" resultMap="MenuResult">
 		SELECT t.menu_id, t.parent_id, t.menu_name, t.order_num, t.url, t.menu_type, t.visible, t.perms, t.icon, t.remark,
-			(SELECT menu_name FROM sys_menu WHERE menu_id = t.parent_id) parent_name
+			(SELECT menu_name FROM sys_menu WHERE menu_id = t.parent_id) parent_name,t.is_phone
 		FROM sys_menu t
 		where t.menu_id = #{menuId}
 	</select>
@@ -101,6 +102,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="icon !=null and icon != ''">icon = #{icon},</if>
  			<if test="remark != null and remark != ''">remark = #{remark},</if>
  			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			<if test="isPhone != null and isPhone != ''">is_phone = #{isPhone},</if>
  			update_time = sysdate()
  		</set>
  		where menu_id = #{menuId}
@@ -119,6 +121,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="icon != null and icon != ''">icon,</if>
  			<if test="remark != null and remark != ''">remark,</if>
  			<if test="createBy != null and createBy != ''">create_by,</if>
+ 			<if test="isPhone != null and isPhone != ''">is_phone,</if>
  			create_time
  		)values(
  			<if test="menuId != null and menuId != 0">#{menuId},</if>
@@ -132,6 +135,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="icon != null and icon != ''">#{icon},</if>
  			<if test="remark != null and remark != ''">#{remark},</if>
  			<if test="createBy != null and createBy != ''">#{createBy},</if>
+ 			<if test="isPhone != null and isPhone != ''">#{isPhone},</if>
  			sysdate()
  		)
 	</insert>

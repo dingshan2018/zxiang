@@ -66,7 +66,7 @@ public interface IUserIncomeService
 	 * 代理商
 	 * */
 	public List<HashMap<String, Object>> selectzxagentlist(HashMap<String, Object> map);
-	
+
 	/**
 	 * 代理商
 	 * */

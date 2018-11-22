@@ -277,4 +277,70 @@ public class RoleServiceImpl implements IRoleService
 		return userRoleMapper.deleteUserRoleByUserId(userId);
 	}
 
+	@Override
+	public List<Role> selectRoleByUserType(String userType, Long userId,int flag) { // 1、添加  2、修改
+		List<Role> roles = null;
+		List<Role> userRoles = null;
+		if(UserConstants.USER_TYPE_AGENT.equals(userType) || UserConstants.USER_TYPE_JOIN.equals(userType)) { // 代理商
+			if(flag == 1) {
+				List<String> list = new ArrayList<String>();
+				if(UserConstants.USER_TYPE_AGENT.equals(userType)){
+					list.add(UserConstants.ROLE_NAME_AGENT_SALESMAN);//
+				}else if(UserConstants.USER_TYPE_JOIN.equals(userType)) {
+					list.add(UserConstants.ROLE_NAME_AGENT_SALESMAN);
+				}
+				roles = roleMapper.selectByRoleName(list);
+			}else {
+				roles = roleMapper.selectRolesByUserId(userId);
+			}
+			if(roles == null) {
+				return null;
+			}
+			for (Role role : roles) {
+				role.setFlag(true);
+				role.setStatus("1");
+			}
+			return roles;
+		}else if(UserConstants.USER_TYPE_REPAIR.equals(userType)) { // 服务商
+			userRoles = roleMapper.selectRolesByUserId(userId);
+			if(userRoles != null && userRoles.size() > 0) {
+				for (Role role : userRoles) {
+					if (UserConstants.ROLE_NAME_REPAIR.equals(role.getRoleName())) {
+						role.setFlag(true);
+						role.setStatus("1");
+						return userRoles;
+					}
+				}
+			}
+			
+			List<String> list = new ArrayList<String>();
+			list.add(UserConstants.ROLE_NAME_REPAIR_SALESMAN);
+			list.add(UserConstants.ROLE_NAME_TISSUESMAN);
+			list.add(UserConstants.ROLE_NAME_SERVICEMAN);
+			roles = roleMapper.selectByRoleName(list);
+			if(roles == null) {
+				return null;
+			}
+			if(flag == 1) {
+				for (Role role : roles) {
+					if (UserConstants.ROLE_NAME_REPAIR_SALESMAN.equals(role.getRoleName())) {
+						role.setFlag(true);
+						return roles;
+					}
+				}
+			}else{
+				for (Role role : roles) {
+					for (Role userRole : userRoles)  {
+						if (role.getRoleId().longValue() == userRole.getRoleId().longValue()) {
+							role.setFlag(true);
+							break;
+						}
+					}
+				}
+			}
+			return roles;
+		}
+		return null;
+	}
+
 }

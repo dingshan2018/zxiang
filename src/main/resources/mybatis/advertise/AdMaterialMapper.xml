@@ -114,4 +114,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     	SELECT * FROM `zx_ad_material` WHERE ad_schedule_id = #{adScheduleId};
     </select>
     
+    <!-- 通过广告ID删除数据 -->
+    <delete id="deleteMaterialByAdIds" parameterType="String">
+        delete from zx_ad_material where ad_schedule_id in 
+        <foreach item="adScheduleId" collection="array" open="(" separator="," close=")">
+            #{adScheduleId}
+        </foreach>
+    </delete>
+    
+    <!-- 根据广告ID查询该广告下不同的素材类型 -->
+    <select id="getDistinctList" parameterType="Integer" resultMap="AdMaterialResult">
+    	SELECT DISTINCT teid,remark FROM `zx_ad_material` WHERE ad_schedule_id = #{adScheduleId};
+    </select>
+    
 </mapper>

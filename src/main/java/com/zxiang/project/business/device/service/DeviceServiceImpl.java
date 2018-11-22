@@ -172,6 +172,9 @@ public class DeviceServiceImpl implements IDeviceService
 		if(oldDevice != null){
 			String oldPlaceId = oldDevice.getPlaceId();
 			if(placeId.equals(oldPlaceId)){
+				// 场所投放的设备数量+1
+				updatePlaceCount(Integer.parseInt(placeId));
+				// 更新设备状态为已投放
 				device.setStatus("02");
 				return deviceMapper.updateDevice(device);
 			}
@@ -199,15 +202,7 @@ public class DeviceServiceImpl implements IDeviceService
 		device.setReleaseTime(new Date());
 		device.setStatus("02");
 		//4.场所投放的设备数量+1
-		Place place = placeMapper.selectPlaceById(Integer.parseInt(placeId));
-		Integer deviceCount = place.getDeviceCount();
-		if(deviceCount != null){
-			++deviceCount;
-		}else{
-			deviceCount = 1;
-		}
-		place.setDeviceCount(deviceCount);
-		placeMapper.updatePlace(place);
+		updatePlaceCount(Integer.parseInt(placeId));
 		
 		//终端数据也将绑定的设备编号信息插入
 		/**终端不再平台绑定，由微信公众号去做绑定操作
@@ -217,6 +212,26 @@ public class DeviceServiceImpl implements IDeviceService
 		terminalMapper.updateTerminal(terminal);*/
 		
 		return deviceMapper.updateDevice(device);
+	}
+	
+	/**
+	 * 设备投放时更新场所投放数量
+	 * @param placeId
+	 * @return
+	 */
+	public int updatePlaceCount(Integer placeId){
+		Place place = placeMapper.selectPlaceById(placeId);
+		if(place != null){
+			Integer deviceCount = place.getDeviceCount();
+			if(deviceCount != null){
+				++deviceCount;
+			}else{
+				deviceCount = 1;
+			}
+			place.setDeviceCount(deviceCount);
+			return placeMapper.updatePlace(place);
+		}
+		return 0;
 	}
 	
 	@Override

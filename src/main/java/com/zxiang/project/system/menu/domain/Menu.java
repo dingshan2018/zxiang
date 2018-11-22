@@ -33,6 +33,8 @@ public class Menu extends BaseEntity
     private String perms;
     /** 菜单图标 */
     private String icon;
+    /** 是否是手机菜单 */
+    private String isPhone;
     /** 子菜单 */
     private List<Menu> children = new ArrayList<Menu>();
 
@@ -145,8 +147,18 @@ public class Menu extends BaseEntity
     {
         this.children = children;
     }
+    
+    
 
-    @Override
+    public String getIsPhone() {
+		return isPhone;
+	}
+
+	public void setIsPhone(String isPhone) {
+		this.isPhone = isPhone;
+	}
+
+	@Override
     public String toString()
     {
         return "Menu [menuId=" + menuId + ", menuName=" + menuName + ", parentName=" + parentName + ", parentId="

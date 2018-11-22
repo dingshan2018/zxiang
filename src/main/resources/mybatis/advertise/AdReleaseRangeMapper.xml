@@ -123,4 +123,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where ad_schedule_id = #{adScheduleId} ORDER BY ad_release_range_id DESC LIMIT 1
     </select>
     
+    <!-- 通过广告ID删除数据 -->
+    <delete id="deleteRangeByAdIds" parameterType="String">
+        delete from zx_ad_release_range where ad_schedule_id in 
+        <foreach item="adScheduleId" collection="array" open="(" separator="," close=")">
+            #{adScheduleId}
+        </foreach>
+    </delete>
+    
 </mapper>

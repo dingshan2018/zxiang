@@ -163,6 +163,7 @@ public class UserServiceImpl implements IUserService
             {
                 throw new Exception("不允许删除超级管理员用户");
             }
+            iroleService.deleteRoleByUserId(userId);
         }
         return userMapper.deleteUserByIds(userIds);
     }
@@ -180,7 +181,7 @@ public class UserServiceImpl implements IUserService
         user.setPassword(passwordService.encryptPassword(user.getLoginName(), user.getPassword(), user.getSalt()));
         user.setCreateBy(ShiroUtils.getLoginName());
         int rows = 0;
-        if(user.getUserType().startsWith("1")) {
+        if(UserConstants.clientMap.containsKey(user.getUserType())) { // 非系统用户
         	Dept dept = new Dept();
 			dept.setDeptName(UserConstants.DEPT_NAME);
 			List<Dept> depts = deptMapper.selectDeptList(dept);
@@ -189,8 +190,13 @@ public class UserServiceImpl implements IUserService
 			}
 			// 新增用户信息
 			rows = userMapper.insertUser(user);
-			// 设置默认角色
-			iroleService.setDefaultRole(user, UserConstants.clientMap.get(user.getUserType()));
+			if(user.getRoleIds() == null || user.getRoleIds().length == 0) {
+				// 设置默认角色
+				iroleService.setDefaultRole(user, UserConstants.clientMap.get(user.getUserType()));
+			}else {
+				// 新增用户与角色管理
+				insertUserRole(user);
+			}
         }else{
         	// 新增用户信息
         	rows = userMapper.insertUser(user);
@@ -406,18 +412,16 @@ public class UserServiceImpl implements IUserService
 	@Override
 	public String saleManClent(String userType,Integer cliendId) {
 		String client = null;
-		if(UserConstants.USER_TYPE_JOIN_SALESMAN.equals(userType)) {
+		if(UserConstants.USER_TYPE_JOIN.equals(userType)) {
 			Join join = joinMapper.selectJoinById(cliendId);
 			client = join == null ? null : join.getJoinerName();
-		}else if(UserConstants.USER_TYPE_AGENT_SALESMAN.equals(userType)) {
+		}else if(UserConstants.USER_TYPE_AGENT.equals(userType)) {
 			Agent agent = agentMapper.selectAgentById(cliendId);
 			client = agent == null ? null : agent.getAgentName();
-		}else if(UserConstants.USER_TYPE_REPAIR_SALESMAN.equals(userType)
-				|| UserConstants.USER_TYPE_TISSUE.equals(userType)
-				|| UserConstants.USER_TYPE_SERVICE.equals(userType)) {
+		}else if(UserConstants.USER_TYPE_REPAIR.equals(userType)){
 			 Repair repair = repairMapper.selectRepairById(cliendId);
 			 client = repair == null ? null : repair.getRepairName();
-		}else if(UserConstants.USER_TYPE_ADVERTISE_SALESMAN.equals(userType)) {
+		}else if(UserConstants.USER_TYPE_ADVERTISE.equals(userType)) {
 			Advertise advertise = advertiseMapper.selectAdvertiseById(cliendId);
 			client = advertise == null ? null : advertise.getAdvertisorName();
 		}
@@ -438,5 +442,23 @@ public class UserServiceImpl implements IUserService
 	@Override
 	public List<User> selectJoinSaleMan() {
 		return userMapper.selectJoinSaleMan();
+	}
+
+	@Override
+	public void setRoleName(List<User> list) {
+		if(list == null || list.size() == 0) {
+			return;
+		}
+		for (User user : list) {
+			List<Role> rolelist = roleMapper.selectRolesByUserId(user.getUserId());
+			if(rolelist == null || rolelist.size() == 0) {
+				continue;
+			}
+	        String[] roleName = new String[rolelist.size()];
+	        for (int i=0;i<rolelist.size();i++) {
+	            roleName[i] = rolelist.get(i).getRoleName();
+	        }
+	        user.setRoleNames(roleName);
+		}
 	}
 }

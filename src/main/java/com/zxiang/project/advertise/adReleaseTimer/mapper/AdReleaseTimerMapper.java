@@ -59,5 +59,12 @@ public interface AdReleaseTimerMapper
      * @return 结果
      */
 	public int deleteAdReleaseTimerByIds(String[] adReleaseTimerIds);
+
+	/**
+	 * 通过广告ID删除数据
+	 * @param adIds
+	 * @return
+	 */
+	public int deleteTimerByAdIds(String[] adIds);
 	
 }

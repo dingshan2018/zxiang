@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.advertise.releaseDevice.mapper.ReleaseDeviceMapper">
+    
+    <resultMap type="ReleaseDevice" id="ReleaseDeviceResult">
+        <result property="releaseDeviceId"    column="release_device_id"    />
+        <result property="scheduleId"    column="schedule_id"    />
+        <result property="releasePosition"    column="release_position"    />
+        <result property="deviceId"    column="device_id"    />
+    </resultMap>
+	
+	<sql id="selectReleaseDeviceVo">
+        select release_device_id, schedule_id, release_position, device_id from zx_release_device
+    </sql>
+	
+    <select id="selectReleaseDeviceList" parameterType="ReleaseDevice" resultMap="ReleaseDeviceResult">
+        <include refid="selectReleaseDeviceVo"/>
+        <where>  
+            <if test="releaseDeviceId != null and releaseDeviceId != ''"> and release_device_id = #{releaseDeviceId}</if>
+             <if test="scheduleId != null and scheduleId != ''"> and schedule_id = #{scheduleId}</if>
+             <if test="releasePosition != null and releasePosition != ''"> and release_position = #{releasePosition}</if>
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+         </where>
+    </select>
+    
+    <select id="selectReleaseDeviceById" parameterType="Integer" resultMap="ReleaseDeviceResult">
+        <include refid="selectReleaseDeviceVo"/>
+        where release_device_id = #{releaseDeviceId}
+    </select>
+        
+    <insert id="insertReleaseDevice" parameterType="ReleaseDevice">
+        insert into zx_release_device
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="releaseDeviceId != null and releaseDeviceId != '' ">release_device_id,</if>
+			<if test="scheduleId != null and scheduleId != '' ">schedule_id,</if>
+			<if test="releasePosition != null and releasePosition != '' ">release_position,</if>
+			<if test="deviceId != null and deviceId != '' ">device_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="releaseDeviceId != null and releaseDeviceId != ''">#{releaseDeviceId},</if>
+			<if test="scheduleId != null and scheduleId != ''">#{scheduleId},</if>
+			<if test="releasePosition != null and releasePosition != ''">#{releasePosition},</if>
+			<if test="deviceId != null and deviceId != ''">#{deviceId},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateReleaseDevice" parameterType="ReleaseDevice">
+        update zx_release_device
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="scheduleId != null  ">schedule_id = #{scheduleId},</if>
+            <if test="releasePosition != null  and releasePosition != ''  ">release_position = #{releasePosition},</if>
+            <if test="deviceId != null  ">device_id = #{deviceId},</if>
+        </trim>
+        where release_device_id = #{releaseDeviceId}
+    </update>
+
+	<delete id="deleteReleaseDeviceById" parameterType="Integer">
+        delete from zx_release_device where release_device_id = #{releaseDeviceId}
+    </delete>
+	
+    <delete id="deleteReleaseDeviceByIds" parameterType="String">
+        delete from zx_release_device where release_device_id in 
+        <foreach item="releaseDeviceId" collection="array" open="(" separator="," close=")">
+            #{releaseDeviceId}
+        </foreach>
+    </delete>
+    
+    <!-- 批量插入ReleaseDevice表数据  -->
+    <insert id="batchInsert">
+		insert into zx_release_device(schedule_id, release_position,device_id) values
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.scheduleId},#{item.releasePosition},#{item.deviceId})
+		</foreach>
+	</insert>
+	
+</mapper>

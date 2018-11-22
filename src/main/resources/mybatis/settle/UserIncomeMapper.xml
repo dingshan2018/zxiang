@@ -7,7 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="UserIncome" id="UserIncomeResult">
       <id column="income_id" property="incomeId" jdbcType="INTEGER" />
     <result column="coperator_id" property="coperatorId" jdbcType="INTEGER" />
-    <result column="coperator_name" property="coperatorName" jdbcType="INTEGER" />
+    <result column="coperator_name" property="coperatorName" jdbcType="VARCHAR" />
     <result column="coperator_type" property="coperatorType" jdbcType="VARCHAR" />
     <result column="sum_date" property="sumDate" jdbcType="TIMESTAMP" />
     <result column="ad_income" property="adIncome" jdbcType="DOUBLE" />
@@ -42,7 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectUserIncomeVo">
-	select income_id, coperator_id, (SELECT DISTINCT  user_name FROM sys_user t WHERE t.user_id = coperator_id) coperator_name,  
+	select income_id, coperator_id, coperator_name,  
 	 CASE coperator_type WHEN 00 THEN '系统用户'
               WHEN 01 THEN '合作伙伴'
               WHEN 02 THEN '加盟商'
@@ -55,7 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     scan_income, prom_direct_income, prom_indirect_income,promotion_income, paper_income, prom_paper_income, 
     direct_agent_income, subsidy_income, ad_income_rate, promotion_income_rate, scan_income_rate, 
     subsidy_income_rate, ad_rate, ad_carousel_rate, scan_rate, prom_direct_rate, prom_indirect_rate, 
-    prom_paper_rate, promotion_rate, direct_agent_rate, serve_rate, subsidy_rate, refund_income, 
+    concat('-',prom_paper_rate) prom_paper_rate, promotion_rate, direct_agent_rate, serve_rate, subsidy_rate, refund_income, 
     refund_income_rate, create_by, create_time, update_by, update_time from zx_user_income
     </sql>
 	
@@ -64,7 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             ${filterSql}
             <if test="incomeId != null and incomeId != ''"> and income_id = #{incomeId}</if>
-             <if test="coperatorName != null and coperatorName != ''"> and (SELECT DISTINCT  user_name FROM sys_user t WHERE t.user_id = coperator_id) like concat('%',#{coperatorName},'%')</if>
+             <if test="coperatorName != null and coperatorName != ''"> and coperator_name like concat('%',#{coperatorName},'%')</if>
              <if test="coperatorType != null and coperatorType != ''"> and coperator_type = #{coperatorType}</if>
               <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
 				AND date_format(sum_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
@@ -86,10 +86,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	      <if test="coperatorId != null" >
 	        coperator_id,
 	      </if>
+	       <if test="coperatorName != null" >
+	        coperator_name,
+	      </if>
 	      <if test="coperatorType != null" >
 	        coperator_type,
 	      </if>
-	
 	      <if test="adIncome != null" >
 	        ad_income,
 	      </if>
@@ -174,6 +176,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    <trim prefix="values (" suffix=")" suffixOverrides="," >
 	      <if test="coperatorId != null" >
 	        #{coperatorId,jdbcType=INTEGER},
+	      </if>
+	        <if test="coperatorId != null" >
+	        #{coperatorName,jdbcType=VARCHAR},
 	      </if>
 	      <if test="coperatorType != null" >
 	        #{coperatorType,jdbcType=VARCHAR},
@@ -327,6 +332,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select income_id from zx_user_income
         <where>  
              <if test="coperatorId != null and coperatorId != ''"> and coperator_id = #{coperatorId}</if>
+              <if test="coperatorType != null and coperatorType != ''"> and coperator_type = #{coperatorType}</if>
              and DATE_FORMAT(sum_date, '%Y-%m-%d') = DATE_FORMAT(
 			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
 			    '%Y-%m-%d'
@@ -349,8 +355,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 代理商 -->
      <select id="selectzxagentlist"  resultType="java.util.HashMap">
 		 SELECT 
-		  t.user_id,
-		  t.leader_id,
+		  agent_id,
 		  z.city,
 		  z.county,
 		  z.level,
@@ -358,13 +363,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  z.agency_fee,
 		  z.create_time 
 		FROM
-		  sys_user t,
 		  zx_agent z 
 		  WHERE 
-		  t.puser_id = z.agent_id
-		  <if test="userId != null and userId != ''">
-		    AND t.user_id = #{userId}
-		  </if>
+	       1=1
 		  <if test="placeId != null and placeId != ''">
 		     AND ((z.level = 1 AND z.city = #{placeId} ) OR (z.level = 2 AND z.county = #{placeId} ))
 		  </if>
@@ -373,10 +374,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  </if>
     </select>
     
-    
+
+
         <!-- 代理商 -->
      <select id="selectzxagent"  resultType="java.util.HashMap">
 		 SELECT 
+		 agent_id coperatorId,
+         agent_name coperatorName,
 		 ad_rate adRate,
 		 ad_carousel_rate adCarouselRate,
 		 scan_rate  scanRate,
@@ -398,7 +402,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <!-- 加盟商（机主） -->
     <select id="selectzxjoinlist"  resultType="java.util.HashMap">
-	    SELECT 
+	    SELECT
+	     join_id coperatorId,
+         joiner_name coperatorName, 
 		 ad_rate adRate,
 		 ad_carousel_rate adCarouselRate,
 		 scan_rate  scanRate,
@@ -421,8 +427,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
      <!-- 服务商 -->
      <select id="selectzxrepairlist"  resultType="java.util.HashMap">
-	   SELECT 
-		  ad_rate adRate,
+	   SELECT
+	     repair_id coperatorId,
+         repair_name coperatorName, 
+		 ad_rate adRate,
 		 ad_carousel_rate adCarouselRate,
 		 scan_rate  scanRate,
 		 prom_direct_rate promDirectRate,
@@ -456,7 +464,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     
      <select id="queryExport" resultType="java.util.HashMap">
-        	select  coperator_id,(SELECT DISTINCT  user_name FROM sys_user t WHERE t.user_id = coperator_id) coperator_name, coperator_type,  DATE_FORMAT(`sum_date`,'%Y-%m-%d') sum_date, ad_income, ad_carousel_income, 
+        	select  coperator_id,coperator_name, coperator_type,  DATE_FORMAT(`sum_date`,'%Y-%m-%d') sum_date, ad_income, ad_carousel_income, 
 			    scan_income, prom_direct_income, prom_indirect_income,promotion_income, paper_income, prom_paper_income, 
 			    direct_agent_income, subsidy_income, ad_income_rate, promotion_income_rate, scan_income_rate, 
 			    subsidy_income_rate, ad_rate, ad_carousel_rate, scan_rate, prom_direct_rate, prom_indirect_rate, 
@@ -465,7 +473,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
          ${filterSql}
             <if test="incomeId != null and incomeId != ''"> and income_id = #{incomeId}</if>
-             <if test="coperatorName != null and coperatorName != ''"> and (SELECT DISTINCT  user_name FROM sys_user t WHERE t.user_id = coperator_id) like concat('%',#{coperatorName},'%')</if>
+             <if test="coperatorName != null and coperatorName != ''"> and coperator_name like concat('%',#{coperatorName},'%')</if>
              <if test="coperatorType != null and coperatorType != ''"> and coperator_type = #{coperatorType}</if>
               <if test="bgTime != null and bgTime != ''"><!-- 开始时间检索 -->
 				AND date_format(sum_date,'%y%m%d') &gt;= date_format(#{bgTime},'%y%m%d')
