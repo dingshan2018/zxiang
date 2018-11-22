@@ -79,6 +79,18 @@ public class AdConstant {
 	public final static String AD_TYPE_VIDEO = "02";
 	/** 页面广告H5 */
 	public final static String AD_TYPE_H5 = "03";
+	/** 终端页面和轮播两种类型广告 */
+	public final static String AD_TYPE_PHOTO_VIDEO = "04";
+	
+	
+	/******************** 广告素材包含的文件类型	*******************/
+	/** 图片 */
+	public final static String MATERIAL_TYPE_PHOTO = "图片";
+	/** 视频 */
+	public final static String MATERIAL_TYPE_VIDEO = "视频";
+	
+	
+	
 	
 	
 	

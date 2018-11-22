@@ -122,4 +122,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <!-- 根据广告ID查询该广告下不同的素材类型 -->
+    <select id="getDistinctList" parameterType="Integer" resultMap="AdMaterialResult">
+    	SELECT DISTINCT teid,remark FROM `zx_ad_material` WHERE ad_schedule_id = #{adScheduleId};
+    </select>
+    
 </mapper>

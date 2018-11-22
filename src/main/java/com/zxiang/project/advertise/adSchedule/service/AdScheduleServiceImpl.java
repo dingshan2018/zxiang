@@ -31,6 +31,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.StringUtils;
 import com.zxiang.common.utils.excel.EXCELObject;
 import com.zxiang.project.advertise.adMaterial.domain.AdMaterial;
 import com.zxiang.project.advertise.adMaterial.mapper.AdMaterialMapper;
@@ -243,7 +244,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	@Override
 	@Transactional
 	public int materialUpload(List<MultipartFile> files,String adScheduleId,
-			String elementId,String operatorUser) throws Exception{
+			String elementId,String elementName,String operatorUser) throws Exception{
 
 		int saveNum = 0;
 		try {
@@ -274,7 +275,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 						logger.info("teid:"+teid+",tresid:"+tresid+",\tpreview:"+preview);
 						//业务处理 保存素材文件
 						saveNum += insertMaterial(adSchedule.getAdScheduleId(),teid,
-								tresid,preview,maxBatch,(i+1),operatorUser);
+								tresid,preview,maxBatch,(i+1),operatorUser,elementName);
 						
 					}else{
 						logger.error("调用上传素材信息接口失败!" + adHttp.toString());
@@ -303,10 +304,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	 * @param batch	上传批次号
 	 * @param sequence	上传顺序
 	 * @param operator	操作者
+	 * @param elementName	素材类型,保存在ad_material表remark字段用来判断价格
 	 * @return
 	 */
 	private int insertMaterial(Integer adScheduleId, String teid, 
-			String tresid, String preview,int batch,int sequence,String operator) {
+			String tresid, String preview,int batch,int sequence,String operator,String elementName) {
 		AdMaterial adMaterial = new AdMaterial();
 		adMaterial.setAdScheduleId(adScheduleId);
 		adMaterial.setPreview(preview);
@@ -316,6 +318,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		adMaterial.setSequence(sequence);
 		adMaterial.setCreateBy(operator);
 		adMaterial.setCreateTime(new Date());
+		adMaterial.setRemark(elementName);
 		return adMaterialMapper.insertAdMaterial(adMaterial);
 	}
 
@@ -400,11 +403,12 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			
 			//3.终端广告需要生成排期,页面H5广告不需要生成排期
 			String releasePosition = adSchedule.getReleasePosition();
+			String priceType = null;
 			if(AdConstant.RELEASE_TYPE_TERMINAL.equals(releasePosition)){
 				//终端广告预约设备后广告状态变为待审核
 				adSchedule.setStatus(AdConstant.AD_WAIT_ADUIT);
-				//TODO 终端广告预约设备后计算价格
-				
+				//终端广告预约设备后计算价格,按照素材表显性文字展示判断,图片/视频/图片视频
+				priceType = getPriceType(adScheduleId);
 				
 				//这边的参数tid是设备的ID，而不是广告表的tid，需要修改!
 				String pIds = adSchedule.getpId();
@@ -424,8 +428,13 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			}else if(AdConstant.RELEASE_TYPE_H5.equals(releasePosition)){
 				//页面H5广告预约设备后广告状态变为待发布
 				adSchedule.setStatus(AdConstant.AD_WAIT_PUBLISH);
-				//页面H5广告预约设备后计算价格;计算总价和押金  总价= 计费类型*days*播放设备数量,押金=总价*比率
-				AdPriceCfg adPriceCfg = adPriceCfgMapper.getPriceByType(AdConstant.AD_TYPE_H5);
+				//页面H5广告预约设备后计算价格;
+				priceType = AdConstant.AD_TYPE_H5;
+			}
+			
+			//计算总价和押金  总价= 计费类型*days*播放设备数量,押金=总价*比率
+			if (StringUtils.isNotEmpty(priceType)) {
+				AdPriceCfg adPriceCfg = adPriceCfgMapper.getPriceByType(priceType);
 				if(adPriceCfg != null){
 					float totalPay = adPriceCfg.getDailyPrice() * days * deviceNum;
 					float prepay = totalPay * AdConstant.PREPAY;
@@ -456,6 +465,38 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+	
+	/**
+	 *  获取终端广告的计费价格类型
+	 *  包含图片01;包含视频02;包含图片和视频返回04
+	 * @param adScheduleId
+	 * @return
+	 */
+	public String getPriceType(Integer adScheduleId){
+		
+		String priceType = null;
+		List<String> typeList = new ArrayList<String>();
+		
+		List<AdMaterial> materialList = adMaterialMapper.getDistinctList(adScheduleId);
+		if(materialList != null && materialList.size() > 0){
+			for (AdMaterial adMaterial : materialList) {
+				String materialType = adMaterial.getRemark();
+				typeList.add(materialType);
+			}
+			if(typeList.contains(AdConstant.MATERIAL_TYPE_PHOTO)){
+				priceType = AdConstant.AD_TYPE_PHOTO;
+			}
+			if(typeList.contains(AdConstant.MATERIAL_TYPE_VIDEO)){
+				priceType = AdConstant.AD_TYPE_VIDEO;
+			}
+			if(typeList.contains(AdConstant.MATERIAL_TYPE_PHOTO) && 
+					typeList.contains(AdConstant.MATERIAL_TYPE_VIDEO)){
+				priceType = AdConstant.AD_TYPE_PHOTO_VIDEO;
+			}
+		}
+		
+		return priceType;
 	}
 	
 	@Override

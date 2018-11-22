@@ -204,10 +204,11 @@ public class AdScheduleController extends BaseController
     	 try {
 			String adScheduleId = request.getParameter("adScheduleId");
 			String elementId = request.getParameter("elementId");
+			String elementName = request.getParameter("elementName");//素材类型,保存在ad_material表remark字段用来判断价格
 			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
 			
 			 List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
-			 return toAjax(adScheduleService.materialUpload(files,adScheduleId,elementId,operatorUser));
+			 return toAjax(adScheduleService.materialUpload(files,adScheduleId,elementId,elementName,operatorUser));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return error();

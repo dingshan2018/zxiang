@@ -92,7 +92,7 @@ public interface IAdScheduleService
 	 * @return
 	 */
 	public int materialUpload(List<MultipartFile> files, String adScheduleId, 
-			String elementId,String operatorUser) throws Exception;
+			String elementId,String elementName,String operatorUser) throws Exception;
 	
 	/**
 	 * 广告投放预约保存
