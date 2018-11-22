@@ -121,7 +121,7 @@ public class WxUserServiceImpl implements IWxUserService
 		Map<String, Object> data = null;
 		Calendar c = null;
 		String selDate = null;
-		for (int i = 7; i > 0; i--) {
+		for (int i = 6; i >= 0; i--) {
 			data = new HashMap<String, Object>();
 			c = Calendar.getInstance();
 			c.add(Calendar.DAY_OF_MONTH, -i);

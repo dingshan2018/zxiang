@@ -60,7 +60,7 @@
         <a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="advertise:adSchedule:add">
           <i class="fa fa-plus"></i> 新增
         </a>
-        <a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="advertise:adSchedule:remove">
+        <a class="btn btn-outline btn-danger btn-rounded" onclick="deleteAd()" shiro:hasPermission="advertise:adSchedule:remove">
           <i class="fa fa-trash-o"></i> 删除
         </a>
       </div>
@@ -644,6 +644,41 @@
 	        }
 		})
 		return adSchedule;
+    }
+  	
+    function deleteAd(){
+    	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+    	if (rows.length == 0) {
+			$.modal.alertWarning("请至少选择一条记录");
+			return;
+		}
+    	var warnInfo = '';
+    	var del = false;
+    	for(var i=0; i < rows.length; i++){
+    		var adSchedule = getAdScheduleInfo(rows[i]);
+    		if(adSchedule.status == "04"){
+    			warnInfo = "广告计划 "+adSchedule.scheduleName+" 为待播放状态, 不允许删除!"
+    			del = true
+    			break;
+    		}
+    		if(adSchedule.status == "05"){
+    			warnInfo = "广告计划 "+adSchedule.scheduleName+" 已播放, 不允许删除!"
+    			del = true
+    			break;
+    		}
+    		if(adSchedule.payStatus == "1"){
+    			warnInfo = "广告计划 "+adSchedule.scheduleName+" 已支付, 不允许删除!"
+    			del = true
+    			break;
+    		}
+    	}
+    	//如果有广告已经支付或者已经发布则不能删除!
+    	if(del){
+    		$.modal.alertWarning(warnInfo);
+        	return;
+    	}
+    	
+    	$.operate.removeAll();
     }
 </script>
 </body>

@@ -26,6 +26,7 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label">用户名称：</label>
 				<div class="col-sm-8">
+					<input class="form-control" type="text" name="userName" style="display: none;" autocomplete="off">
 					<input class="form-control" type="text" name="userName1" id="userName" autocomplete="off">
 				</div>
 			</div>
@@ -46,6 +47,14 @@
 				<label class="col-sm-3 control-label">手机：</label>
 				<div class="col-sm-8">
 					<input class="form-control" type="text" name="phonenumber" id="phonenumber" maxlength="11">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">角色：</label>
+				<div class="col-sm-8">
+					<label th:each="role:${roles}" class="checkbox-inline i-checks">
+						<input name="role" type="checkbox" th:value="${role.roleId}" th:text="${role.roleName}" th:checked="${role.flag}" th:disabled="${role.status == '1'}">
+					</label>
 				</div>
 			</div>
 			<div class="form-group">
@@ -103,7 +112,7 @@
                         }
                     }
         		},
-        		userName:{
+        		userName1:{
         			required:true,
         		},
         		deptName:{
@@ -171,39 +180,40 @@
         	var puserId = $("#puserId").val();
         	var loginName = $("input[name='loginName']").val();
         	var userName = $("input[name='userName1']").val();
-        	var password = $("input[name='password1']").val();
+        	var password = $("#password").val();
         	var email = $("input[name='email']").val();
         	var phonenumber = $("input[name='phonenumber']").val();
         	var sex = $("#sex option:selected").val();
         	var status = $("input[name='status']").is(':checked') == true ? 0 : 1;
         	var roleIds = $.form.selectCheckeds("role");
-        	var postIds = $.form.selectSelects("post");
-        	$.ajax({
-        		cache : true,
-        		type : "POST",
-        		url : ctx + "system/user/add",
-        		data : {
-        			"userId": userId,
-        			"puserId": puserId,
-        			"userType": userType,
-        			"loginName": loginName,
-        			"userName": userName,
-        			"password": password,
-        			"email": email,
-        			"phonenumber": phonenumber,
-        			"sex": sex,
-        			"status": status,
-        		},
-        		async : false,
-        		error : function(request) {
-        			$.modal.alertError("系统错误");
-        		},
-        		success : function(data) {
-        			$.operate.saveSuccess(data);
-        		}
-        	});
-        }
-
-    </script>
+			var postIds = $.form.selectSelects("post");
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : ctx + "client/salesman/add",
+				data : {
+					"userId" : userId,
+					"postIds": postIds,
+					"roleIds": roleIds,
+					"puserId" : puserId,
+					"userType" : userType,
+					"loginName" : loginName,
+					"userName" : userName,
+					"password" : password,
+					"email" : email,
+					"phonenumber" : phonenumber,
+					"sex" : sex,
+					"status" : status,
+				},
+				async : false,
+				error : function(request) {
+					$.modal.alertError("系统错误");
+				},
+				success : function(data) {
+					$.operate.saveSuccess(data);
+				}
+			});
+		}
+	</script>
 </body>
 </html>
