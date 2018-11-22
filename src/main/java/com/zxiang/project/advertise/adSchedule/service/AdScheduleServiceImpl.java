@@ -460,7 +460,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 				String[] deviceIds = Convert.toStrArray(terminalId);
 				if(deviceIds.length > 0){
 					//保存广告URL链接
-					int updateNum = deviceMapper.updateAdUrlByTid(adUrl,deviceIds);
+					int updateNum = deviceMapper.updateAdUrlByTid(adUrl,deviceIds,adSchedule.getAdScheduleId());
 					logger.info("成功更新:"+updateNum+" 条设备adUrl数据");
 					for (String deviceId : deviceIds) {
 						try {

@@ -269,7 +269,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <!-- 更新设备的adUrl -->
     <update id="updateAdUrlByTid" parameterType="String">
-        update zx_device set ad_url=#{adUrl} where device_id in 
+        update zx_device set ad_url=#{adUrl},qr_schedule_id=#{adScheduleId} where device_id in 
         <foreach item="deviceId" collection="terminalIds" open="(" separator="," close=")">
             #{deviceId}
         </foreach>

@@ -93,9 +93,11 @@ public interface DeviceMapper
 	/**
 	 * 更新设备的adUrl
 	 * @param adUrl
+	 * @param adScheduleId 
 	 * @param terminalId
 	 */
-	public int updateAdUrlByTid(@Param("adUrl")String adUrl, @Param("terminalIds")String[] terminalIds);
+	public int updateAdUrlByTid(@Param("adUrl")String adUrl, 
+			@Param("terminalIds")String[] terminalIds, @Param("adScheduleId")Integer adScheduleId);
 
 	/**
 	 * 校验设备资产编号是否唯一
