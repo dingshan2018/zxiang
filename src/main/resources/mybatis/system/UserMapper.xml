@@ -84,7 +84,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<select id="selectUserByLoginName" parameterType="String" resultMap="UserResult">
-	    <include refid="selectUserVo"/>
+	    select  u.user_id,u.puser_id,u.leader_id, u.dept_id,u.user_type, u.login_name, u.user_name, u.email, u.phonenumber, u.sex,w.head_img_url as avatar, u.password, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_time, u.remark,
+       		    d.dept_id, d.parent_id, d.dept_name, d.order_num, d.status as dept_status,w.nickname,w.head_img_url,w.open_id
+		from sys_user u
+			 left join sys_dept d on u.dept_id = d.dept_id
+			 left join sys_user_role ur on u.user_id = ur.user_id
+			 left join zx_wx_user w on u.user_id = w.user_id
 		where u.login_name = #{userName}
 	</select>
 	

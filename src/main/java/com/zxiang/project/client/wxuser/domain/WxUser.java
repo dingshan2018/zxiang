@@ -55,6 +55,7 @@ public class WxUser extends BaseEntity
 	private String updateBy;
 	/**  */
 	private Date updateTime;
+	private String userName;
 	
 	public void setWxUserId(Integer wxUserId) 
 	{
@@ -221,6 +222,14 @@ public class WxUser extends BaseEntity
 	public void setUpdateTime(Date updateTime) 
 	{
 		this.updateTime = updateTime;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public Date getUpdateTime() 
