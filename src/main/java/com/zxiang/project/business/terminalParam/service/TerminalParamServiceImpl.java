@@ -110,7 +110,7 @@ public class TerminalParamServiceImpl implements ITerminalParamService
 			
 			JSONObject reqJson = new JSONObject();
 			reqJson.put("termCode",terminal.getTerminalCode());
-			reqJson.put("terminalParams",list.toString());
+			reqJson.put("terminalParams",list);
 			reqJson.put("command","20");//参数下发命令0x14,转十进制为20
 			
 			serverService.issuedCommand(terminal,reqJson);
