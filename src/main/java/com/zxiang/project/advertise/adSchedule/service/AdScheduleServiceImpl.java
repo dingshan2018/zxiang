@@ -629,7 +629,12 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		if(terminal != null){
 			JSONObject reqJson = new JSONObject();
 			reqJson.put("termCode",terminal.getTerminalCode());
-			reqJson.put("offerKey",terminal.getOfferKey());
+			String offerKey = terminal.getOfferKey();
+			//offerKey空的也要传，如果是空的json不会传所以赋字符串
+			if(StringUtils.isBlank(offerKey)){
+				offerKey = "   ";
+			}
+			reqJson.put("offerKey",offerKey);
 			reqJson.put("qrUrl",qrCodeUrl);
 			reqJson.put("command","18");//参数下发命令0x12,转十进制为18
 			
