@@ -352,7 +352,7 @@ public class EXCELTools {
 				Label label = new Label(scol, row, tit, STFormat());
 				sheet.addCell(label);
 				if(widthP !=null) {
-					if(widthP[i].equals("")){
+					if(widthP.length<=i||widthP[i].equals("")){
 						sheet.setColumnView(col, (tit.length() * 4));
 					}else {
 						sheet.setColumnView(col, (Integer.valueOf(widthP[i])));	
@@ -368,11 +368,20 @@ public class EXCELTools {
 				} else {
 					sheet.mergeCells(scol, row, scol, row + 1);
 					scol++;
-					col++;
+					//col++;
 				}
 			}
 		} catch (Exception e) {
 			throw e;
+		}
+		boolean t=true;
+		for (int i = 0; i < cols.length; i++) {
+			int c = Integer.parseInt(cols[i]);
+			if(t&&c == 0) {
+				col++;
+			}else {
+				t=false;
+			}
 		}
 		return col;
 	}
@@ -397,7 +406,7 @@ public class EXCELTools {
 					if(width==null) {
 						sheet.setColumnView(col, (tit.length() * 4));	
 					}else {
-						if(width[i].equals("")){
+						if(width.length<=i||width[i].equals("")){
 							sheet.setColumnView(col, (tit.length() * 4));
 						}else {
 							sheet.setColumnView(col, (Integer.valueOf(width[i])));	
