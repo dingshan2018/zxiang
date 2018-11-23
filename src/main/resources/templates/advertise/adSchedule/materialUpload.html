@@ -37,7 +37,7 @@
             
 			<br><br>
 			<div id="fileUploadContent" class="fileUploadContent"></div>
-			<span style="color: red;">*&nbsp;最多上传30个图片/视频文件;每个文件最大30M</span>
+			<span style="color: red;">*&nbsp;最多上传10个图片/视频文件;每个文件最大30M</span>
 		  	<br><br>
 		  	<button onclick="submitUpload()" id="submit" class="btn btn-primary">上传</button>
 		  	<!-- <button onclick="showUpError()" class="btn btn-primary">显示错误</button> -->
@@ -80,7 +80,7 @@
       //"showSummerProgress":false,//总进度条，默认限制
       //"scheduleStandard":true,//模拟进度的方式，设置为true是按总进度，用于控制上传时间，如果设置为false,按照文件数据的总量,默认为false
       "size":30720,//文件大小限制，单位kb,默认不限制
-      "maxFileNumber":30,//文件个数限制，为整数
+      "maxFileNumber":10,//文件个数限制，为整数
       //"filelSavePath":"",//文件上传地址，后台设置的根目录
       "beforeUpload":beforeUploadFun,//在上传前执行的函数
       "onUpload":onUploadFun,//在上传后执行的函数
@@ -129,6 +129,22 @@
     		$.modal.alertWarning("请先选择模板元素!");
 			return;
        	}
+    	var adScheduleId = $("#adScheduleId").val();
+    	var uploadNum = 0;
+    	var fileList = uploadTools.getOpt('fileUploadContent').fileList;
+    	//直接用fileList.length有问题，比如选择了5个删了1个之后数量还是5
+    	for(var i=0;i<fileList.length;i++){
+    		if(fileList[i] != undefined){
+    			uploadNum++;
+    		}
+    	}
+    	
+    	var adMaterialCount = getAdMaterialCount(adScheduleId);
+    	//目前限制一个广告计划总数最多上传10个文件
+    	if(uploadNum + adMaterialCount > 10){
+    		$.modal.alertWarning("您最多还可上传 "+ (10-adMaterialCount) +"个文件!");
+			return;
+    	}
     	
     	$.modal.confirm("确定上传？", function() {
     		$("#submit").attr('disabled',true);
@@ -184,6 +200,27 @@
     			}
     		}
     	});
+    }
+  	
+  	//获取广告已上传素材数量
+    function getAdMaterialCount(adScheduleId) {
+  		var adMaterialCount = 0;
+		$.ajax({
+	        url: ctx + "settle/adMaterial/selectListByAdSchId",
+	        type: "post",
+	        contentType:"application/json",
+	        dataType: "json",
+	        data: JSON.stringify({ "adScheduleId": adScheduleId}),
+	        async:false,
+	        success: function (data) {
+	        	adMaterialCount = data.rows.length;
+	        },
+	        error: function (data) {
+	        	console.log("getAdMaterialCount:",data);
+	            alert("查询失败");
+	        }
+		})
+		return adMaterialCount;
     }
   </script>
 </body>
