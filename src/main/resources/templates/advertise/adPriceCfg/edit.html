@@ -45,7 +45,7 @@
             <div class="form-group">	
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>广告类型：</label>
 				<div class="col-sm-8">
-					<select id="adType" name="adType" class="form-control m-b" th:with="type=${@dict.getType('ad_type')}">
+					<select id="adType" name="adType" class="form-control m-b" th:with="type=${@dict.getType('ad_type')}" disabled=>
 	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{adType}"></option>
 	                </select>
 				</div>
