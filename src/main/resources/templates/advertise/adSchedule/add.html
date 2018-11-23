@@ -60,10 +60,10 @@
 					<input id="totalTime" name="totalTime" class="form-control" type="text" placeholder="以秒为单位">
 				</div>
 			</div>
-			<div class="form-group" id="qrCodeUrlDiv" style="display: none;">	
+			<div class="form-group" id="qrUrlDiv" style="display: none;">	
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>页面二维码URL：</label>
 				<div class="col-sm-8">
-					<input id="qrCodeUrl" name="qrCodeUrl" class="form-control" type="text" placeholder="请输入二维码URL">
+					<input id="qrUrl" name="qrUrl" class="form-control" type="text" placeholder="请输入二维码URL">
 				</div>
 			</div>
 			<!-- <div class="form-group">	
@@ -149,8 +149,8 @@
 	        	$("#advertiseIdDiv").show();
 	        	$("#totalTimeDiv").show();
 	        	
-	        	$("#qrCodeUrlDiv").hide();
-	        	$("#qrCodeUrl").val("");
+	        	$("#qrUrlDiv").hide();
+	        	$("#qrUrl").val("");
 
 	        } else if(value=="02"){
 	        	$("#themeTemplateIdDiv").hide();
@@ -160,7 +160,7 @@
 	        	$("#advertiseId").val("");
 	        	$("#totalTime").val("");
 	        	
-	        	$("#qrCodeUrlDiv").show();
+	        	$("#qrUrlDiv").show();
 	        	
 	        } else{
 	        	$("#themeTemplateIdDiv").hide();
@@ -169,8 +169,8 @@
 	        	$("#themeTemplateId").val("");
 	        	$("#advertiseId").val("");
 	        	$("#totalTime").val("");
-	        	$("#qrCodeUrlDiv").hide();
-	        	$("#qrCodeUrl").val("");
+	        	$("#qrUrlDiv").hide();
+	        	$("#qrUrl").val("");
 	        }
 	    }
 	</script>

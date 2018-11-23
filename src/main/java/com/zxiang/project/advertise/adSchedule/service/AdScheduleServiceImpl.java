@@ -529,12 +529,15 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		
 		//如果是H5广告不需要下发排期计划
 		Integer adScheduleId = adSchedule.getAdScheduleId();
-		String releasePosition = adSchedule.getReleasePosition();
-		String qrCodeUrl = adSchedule.getQrUrl();
+		//获取最新的广告数据
+		AdSchedule ad  = adScheduleMapper.selectAdScheduleById(adScheduleId);
+		
+		String releasePosition = ad.getReleasePosition();
+		String qrUrl = ad.getQrUrl();
 		
 		if(AdConstant.RELEASE_TYPE_TERMINAL.equals(releasePosition)){
 			//1.发布时下发排期计划
-			String result = publishSchedule(adSchedule.getSxScheduleId());
+			String result = publishSchedule(ad.getSxScheduleId());
 			//返回结果封装
 			AdHttpResult adHttp = Tools.analysisResult(result);
 			if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
@@ -570,12 +573,12 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			if(range != null){
 				String devices = range.getDevices();
 				String[] deviceIds = Convert.toStrArray(devices);
-				int updateQrUrl = deviceMapper.updateQrUrl(qrCodeUrl, deviceIds,adScheduleId);
+				int updateQrUrl = deviceMapper.updateQrUrl(qrUrl, deviceIds,adScheduleId);
 				logger.info("成功更新:"+updateQrUrl+" 条设备qrUrl数据");
 				for (String deviceId : deviceIds) {
 					try {
 						//下发更新终端二维码 
-						qrCodeIssued(deviceId,qrCodeUrl);
+						qrCodeIssued(deviceId,qrUrl);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -584,12 +587,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		}
 		
 		//若广告的status已经为04则已经发布过不再更新，若没有发布则进行发布操作
-		AdSchedule ad  = adScheduleMapper.selectAdScheduleById(adScheduleId);
 		if(AdConstant.AD_WAIT_PLAY.equals(ad.getStatus())){
 			return 0;
 		}else{
-			adSchedule.setStatus(AdConstant.AD_WAIT_PLAY);
-			return adScheduleMapper.updateAdSchedule(adSchedule);
+			ad.setStatus(AdConstant.AD_WAIT_PLAY);
+			return adScheduleMapper.updateAdSchedule(ad);
 		}
 		
 	}
