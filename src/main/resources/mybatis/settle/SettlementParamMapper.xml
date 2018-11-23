@@ -97,4 +97,172 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    
+    <!-- 手机端数据接口  -->
+    
+     <!-- 场所列表 -->
+     <select id="selectzxplace"  resultType="java.util.HashMap">
+        SELECT 
+		  name,
+		  device_count count,
+		  DATE_FORMAT(`create_time`,'%Y-%m-%d %H:%i:%s') time 
+		FROM
+		  zx_place
+		  order by  create_time desc
+          <if test="offset != null and limit != null">
+			    limit #{offset}, #{limit}
+		  </if>
+     </select>
+     
+      <select id="queryplaceTotal"  resultType="int">
+	        SELECT 
+			  count(*)  
+			FROM
+			  zx_place 
+     </select>
+     
+     
+    
+      <!-- 广告计划 -->
+    <select id="selecadschedulelist"  resultType="java.util.HashMap">
+       SELECT 
+		  schedule_name name,
+		  'H5广告' position,
+		   release_term_num count,
+		   '使用' status
+		FROM
+		  zx_ad_schedule 
+		  WHERE 
+		  STATUS = '04'
+		  AND release_position = '03'
+		  order by  create_time desc
+		  <if test="offset != null and limit != null">
+			   limit #{offset}, #{limit}
+		  </if>
+    </select>
+    
+     <select id="queryadscheduleTotal"  resultType="int">
+        SELECT 
+		  count(*)
+		FROM
+		  zx_ad_schedule 
+		  WHERE 
+		  STATUS = '04'
+		  AND release_position = '03' 
+     </select>
+     
+     
+          <!-- 广告计划点击排名 -->
+    <select id="scheduleStatistics"  resultType="java.util.HashMap">
+       SELECT t.num,z.schedule_name name FROM (			  
+			SELECT 
+			  schedule_id,
+			  COUNT(1) num 
+			FROM
+			  zx_tissue_record 
+			WHERE STATUS = '1' 
+			  AND DATE_FORMAT(create_time, '%Y-%m-%d') = CURDATE() 
+			GROUP BY schedule_id ) t ,zx_ad_schedule z 
+			
+			WHERE t.schedule_id = z.`ad_schedule_id`
+			ORDER BY t.num DESC
+			LIMIT 5
+    </select>
+    
+    
+    <!-- 出纸记录 -->
+      <select id="selectzxtissuerecordlist"  resultType="java.util.HashMap">
+	        SELECT 
+			  DATE_FORMAT(a.`create_time`,'%Y-%m-%d %H:%i:%s') TIME ,
+			  c.name placeName,
+			  b.device_sn deviceSn
+			FROM
+			  zx_tissue_record a,
+			  zx_device b,
+			  zx_place c 
+			WHERE a.status = '1' 
+			  AND a.`device_id` = b.`device_id` 
+			  AND a.`place_id` = c.place_id 
+			  AND DATE_FORMAT(a.create_time, '%Y-%m-%d') = CURDATE()
+			  order by  create_time desc
+			  <if test="offset != null and limit != null">
+			     limit #{offset}, #{limit}
+		      </if>
+    </select>
+    
+      <select id="querytissuerecordTotal"  resultType="int">
+        SELECT 
+			  count(*)
+			FROM
+			  zx_tissue_record a,
+			  zx_device b,
+			  zx_place c 
+			WHERE a.status = '1' 
+			  AND a.`device_id` = b.`device_id` 
+			  AND a.`place_id` = c.place_id 
+			  AND DATE_FORMAT(a.create_time, '%Y-%m-%d') = CURDATE() 
+      </select>
+    
+    
+    
+      <!-- 出纸场所排名 -->
+    <select id="tissuerecordStatistics"  resultType="java.util.HashMap">
+       SELECT t.num,z.name FROM (			  
+			SELECT 
+			  place_id,
+			  COUNT(1) num 
+			FROM
+			  zx_tissue_record 
+			WHERE STATUS = '1' 
+			  AND DATE_FORMAT(create_time, '%Y-%m-%d') = CURDATE() 
+			GROUP BY place_id ) t ,zx_place z 
+			WHERE t.place_id = z.`place_id`
+			ORDER BY t.num DESC
+			LIMIT 5
+    </select>
+    
+    
+    
+          <!-- 收益列表 -->
+    <select id="selecuserincomelist"  resultType="java.util.HashMap">
+       SELECT 
+		  coperator_name coperatorName,
+		  ad_income_rate adIncome,
+		  promotion_income_rate promotionIncome,
+		  scan_income_rate serviceIncome
+		FROM
+		  zx_user_income 
+		  WHERE 1=1
+		  <if test="coperatorType != null and coperatorType != ''">
+		  AND coperator_type = #{coperatorType} 
+		</if>
+		<if test="coperatorId != null and coperatorId != ''">
+		  AND coperator_id =#{coperatorId} 
+		</if>
+		  ORDER BY sum_date desc
+		  <if test="offset != null and limit != null">
+			   limit #{offset}, #{limit}
+		  </if>
+    </select>
+    
+     <select id="queryuserincomeTotal"  resultType="int">
+         SELECT 
+		  count(*)
+		FROM
+		  zx_user_income 
+		  WHERE 1=1
+		  <if test="coperatorType != null and coperatorType != ''">
+		  AND coperator_type = #{coperatorType} 
+		</if>
+		<if test="coperatorId != null and coperatorId != ''">
+		  AND coperator_id =#{coperatorId} 
+		</if>
+     </select>
+    
+    
+    
+    
+    
+    
+    
 </mapper>
