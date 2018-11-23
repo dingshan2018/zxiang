@@ -94,6 +94,11 @@ public class SettlementParamServiceImpl implements ISettlementParamService
 	public List<HashMap<String, Object>> selectzxplace(Map<String, Object> map) {
 		return settlementParamMapper.selectzxplace(map);
 	}
+	
+	@Override
+	public int queryplaceTotal(Map<String, Object> map) {
+		return settlementParamMapper.queryplaceTotal(map);
+	}
 
 	@Override
 	public List<HashMap<String, Object>> selecadschedulelist(Map<String, Object> map) {
@@ -104,5 +109,38 @@ public class SettlementParamServiceImpl implements ISettlementParamService
 	public List<HashMap<String, Object>> selectzxtissuerecordlist(Map<String, Object> map) {
 		return settlementParamMapper.selectzxtissuerecordlist(map);
 	}
+
+	@Override
+	public int queryadscheduleTotal(Map<String, Object> map) {
+		return settlementParamMapper.queryadscheduleTotal(map);
+	}
+
+	@Override
+	public int querytissuerecordTotal(Map<String, Object> map) {
+		return settlementParamMapper.querytissuerecordTotal(map);
+	}
+	
+	
+	@Override
+	public List<HashMap<String, Object>> selecuserincomelist(Map<String, Object> map) {
+		return settlementParamMapper.selecuserincomelist(map);
+	}
+	
+	@Override
+	public int queryuserincomeTotal(Map<String, Object> map) {
+		return settlementParamMapper.queryuserincomeTotal(map);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> scheduleStatistics(Map<String, Object> map) {
+		return settlementParamMapper.scheduleStatistics(map);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> tissuerecordStatistics(Map<String, Object> map) {
+		return settlementParamMapper.tissuerecordStatistics(map);
+	}
+
+	
 	
 }

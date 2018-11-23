@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zxiang.common.utils.Query;
@@ -116,31 +117,104 @@ public class SettlementParamController extends BaseController
 	
 	
 	
-	
+	/**
+	 * 场所列表
+	 */
 	@PostMapping("/selectzxplacelist")
 	@ResponseBody
-	public List selectzxplacelist(Map<String, Object> params)
+	public Map<String, Object> selectzxplacelist(@RequestParam Map<String, Object> params)
 	{
 		Query query = new Query(params);
-		List<HashMap<String, Object>> list = settlementParamService.selectzxplace(params);
-		return list;
+		int totalCount = settlementParamService.queryplaceTotal(query);
+		List<HashMap<String, Object>> list = settlementParamService.selectzxplace(query);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("totalCount", totalCount);
+		map.put("limit", params.get("limit"));
+		map.put("page", params.get("page"));
+		map.put("list", list);
+		return map;
 	}
-	
+	/**
+	 * 广告计划列表
+	 */
 	@PostMapping("/selecadschedulelist")
 	@ResponseBody
-	public List selecadschedulelist(Map<String, Object> params)
+	public Map<String, Object> selecadschedulelist(@RequestParam Map<String, Object> params)
 	{
 		Query query = new Query(params);
-		List<HashMap<String, Object>> list = settlementParamService.selectzxplace(params);
-		return list;
+		int totalCount = settlementParamService.queryadscheduleTotal(query);
+		List<HashMap<String, Object>> list = settlementParamService.selecadschedulelist(query);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("totalCount", totalCount);
+		map.put("limit", params.get("limit"));
+		map.put("page", params.get("page"));
+		map.put("list", list);
+		return map;
 	}
 	
+	/**
+	 * 广告计划点击排名
+	 */
+	@PostMapping("/scheduleStatistics")
+	@ResponseBody
+	public Map<String, Object> scheduleStatistics(@RequestParam Map<String, Object> params)
+	{
+		List<HashMap<String, Object>> list = settlementParamService.scheduleStatistics(params);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("list", list);
+		return map;
+	}
+	
+	
+	
+	/**
+	 * 出纸记录列表
+	 */
 	@PostMapping("/selectzxtissuerecordlist")
 	@ResponseBody
-	public List selectzxtissuerecordlist(Map<String, Object> params)
+	public Map<String, Object> selectzxtissuerecordlist(@RequestParam Map<String, Object> params)
 	{
 		Query query = new Query(params);
-		List<HashMap<String, Object>> list = settlementParamService.selectzxplace(params);
-		return list;
+		int totalCount = settlementParamService.querytissuerecordTotal(query);
+		List<HashMap<String, Object>> list = settlementParamService.selectzxtissuerecordlist(query);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("totalCount", totalCount);
+		map.put("limit", params.get("limit"));
+		map.put("page", params.get("page"));
+		map.put("list", list);
+		return map;
+	}
+	
+	
+	/**
+	 * 出纸场所排名
+	 */
+	@PostMapping("/tissuerecordStatistics")
+	@ResponseBody
+	public Map<String, Object> tissuerecordStatistics(@RequestParam Map<String, Object> params)
+	{
+		List<HashMap<String, Object>> list = settlementParamService.tissuerecordStatistics(params);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("list", list);
+		return map;
+	}
+	
+	
+	/**
+	 * 收益统计列表
+	 */
+	@PostMapping("/selecuserincomelist")
+	@ResponseBody
+	public Map<String, Object> selecuserincomelist(@RequestParam Map<String, Object> params)
+	{
+		Query query = new Query(params);
+		int totalCount = settlementParamService.queryuserincomeTotal(query);
+		List<HashMap<String, Object>> list = settlementParamService.selecuserincomelist(query);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("totalCount", totalCount);
+		map.put("limit", params.get("limit"));
+		map.put("page", params.get("page"));
+		map.put("list", list);
+		return map;
 	}
 }
