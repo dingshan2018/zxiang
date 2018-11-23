@@ -174,7 +174,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			  zx_tissue_record z, zx_ad_schedule s
 			  WHERE 
 			   z.device_id = #{deviceId}
-			   and status = '1'
+			   and z.status = '1'
 			   and  z.`schedule_id` = s.`ad_schedule_id`
 			    AND s.promotioner != ''
 			    AND s.promotioner IS NOT NULL
