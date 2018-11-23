@@ -22,6 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="offerKey"    column="offer_key"    />
     </resultMap>
 	
 	<sql id="selectTerminalVo">
@@ -31,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         place_id, 
         (select distinct p.name from zx_place p where p.place_id =t.`place_id` ) placeName,
         rssi, last_heart_time, last_login_time, volumn, status, del_flag, lon, lat, version,
-        create_by, create_time, update_by, update_time from zx_terminal t
+        create_by, create_time, update_by, update_time,offer_key from zx_terminal t
     </sql>
 	
     <select id="selectTerminalList" parameterType="Terminal" resultMap="TerminalResult">
@@ -62,6 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 </if>
              <if test="updateBy != null "> and update_by = #{updateBy}</if>
              <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+             <if test="offerKey != null and offerKey != ''"> and offer_key = #{offerKey}</if>
          </where>
     </select>
     
@@ -90,6 +92,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createTime != null ">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
 			<if test="updateTime != null ">update_time,</if>
+			<if test="offerKey != null ">offer_key,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
@@ -109,6 +112,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createTime != null ">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
 			<if test="updateTime != null ">#{updateTime},</if>
+			<if test="offerKey != null ">#{offerKey},</if>
          </trim>
     </insert>
 	 
@@ -131,6 +135,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="offerKey != null  ">offerKey = #{offerKey},</if>
         </trim>
         where terminal_id = #{terminalId}
     </update>

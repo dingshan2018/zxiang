@@ -2,8 +2,8 @@ package com.zxiang.project.business.server.service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +23,8 @@ import com.zxiang.project.business.terminal.domain.Terminal;
 @Service
 public class ServerServiceImpl implements IServerService 
 {
+	Logger logger = Logger.getLogger(ServerServiceImpl.class);
+			
 	@Autowired
 	private ServerMapper serverMapper;
 
@@ -106,6 +108,8 @@ public class ServerServiceImpl implements IServerService
 			String requst = JSONObject.toJSONString(reqJson);
 			result = Tools.doPost(url, requst);
 		}
+		
+		logger.info("===>>>下发命令给终端,参数reqJson:"+reqJson+"返回信息result:"+result);
 		return result;
 	}
 	

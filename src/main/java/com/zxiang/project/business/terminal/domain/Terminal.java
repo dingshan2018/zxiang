@@ -57,6 +57,8 @@ public class Terminal extends BaseEntity
 	private String updateBy;
 	/**  */
 	private Date updateTime;
+	/**出纸密钥  */
+	private String offerKey;
 
 	private String deviceCode;
 	private String placeName;
@@ -254,6 +256,14 @@ public class Terminal extends BaseEntity
 
 	public void setSnCode(String snCode) {
 		this.snCode = snCode;
+	}
+
+	public String getOfferKey() {
+		return offerKey;
+	}
+
+	public void setOfferKey(String offerKey) {
+		this.offerKey = offerKey;
 	}
 
 	public String toString() {

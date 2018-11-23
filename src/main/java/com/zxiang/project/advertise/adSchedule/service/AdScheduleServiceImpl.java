@@ -617,7 +617,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	}
 	
 	/**
-	 *  下发更新终端二维码 下发命令
+	 * 下发更新终端二维码 下发命令
 	 *  参数封装方法
 	 * @param deviceId
 	 * @param qrCodeUrl
@@ -629,6 +629,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		if(terminal != null){
 			JSONObject reqJson = new JSONObject();
 			reqJson.put("termCode",terminal.getTerminalCode());
+			reqJson.put("offerKey",terminal.getOfferKey());
 			reqJson.put("qrUrl",qrCodeUrl);
 			reqJson.put("command","18");//参数下发命令0x12,转十进制为18
 			
