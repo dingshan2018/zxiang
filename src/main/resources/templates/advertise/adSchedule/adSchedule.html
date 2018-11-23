@@ -41,9 +41,11 @@
               <li class="select-btns">
                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
                 </a>
+                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
+              	</a>
                 <a class="btn btn-success btn-rounded btn-sm" onclick="exportModule()"><i class="fa fa-download"></i>&nbsp;导出
                 </a>
-                <a class="btn btn-success btn-rounded btn-sm" onclick="materialUpload()"><i class="fa fa-download"></i>&nbsp;素材上传
+                <a class="btn btn-success btn-rounded btn-sm" onclick="materialUpload()" shiro:hasPermission="advertise:adSchedule:add"><i class="fa fa-download"></i>&nbsp;素材上传
                 </a>
                 <!-- <a class="btn btn-success btn-rounded btn-sm" onclick="order()"><i class="fa fa-download"></i>&nbsp;预约
                 </a>
@@ -72,8 +74,11 @@
   </div>
   <div th:include="include::footer"></div>
   <script th:inline="javascript">
+  	var addFlag = [[${@permission.hasPermi('advertise:adSchedule:add')}]];
     var editFlag = [[${@permission.hasPermi('advertise:adSchedule:edit')}]];
     var removeFlag = [[${@permission.hasPermi('advertise:adSchedule:remove')}]];
+    var auditFlag = [[${@permission.hasPermi('advertise:adSchedule:audit')}]];//审核权限
+    var releaseOnlineFlag = [[${@permission.hasPermi('advertise:adSchedule:releaseOnline')}]];//发布权限
     var prefix = ctx + 'advertise/adSchedule';
 
     $(function() {
@@ -115,33 +120,37 @@
 			},
 			{
 				field : 'status',
-				title : '投放状态',
-				formatter: function(value, row, index) {
-	            	 var actions = [];
-	            	 if(value == toWaitOrder){
-		                 actions.push('<a class="btn btn-success btn-xs" href="#" onclick="order(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>预约</a> ');
-	            	 }else if(value == toAudit){
-		                 actions.push('<a class="btn btn-info btn-xs" href="#" onclick="audit(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>审核</a> ');
-	            	 }else if(value == toBeReleased){
-		                 actions.push('<a class="btn btn-warning btn-xs" href="#" onclick="releaseOnline(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>发布</a> ');
-	            	 }else if(value == toPlay){
-	            		 return '待播放';
-	            	 }else if(value == "05"){
-	            		 return '已播放';
-	            	 }else if(value == "06"){
-	            		 return '审核失败';
-	            	 }else if(value == "07"){
-	            		 return '排期失败';
-	            	 }else {
-		                	return '-';
-		             }
-	                 return actions.join('');
-	            }
+				title : '投放状态'
 			},
 			{
 				field : 'statusName',
 				title : '投放状态'
 			},
+			{
+	            title: '流程',
+	            align: 'center',
+	            formatter: function(value, row, index) {
+	            	 var actions = [];
+	            	 if(row.status == toWaitOrder){
+		                 actions.push('<a class="btn btn-success btn-xs '+ addFlag + '" href="#" onclick="order(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>预约</a> ');
+	            	 }else if(row.status == toAudit){
+		                 actions.push('<a class="btn btn-info btn-xs '+ auditFlag + '" href="#" onclick="audit(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>审核</a> ');
+	            	 }else if(row.status == toBeReleased){
+		                 actions.push('<a class="btn btn-warning btn-xs '+ releaseOnlineFlag + '" href="#" onclick="releaseOnline(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>发布</a> ');
+	            	 }/* else if(row.status == toPlay){
+	            		 return '待播放';
+	            	 }else if(row.status == "05"){
+	            		 return '已播放';
+	            	 }else if(row.status == "06"){
+	            		 return '审核失败';
+	            	 }else if(row.status == "07"){
+	            		 return '排期失败';
+	            	 } */else {
+		                	return '-';
+		             }
+	                 return actions.join('');
+	            }
+	        },
 			{
 				field : 'sxScheduleId',
 				title : '视讯排期ID'
@@ -237,14 +246,14 @@
                     	'\')"><i class="fa fa-search"></i>素材预览</a> ');
                     actions.push('<a class="btn btn-warning btn-xs" onclick="adPay(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>支付</a> ');
                     actions.push(
-                        	'<a class="btn btn-info btn-xs ' + editFlag + '" href="#" onclick="adDetail(\'' + row.adScheduleId +
+                        	'<a class="btn btn-info btn-xs" href="#" onclick="adDetail(\'' + row.adScheduleId +
                         	'\')"><i class="fa fa-edit"></i>详情</a> ');
 					return actions.join('');
 	            }
 	        }]
         };
         $.table.init(options);
-        $('#bootstrap-table').bootstrapTable('hideColumn', 'statusName');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'status');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'sxScheduleId');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'createBy');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
@@ -522,7 +531,8 @@
         		type : "POST",
         		url : prefix + "/releaseOnlineSave",
         		data : {
-        			"adScheduleId": adScheduleId
+        			"adScheduleId": adScheduleId,
+        			"releasePosition": adSchedule.releasePosition
         		},
         		async : false,
         		error : function(request) {

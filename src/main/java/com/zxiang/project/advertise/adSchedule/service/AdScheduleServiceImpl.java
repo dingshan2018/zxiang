@@ -627,7 +627,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		if(terminal != null){
 			JSONObject reqJson = new JSONObject();
 			reqJson.put("termCode",terminal.getTerminalCode());
-			reqJson.put("QrUrl",qrCodeUrl);
+			reqJson.put("qrUrl",qrCodeUrl);
 			reqJson.put("command","18");//参数下发命令0x12,转十进制为18
 			
 			serverService.issuedCommand(terminal,reqJson);

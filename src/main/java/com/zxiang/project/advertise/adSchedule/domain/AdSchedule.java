@@ -81,6 +81,7 @@ public class AdSchedule extends BaseEntity
 	private String releasePositionName;
 	private String statusName;
 	private String advertiseName;
+	private String approvedName;
 	
 	public void setAdScheduleId(Integer adScheduleId) 
 	{
@@ -384,6 +385,14 @@ public class AdSchedule extends BaseEntity
 
 	public void setQrUrl(String qrUrl) {
 		this.qrUrl = qrUrl;
+	}
+
+	public String getApprovedName() {
+		return approvedName;
+	}
+
+	public void setApprovedName(String approvedName) {
+		this.approvedName = approvedName;
 	}
 
 	public String toString() {

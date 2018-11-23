@@ -18,6 +18,7 @@ import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
+import com.zxiang.project.business.terminal.domain.Terminal;
 import com.zxiang.project.business.terminal.service.ITerminalService;
 import com.zxiang.project.business.terminalTimer.domain.TerminalTimer;
 import com.zxiang.project.business.terminalTimer.service.ITerminalTimerService;
@@ -156,7 +157,9 @@ public class TerminalTimerController extends BaseController
 		    return prefix + "/timerEdit";
 		}
 		
+		Terminal terminal = terminalService.selectTerminalById(terminalId);
 		mmap.put("terminalId", terminalId);
+		mmap.put("terminalCode", terminal.getTerminalCode());
 		return prefix + "/timerAdd";
 	}
 	

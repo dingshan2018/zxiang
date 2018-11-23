@@ -6,178 +6,164 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-adSchedule-adDetail" th:object="${adSchedule}">
             <input id="adScheduleId" name="adScheduleId" th:field="*{adScheduleId}"  type="hidden">
-            <div class="form-group">
-                <label class="col-sm-3 control-label">投放名称：</label>
-                <div class="col-sm-8">
-                    <input id="scheduleName" name="scheduleName btn-white" th:field="*{scheduleName}" class="form-control" disabled type="text">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">投放位置：</label>
-                <div class="col-sm-8">
-                    <!-- <select id="releasePosition"  name="releasePosition" class="form-control m-b"
-                    th:with="type=${@dict.getType('release_position')}">
-	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
-	                    th:value="${dict.dictValue}" th:field="*{releasePosition}"></option>
-	                </select> -->
-	                <select id="releasePosition" name="releasePosition" class="form-control" th:with="type=${@dict.getType('ad_type')}" disabled>
-	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{releasePosition}"></option>
-	                </select>
-                </div>
-            </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label">投放方式：</label>
-            <div class="col-sm-8">
-              <select id="releaseType" name="releaseType" class="form-control" th:field="*{releaseType}" disabled>
-                <option value=""></option>
-                <option value="0">全部</option>
-                <option value="1">按地区投放</option>
-                <option value="2">按场所投放</option>
-              </select>
-            </div>
+             <div>
+            	<div style="height: 30px;line-height: 30px;background: #f1f1f1;color: #000;font-weight: 600;text-indent: 8px;margin-bottom: 18px;">广告基础信息</div>
+	            <div class="form-group">
+	                <label class="col-sm-3 control-label">投放名称：</label>
+	                <div class="col-sm-3">
+	                	<!-- <input id="scheduleName" name="scheduleName btn-white" th:field="*{scheduleName}" class="form-control" disabled type="text"> -->	
+	                    <label th:text="*{scheduleName}" class="form-control"></label>
+	                </div>
+	                <label class="col-sm-3 control-label">投放数量：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{releaseTermNum}" class="form-control"></label>
+	                </div>
+	            </div>
+	            <div class="form-group">
+	                <label class="col-sm-3 control-label">投放类型：</label>
+	                <div class="col-sm-3">
+		                <label th:text="*{releasePositionName}" class="form-control"></label>
+	                </div>
+	                <label class="col-sm-3 control-label">投放状态：</label>
+	                <div class="col-sm-3">
+						<label th:text="*{statusName}" class="form-control"></label>
+	                </div>
+	            </div>
+	            <div class="form-group">
+	                <label class="col-sm-3 control-label">排期编号：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{sxScheduleId}" class="form-control"></label>
+	                </div>
+	                <label class="col-sm-3 control-label">播放时长：</label>
+					<div class="col-sm-3">
+						<label th:text="*{totalTime}" class="form-control"></label>
+					</div>
+	            </div>
+	             <div class="form-group">
+	                <label class="col-sm-3 control-label">总价：</label>
+	               <div class="col-sm-3">
+	                    <label th:text="*{totalPay}" class="form-control"></label>
+	                </div>
+	                <label class="col-sm-3 control-label">押金：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{prepay}" class="form-control"></label>
+	                </div>
+	            </div>
+	            <div class="form-group">
+	                <label class="col-sm-3 control-label">广告商户：</label>
+					<div class="col-sm-3">
+						<label th:text="*{advertiseName}" class="form-control"></label>
+					</div>
+					<label class="col-sm-3 control-label">模板主题：</label>
+	                <div class="col-sm-3">
+	                    <select id="themeTemplateId" name="themeTemplateId" class="form-control" disabled>
+							<option value=""></option>
+							<option th:each="c:${ThemeTemplateList}"  th:value="${c.themeTemplateId}"
+							th:text="${c.themeName}" th:field="*{themeTemplateId}"/>
+						</select>
+	                </div>
+	            </div>
+	            <div class="form-group">
+	                <label class="col-sm-3 control-label">备注：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{releaseNote}" class="form-control"></label>
+	                </div>
+            	</div>
           </div>
-          <div class="form-group" th:if="*{releaseType} != '0'">
-            <label class="col-sm-3 control-label">投放范围：</label>
-            <div class="col-sm-8">
-              <div class="form-control p-n" disabled>
-                <!-- 全部 -->
-                <input th:if="${adRange != null && adRange.releaseType == '0'}" value="全部" class="form-control" disabled type="text">
-                <!-- 按地区 -->
-                <div th:if="${adRange != null && adRange.releaseType == '1'}" class="row m-n">
-                  <div class="col-sm-4 p-n">
-                    <select class="select-pca__province form-control" disabled>
-                      <option value=''>---未选择---</option>
-                      <option th:each="list:${areaList}" th:value="${list.id}" th:text="${list.pname}"></option>
-                    </select>
-                  </div>
-                  <div class="col-sm-4 p-n">
-                    <select class="select-pca__city form-control" disabled>
-                      <option value=''>---未选择---</option>
-                      <option th:each="list:${areaList}" th:value="${list.id}" th:text="${list.pname}"></option>
-                    </select>
-                  </div>
-                  <div class="col-sm-4 p-n">
-                    <select class="select-pca__areas form-control" disabled>
-                      <option value=''>---未选择---</option>
-                      <option th:each="list:${areaList}" th:value="${list.id}" th:text="${list.pname}"></option>
-                    </select>
-                  </div>
-                </div>
-                <!-- 按场所 -->
-                <div th:if="${adRange != null && adRange.releaseType == '2'}">
-                  <select class="form-control"
-                          title="未选择场所"
-                          data-id="placeGrade"
-                          disabled>
-                    <option th:each="list:${placeList}" th:value="${list.placeId}" th:text="${list.name}"></option>
-                  </select>
-                </div>
-              </div>
-            </div>
+          <div>
+            	<div style="height: 30px;line-height: 30px;background: #f1f1f1;color: #000;font-weight: 600;text-indent: 8px;margin-bottom: 18px;">广告审核信息</div>
+         		<div class="form-group">
+	                <label class="col-sm-3 control-label">审核结果：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{approvedName}" class="form-control"></label>
+	                </div>
+	                 <label class="col-sm-3 control-label">审核人员：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{approvedUser}" class="form-control"></label>
+	                </div>
+	            </div>
+	            <div class="form-group">
+	               <label class="col-sm-3 control-label">审核意见：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{approvedRemark}" class="form-control"></label>
+	                </div>
+	            </div>
+         		
           </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label">投放设备：</label>
-            <div class="col-sm-8">
-              <label th:each="device:${deviceList}" class="device-item checkbox-inline" th:data-device-id="${device.deviceId}">
-                <input type="checkbox" th:value="${device.deviceId}" th:text="${device.deviceCode}" disabled>
-              </label>
-              <input type="text" class="form-control" style="display: none;" data-id="noAdRangeDevices" value="暂无投放设备" disabled >
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label">投放时段：</label>
-            <div class="col-sm-8">
-              <div class="form-control ad-timer-control" disabled>
-                <div th:each="list:${adTimerList}" class="ad-timer-item">
-                  <span th:text="${#dates.format(list.releaseBeginTime, 'yyyy-MM-dd hh:mm:ss')}"></span>
-                  <span class="broken"></span>
-                  <span th:text="${#dates.format(list.releaseEndTime, 'yyyy-MM-dd hh:mm:ss')}"></span>
-                </div>
-              </div>
-            </div>
-          </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">模板主题名称：</label>
-                <div class="col-sm-8">
-                    <select id="themeTemplateId" name="themeTemplateId" class="form-control" disabled>
-						<option value=""></option>
-						<option th:each="c:${ThemeTemplateList}"  th:value="${c.themeTemplateId}"
-						th:text="${c.themeName}" th:field="*{themeTemplateId}"/>
-					</select>
-                </div>
-            </div>
-            <div class="form-group">
-				<label class="col-sm-3 control-label">广告商：</label>
-				<div class="col-sm-8">
-					<select id="advertiseId" name="advertiseId" class="form-control" disabled>
-						<option value=""></option>
-						<option th:each="c:${advertiserList}"  th:value="${c.advertiseId}"
-						th:text="${c.advertisorName}" th:field="*{advertiseId}"/>
-					</select>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">总播放时长：</label>
-				<div class="col-sm-8">
-					<input id="totalTime" name="totalTime" th:field="*{totalTime}" class="form-control" disabled type="text">
-				</div>
-			</div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">排期编号：</label>
-                <div class="col-sm-8">
-                    <input id="sxScheduleId" name="sxScheduleId" th:field="*{sxScheduleId}" class="form-control" disabled type="text">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">投放状态：</label>
-                <div class="col-sm-8">
-                    <select id="status" name="status" th:with="type=${@dict.getType('schedule_status')}" class="form-control" disabled>
-						<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{status}"></option>
-					</select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">总价：</label>
-                <div class="col-sm-8">
-                    <input id="totalPay" name="totalPay" th:field="*{totalPay}" class="form-control" disabled type="text">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">押金：</label>
-                <div class="col-sm-8">
-                    <input id="prepay" name="prepay" th:field="*{prepay}" class="form-control" disabled type="text">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">投放终端数：</label>
-                <div class="col-sm-8">
-                    <input id="releaseTermNum" name="releaseTermNum" th:field="*{releaseTermNum}" class="form-control" disabled type="text">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">审核结果：</label>
-                <div class="col-sm-8">
-                    <input id="approved" name="approved" th:field="*{approved}" class="form-control" disabled type="text">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">审核意见：</label>
-                <div class="col-sm-8">
-                    <input id="approvedRemark" name="approvedRemark" th:field="*{approvedRemark}" class="form-control" disabled type="text">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">审核人员：</label>
-                <div class="col-sm-8">
-                    <input id="approvedUser" name="approvedUser" th:field="*{approvedUser}" class="form-control" disabled type="text">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">投放备注：</label>
-                <div class="col-sm-8">
-                    <input id="releaseNote" name="releaseNote" th:field="*{releaseNote}" class="form-control" disabled type="text">
-                </div>
-            </div>
+          <div>
+            	<div style="height: 30px;line-height: 30px;background: #f1f1f1;color: #000;font-weight: 600;text-indent: 8px;margin-bottom: 18px;">投放时段范围</div>
+         		<div class="form-group">
+	            <label class="col-sm-3 control-label">投放方式：</label>
+	            <div class="col-sm-8">
+	              <select id="releaseType" name="releaseType" class="form-control" th:field="*{releaseType}" disabled>
+	                <option value=""></option>
+	                <option value="0">全部</option>
+	                <option value="1">按地区投放</option>
+	                <option value="2">按场所投放</option>
+	              </select>
+	            </div>
+	          </div>
+	          <div class="form-group" th:if="*{releaseType} != '0'">
+	            <label class="col-sm-3 control-label">投放范围：</label>
+	            <div class="col-sm-8">
+	              <div class="form-control p-n" disabled>
+	                <!-- 全部 -->
+	                <input th:if="${adRange != null && adRange.releaseType == '0'}" value="全部" class="form-control" disabled type="text">
+	                <!-- 按地区 -->
+	                <div th:if="${adRange != null && adRange.releaseType == '1'}" class="row m-n">
+	                  <div class="col-sm-4 p-n">
+	                    <select class="select-pca__province form-control" disabled>
+	                      <option value=''>---未选择---</option>
+	                      <option th:each="list:${areaList}" th:value="${list.id}" th:text="${list.pname}"></option>
+	                    </select>
+	                  </div>
+	                  <div class="col-sm-4 p-n">
+	                    <select class="select-pca__city form-control" disabled>
+	                      <option value=''>---未选择---</option>
+	                      <option th:each="list:${areaList}" th:value="${list.id}" th:text="${list.pname}"></option>
+	                    </select>
+	                  </div>
+	                  <div class="col-sm-4 p-n">
+	                    <select class="select-pca__areas form-control" disabled>
+	                      <option value=''>---未选择---</option>
+	                      <option th:each="list:${areaList}" th:value="${list.id}" th:text="${list.pname}"></option>
+	                    </select>
+	                  </div>
+	                </div>
+	                <!-- 按场所 -->
+	                <div th:if="${adRange != null && adRange.releaseType == '2'}">
+	                  <select class="form-control"
+	                          title="未选择场所"
+	                          data-id="placeGrade"
+	                          disabled>
+	                    <option th:each="list:${placeList}" th:value="${list.placeId}" th:text="${list.name}"></option>
+	                  </select>
+	                </div>
+	              </div>
+	            </div>
+	          </div>
+	          <div class="form-group">
+	            <label class="col-sm-3 control-label">投放设备：</label>
+	            <div class="col-sm-8">
+	              <label th:each="device:${deviceList}" class="device-item checkbox-inline" th:data-device-id="${device.deviceId}">
+	                <input type="checkbox" th:value="${device.deviceId}" th:text="${device.deviceSn}" disabled>
+	              </label>
+	              <input type="text" class="form-control" style="display: none;" data-id="noAdRangeDevices" value="暂无投放设备" disabled >
+	            </div>
+	          </div>
+	          <div class="form-group">
+	            <label class="col-sm-3 control-label">投放时段：</label>
+	            <div class="col-sm-8">
+	              <div class="form-control ad-timer-control" disabled>
+	                <div th:each="list:${adTimerList}" class="ad-timer-item">
+	                  <span th:text="${#dates.format(list.releaseBeginTime, 'yyyy-MM-dd')}"></span>
+	                  <span class="broken"></span>
+	                  <span th:text="${#dates.format(list.releaseEndTime, 'yyyy-MM-dd')}"></span>
+	                </div>
+	              </div>
+	            </div>
+	          </div>
+          	</div>
 			<div class="form-group">
 				<div class="form-control-static col-sm-offset-9">
 					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>

@@ -195,7 +195,10 @@
                   row.placeId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                 actions.push(
                   '<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' +
-                  row.placeId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                  row.placeId + '\')"><i class="fa fa-remove"></i>删除</a> ');
+                actions.push(
+                    	'<a class="btn btn-info btn-xs" href="#" onclick="placeDetail(\'' + row.placeId +
+                    	'\')"><i class="fa fa-edit"></i>详情</a> ');
                 return actions.join('');
               }
             }]
@@ -265,6 +268,12 @@
             //将数据添加到区县这个下拉框里面
             $("#county").append(str);
      }
+     
+ 	 //场所详情
+     function placeDetail(placeId) {
+ 		var url = prefix + '/placeDetail/' + placeId;
+ 		$.modal.open("场所信息详情", url);
+   	}
     </script>
 </body>
 </html>

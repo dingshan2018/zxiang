@@ -197,6 +197,8 @@ public class AdScheduleController extends BaseController
 	/**
      * 素材上传保存
      */
+	@RequiresPermissions("advertise:adSchedule:add")
+	@Log(title = "广告素材上传保存", businessType = BusinessType.UPDATE)
 	@RequestMapping(value = "/materialUploadSave", method = RequestMethod.POST)
     @ResponseBody
     public AjaxResult materialUploadSave(HttpServletRequest request)
@@ -232,7 +234,7 @@ public class AdScheduleController extends BaseController
 	/**
 	 * 广告投放预约保存
 	 */
-	@RequiresPermissions("advertise:adSchedule:edit")
+	@RequiresPermissions("advertise:adSchedule:add")
 	@Log(title = "广告投放预约保存", businessType = BusinessType.UPDATE)
 	@PostMapping("/orderSave")
 	@ResponseBody

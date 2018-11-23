@@ -1,0 +1,174 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-place-edit" th:object="${place}">
+            <input id="placeId" name="placeId" th:field="*{placeId}"  type="hidden">
+            <div>
+            	<div style="height: 30px;line-height: 30px;background: #f1f1f1;color: #000;font-weight: 600;text-indent: 8px;margin-bottom: 18px;">基础信息</div>
+            	<div class="form-group">	
+	                <label class="col-sm-3 control-label">场所名称：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{name}" class="form-control"></label>
+	                </div>
+	                <label class="col-sm-3 control-label">场所简拼：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{sname}" class="form-control"></label>
+	                </div>
+	            </div>
+            	<div class="form-group">	
+	                <label class="col-sm-3 control-label">省份：</label>
+	                <div class="col-sm-3">
+						<label th:text="*{provinceName}" class="form-control"></label>
+	                </div>
+	                <label class="col-sm-3 control-label">城市：</label>
+	                <div class="col-sm-3">
+						<label th:text="*{cityName}" class="form-control"></label>
+	                </div>
+	            </div>
+	            <div class="form-group">	
+	                <label class="col-sm-3 control-label">区县：</label>
+	                <div class="col-sm-3">
+						<label th:text="*{countyName}" class="form-control"></label>
+	                </div>
+	                <label class="col-sm-3 control-label">场所编号：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{placeCode}" class="form-control"></label>
+	                </div>
+	            </div>
+	            <div class="form-group">	
+	                <label class="col-sm-3 control-label">场所类型：</label>
+	                <div class="col-sm-3">
+	                    <select id="placeType" name="placeType" class="form-control" th:field="*{placeType}" disabled>
+							<option value="0" >自营</option>
+	                        <option value="1" >代理</option>
+	                        <option value="2" >自购</option>
+						</select>
+	                </div>
+	                <label class="col-sm-3 control-label">场景：</label>
+	                <div class="col-sm-3">
+	                    <select id="scene" name="scene"  class="form-control m-b" th:with="type=${@dict.getType('place_type')}" disabled>
+		                    <option value=""></option>
+		                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{scene}"></option>
+		                </select>
+	                </div>
+	            </div>
+	            <div class="form-group">	
+	                <label class="col-sm-3 control-label">维修员：</label>
+	                <div class="col-sm-3">
+	                    <select id="repairId" name="repairId" class="form-control" disabled>
+							<option value=""></option>
+							<option th:each="user:${userListRepair}" th:value="${user.userId}"
+							 th:text="${user.userName}" th:field="*{repairId}"></option>
+						</select>
+	                </div>
+	                <label class="col-sm-3 control-label">送纸员：</label>
+	                <div class="col-sm-3">
+	                    <select id="supplyId" name="supplyId" class="form-control" disabled>
+	                    	<option value=""></option>
+							<option th:each="user:${userListRepair}" th:value="${user.userId}"
+							 th:text="${user.userName}" th:field="*{supplyId}"></option>
+						</select>
+	                </div>
+	            </div>
+	            <div class="form-group">	
+	                <label class="col-sm-3 control-label">经办人：</label>
+	                <div class="col-sm-3">
+	                    <select id="operatorId" name="operatorId" class="form-control" disabled>
+	                    	<option value=""></option>
+							<option th:each="user:${userListAll}" th:value="${user.userId}"
+							 th:text="${user.userName}" th:field="*{operatorId}"></option>
+						</select>
+	                </div>
+	                <label class="col-sm-3 control-label">投放数量：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{deviceCount}" class="form-control"></label>
+	                </div>
+	            </div>
+	            <div class="form-group">	
+	                <label class="col-sm-3 control-label">详细地址：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{address}" class="form-control"></label>
+	                </div>
+	                <label class="col-sm-3 control-label">场所状态：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{status}" class="form-control"></label>
+	                </div>
+	            </div>
+	            <div class="form-group">	
+	                <label class="col-sm-3 control-label">经度：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{lon}" class="form-control"></label>
+	                </div>
+	                <label class="col-sm-3 control-label">纬度：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{lat}" class="form-control"></label>
+	                </div>
+	            </div>
+	            <div class="form-group">	
+	                <label class="col-sm-3 control-label">备注：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{note}" class="form-control"></label>
+	                </div>
+	            </div>
+            </div>
+            <div>
+            	<div style="height: 30px;line-height: 30px;background: #f1f1f1;color: #000;font-weight: 600;text-indent: 8px;margin-bottom: 18px;">合同信息</div>
+	            <div class="form-group">	
+	                <label class="col-sm-3 control-label">开户行（合同收款方）：</label>
+	                <div class="col-sm-3">
+	                    <input id="ctBank" name="ctBank" th:field="*{ctBank}" class="form-control" type="text">
+	                </div>
+	                <label class="col-sm-3 control-label">收款账号：</label>
+	                <div class="col-sm-3">
+	                    <input id="ctAccount" name="ctAccount" th:field="*{ctAccount}" class="form-control" type="text">
+	                </div>
+	            </div>
+	            <div class="form-group">	
+	                <label class="col-sm-3 control-label">收款人：</label>
+	                <div class="col-sm-3">
+	                    <input id="ctReceiver" name="ctReceiver" th:field="*{ctReceiver}" class="form-control" type="text">
+	                </div>
+	                <label class="col-sm-3 control-label">收款人联系电话：</label>
+	                <div class="col-sm-3">
+	                    <input id="ctPhone" name="ctPhone" th:field="*{ctPhone}" class="form-control" type="text">
+	                </div>
+	            </div>
+	            <div class="form-group">	
+	                <label class="col-sm-3 control-label">收款人身份证：</label>
+	                <div class="col-sm-3">
+	                    <input id="ctIdentity" name="ctIdentity" th:field="*{ctIdentity}" class="form-control" type="text">
+	                </div>
+	                <label class="col-sm-3 control-label">商家分成比例：</label>
+	                <div class="col-sm-3">
+	                    <input id="ctRate" name="ctRate" th:field="*{ctRate}" class="form-control" type="text">
+	                </div>
+	            </div>
+            </div>
+          
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+    
+		var prefix = ctx + "business/place"
+		$("#form-place-edit").validate({
+			rules:{
+				name:{
+					required:true,
+				},
+			},
+			submitHandler: function(form) {
+				//$.operate.save(prefix + "/edit", $('#form-place-edit').serialize());
+			}
+		});
+	</script>
+</body>
+</html>
