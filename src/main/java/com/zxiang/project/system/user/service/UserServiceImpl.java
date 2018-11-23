@@ -469,11 +469,11 @@ public class UserServiceImpl implements IUserService
 
 	@Override
 	public List<String> wxLoginSelectRoles(String openId) {
-		WxUser wxUser = wxUserMapper.selectByOpenId(openId);
-		if(wxUser == null || wxUser.getUserId() == null) {
+		Integer userId = wxUserMapper.selectUserIdByOpenId(openId);
+		if(userId == null) {
 			throw new RRException("该用户未绑定");
 		}
-		List<String> roles = wxUserMapper.selectPermsByUserId(wxUser.getUserId());
+		List<String> roles = wxUserMapper.selectPermsByUserId(userId);
 		if(roles == null || roles.size() == 0) {
 			return null;
 		}

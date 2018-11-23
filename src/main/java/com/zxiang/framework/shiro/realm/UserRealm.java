@@ -96,7 +96,7 @@ public class UserRealm extends AuthorizingRealm
         String username = upToken.getUsername();
         String password = "";
         String openId = upToken.getOpenId();
-        if (upToken.getPassword() != null)
+        if (upToken.getPassword()!=null && !"".equals(upToken.getPassword()))
         {
             password = new String(upToken.getPassword());
         }
