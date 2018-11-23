@@ -157,4 +157,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateUserIdNull">
     	update zx_wx_user set user_id = null where wx_user_id = #{wcUserId}
     </update>
+    <select id="selectByOpenId" resultType="WxUser">
+    	select * from zx_wx_user where open_id = #{openId}
+    </select>
+	<select id="selectPermsByUserId" resultType="String">
+		SELECT DISTINCT m.perms FROM sys_user_role ur 
+		LEFT JOIN sys_role_menu rm ON ur.`role_id` = rm.`role_id` LEFT JOIN sys_menu m 
+		ON rm.`menu_id` = m.`menu_id` WHERE m.`parent_id` != 0 and m.`is_phone` = '01' AND ur.`user_id` = = #{userId}
+	</select>
 </mapper>

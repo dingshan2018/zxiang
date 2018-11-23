@@ -174,5 +174,11 @@ public interface IUserService
 	public List<User> selectJoinSaleMan();
 
 	public void setRoleName(List<User> list);
+	/**
+	 * 微信登录获取角色信息
+	 * @param openId
+	 * @return
+	 */
+	public List<String> wxLoginSelectRoles(String openId);
 	
 }
