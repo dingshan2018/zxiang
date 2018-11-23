@@ -464,7 +464,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     
      <select id="queryExport" resultType="java.util.HashMap">
-        	select  coperator_id,coperator_name, coperator_type,  DATE_FORMAT(`sum_date`,'%Y-%m-%d') sum_date, ad_income, ad_carousel_income, 
+        	select  coperator_id,coperator_name, CASE coperator_type WHEN 00 THEN '系统用户'
+              WHEN 01 THEN '合作伙伴'
+              WHEN 02 THEN '加盟商'
+              WHEN 03 THEN '代理商'
+              WHEN 04 THEN '服务商'
+              WHEN 05 THEN '广告商'
+              WHEN 06 THEN '业务员'
+               ELSE '' END
+              AS coperator_type,  DATE_FORMAT(`sum_date`,'%Y-%m-%d') sum_date, ad_income, ad_carousel_income, 
 			    scan_income, prom_direct_income, prom_indirect_income,promotion_income, paper_income, prom_paper_income, 
 			    direct_agent_income, subsidy_income, ad_income_rate, promotion_income_rate, scan_income_rate, 
 			    subsidy_income_rate, ad_rate, ad_carousel_rate, scan_rate, prom_direct_rate, prom_indirect_rate, 

@@ -146,17 +146,25 @@ public class UserIncomeServiceImpl implements IUserIncomeService
 		String realPath = request.getSession().getServletContext().getRealPath("/file/temp");
 		EXCELObject s = new EXCELObject();
 		s.seteFilePath(realPath);
-		String[] titH = {"日期", "合作客户", "合作类型", "视频广告基数","轮播广告基数","推广二维码广告基数", "推广广告基数","直推机子数量","间推机子数量",
-				          "出纸数量", "直推代理基数", "视频广告系数", "轮播广告系数","二维码广告系数", "直推机子分润系数","间推机子分润系数",
-				          "推广二维码广告系数","推广广告系数","直推代理分润系数","服务出纸系数", "广告收益","推广收益","服务收益"};
-		String[] titN = { "sum_date","coperator_name","coperator_type","ad_income","ad_carousel_income","prom_paper_income","promotion_income","prom_direct_income","prom_indirect_income",
-				           "paper_income","direct_agent_income","ad_rate","ad_carousel_rate","scan_rate","prom_direct_rate","prom_indirect_rate",
-				           "prom_paper_rate","promotion_rate","direct_agent_rate","serve_rate","ad_income_rate","promotion_income_rate","scan_income_rate"};
+		//String[] pTit = {"日期","合作客户", "合作类型","广告收益参数","推广收益参数","推广收益","服务收益参数","服务收益"};
+		String[] pTit = {"日期","  合作客户   ", "   合作类型    ","广告收益","推广收益","服务收益"};
+		String[] cols = {"0","0","0","7","11","3"};
+		String[] titH = { "视频广告基数", "视频广告系数", "轮播广告基数", "轮播广告系数", "出纸数量", "二维码广告系数", "广告收益合计",   
+				          "推广广告基数", "推广广告系数","推广二维码广告基数", "推广二维码广告系数",  "直推机子数量", "直推机子系数","间推机子数量","间推机子系数","直推代理基数","直推代理系数","推广收益合计",
+				          "出纸数量",   "服务出纸系数","服务收益合计",	
+		                };
 		
-		//String[] width= {"15","20","25","25","15","25","25","15","15","25","15","25"};
-		//s.setWidth(width);
+		String[] titN = {"sum_date","coperator_name","coperator_type",
+				         "ad_income","ad_rate","ad_carousel_income","ad_carousel_rate","paper_income","scan_rate","ad_income_rate",
+				         "promotion_income","promotion_rate","prom_paper_income","prom_paper_rate","prom_direct_income","prom_direct_rate","prom_indirect_income","prom_indirect_rate","direct_agent_income","direct_agent_rate","promotion_income_rate",
+				         "paper_income","serve_rate","scan_income_rate"
+				         };
+		//String[] widthp= {"30","30","25"};
+		//s.setWidthP(widthp);
 		s.setFname("客户结算统计 "); // 临时文件名
 		s.setTitle("客户结算统计"); // 大标题名称
+		s.setpTit(pTit);
+		s.setCols(cols);
 		s.setTitH(titH);
 		s.setTitN(titN);
 		s.setDataList(userIncomeList);
