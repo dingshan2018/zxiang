@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zxiang.common.exception.RRException;
@@ -70,7 +72,8 @@ public class LoginController extends BaseController {
     @PostMapping("/wxLogin")
     @ResponseBody
     public AjaxResult ajaxLogin(String openId){
-    	UsernamePasswordOauthToken token = new UsernamePasswordOauthToken(null, null, null,openId);
+
+    	UsernamePasswordOauthToken token = new UsernamePasswordOauthToken("", "", false,openId);
     	Subject subject = SecurityUtils.getSubject();
         try {
             subject.login(token);
@@ -87,6 +90,9 @@ public class LoginController extends BaseController {
             return error(msg);
         } catch (RRException e) {
 	    	return error(e.getMessage());
+	    } catch (Exception e) {
+	    	e.printStackTrace();
+	    	return error();
 	    }
     }
 

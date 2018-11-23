@@ -75,5 +75,7 @@ public interface WxUserMapper
 	 * @return
 	 */
 	public List<String> selectPermsByUserId(Integer userId);
+
+	public Integer selectUserIdByOpenId(String openId);
 	
 }
