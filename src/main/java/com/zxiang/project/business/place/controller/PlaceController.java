@@ -175,4 +175,24 @@ public class PlaceController extends BaseController
     {
         return placeService.checkPlaceCodeUnique(place.getPlaceCode());
     }
+    
+    /**
+	 * 场所详情
+	 */
+	@GetMapping("/placeDetail/{placeId}")
+	public String adDetail(@PathVariable("placeId") Integer placeId, ModelMap mmap)
+	{
+		Place place = placeService.selectPlaceById(placeId);
+		mmap.put("place", place);
+		
+		User queryUser = new User();
+		List<User> userListAll = userService.selectUserList(queryUser);
+		mmap.put("userListAll", userListAll);
+		
+		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
+		List<User> userListRepair = userService.selectUserList(queryUser);
+		mmap.put("userListRepair", userListRepair);
+		
+	    return prefix + "/placeDetail";
+	}
 }
