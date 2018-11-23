@@ -71,7 +71,7 @@ public interface IDeviceIncomeDailyService
 	/** 
 	 * 出纸记录表查询
 	 * */
-	public int selectzxtissuerecordlist(String deviceId,String scheduleId);
+	public List<HashMap<String, Object>> selectzxtissuerecordlist(String deviceId,String scheduleId);
 	
 	/** 
 	 * 场所管理表

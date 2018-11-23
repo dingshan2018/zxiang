@@ -80,6 +80,7 @@ public interface UserIncomeMapper
 	 * */
 	public List<HashMap<String, Object>> selectzxagentlist(HashMap<String, Object> map);
 	
+	
 	/**
 	 * 代理商
 	 * */

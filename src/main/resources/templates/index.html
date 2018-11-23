@@ -45,7 +45,7 @@
         <li>
           <div class="dropdown profile-element">
             <span>
-              <img th:src="(${user.avatar} == '') ? '/img/profile.jpg' : '/profile/' + ${user.avatar}"
+              <img th:src="(${user.avatar} == '') ? '/img/profile.jpg' : ${user.avatar}"
                    alt="profile"
                    class="img-circle"
                    height="60"

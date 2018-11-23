@@ -165,12 +165,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		AND (DATE_FORMAT(down_time, '%Y-%m-%d') = DATE_FORMAT( DATE_SUB(CURDATE(), INTERVAL 1 DAY), '%Y-%m-%d') OR DATE_FORMAT(play_time, '%Y-%m-%d') = DATE_FORMAT( DATE_SUB(CURDATE(), INTERVAL 1 DAY), '%Y-%m-%d'))
     </select>
     
-      <select id="selectzxtissuerecordlist"  resultType="int">
-	       SELECT 
-			 COUNT(1)
-			FROM (
+      <select id="selectzxtissuerecordlist"  resultType="java.util.HashMap">
 	        SELECT 
-			  open_id 
+			  z.open_id,
+			  z.`schedule_id`,
+			   s.promotioner
 			FROM
 			  zx_tissue_record z, zx_ad_schedule s
 			  WHERE 
@@ -178,12 +177,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			   and  z.`schedule_id` = s.`ad_schedule_id`
 			    AND s.promotioner != ''
 			    AND s.promotioner IS NOT NULL
-			   <if test="scheduleId != null and scheduleId != ''"> and z.schedule_id = #{scheduleId}</if>
 			AND DATE_FORMAT(z.create_time, '%Y-%m-%d') = DATE_FORMAT(
 			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
 			    '%Y-%m-%d'
-			  ) GROUP BY open_id
-			  )t
+			  ) GROUP BY z.open_id
     </select>
     
       
