@@ -71,6 +71,7 @@ a:focus {
 }
 
 .navbar-top-links li {
+    vertical-align: top;
     display: inline-block;
 }
 
@@ -384,6 +385,7 @@ body.mini-navbar .navbar-default .nav>li>.nav-second-level li a {
     /*background: #f3f3f4;*/
     background: #19aa8d;
     z-index: 2001;
+    height: 60px;
 }
 
 .navbar-fixed-top {

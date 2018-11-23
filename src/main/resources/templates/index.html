@@ -31,7 +31,7 @@
     <nav class="navbar navbar-static-top m-b-none" role="navigation">
       <div class="navbar-header">
         <div class="navbar-brand">共享纸巾机管理平台</div>
-        <a class="navbar-minimalize minimalize-styl-2 btn " href="#" title="收起菜单">
+        <a class="navbar-minimalize minimalize-styl-2 btn" href="#" title="收起菜单">
           <i class="fa fa-bars"></i>
         </a>
       </div>
@@ -45,12 +45,12 @@
         <li>
           <div class="dropdown profile-element">
             <span>
-              <img th:src="(${user.avatar} == '') ? '/img/profile.jpg' : ${user.avatar}"
+              <img th:src="${user.avatar} ? ${user.avatar} : @{/img/profile.jpg}"
                    alt="profile"
                    class="img-circle"
                    height="60"
                    width="60"/>
-              <b class="caret"></b>
+              <b class="caret" style="color: #fff;"></b>
             </span>
             <ul class="dropdown-menu animated fadeInRight">
               <li>
