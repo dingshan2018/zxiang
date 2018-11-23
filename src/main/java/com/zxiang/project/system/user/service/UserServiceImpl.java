@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zxiang.common.constant.UserConstants;
+import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.StringUtils;
 import com.zxiang.common.utils.security.ShiroUtils;
@@ -19,6 +20,8 @@ import com.zxiang.project.client.join.domain.Join;
 import com.zxiang.project.client.join.mapper.JoinMapper;
 import com.zxiang.project.client.repair.domain.Repair;
 import com.zxiang.project.client.repair.mapper.RepairMapper;
+import com.zxiang.project.client.wxuser.domain.WxUser;
+import com.zxiang.project.client.wxuser.mapper.WxUserMapper;
 import com.zxiang.project.system.dept.domain.Dept;
 import com.zxiang.project.system.dept.mapper.DeptMapper;
 import com.zxiang.project.system.post.domain.Post;
@@ -49,6 +52,8 @@ public class UserServiceImpl implements IUserService
 	private IRoleService iroleService;
     @Autowired
     private RoleMapper roleMapper;
+    @Autowired
+    private WxUserMapper wxUserMapper;
 
     @Autowired
     private PostMapper postMapper;
@@ -460,5 +465,18 @@ public class UserServiceImpl implements IUserService
 	        }
 	        user.setRoleNames(roleName);
 		}
+	}
+
+	@Override
+	public List<String> wxLoginSelectRoles(String openId) {
+		WxUser wxUser = wxUserMapper.selectByOpenId(openId);
+		if(wxUser == null || wxUser.getUserId() == null) {
+			throw new RRException("该用户未绑定");
+		}
+		List<String> roles = wxUserMapper.selectPermsByUserId(wxUser.getUserId());
+		if(roles == null || roles.size() == 0) {
+			return null;
+		}
+		return roles;
 	}
 }

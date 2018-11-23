@@ -67,5 +67,13 @@ public interface WxUserMapper
 	public Integer queryByUserId(@Param("userId")Long userId);
 
 	public int updateUserIdNull(Integer wcUserId);
+
+	public WxUser selectByOpenId(String openId);
+	/**
+	 * 微信登录查询用户角色
+	 * @param userId
+	 * @return
+	 */
+	public List<String> selectPermsByUserId(Integer userId);
 	
 }
