@@ -23,6 +23,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="offerKey"    column="offer_key"    />
+        <result property="iccId"    column="iccid"    />
+        <result property="onlineStatus"    column="online_status"    />
     </resultMap>
 	
 	<sql id="selectTerminalVo">
@@ -31,8 +33,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         (select distinct d.device_code from zx_device d where d.device_id =t.`device_id` ) deviceCode,
         place_id, 
         (select distinct p.name from zx_place p where p.place_id =t.`place_id` ) placeName,
-        rssi, last_heart_time, last_login_time, volumn, status, del_flag, lon, lat, version,
-        create_by, create_time, update_by, update_time,offer_key from zx_terminal t
+        rssi, last_heart_time, last_login_time, volumn, status,
+        CASE status  WHEN '1' THEN '待绑定' WHEN '2' THEN '待激活' WHEN '3' THEN '激活' WHEN '4' THEN '故障' ELSE '-' END statusName,
+        del_flag, lon, lat, version,
+        create_by, create_time, update_by, update_time,offer_key,iccid,
+        online_status,
+        CASE online_status  WHEN '0' THEN '离线' WHEN '1' THEN '在线' ELSE '-' END onlineStatusName
+        from zx_terminal t
     </sql>
 	
     <select id="selectTerminalList" parameterType="Terminal" resultMap="TerminalResult">
@@ -62,8 +69,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				AND date_format(t.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
 			 </if>
              <if test="updateBy != null "> and update_by = #{updateBy}</if>
-             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
              <if test="offerKey != null and offerKey != ''"> and offer_key = #{offerKey}</if>
+             <if test="iccId != null and iccId != ''"> and iccid = #{iccId}</if>
+             <if test="onlineStatus != null and onlineStatus != ''"> and online_status = #{onlineStatus}</if>
          </where>
     </select>
     
@@ -93,6 +102,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
 			<if test="updateTime != null ">update_time,</if>
 			<if test="offerKey != null ">offer_key,</if>
+			<if test="iccId != null ">iccid,</if>
+			<if test="onlineStatus != null ">online_status,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
@@ -113,6 +124,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
 			<if test="updateTime != null ">#{updateTime},</if>
 			<if test="offerKey != null ">#{offerKey},</if>
+			<if test="iccId != null ">#{iccId},</if>
+			<if test="onlineStatus != null ">#{onlineStatus},</if>
          </trim>
     </insert>
 	 
@@ -136,6 +149,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
             <if test="offerKey != null  ">offerKey = #{offerKey},</if>
+            <if test="iccId != null  ">iccid = #{iccId},</if>
+            <if test="onlineStatus != null  ">online_status = #{onlineStatus},</if>
         </trim>
         where terminal_id = #{terminalId}
     </update>

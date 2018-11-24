@@ -58,5 +58,12 @@ public interface TerminalParamMapper
      * @return 结果
      */
 	public int deleteTerminalParamByIds(String[] ids);
+
+	/**
+	 * 通过终端ID删除数据
+	 * @param ids
+	 * @return
+	 */
+	public int deleteParamByTerminalIds(String[] terminalIds);
 	
 }

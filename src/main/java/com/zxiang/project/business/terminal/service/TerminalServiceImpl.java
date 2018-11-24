@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zxiang.common.support.Convert;
 import com.zxiang.project.business.terminal.domain.Terminal;
 import com.zxiang.project.business.terminal.mapper.TerminalMapper;
+import com.zxiang.project.business.terminalParam.mapper.TerminalParamMapper;
+import com.zxiang.project.business.terminalTimer.mapper.TerminalTimerMapper;
 
 /**
  * 终端管理 服务层实现
@@ -23,7 +25,11 @@ public class TerminalServiceImpl implements ITerminalService
 {
 	@Autowired
 	private TerminalMapper terminalMapper;
-
+	@Autowired
+	private TerminalParamMapper terminalParamMapper;
+	@Autowired
+	private TerminalTimerMapper terminalTimerMapper;
+	
 	/**
      * 查询终端管理信息
      * 
@@ -81,7 +87,13 @@ public class TerminalServiceImpl implements ITerminalService
 	@Override
 	public int deleteTerminalByIds(String ids)
 	{
-		return terminalMapper.deleteTerminalByIds(Convert.toStrArray(ids));
+		String[] terminalIds = Convert.toStrArray(ids);
+		//TODO 删除终端参数表数据
+		terminalParamMapper.deleteParamByTerminalIds(terminalIds);
+		//删除终端定时表数据
+		terminalTimerMapper.deleteTimerByTerminalIds(terminalIds);
+		
+		return terminalMapper.deleteTerminalByIds(terminalIds);
 	}
 
 	@Override

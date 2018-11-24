@@ -367,7 +367,7 @@ public class DeviceServiceImpl implements IDeviceService
 	}
 	
 	/**
-	 * 接口7：调用下发排期计划  HTTP application/x-www-form-urlencoded接口
+	 * 接口4：新增广告终端   HTTP application/x-www-form-urlencoded接口
 	 * @param adScheduleId 排期计划ID
 	 * @throws IOException 
 	 */
@@ -385,7 +385,7 @@ public class DeviceServiceImpl implements IDeviceService
 	}
 	
 	/**
-	 * 接口7：调用下发排期计划  HTTP application/x-www-form-urlencoded接口
+	 * 接口5：删除广告终端  HTTP application/x-www-form-urlencoded接口
 	 * @param adScheduleId 排期计划ID
 	 * @throws IOException 
 	 */

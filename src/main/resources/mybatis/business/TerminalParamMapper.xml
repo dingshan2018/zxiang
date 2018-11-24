@@ -97,4 +97,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <!-- 通过终端ID删除数据 -->
+    <delete id="deleteParamByTerminalIds" parameterType="String">
+        delete from zx_terminal_param where terminal_id in 
+        <foreach item="terminalId" collection="array" open="(" separator="," close=")">
+            #{terminalId}
+        </foreach>
+    </delete>
+    
 </mapper>

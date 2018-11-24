@@ -87,7 +87,7 @@
             title: '设备编号'
           },
           {
-              field: 'iccid',
+              field: 'iccId',
               title: '卡号'
           },
           {
@@ -103,17 +103,12 @@
             title: '登陆时间'
           },
           {
-            field    : 'status',
-            title    : '终端状态',
-            formatter: function (value) {
-              if (value === '1') {
-                return '生效';
-              } else if (value === '2') {
-                return '禁用';
-              } else {
-                return '-';
-              }
-            }
+              field    : 'onlineStatusName',
+              title    : '在线标志'           
+          },
+          {
+            field    : 'statusName',
+            title    : '终端状态'           
           },
           {
             field    : 'delFlag',
