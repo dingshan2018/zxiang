@@ -116,4 +116,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where terminal_id = #{terminalId}  ORDER BY create_time DESC LIMIT 1
     </select>
     
+    <!-- 通过终端ID删除数据 -->
+    <delete id="deleteTimerByTerminalIds" parameterType="String">
+        delete from zx_terminal_timer where terminal_id in 
+        <foreach item="terminalId" collection="array" open="(" separator="," close=")">
+            #{terminalId}
+        </foreach>
+    </delete>
+    
 </mapper>
