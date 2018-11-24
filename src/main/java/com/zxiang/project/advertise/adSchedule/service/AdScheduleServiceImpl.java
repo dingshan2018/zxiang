@@ -440,6 +440,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 					float prepay = totalPay * AdConstant.PREPAY;
 					adSchedule.setTotalPay(totalPay);
 					adSchedule.setPrepay(prepay);
+					adSchedule.setReleaseDays(days);
 				}
 			}
 			
