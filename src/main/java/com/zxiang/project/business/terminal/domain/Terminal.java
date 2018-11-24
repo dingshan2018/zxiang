@@ -27,6 +27,8 @@ public class Terminal extends BaseEntity
 	private Integer placeId;
 	/** 终端信号强度 */
 	private Float rssi;
+	/** 物联网卡号 */
+	private String iccId; 
 	/** 最后心跳时间 */
 	private Date lastHeartTime;
 	/** 最后登陆时间 */
@@ -37,10 +39,12 @@ public class Terminal extends BaseEntity
 	private String accSysPort;
 	/** 板卡编号*/
 	private String snCode;
+	/** 在线标志（0：离线 1：在线）*/
+	private String onlineStatus;
+	/** 终端状态（1：待绑定 2：待激活 3：激活 4：故障*/
+	private String status;
 	/** 终端音量 */
 	private Float volumn;
-	/** 终端状态 */
-	private String status;
 	/** 是否删除 */
 	private String delFlag;
 	/** 经度 */
@@ -62,6 +66,8 @@ public class Terminal extends BaseEntity
 
 	private String deviceCode;
 	private String placeName;
+	private String statusName;
+	private String onlineStatusName;
 	
 	public void setTerminalId(Integer terminalId) 
 	{
@@ -264,6 +270,38 @@ public class Terminal extends BaseEntity
 
 	public void setOfferKey(String offerKey) {
 		this.offerKey = offerKey;
+	}
+
+	public String getIccId() {
+		return iccId;
+	}
+
+	public void setIccId(String iccId) {
+		this.iccId = iccId;
+	}
+
+	public String getOnlineStatus() {
+		return onlineStatus;
+	}
+
+	public void setOnlineStatus(String onlineStatus) {
+		this.onlineStatus = onlineStatus;
+	}
+
+	public String getStatusName() {
+		return statusName;
+	}
+
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
+
+	public String getOnlineStatusName() {
+		return onlineStatusName;
+	}
+
+	public void setOnlineStatusName(String onlineStatusName) {
+		this.onlineStatusName = onlineStatusName;
 	}
 
 	public String toString() {
