@@ -9,6 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="scheduleName"    column="schedule_name"    />
         <result property="releaseType"    column="release_type"    />
         <result property="releasePosition"    column="release_position"    />
+        <result property="releaseDays"    column="release_days"    />
         <result property="sxScheduleId"    column="sx_schedule_id"    />
         <result property="pId"    column="pid"    />
         <result property="tId"    column="tid"    />
@@ -33,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectAdScheduleVo">
-        select ad_schedule_id, schedule_name, 
+        select ad_schedule_id, schedule_name, release_days,
         release_type,
         <!-- release_type暂不采用字典表
         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='release_type' AND sdd.dict_value=zas.`release_type` ) releaseTypeName, -->
@@ -54,7 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
     
     <sql id="selectAdScheduleVos">
-      SELECT DISTINCT zas.ad_schedule_id, zas.schedule_name, 
+      SELECT DISTINCT zas.ad_schedule_id, zas.schedule_name, zas.release_days,
         zas.release_type,
         CASE zas.release_type  WHEN '0' THEN '全部' WHEN '1' THEN '按地区' WHEN '2' THEN '按场所' ELSE '' END releaseTypeName,
         zas.release_position,
@@ -123,6 +124,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="scheduleName != null and scheduleName != '' ">schedule_name,</if>
 			<if test="releaseType != null and releaseType != '' ">release_type,</if>
 			<if test="releasePosition != null and releasePosition != '' ">release_position,</if>
+			<if test="releaseDays != null ">release_days,</if>
 			<if test="sxScheduleId != null and sxScheduleId != '' ">sx_schedule_id,</if>
 			<if test="pId != null and pId != '' ">pid,</if>
 			<if test="tId != null and tId != '' ">tid,</if>
@@ -150,6 +152,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="scheduleName != null and scheduleName != ''">#{scheduleName},</if>
 			<if test="releaseType != null and releaseType != ''">#{releaseType},</if>
 			<if test="releasePosition != null and releasePosition != ''">#{releasePosition},</if>
+			<if test="releaseDays != null ">#{releaseDays},</if>
 			<if test="sxScheduleId != null and sxScheduleId != ''">#{sxScheduleId},</if>
 			<if test="pId != null and pId != ''">#{pId},</if>
 			<if test="tId != null and tId != ''">#{tId},</if>
@@ -180,6 +183,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="scheduleName != null  and scheduleName != ''  ">schedule_name = #{scheduleName},</if>
             <if test="releaseType != null  and releaseType != ''  ">release_type = #{releaseType},</if>
             <if test="releasePosition != null  and releasePosition != ''  ">release_position = #{releasePosition},</if>
+            <if test="releaseDays != null  ">release_days = #{releaseDays},</if>
             <if test="sxScheduleId != null  ">sx_schedule_id = #{sxScheduleId},</if>
             <if test="pId != null  ">pid = #{pId},</if>
             <if test="tId != null  ">tid = #{tId},</if>

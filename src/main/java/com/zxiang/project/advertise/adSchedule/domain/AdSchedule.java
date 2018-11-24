@@ -33,6 +33,8 @@ public class AdSchedule extends BaseEntity
 	private Float prepay;
 	/** 投放终端数 */
 	private Integer releaseTermNum;
+	/** 投放天数*/
+	private Integer releaseDays;
 	/**  */
 	private String isDel;
 	/** 投放备注 */
@@ -414,4 +416,12 @@ public class AdSchedule extends BaseEntity
             .append("updateTime", getUpdateTime())
             .toString();
     }
+
+	public Integer getReleaseDays() {
+		return releaseDays;
+	}
+
+	public void setReleaseDays(Integer releaseDays) {
+		this.releaseDays = releaseDays;
+	}
 }
