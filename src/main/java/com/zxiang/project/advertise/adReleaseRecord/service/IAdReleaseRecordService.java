@@ -1,7 +1,12 @@
 package com.zxiang.project.advertise.adReleaseRecord.service;
 
 import com.zxiang.project.advertise.adReleaseRecord.domain.AdReleaseRecord;
+
+import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 广告投放设备 服务层
@@ -50,5 +55,14 @@ public interface IAdReleaseRecordService
      * @return 结果
      */
 	public int deleteAdReleaseRecordByIds(String ids);
+
+	/**
+	 * 
+	 * @param params
+	 * @param request
+	 * @param response
+	 * @throws Exception 
+	 */
+	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception;
 	
 }

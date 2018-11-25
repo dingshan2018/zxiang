@@ -38,6 +38,10 @@ public class AdReleaseRecord extends BaseEntity
 	/**  */
 	private Date updateTime;
 
+	private String scheduleName;
+	private String deviceSn;
+	
+	
 	public void setReleaseDeviceId(Integer releaseDeviceId) 
 	{
 		this.releaseDeviceId = releaseDeviceId;
@@ -138,7 +142,23 @@ public class AdReleaseRecord extends BaseEntity
 		return updateTime;
 	}
 
-    public String toString() {
+    public String getDeviceSn() {
+		return deviceSn;
+	}
+
+	public void setDeviceSn(String deviceSn) {
+		this.deviceSn = deviceSn;
+	}
+
+	public String getScheduleName() {
+		return scheduleName;
+	}
+
+	public void setScheduleName(String scheduleName) {
+		this.scheduleName = scheduleName;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("releaseDeviceId", getReleaseDeviceId())
             .append("scheduleId", getScheduleId())

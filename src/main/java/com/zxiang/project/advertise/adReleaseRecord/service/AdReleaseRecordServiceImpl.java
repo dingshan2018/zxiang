@@ -1,12 +1,19 @@
 package com.zxiang.project.advertise.adReleaseRecord.service;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.zxiang.project.advertise.adReleaseRecord.mapper.AdReleaseRecordMapper;
 import com.zxiang.project.advertise.adReleaseRecord.domain.AdReleaseRecord;
 import com.zxiang.project.advertise.adReleaseRecord.service.IAdReleaseRecordService;
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.excel.EXCELObject;
 
 /**
  * 广告投放设备 服务层实现
@@ -78,6 +85,35 @@ public class AdReleaseRecordServiceImpl implements IAdReleaseRecordService
 	public int deleteAdReleaseRecordByIds(String ids)
 	{
 		return adReleaseRecordMapper.deleteAdReleaseRecordByIds(Convert.toStrArray(ids));
+	}
+
+	@Override
+	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		List erportList = adReleaseRecordMapper.queryExport(params);
+      	String realPath = request.getSession().getServletContext().getRealPath("/file/temp");
+  		EXCELObject s = new EXCELObject();
+  		s.seteFilePath(realPath);
+  		//表头名称
+  		String[] titH = { "ID", "投放名称", "投放设备","下载时间","播放时间",
+  				"播放状态", "播放价格"};
+  		//数据库字段名称
+  		String[] titN = { "release_device_id","scheduleName","deviceSn","down_time","play_time",
+  				"status", "price"};
+  		String[] width= 
+  			   {"15","20","20","20","20",
+  				"20","20"};
+  		s.setWidth(width);
+  		s.setFname("广告播放记录"); // sheet栏名称
+  		s.setTitle("广告播放记录"); // Excel内容标题名称
+  		s.setTitH(titH);
+  		s.setTitN(titN);
+  		s.setDataList(erportList);
+  		File exportFile = null;
+  		exportFile = s.setData();
+  		//Excel文件名称
+  		String excelName = "广告播放记录" + System.currentTimeMillis() + ".xls";
+  		s.exportExcel("广告播放记录", excelName, exportFile, request, response);
 	}
 	
 }

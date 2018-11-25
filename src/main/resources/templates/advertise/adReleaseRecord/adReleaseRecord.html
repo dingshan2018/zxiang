@@ -9,12 +9,12 @@
         <div class="select-list">
           <ul>
             <li>
-              <span class="select-item-name">播放场所：</span>
-              <input type="text" name="releaser"/>
+              <span class="select-item-name">广告名称：</span>
+              <input type="text" name="scheduleName" id="scheduleName" />
             </li>
             <li>
-              <span class="select-item-name">设备编号：</span>
-              <input type="text" name="scheduleName"/>
+              <span class="select-item-name">设备名称：</span>
+              <input type="text" name="deviceSn" id="deviceSn" />
             </li>
             <li class="select-time">
               <label class="select-item-name">播放时间： </label>
@@ -25,7 +25,9 @@
             <li class="select-btns">
               <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
               </a>
-              <a class="btn btn-success btn-rounded btn-sm" onclick="$.table.exportExcel()">
+              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
+              </a>
+              <a class="btn btn-success btn-rounded btn-sm" onclick="exportExcel()">
                 <i class="fa fa-download"></i>&nbsp;导出
               </a>
             </li>
@@ -68,19 +70,15 @@
             title: 'ID'
           },
           {
-            field: 'scheduleId',
+            field: 'scheduleName',
             title: '广告名称'
           },
-          {
-            field: 'scheduleName',
-            title: '推广计划'
-          },
-          {
+          /* {
             field: 'advertiser',
             title: '广告商'
-          },
+          }, */
           {
-            field: 'deviceId',
+            field: 'deviceSn',
             title: '投放设备'
           },
           {
@@ -112,6 +110,21 @@
       $('#bootstrap-table').bootstrapTable('hideColumn', 'releaseDeviceId');
       
     });
+    
+  	//导出Excel
+    function exportExcel(){
+    	$.modal.confirm("确认导出？", function() {
+			//location.href = ctx + "advertise/adSchedule/excelExport?orgId="+vm.q.orgId+'&jssysDm='+vm.q.jssysDm+'&result='+vm.q.result+'&userRybh='+vm.q.userRybh;
+    		var scheduleName = $("#scheduleName").val();
+    		var deviceSn = $("#deviceSn").val();
+    		var startTime = $("#startTime").val();
+    		var endTime = $("#endTime").val();
+
+			location.href = ctx + "advertise/adReleaseRecord/excelExport?scheduleName="+scheduleName+'&deviceSn='+deviceSn
+					+'&startTime='+startTime+'&endTime='+endTime
+    		//$.modal.alert("导出成功!");
+		});
+    }
   </script>
 </body>
 </html>

@@ -1,6 +1,8 @@
 package com.zxiang.project.advertise.adReleaseRecord.mapper;
 
 import com.zxiang.project.advertise.adReleaseRecord.domain.AdReleaseRecord;
+
+import java.util.HashMap;
 import java.util.List;	
 
 /**
@@ -58,5 +60,12 @@ public interface AdReleaseRecordMapper
      * @return 结果
      */
 	public int deleteAdReleaseRecordByIds(String[] releaseDeviceIds);
+
+	/**
+	 * 查询导出excel的数据
+	 * @param params
+	 * @return
+	 */
+	public List queryExport(HashMap<String, String> params);
 	
 }
