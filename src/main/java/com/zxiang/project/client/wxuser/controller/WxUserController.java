@@ -30,7 +30,7 @@ import com.zxiang.project.client.wxuser.service.IWxUserService;
 @RequestMapping("/client/wxUser")
 public class WxUserController extends BaseController
 {
-    private String prefix = "client/wxUser";
+    private String prefix = "client/wxuser";
 	
 	@Autowired
 	private IWxUserService wxUserService;
@@ -39,7 +39,7 @@ public class WxUserController extends BaseController
 	@GetMapping()
 	public String wxUser()
 	{
-	    return prefix + "/wxUser";
+	    return prefix + "/wxuser";
 	}
 	
 	/**
