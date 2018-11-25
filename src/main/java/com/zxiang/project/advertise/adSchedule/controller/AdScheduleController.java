@@ -341,6 +341,7 @@ public class AdScheduleController extends BaseController
 	 * 导出Excel
 	 * 
 	 */
+	@DataFilter(placeAlias="b.place_id")
 	@RequestMapping("/excelExport")
 	public void excelExport(@RequestParam HashMap<String, String> params, 
 			HttpServletResponse response,HttpServletRequest request){

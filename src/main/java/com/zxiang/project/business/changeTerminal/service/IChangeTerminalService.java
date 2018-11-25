@@ -1,7 +1,12 @@
 package com.zxiang.project.business.changeTerminal.service;
 
 import com.zxiang.project.business.changeTerminal.domain.ChangeTerminal;
+
+import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 终端更换记录 服务层
@@ -50,5 +55,7 @@ public interface IChangeTerminalService
      * @return 结果
      */
 	public int deleteChangeTerminalByIds(String ids);
+
+	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception;
 	
 }

@@ -1,7 +1,12 @@
 package com.zxiang.project.business.tissueRecord.service;
 
 import com.zxiang.project.business.tissueRecord.domain.TissueRecord;
+
+import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 出纸记录 服务层
@@ -50,5 +55,7 @@ public interface ITissueRecordService
      * @return 结果
      */
 	public int deleteTissueRecordByIds(String ids);
+
+	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception;
 	
 }

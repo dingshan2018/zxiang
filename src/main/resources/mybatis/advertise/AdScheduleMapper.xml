@@ -223,6 +223,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="queryExport" resultType="java.util.HashMap">
        <include refid="selectAdScheduleVo"/>
         <where>  
+        ${filterSql}
             <if test="adScheduleId != null and adScheduleId != ''"> and ad_schedule_id = #{adScheduleId}</if>
              <if test="scheduleName != null and scheduleName != ''">
               	and schedule_name like concat('%', #{scheduleName}, '%')

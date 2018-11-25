@@ -1,11 +1,17 @@
 package com.zxiang.project.business.supplyTissue.service;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.excel.EXCELObject;
 import com.zxiang.project.business.supplyTissue.domain.SupplyTissue;
 import com.zxiang.project.business.supplyTissue.mapper.SupplyTissueMapper;
 
@@ -79,6 +85,34 @@ public class SupplyTissueServiceImpl implements ISupplyTissueService
 	public int deleteSupplyTissueByIds(String ids)
 	{
 		return supplyTissueMapper.deleteSupplyTissueByIds(Convert.toStrArray(ids));
+	}
+
+	@Override
+	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		List erportList = supplyTissueMapper.queryExport(params);
+      	String realPath = request.getSession().getServletContext().getRealPath("/file/temp");
+  		EXCELObject s = new EXCELObject();
+  		s.seteFilePath(realPath);
+  		//表头名称
+  		String[] titH = { "ID", "补纸设备", "补纸数量","补纸场所","补纸人员",
+  				"创建者", "创建时间"};
+  		//数据库字段名称
+  		String[] titN = { "supply_tissue_id","deviceSn","tissue_count","placeName","supplierName",
+  				"create_by", "create_time"};
+  		String[] width= 
+  			   {"15","20","20","20","20",
+  				"20","20"};
+  		s.setWidth(width);
+  		s.setFname("补纸记录"); // sheet栏名称
+  		s.setTitle("补纸记录"); // Excel内容标题名称
+  		s.setTitH(titH);
+  		s.setTitN(titN);
+  		s.setDataList(erportList);
+  		File exportFile = null;
+  		exportFile = s.setData();
+  		//Excel文件名称
+  		String excelName = "补纸记录" + System.currentTimeMillis() + ".xls";
+  		s.exportExcel("补纸记录", excelName, exportFile, request, response);
 	}
 	
 }

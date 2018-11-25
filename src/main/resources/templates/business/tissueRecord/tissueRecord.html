@@ -37,7 +37,7 @@
               </a>
               <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
               </a>
-              <a class="btn btn-success btn-rounded btn-sm" onclick="$.table.exportExcel()">
+              <a class="btn btn-success btn-rounded btn-sm" onclick="exportExcel()">
                 <i class="fa fa-download"></i>&nbsp;导出
               </a>
             </li>
@@ -97,7 +97,7 @@
             title: 'ID'
           },
           {
-            field: 'deviceCode',
+            field: 'deviceSn',
             title: '出纸设备'
           },
           {
@@ -148,6 +148,21 @@
       $.table.init(options);
       $('#bootstrap-table').bootstrapTable('hideColumn', 'tissueRecordId');
     });
+    
+  	//导出Excel
+    function exportExcel(){
+    	$.modal.confirm("确认导出？", function() {
+    		var agentId = $("#agentId").val();
+    		var repairId = $("#repairId").val();
+    		var joinId = $("#joinId").val();
+    		var startTime = $("#startTime").val();
+    		var endTime = $("#endTime").val();
+
+			location.href = ctx + "business/tissueRecord/excelExport?agentId="+agentId+'&repairId='+repairId+'&joinId='+joinId
+					+'&startTime='+startTime+'&endTime='+endTime
+    		//$.modal.alert("导出成功!");
+		});
+    }
   </script>
 </body>
 </html>

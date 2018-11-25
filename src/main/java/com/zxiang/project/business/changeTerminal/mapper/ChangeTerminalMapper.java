@@ -1,5 +1,6 @@
 package com.zxiang.project.business.changeTerminal.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.zxiang.project.business.changeTerminal.domain.ChangeTerminal;	
@@ -59,5 +60,7 @@ public interface ChangeTerminalMapper
      * @return 结果
      */
 	public int deleteChangeTerminalByIds(String[] changeTerminalIds);
+
+	public List queryExport(HashMap<String, String> params);
 	
 }

@@ -4,6 +4,19 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
   <div class="container-div">
+  	<div class="col-sm-12 select-info">
+      <form id="record-form">
+        <div class="select-list">
+          <ul>
+            <li class="select-btns">
+              <a class="btn btn-success btn-rounded btn-sm" onclick="exportExcel()">
+                <i class="fa fa-download"></i>&nbsp;导出
+              </a>
+            </li>
+          </ul>
+        </div>
+      </form>
+    </div>
     <div class="btn-group hidden-xs" id="toolbar" role="group">
       <a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:supplyTissue:add">
         <i class="fa fa-plus"></i> 新增
@@ -40,7 +53,7 @@
             title: 'ID'
           },
           {
-            field: 'deviceCode',
+            field: 'deviceSn',
             title: '补纸设备'
           },
           {
@@ -79,6 +92,14 @@
       $.table.init(options);
       $('#bootstrap-table').bootstrapTable('hideColumn', 'supplyTissueId');
     });
+    
+  //导出Excel
+    function exportExcel(){
+    	$.modal.confirm("确认导出？", function() {
+			location.href = ctx + "business/supplyTissue/excelExport";
+    		//$.modal.alert("导出成功!");
+		});
+    }
   </script>
 </body>
 </html>

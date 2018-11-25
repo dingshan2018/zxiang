@@ -1,6 +1,8 @@
 package com.zxiang.project.business.supplyTissue.mapper;
 
 import com.zxiang.project.business.supplyTissue.domain.SupplyTissue;
+
+import java.util.HashMap;
 import java.util.List;	
 
 /**
@@ -58,5 +60,7 @@ public interface SupplyTissueMapper
      * @return 结果
      */
 	public int deleteSupplyTissueByIds(String[] supplyTissueIds);
+
+	public List queryExport(HashMap<String, String> params);
 	
 }

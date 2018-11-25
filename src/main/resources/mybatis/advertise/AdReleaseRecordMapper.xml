@@ -129,6 +129,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="queryExport" resultType="java.util.HashMap">
        <include refid="selectAdReleaseRecordVos"/>
         <where>  
+        ${filterSql}
             <if test="releaseDeviceId != null and releaseDeviceId != ''"> and a.release_device_id = #{releaseDeviceId}</if>
              <if test="scheduleId != null and scheduleId != ''"> and a.schedule_id = #{scheduleId}</if>
              <if test="scheduleName != null and scheduleName != ''"> and a.schedule_id in 

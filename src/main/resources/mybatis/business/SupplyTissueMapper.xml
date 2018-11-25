@@ -16,7 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<sql id="selectSupplyTissueVo">
         select supply_tissue_id, device_id,
-        (select distinct d.device_code from zx_device d where d.device_id =zst.`device_id` ) deviceCode,
+        (select distinct d.device_sn from zx_device d where d.device_id =zst.`device_id` ) deviceSn,
          tissue_count, place_id, 
          (select distinct p.name from zx_place p where p.place_id =zst.`place_id` ) placeName,
          supplier_id, 
@@ -89,4 +89,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <select id="queryExport" resultType="java.util.HashMap">
+       <include refid="selectSupplyTissueVo"/>
+        <where>  
+        	${filterSql}
+             <if test="supplyTissueId != null and supplyTissueId != ''"> and supply_tissue_id = #{supplyTissueId}</if>
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="tissueCount != null and tissueCount != ''"> and tissue_count = #{tissueCount}</if>
+             <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
+             <if test="supplierId != null and supplierId != ''"> and supplier_id = #{supplierId}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+         </where>      
+    </select>
 </mapper>

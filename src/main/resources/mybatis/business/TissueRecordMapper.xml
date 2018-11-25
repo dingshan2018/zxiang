@@ -20,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<sql id="selectTissueRecordVo">
         select tissue_record_id, 
         device_id, 
-        (select distinct d.device_code from zx_device d where d.device_id =tr.`device_id` ) deviceCode,
+        (select distinct d.device_sn from zx_device d where d.device_id =tr.`device_id` ) deviceSn,
         terminal_id,
         (select distinct t.terminal_code from zx_terminal t where t.terminal_id =tr.`terminal_id` ) terminalCode,
         place_id, 
@@ -130,5 +130,44 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectTotal" resultType="int">
        select count(*) from zx_tissue_record where status = '1'
        <if test="selDate != null and selDate.trim() != ''">and date_format(create_time,'%Y-%m-%d') = #{selDate}</if>
+    </select>
+    
+    <select id="queryExport" resultType="java.util.HashMap">
+          <include refid="selectTissueRecordVo"/>
+        <where>  
+        ${filterSql}
+            <if test="tissueRecordId != null and tissueRecordId != ''"> and tissue_record_id = #{tissueRecordId}</if>
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
+             <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
+             <if test="openId != null and openId != ''"> and open_id = #{openId}</if>
+             <if test="nickName != null and nickName != ''"> and nick_name = #{nickName}</if>
+             <if test="headimgurl != null and headimgurl != ''"> and headimgurl = #{headimgurl}</if>
+             <if test="tissueChannel != null and tissueChannel != ''"> and tissue_channel = #{tissueChannel}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="startTime != null and startTime != ''"><!-- 开始时间检索 -->
+				AND date_format(tr.create_time,'%y%m%d') &gt;= date_format(#{startTime},'%y%m%d')
+			 </if>
+			 <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+				AND date_format(tr.create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+			 </if>
+			 <!-- 按照代理商搜索  通过场所经办人关联-->
+             <if test="agentId != null and agentId != ''"> and tr.place_id in 
+             	( SELECT DISTINCT zp.place_id FROM zx_place zp 
+             		WHERE zp.operator_id = (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
+             			WHERE su.user_type='03' AND su.puser_id=#{agentId} AND su.user_id=p.operator_id))</if>
+           	 <!-- 按照服务商搜索  通过场所维修员关联-->
+             <if test="repairId != null and repairId != ''">  and tr.place_id in 
+             	(SELECT DISTINCT zp.place_id FROM zx_place zp 
+             		WHERE zp.repair_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
+             			WHERE su.user_type='04' AND su.puser_id=#{repairId}  AND su.user_id=p.repair_id))
+             </if>
+             <!-- 按照加盟商搜索 通过设备机主关联-->
+             <if test="joinId != null and joinId != ''">  and tr.device_id in 
+             	(SELECT DISTINCT zd.device_id FROM zx_device zd 
+             		WHERE zd.owner_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_device d 
+             			WHERE su.user_type='02' AND su.puser_id=#{joinId}  AND su.user_id=d.owner_id))
+         	 </if>
+         </where>        
     </select>
 </mapper>
