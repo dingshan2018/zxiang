@@ -58,19 +58,37 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     concat('-',prom_paper_rate) prom_paper_rate, promotion_rate, direct_agent_rate, serve_rate, subsidy_rate, refund_income, 
     refund_income_rate, create_by, create_time, update_by, update_time from zx_user_income
     </sql>
+    
+   <sql id="selectUserIncomeVos">
+	select distinct a.income_id, a.coperator_id, a.coperator_name,  
+	 CASE a.coperator_type WHEN 00 THEN '系统用户'
+              WHEN 01 THEN '合作伙伴'
+              WHEN 02 THEN '加盟商'
+              WHEN 03 THEN '代理商'
+              WHEN 04 THEN '服务商'
+              WHEN 05 THEN '广告商'
+              WHEN 06 THEN '业务员'
+               ELSE '' END
+              AS coperator_type, a.sum_date, a.ad_income, a.ad_carousel_income, 
+    a.scan_income, a.prom_direct_income, a.prom_indirect_income,a.promotion_income, a.paper_income, a.prom_paper_income, 
+    a.direct_agent_income, a.subsidy_income, a.ad_income_rate, a.promotion_income_rate, a.scan_income_rate, 
+    a.subsidy_income_rate, a.ad_rate, a.ad_carousel_rate, a.scan_rate, a.prom_direct_rate, a.prom_indirect_rate, 
+    concat('-',a.prom_paper_rate) prom_paper_rate, a.promotion_rate, a.direct_agent_rate, a.serve_rate, a.subsidy_rate, a.refund_income, 
+    a.refund_income_rate, a.create_by, a.create_time, a.update_by, a.update_time from zx_user_income a LEFT JOIN sys_user b ON b.puser_id = a.coperator_id and b.user_type = a.coperator_type
+    </sql>
 	
     <select id="selectUserIncomeList" parameterType="UserIncome" resultMap="UserIncomeResult">
-        <include refid="selectUserIncomeVo"/>
+        <include refid="selectUserIncomeVos"/>
         <where>  
             ${filterSql}
-            <if test="incomeId != null and incomeId != ''"> and income_id = #{incomeId}</if>
-             <if test="coperatorName != null and coperatorName != ''"> and coperator_name like concat('%',#{coperatorName},'%')</if>
-             <if test="coperatorType != null and coperatorType != ''"> and coperator_type = #{coperatorType}</if>
+            <if test="incomeId != null and incomeId != ''"> and a.income_id = #{incomeId}</if>
+             <if test="coperatorName != null and coperatorName != ''"> and a.coperator_name like concat('%',#{coperatorName},'%')</if>
+             <if test="coperatorType != null and coperatorType != ''"> and a.coperator_type = #{coperatorType}</if>
               <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
-				AND date_format(sum_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+				AND date_format(a.sum_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
 			 </if>
 			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
-				AND date_format(sum_date,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+				AND date_format(a.sum_date,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
 			 </if>
          </where>
     </select>
@@ -464,30 +482,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     
      <select id="queryExport" resultType="java.util.HashMap">
-        	select  coperator_id,coperator_name, CASE coperator_type WHEN 00 THEN '系统用户'
-              WHEN 01 THEN '合作伙伴'
-              WHEN 02 THEN '加盟商'
-              WHEN 03 THEN '代理商'
-              WHEN 04 THEN '服务商'
-              WHEN 05 THEN '广告商'
-              WHEN 06 THEN '业务员'
-               ELSE '' END
-              AS coperator_type,  DATE_FORMAT(`sum_date`,'%Y-%m-%d') sum_date, ad_income, ad_carousel_income, 
-			    scan_income, prom_direct_income, prom_indirect_income,promotion_income, paper_income, prom_paper_income, 
-			    direct_agent_income, subsidy_income, ad_income_rate, promotion_income_rate, scan_income_rate, 
-			    subsidy_income_rate, ad_rate, ad_carousel_rate, scan_rate, prom_direct_rate, prom_indirect_rate, 
-			    prom_paper_rate, promotion_rate, direct_agent_rate, serve_rate, subsidy_rate, refund_income, 
-			    refund_income_rate  from zx_user_income
+        	 <include refid="selectUserIncomeVos"/>
         <where>  
          ${filterSql}
-            <if test="incomeId != null and incomeId != ''"> and income_id = #{incomeId}</if>
-             <if test="coperatorName != null and coperatorName != ''"> and coperator_name like concat('%',#{coperatorName},'%')</if>
-             <if test="coperatorType != null and coperatorType != ''"> and coperator_type = #{coperatorType}</if>
+            <if test="incomeId != null and incomeId != ''"> and a.income_id = #{incomeId}</if>
+             <if test="coperatorName != null and coperatorName != ''"> and a.coperator_name like concat('%',#{coperatorName},'%')</if>
+             <if test="coperatorType != null and coperatorType != ''"> and a.coperator_type = #{coperatorType}</if>
               <if test="bgTime != null and bgTime != ''"><!-- 开始时间检索 -->
-				AND date_format(sum_date,'%y%m%d') &gt;= date_format(#{bgTime},'%y%m%d')
+				AND date_format(a.sum_date,'%y%m%d') &gt;= date_format(#{bgTime},'%y%m%d')
 			 </if>
 			 <if test="edTime != null and edTime != ''"><!-- 结束时间检索 -->
-				AND date_format(sum_date,'%y%m%d') &lt;= date_format(#{edTime},'%y%m%d')
+				AND date_format(a.sum_date,'%y%m%d') &lt;= date_format(#{edTime},'%y%m%d')
 			 </if>
          </where>
     </select>
