@@ -180,6 +180,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 					}
 					//插入数据
 					insertdata(fee,"02",type,0.0,1,user);
+					insertUserextensiondata(type,0.0,1, user);
 				}
 				
 			}
@@ -243,6 +244,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		    user = getusedata(promotionerh5,"","");
 		    double rate =  Double.valueOf(user.get("promPaperRate")+"");
 			insertdata(-tissuenum*rate,"02",RateConstants.RATETYPE_PROMPAPERINCOME,0.0,tissuenum,user);
+			insertUserextensiondata(RateConstants.RATETYPE_PROMPAPERINCOME,0.0,tissuenum,user);
 			//-----------------------广告收益--------------
 			//插入机主广告数据每次出纸收益0.3元
 			user = getusedata(buyerid,"","");
@@ -329,6 +331,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				if(ispromotioner) {
 					rate = Double.valueOf(user.get("promotionRate")+"");
 					insertdata(price*rate,"02",RateConstants.RATETYPE_PROMOTIONINCOME,price,0,user);
+					insertUserextensiondata(RateConstants.RATETYPE_PROMOTIONINCOME,price,0,user);
 				}
 				//-----------------------广告收益--------------
 				//插入机主广告数据(视频广告投放金额40% , 轮播广告投放金额40%)
@@ -362,6 +365,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				if(ispromotioner) {
 					rate = Double.valueOf(user.get("promotionRate")+"");
 					insertdata(price*rate,"02",RateConstants.RATETYPE_PROMOTIONINCOME,price,0,user);
+					insertUserextensiondata(RateConstants.RATETYPE_PROMOTIONINCOME,price,0,user);
 				}
 				//-----------------------广告收益--------------
 				//插入机主广告数据(视频广告投放金额40% , 轮播广告投放金额40%)
@@ -430,6 +434,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			   HashMap<String, Object>  user = getusedata(promotionagent.get("promotor_id")+"","","");
 			   double rate = Double.valueOf(user.get("directAgentRate")+"");
 			   insertdata(agency_fee*rate,"02",RateConstants.RATETYPE_DIRECTAGENTINCOME,agency_fee,0,user);
+			   insertUserextensiondata(RateConstants.RATETYPE_DIRECTAGENTINCOME,agency_fee,0,user);
 			 }
 		 }
 		
@@ -526,7 +531,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			
 	}
 	
-	
+	    //缺少主体
 	    //ratetype ：系数类型     incomeprice：收益基数（小数型）  incomenum ：基数数量     user：客户信息
 	public void insertUserextensiondata(String ratetype,double incomeprice,int incomenum, HashMap<String, Object> user) {
 		    //投放方式01广告收益   02推广收益  03扫码服务收益 04办公补贴
@@ -553,6 +558,8 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				userExtensionService.updateUserExtension(userIncome);
 			}else{
 				userIncome.setCoperatorName(user.get("userName")+"");
+				userIncome.setPuserId(Integer.valueOf(user.get("coperatorId")+""));
+				userIncome.setPuserName(user.get("coperatorName")+"");
 				userExtensionService.insertUserExtension(userIncome);
 			}		
 			

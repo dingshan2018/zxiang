@@ -41,8 +41,12 @@ public class UserExtension extends BaseEntity
 	private String updateBy;
 	/**  */
 	private Date updateTime;
-	/** 主体名称 */
+	/** 客户名称 */
 	private String coperatorName;
+	
+	private Integer puserId;
+	
+	private String puserName;
 
 	public void setIncomeId(Integer incomeId) 
 	{
@@ -170,8 +174,25 @@ public class UserExtension extends BaseEntity
 	{
 		return coperatorName;
 	}
+	
 
-    public String toString() {
+	public Integer getPuserId() {
+		return puserId;
+	}
+
+	public void setPuserId(Integer puserId) {
+		this.puserId = puserId;
+	}
+
+	public String getPuserName() {
+		return puserName;
+	}
+
+	public void setPuserName(String puserName) {
+		this.puserName = puserName;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("incomeId", getIncomeId())
             .append("coperatorId", getCoperatorId())

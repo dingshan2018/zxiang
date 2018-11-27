@@ -19,10 +19,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="coperatorName"    column="coperator_name"    />
+        <result property="puserId"    column="puser_id"    />
+        <result property="puserName"    column="puser_name"    />
     </resultMap>
 	
 	<sql id="selectUserExtensionVo">
-        select income_id, coperator_id, coperator_type, sum_date, prom_direct_income, prom_indirect_income, prom_paper_income, promotion_income, direct_agent_income, create_by, create_time, update_by, update_time, coperator_name from zx_user_extension
+        select income_id, coperator_id, coperator_type,puser_id,puser_name, sum_date, prom_direct_income, prom_indirect_income, prom_paper_income, promotion_income, direct_agent_income, create_by, create_time, update_by, update_time, coperator_name from zx_user_extension
     </sql>
 	
     <select id="selectUserExtensionList" parameterType="UserExtension" resultMap="UserExtensionResult">
@@ -64,6 +66,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
 			<if test="updateTime != null and updateTime != '' ">update_time,</if>
 			<if test="coperatorName != null and coperatorName != '' ">coperator_name,</if>
+			<if test="puserId != null and puserId != '' ">puser_id,</if>
+			<if test="puserName != null and puserName != '' ">puser_name,</if>
 			 sum_date,
 		     create_time
          </trim>
@@ -79,6 +83,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
 			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
 			<if test="coperatorName != null and coperatorName != ''">#{coperatorName},</if>
+			<if test="puserId != null and puserId != '' ">#{puserId},</if>
+			<if test="puserName != null and puserName != '' ">#{puserName},</if>
 			DATE_SUB(CURDATE(), INTERVAL 1 DAY),
 			DATE_SUB(CURDATE(), INTERVAL 1 DAY)
          </trim>
