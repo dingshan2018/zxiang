@@ -12,6 +12,7 @@ import com.zxiang.project.business.server.service.IServerService;
 import com.zxiang.project.business.terminal.domain.Terminal;
 import com.zxiang.project.business.terminal.mapper.TerminalMapper;
 import com.zxiang.project.business.terminalParam.domain.TerminalParam;
+import com.zxiang.project.business.terminalParam.domain.TerminalParamDto;
 import com.zxiang.project.business.terminalParam.mapper.TerminalParamMapper;
 
 /**
@@ -99,11 +100,24 @@ public class TerminalParamServiceImpl implements ITerminalParamService
 	public int paramIssued(String ids) throws IOException {
 		int issuedNum = 0;
 		String[] idArray = Convert.toStrArray(ids);
-		List<TerminalParam> list = new ArrayList<TerminalParam>();
+		
 		//下发命令操作
 		for (String terminalParamId : idArray) {
+			List<TerminalParamDto> list = new ArrayList<TerminalParamDto>();
 			TerminalParam terminalParam = terminalParamMapper.selectTerminalParamById(Integer.parseInt(terminalParamId));
-			list.add(terminalParam);
+			if(terminalParam != null){
+				TerminalParamDto paranDto = new TerminalParamDto();
+				paranDto.setId(terminalParam.getId());
+				paranDto.setTerminalId(terminalParam.getTerminalId());
+				paranDto.setKey(terminalParam.getParamKey());
+				paranDto.setValue1(terminalParam.getParamValue1());
+				paranDto.setValue2(terminalParam.getParamValue2());
+				paranDto.setValue3(terminalParam.getParamValue3());
+				paranDto.setValue4(terminalParam.getParamValue4());
+				
+				list.add(paranDto);
+			}
+			
 			
 			Integer terminalId = terminalParam.getTerminalId();
 			Terminal terminal = terminalMapper.selectTerminalById(terminalId);
