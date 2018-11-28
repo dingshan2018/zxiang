@@ -3,6 +3,7 @@ package com.zxiang.project.settle.userExtension.mapper;
 import com.zxiang.project.settle.userExtension.domain.UserExtension;
 import com.zxiang.project.settle.userIncome.domain.UserIncome;
 
+import java.util.HashMap;
 import java.util.List;	
 
 /**
@@ -64,5 +65,7 @@ public interface UserExtensionMapper
      * @return 结果
      */
 	public int deleteUserExtensionByIds(String[] incomeIds);
+	
+	List<?> queryExport(HashMap<String, String> map);
 	
 }

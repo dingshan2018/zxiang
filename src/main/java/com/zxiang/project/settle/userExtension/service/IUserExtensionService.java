@@ -1,7 +1,12 @@
 package com.zxiang.project.settle.userExtension.service;
 
 import com.zxiang.project.settle.userExtension.domain.UserExtension;
+
+import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 客户推广日统计 服务层
@@ -52,5 +57,8 @@ public interface IUserExtensionService
      * @return 结果
      */
 	public int deleteUserExtensionByIds(String ids);
+	
+    void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception;
+
 	
 }

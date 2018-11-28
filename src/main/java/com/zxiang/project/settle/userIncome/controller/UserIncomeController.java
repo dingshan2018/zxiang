@@ -50,7 +50,7 @@ public class UserIncomeController extends BaseController
 	/**
 	 * 查询客户收入日统计列表
 	 */
-	@DataFilter(personAlias="coperator_id")
+	@DataFilter(personAlias="b.user_id")
 	@RequiresPermissions("settle:userIncome:list")
 	@PostMapping("/list")
 	@ResponseBody

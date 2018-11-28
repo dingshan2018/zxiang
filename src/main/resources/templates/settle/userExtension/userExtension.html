@@ -4,13 +4,29 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
-		<div class="btn-group hidden-xs" id="toolbar" role="group">
-			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="settle:userExtension:add">
-				<i class="fa fa-plus"></i> 新增
-			</a>
-			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="settle:userExtension:remove">
-				<i class="fa fa-trash-o"></i> 删除
-			</a>
+		   <div class="col-sm-12 select-info">
+					<form id="user-form">
+						<div class="select-list">
+							<ul>
+								<li>
+									结算用户：<input type="text" name="coperatorName" id="coperatorName"/>
+								</li>
+								<!-- <li>
+									结算地区：<input type="text" name="areaId" id="areaId"/>
+								</li> -->
+								<li class="select-time">
+									<label>结算日期： </label>
+									<input type="text" class="time-input" id="startTime"  placeholder="开始时间" name="params[beginTime]"/>
+									<span>-</span>
+									<input type="text" class="time-input" id="endTime"  placeholder="结束时间" name="params[endTime]"/>
+								</li>
+								<li>
+									<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							    	<a class="btn btn-success btn-rounded btn-sm" onclick="excelExport()"><i class="fa fa-download"></i>&nbsp;导出</a>
+								</li>
+							</ul>
+						</div>
+					</form>
 		</div>
 			
 		<div class="col-sm-12 select-table table-striped">
@@ -33,21 +49,21 @@
                 columns: [{
 		            checkbox: true
 		        },
-				{
-					field : 'incomeId', 
-					title : '' 
+		        {
+					field : 'sumDate', 
+					title : '统计日期' 
 				},
 				{
-					field : 'coperatorId', 
-					title : '合作客户ID' 
+					field : 'coperatorName', 
+					title : '合作客户' 
 				},
 				{
 					field : 'coperatorType', 
 					title : '合作类型' 
 				},
 				{
-					field : 'sumDate', 
-					title : '统计日期' 
+					field : 'puserName', 
+					title : '经营主体' 
 				},
 				{
 					field : 'promDirectIncome', 
@@ -68,40 +84,17 @@
 				{
 					field : 'directAgentIncome', 
 					title : '直推代理基数' 
-				},
-				{
-					field : 'createBy', 
-					title : '' 
-				},
-				{
-					field : 'createTime', 
-					title : '' 
-				},
-				{
-					field : 'updateBy', 
-					title : '' 
-				},
-				{
-					field : 'updateTime', 
-					title : '' 
-				},
-				{
-					field : 'coperatorName', 
-					title : '主体名称' 
-				},
-		        {
-		            title: '操作',
-		            align: 'center',
-		            formatter: function(value, row, index) {
-		            	var actions = [];
-		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.incomeId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.incomeId + '\')"><i class="fa fa-remove"></i>删除</a>');
-						return actions.join('');
-		            }
-		        }]
+				}]
             };
             $.table.init(options);
         });
+        
+      function excelExport() {
+       	 var startTime = $("#startTime").val();
+       	 var endTime = $("#endTime").val();
+       	 var coperatorName = $("#coperatorName").val();
+           location.href = prefix + '/excelExport?startTime='+startTime+'&endTime='+endTime+'&coperatorName='+coperatorName;
+      }
     </script>
 </body>
 </html>
