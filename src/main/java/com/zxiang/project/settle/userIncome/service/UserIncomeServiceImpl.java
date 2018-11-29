@@ -140,7 +140,7 @@ public class UserIncomeServiceImpl implements IUserIncomeService
 	
 	
 	@Override
-	@DataFilter(personAlias="coperator_id")
+	@DataFilter(personAlias="b.user_id")
 	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception{
 		List userIncomeList = userIncomeMapper.queryExport(params);
 		String realPath = request.getSession().getServletContext().getRealPath("/file/temp");
@@ -151,7 +151,7 @@ public class UserIncomeServiceImpl implements IUserIncomeService
 		String[] cols = {"0","0","0","7","11","3"};
 		String[] titH = { "视频广告基数", "视频广告系数", "轮播广告基数", "轮播广告系数", "出纸数量", "二维码广告系数", "广告收益合计",   
 				          "推广广告基数", "推广广告系数","推广二维码广告基数", "推广二维码广告系数",  "直推机子数量", "直推机子系数","间推机子数量","间推机子系数","直推代理基数","直推代理系数","推广收益合计",
-				          "出纸数量",   "服务出纸系数","服务收益合计",	
+				          "出纸数量",   "服务出纸系数","服务收益合计"	
 		                };
 		
 		String[] titN = {"sum_date","coperator_name","coperator_type",

@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		   <div class="col-sm-12 select-info">
+					<form id="user-form">
+						<div class="select-list">
+							<ul>
+								<li>
+									用户：<input type="text" name="coperatorName" id="coperatorName"/>
+								</li>
+								<!-- <li>
+									结算地区：<input type="text" name="areaId" id="areaId"/>
+								</li> -->
+								<li class="select-time">
+									<label>结算日期： </label>
+									<input type="text" class="time-input" id="startTime"  placeholder="开始时间" name="params[beginTime]"/>
+									<span>-</span>
+									<input type="text" class="time-input" id="endTime"  placeholder="结束时间" name="params[endTime]"/>
+								</li>
+								<li>
+									<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							    	<a class="btn btn-success btn-rounded btn-sm" onclick="excelExport()"><i class="fa fa-download"></i>&nbsp;导出</a>
+								</li>
+							</ul>
+						</div>
+					</form>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('settle:userExtension:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('settle:userExtension:remove')}]];
+        var prefix = ctx + "settle/userExtension"
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "客户推广日统计",
+                columns: [{
+		            checkbox: true
+		        },
+		        {
+					field : 'sumDate', 
+					title : '统计日期' 
+				},
+				{
+					field : 'coperatorName', 
+					title : '合作客户' 
+				},
+				{
+					field : 'coperatorType', 
+					title : '合作类型' 
+				},
+				{
+					field : 'puserName', 
+					title : '经营主体' 
+				},
+				{
+					field : 'promDirectIncome', 
+					title : '直推机子数量' 
+				},
+				{
+					field : 'promIndirectIncome', 
+					title : '间推机子数量' 
+				},
+				{
+					field : 'promPaperIncome', 
+					title : '推广二维码广告基数' 
+				},
+				{
+					field : 'promotionIncome', 
+					title : '推广广告基数' 
+				},
+				{
+					field : 'directAgentIncome', 
+					title : '直推代理基数' 
+				}]
+            };
+            $.table.init(options);
+        });
+        
+      function excelExport() {
+       	 var startTime = $("#startTime").val();
+       	 var endTime = $("#endTime").val();
+       	 var coperatorName = $("#coperatorName").val();
+           location.href = prefix + '/excelExport?startTime='+startTime+'&endTime='+endTime+'&coperatorName='+coperatorName;
+      }
+    </script>
+</body>
+</html>
