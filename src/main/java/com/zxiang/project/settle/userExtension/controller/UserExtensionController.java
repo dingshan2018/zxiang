@@ -1,4 +1,4 @@
-package com.zxiang.project.settle.userIncome.controller;
+package com.zxiang.project.settle.userExtension.controller;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,50 +19,50 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
-import com.zxiang.project.settle.userIncome.domain.UserIncome;
-import com.zxiang.project.settle.userIncome.service.IUserIncomeService;
+import com.zxiang.project.settle.userExtension.domain.UserExtension;
+import com.zxiang.project.settle.userExtension.service.IUserExtensionService;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.framework.web.domain.AjaxResult;
 
 /**
- * 客户收入日统计 信息操作处理
+ * 客户推广日统计 信息操作处理
  * 
  * @author ZXiang
- * @date 2018-09-11
+ * @date 2018-11-26
  */
 @Controller
-@RequestMapping("/settle/userIncome")
-public class UserIncomeController extends BaseController
+@RequestMapping("/settle/userExtension")
+public class UserExtensionController extends BaseController
 {
-    private String prefix = "settle/userIncome";
+    private String prefix = "settle/userExtension";
 	
 	@Autowired
-	private IUserIncomeService userIncomeService;
+	private IUserExtensionService userExtensionService;
 	
-	@RequiresPermissions("settle:userIncome:view")
+	@RequiresPermissions("settle:userExtension:view")
 	@GetMapping()
-	public String userIncome()
+	public String userExtension()
 	{
-	    return prefix + "/userIncome";
+	    return prefix + "/userExtension";
 	}
 	
 	/**
-	 * 查询客户收入日统计列表
+	 * 查询客户推广日统计列表
 	 */
-	@DataFilter(personAlias="b.user_id")
-	@RequiresPermissions("settle:userIncome:list")
+	@DataFilter(personAlias="coperator_id")
+	@RequiresPermissions("settle:userExtension:list")
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(UserIncome userIncome)
+	public TableDataInfo list(UserExtension userExtension)
 	{
 		startPage();
-        List<UserIncome> list = userIncomeService.selectUserIncomeList(userIncome);
+        List<UserExtension> list = userExtensionService.selectUserExtensionList(userExtension);
 		return getDataTable(list);
 	}
 	
 	/**
-	 * 新增客户收入日统计
+	 * 新增客户推广日统计
 	 */
 	@GetMapping("/add")
 	public String add()
@@ -71,50 +71,50 @@ public class UserIncomeController extends BaseController
 	}
 	
 	/**
-	 * 新增保存客户收入日统计
+	 * 新增保存客户推广日统计
 	 */
-	@RequiresPermissions("settle:userIncome:add")
-	@Log(title = "客户收入日统计", businessType = BusinessType.INSERT)
+	@RequiresPermissions("settle:userExtension:add")
+	@Log(title = "客户推广日统计", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(UserIncome userIncome)
+	public AjaxResult addSave(UserExtension userExtension)
 	{		
-		return toAjax(userIncomeService.insertUserIncome(userIncome));
+		return toAjax(userExtensionService.insertUserExtension(userExtension));
 	}
 
 	/**
-	 * 修改客户收入日统计
+	 * 修改客户推广日统计
 	 */
 	@GetMapping("/edit/{incomeId}")
 	public String edit(@PathVariable("incomeId") Integer incomeId, ModelMap mmap)
 	{
-		UserIncome userIncome = userIncomeService.selectUserIncomeById(incomeId);
-		mmap.put("userIncome", userIncome);
+		UserExtension userExtension = userExtensionService.selectUserExtensionById(incomeId);
+		mmap.put("userExtension", userExtension);
 	    return prefix + "/edit";
 	}
 	
 	/**
-	 * 修改保存客户收入日统计
+	 * 修改保存客户推广日统计
 	 */
-	@RequiresPermissions("settle:userIncome:edit")
-	@Log(title = "客户收入日统计", businessType = BusinessType.UPDATE)
+	@RequiresPermissions("settle:userExtension:edit")
+	@Log(title = "客户推广日统计", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
-	public AjaxResult editSave(UserIncome userIncome)
+	public AjaxResult editSave(UserExtension userExtension)
 	{		
-		return toAjax(userIncomeService.updateUserIncome(userIncome));
+		return toAjax(userExtensionService.updateUserExtension(userExtension));
 	}
 	
 	/**
-	 * 删除客户收入日统计
+	 * 删除客户推广日统计
 	 */
-	@RequiresPermissions("settle:userIncome:remove")
-	@Log(title = "客户收入日统计", businessType = BusinessType.DELETE)
+	@RequiresPermissions("settle:userExtension:remove")
+	@Log(title = "客户推广日统计", businessType = BusinessType.DELETE)
 	@PostMapping( "/remove")
 	@ResponseBody
 	public AjaxResult remove(String ids)
 	{		
-		return toAjax(userIncomeService.deleteUserIncomeByIds(ids));
+		return toAjax(userExtensionService.deleteUserExtensionByIds(ids));
 	}
 	
     /**
@@ -133,7 +133,7 @@ public class UserIncomeController extends BaseController
          query.put("edTime", edTime);
          query.put("coperatorName", coperatorName);
          try {
-        	 userIncomeService.queryExport(query, request, response);
+        	 userExtensionService.queryExport(query, request, response);
  		} catch (Exception e) {
  		  e.printStackTrace();
  		}

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.settle.userExtension.mapper.UserExtensionMapper">
+    
+    <resultMap type="UserExtension" id="UserExtensionResult">
+        <result property="incomeId"    column="income_id"    />
+        <result property="coperatorId"    column="coperator_id"    />
+        <result property="coperatorType"    column="coperator_type"    />
+        <result property="sumDate"    column="sum_date"    />
+        <result property="promDirectIncome"    column="prom_direct_income"    />
+        <result property="promIndirectIncome"    column="prom_indirect_income"    />
+        <result property="promPaperIncome"    column="prom_paper_income"    />
+        <result property="promotionIncome"    column="promotion_income"    />
+        <result property="directAgentIncome"    column="direct_agent_income"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="coperatorName"    column="coperator_name"    />
+        <result property="puserId"    column="puser_id"    />
+        <result property="puserName"    column="puser_name"    />
+    </resultMap>
+	
+	<sql id="selectUserExtensionVo">
+        select income_id, coperator_id, CASE coperator_type WHEN 00 THEN '系统用户'
+              WHEN 01 THEN '合作伙伴'
+              WHEN 02 THEN '加盟商'
+              WHEN 03 THEN '代理商'
+              WHEN 04 THEN '服务商'
+              WHEN 05 THEN '广告商'
+              WHEN 06 THEN '业务员'
+               ELSE '' END
+              AS coperator_type,puser_id,puser_name, DATE_FORMAT(sum_date, '%Y-%m-%d') sum_date, prom_direct_income, prom_indirect_income, prom_paper_income, promotion_income, direct_agent_income, create_by, create_time, update_by, update_time, coperator_name from zx_user_extension
+    </sql>
+	
+    <select id="selectUserExtensionList" parameterType="UserExtension" resultMap="UserExtensionResult">
+        <include refid="selectUserExtensionVo"/>
+        <where>  
+           ${filterSql}
+             <if test="coperatorName != null and coperatorName != ''"> and coperator_name like concat('%',#{coperatorName},'%')</if>
+             <if test="coperatorType != null and coperatorType != ''"> and coperator_type = #{coperatorType}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				AND date_format(sum_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			 </if>
+			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				AND date_format(sum_date,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+			 </if>
+         </where>
+    </select>
+    
+    <select id="selectUserExtensionById" parameterType="Integer" resultMap="UserExtensionResult">
+        <include refid="selectUserExtensionVo"/>
+        where income_id = #{incomeId}
+    </select>
+        
+    <insert id="insertUserExtension" parameterType="UserExtension">
+        insert into zx_user_extension
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="coperatorId != null and coperatorId != '' ">coperator_id,</if>
+			<if test="coperatorType != null and coperatorType != '' ">coperator_type,</if>
+			<if test="promDirectIncome != null and promDirectIncome != '' ">prom_direct_income,</if>
+			<if test="promIndirectIncome != null and promIndirectIncome != '' ">prom_indirect_income,</if>
+			<if test="promPaperIncome != null and promPaperIncome != '' ">prom_paper_income,</if>
+			<if test="promotionIncome != null and promotionIncome != '' ">promotion_income,</if>
+			<if test="directAgentIncome != null and directAgentIncome != '' ">direct_agent_income,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="updateBy != null and updateBy != '' ">update_by,</if>
+			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+			<if test="coperatorName != null and coperatorName != '' ">coperator_name,</if>
+			<if test="puserId != null and puserId != '' ">puser_id,</if>
+			<if test="puserName != null and puserName != '' ">puser_name,</if>
+			 sum_date,
+		     create_time
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="coperatorId != null and coperatorId != ''">#{coperatorId},</if>
+			<if test="coperatorType != null and coperatorType != ''">#{coperatorType},</if>
+			<if test="promDirectIncome != null and promDirectIncome != ''">#{promDirectIncome},</if>
+			<if test="promIndirectIncome != null and promIndirectIncome != ''">#{promIndirectIncome},</if>
+			<if test="promPaperIncome != null and promPaperIncome != ''">#{promPaperIncome},</if>
+			<if test="promotionIncome != null and promotionIncome != ''">#{promotionIncome},</if>
+			<if test="directAgentIncome != null and directAgentIncome != ''">#{directAgentIncome},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+			<if test="coperatorName != null and coperatorName != ''">#{coperatorName},</if>
+			<if test="puserId != null and puserId != '' ">#{puserId},</if>
+			<if test="puserName != null and puserName != '' ">#{puserName},</if>
+			DATE_SUB(CURDATE(), INTERVAL 1 DAY),
+			DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+         </trim>
+    </insert>
+	 
+    <update id="updateUserExtension" parameterType="UserExtension">
+        update zx_user_extension
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="promDirectIncome != null  ">prom_direct_income =prom_direct_income+ #{promDirectIncome},</if>
+            <if test="promIndirectIncome != null  ">prom_indirect_income = prom_indirect_income+#{promIndirectIncome},</if>
+            <if test="promPaperIncome != null  ">prom_paper_income = prom_paper_income+#{promPaperIncome},</if>
+            <if test="promotionIncome != null  ">promotion_income = promotion_income+#{promotionIncome},</if>
+            <if test="directAgentIncome != null  ">direct_agent_income =direct_agent_income+#{directAgentIncome},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where income_id = #{incomeId}
+    </update>
+    
+     <select id="selectUserExtension" parameterType="UserExtension" resultMap="UserExtensionResult">
+        select income_id from zx_user_extension
+        <where>  
+             <if test="coperatorId != null and coperatorId != ''"> and coperator_id = #{coperatorId}</if>
+             and DATE_FORMAT(sum_date, '%Y-%m-%d') = DATE_FORMAT(
+			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
+			    '%Y-%m-%d'
+			  )
+         </where>
+    </select>
+    
+
+	<delete id="deleteUserExtensionById" parameterType="Integer">
+        delete from zx_user_extension where income_id = #{incomeId}
+    </delete>
+	
+    <delete id="deleteUserExtensionByIds" parameterType="String">
+        delete from zx_user_extension where income_id in 
+        <foreach item="incomeId" collection="array" open="(" separator="," close=")">
+            #{incomeId}
+        </foreach>
+    </delete>
+    
+    <select id="queryExport" resultType="java.util.HashMap">
+        	 <include refid="selectUserExtensionVo"/>
+        <where>  
+           ${filterSql}
+             <if test="coperatorName != null and coperatorName != ''"> and coperator_name like concat('%',#{coperatorName},'%')</if>
+             <if test="coperatorType != null and coperatorType != ''"> and coperator_type = #{coperatorType}</if>
+            <if test="bgTime != null and bgTime != ''"><!-- 开始时间检索 -->
+				AND date_format(sum_date,'%y%m%d') &gt;= date_format(#{bgTime},'%y%m%d')
+			 </if>
+			 <if test="edTime != null and edTime != ''"><!-- 结束时间检索 -->
+				AND date_format(sum_date,'%y%m%d') &lt;= date_format(#{edTime},'%y%m%d')
+			 </if>
+         </where>
+    </select>
+    
+    
+</mapper>
