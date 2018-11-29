@@ -32,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
               WHEN 05 THEN '广告商'
               WHEN 06 THEN '业务员'
                ELSE '' END
-              AS coperator_type,puser_id,puser_name, sum_date, prom_direct_income, prom_indirect_income, prom_paper_income, promotion_income, direct_agent_income, create_by, create_time, update_by, update_time, coperator_name from zx_user_extension
+              AS coperator_type,puser_id,puser_name, DATE_FORMAT(sum_date, '%Y-%m-%d') sum_date, prom_direct_income, prom_indirect_income, prom_paper_income, promotion_income, direct_agent_income, create_by, create_time, update_by, update_time, coperator_name from zx_user_extension
     </sql>
 	
     <select id="selectUserExtensionList" parameterType="UserExtension" resultMap="UserExtensionResult">
