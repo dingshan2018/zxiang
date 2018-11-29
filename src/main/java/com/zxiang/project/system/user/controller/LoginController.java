@@ -77,11 +77,7 @@ public class LoginController extends BaseController {
     	Subject subject = SecurityUtils.getSubject();
         try {
             subject.login(token);
-            List<String> list =  userService.wxLoginSelectRoles(openId);
-            AjaxResult json = new AjaxResult();
-            json.put("msg", list);
-            json.put("code", 0);
-            return json;
+            return userService.wxLoginSelectRoles(openId);
         } catch (AuthenticationException e) {
             String msg = "该微信用户未绑定";
             if (StringUtils.isNotEmpty(e.getMessage()))  {

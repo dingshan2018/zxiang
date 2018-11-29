@@ -160,6 +160,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectUserIdByOpenId" resultType="Integer">
     	select user_id from zx_wx_user where open_id = #{openId}
     </select>
+    <select id="selectObjectByOpenId" resultMap="WxUserResult">
+    	<include refid="selectWxUserVo"/> where open_id = #{openId}
+    </select>
 	<select id="selectPermsByUserId" resultType="String">
 		SELECT DISTINCT m.perms FROM sys_user_role ur 
 		LEFT JOIN sys_role_menu rm ON ur.`role_id` = rm.`role_id` LEFT JOIN sys_menu m 

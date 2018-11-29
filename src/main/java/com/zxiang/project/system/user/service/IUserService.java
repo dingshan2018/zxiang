@@ -2,6 +2,7 @@ package com.zxiang.project.system.user.service;
 
 import java.util.List;
 
+import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.project.system.user.domain.User;
 
 /**
@@ -179,6 +180,6 @@ public interface IUserService
 	 * @param openId
 	 * @return
 	 */
-	public List<String> wxLoginSelectRoles(String openId);
+	public AjaxResult wxLoginSelectRoles(String openId);
 	
 }

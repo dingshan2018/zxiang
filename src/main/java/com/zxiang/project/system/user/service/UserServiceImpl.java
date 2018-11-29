@@ -12,6 +12,7 @@ import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.StringUtils;
 import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
+import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
 import com.zxiang.project.client.agent.domain.Agent;
@@ -468,15 +469,21 @@ public class UserServiceImpl implements IUserService
 	}
 
 	@Override
-	public List<String> wxLoginSelectRoles(String openId) {
-		Integer userId = wxUserMapper.selectUserIdByOpenId(openId);
-		if(userId == null) {
+	public AjaxResult wxLoginSelectRoles(String openId) {
+		WxUser wxUser = wxUserMapper.selectObjectByOpenId(openId);
+		if(wxUser == null || wxUser.getUserId() == null) {
 			throw new RRException("该用户未绑定");
 		}
-		List<String> roles = wxUserMapper.selectPermsByUserId(userId);
+		AjaxResult json = new AjaxResult();
+        json.put("code", 0);
+        // 查询头像
+        json.put("headImg", wxUser.getHeadImgUrl());
+        json.put("name", wxUser.getNickname());
+		List<String> roles = wxUserMapper.selectPermsByUserId(wxUser.getUserId());
 		if(roles == null || roles.size() == 0) {
-			return null;
+			return json;
 		}
-		return roles;
+		json.put("msg", roles);
+		return json;
 	}
 }
