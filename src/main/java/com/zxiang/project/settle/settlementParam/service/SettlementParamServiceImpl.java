@@ -141,6 +141,16 @@ public class SettlementParamServiceImpl implements ISettlementParamService
 		return settlementParamMapper.tissuerecordStatistics(map);
 	}
 
+	@Override
+	public List<HashMap<String, Object>> selecdevicelist(Map<String, Object> map) {
+		return settlementParamMapper.selecdevicelist(map);
+	}
+
+	@Override
+	public int querydeviceTotal(Map<String, Object> map) {
+		return settlementParamMapper.querydeviceTotal(map);
+	}
+
 	
 	
 }
