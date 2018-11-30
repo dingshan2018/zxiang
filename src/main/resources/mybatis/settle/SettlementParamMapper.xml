@@ -105,7 +105,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT 
 		  name,
 		  device_count count,
-		  DATE_FORMAT(`create_time`,'%Y-%m-%d %H:%i:%s') time 
+		  DATE_FORMAT(`create_time`,'%Y-%m-%d %H:%i:%s') time,
+		  place_id placeId
 		FROM
 		  zx_place
 		  order by  create_time desc
@@ -257,6 +258,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<if test="coperatorId != null and coperatorId != ''">
 		  AND coperator_id =#{coperatorId} 
 		</if>
+     </select>
+     
+     
+               <!-- 设备列表 -->
+    <select id="selecdevicelist"  resultType="java.util.HashMap">
+		   SELECT 
+			  device_sn deviceSn,
+			  CASE status WHEN 1 THEN '下线'
+              WHEN 2 THEN '上线'
+              WHEN 3 THEN '故障'
+               ELSE '' END
+              AS status
+			FROM
+			  zx_device 
+			WHERE  place_id = #{placeId} 
+			ORDER BY create_time DESC 
+		  <if test="offset != null and limit != null">
+			   limit #{offset}, #{limit}
+		  </if>
+    </select>
+    
+     <select id="querydeviceTotal"  resultType="int">
+         SELECT 
+		  count(*)
+		FROM
+		   zx_device 
+		WHERE  place_id = #{placeId} 
      </select>
     
     

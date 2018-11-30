@@ -217,4 +217,23 @@ public class SettlementParamController extends BaseController
 		map.put("list", list);
 		return map;
 	}
+	
+	
+	/**
+	 * 设备列表
+	 */
+	@PostMapping("/selecdevicelist")
+	@ResponseBody
+	public Map<String, Object> selecdevicelist(@RequestParam Map<String, Object> params)
+	{
+		Query query = new Query(params);
+		int totalCount = settlementParamService.queryuserincomeTotal(query);
+		List<HashMap<String, Object>> list = settlementParamService.selecuserincomelist(query);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("totalCount", totalCount);
+		map.put("limit", params.get("limit"));
+		map.put("page", params.get("page"));
+		map.put("list", list);
+		return map;
+	}
 }

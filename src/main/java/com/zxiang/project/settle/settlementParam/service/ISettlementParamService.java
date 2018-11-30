@@ -75,7 +75,8 @@ public interface ISettlementParamService
 	
 	public List<HashMap<String, Object>> tissuerecordStatistics(Map<String, Object> map);
 	
-	
+	public List<HashMap<String, Object>> selecdevicelist(Map<String, Object> map);
+	int querydeviceTotal(Map<String, Object> map);
 	
 	
 }
