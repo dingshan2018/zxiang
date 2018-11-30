@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 /**
  * 结算系数配置 服务层
  * 
@@ -78,5 +80,13 @@ public interface ISettlementParamService
 	public List<HashMap<String, Object>> selecdevicelist(Map<String, Object> map);
 	int querydeviceTotal(Map<String, Object> map);
 	
+    public List<HashMap<String, Object>> selectdeviceAll(Map<String, Object> map);
 	
+	public List<HashMap<String, Object>> selectplaceAll(Map<String, Object> map);
+	
+    public int updatedevice(String deviceId,String status);
+	
+	public int updateplace(String placeId);
+	
+	public int deviceSave(Map<String, Object> map);
 }

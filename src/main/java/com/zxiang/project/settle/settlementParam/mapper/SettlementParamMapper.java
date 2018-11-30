@@ -4,7 +4,9 @@ import com.zxiang.project.settle.settlementParam.domain.SettlementParam;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;	
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;	
 
 /**
  * 结算系数配置 数据层
@@ -87,12 +89,12 @@ public interface SettlementParamMapper
 	public List<HashMap<String, Object>> selecdevicelist(Map<String, Object> map);
 	int querydeviceTotal(Map<String, Object> map);
 	
+	public List<HashMap<String, Object>> selectdeviceAll(Map<String, Object> map);
 	
+	public List<HashMap<String, Object>> selectplaceAll(Map<String, Object> map);
 	
+	public int updatedevice(@Param("deviceId")String deviceId,@Param("status")String status);
 	
-	
-	
-	
-	
+	public int updateplace(@Param("placeId")String placeId);
 	
 }

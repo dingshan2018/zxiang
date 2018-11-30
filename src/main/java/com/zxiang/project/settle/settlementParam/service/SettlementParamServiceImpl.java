@@ -151,6 +151,37 @@ public class SettlementParamServiceImpl implements ISettlementParamService
 		return settlementParamMapper.querydeviceTotal(map);
 	}
 
-	
-	
+	@Override
+	public List<HashMap<String, Object>> selectdeviceAll(Map<String, Object> map) {
+		return settlementParamMapper.selectdeviceAll(map);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> selectplaceAll(Map<String, Object> map) {
+		return settlementParamMapper.selectplaceAll(map);
+	}
+
+	@Override
+	public int updatedevice(String deviceId,String status) {
+		return settlementParamMapper.updatedevice(deviceId,status);
+	}
+
+	@Override
+	public int updateplace(String placeId) {
+		return settlementParamMapper.updateplace(placeId);
+	}
+
+	@Override
+	public int deviceSave(Map<String, Object> map) {
+		int t=updatedevice(map.get("deviceId")+"","02");
+		if(t==0) {
+			return 0;
+		}
+		int i=updateplace(map.get("placeId")+"");
+		if(i==0) {
+			return 0;
+		}
+		return 1;
+	}
+
 }

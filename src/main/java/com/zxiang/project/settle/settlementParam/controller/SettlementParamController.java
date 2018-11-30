@@ -227,13 +227,69 @@ public class SettlementParamController extends BaseController
 	public Map<String, Object> selecdevicelist(@RequestParam Map<String, Object> params)
 	{
 		Query query = new Query(params);
-		int totalCount = settlementParamService.queryuserincomeTotal(query);
-		List<HashMap<String, Object>> list = settlementParamService.selecuserincomelist(query);
+		int totalCount = settlementParamService.querydeviceTotal(query);
+		List<HashMap<String, Object>> list = settlementParamService.selecdevicelist(query);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("totalCount", totalCount);
 		map.put("limit", params.get("limit"));
 		map.put("page", params.get("page"));
 		map.put("list", list);
+		return map;
+	}
+	
+	
+	/**
+	 * 设备投放设备查询
+	 */
+	@PostMapping("/selectdeviceAll")
+	@ResponseBody
+	public Map<String, Object> selectdeviceAll(@RequestParam Map<String, Object> params)
+	{
+		Query query = new Query(params);
+		List<HashMap<String, Object>> list = settlementParamService.selectdeviceAll(query);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("list", list);
+		return map;
+	}
+	
+	/**
+	 * 设备投放从场所查询
+	 */
+	@PostMapping("/selectplaceAll")
+	@ResponseBody
+	public Map<String, Object> selectplaceAll(@RequestParam Map<String, Object> params)
+	{
+		Query query = new Query(params);
+		List<HashMap<String, Object>> list = settlementParamService.selectplaceAll(query);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("list", list);
+		return map;
+	}
+	
+	
+	/**
+	 * 设备投放从场所查询
+	 */
+	@PostMapping("/deviceSave")
+	@ResponseBody
+	public Map<String, Object> deviceSave(@RequestParam Map<String, Object> params)
+	{
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			Query query = new Query(params);
+			int i = settlementParamService.deviceSave(query);
+			if(i>0) {
+				map.put("code", "0000");
+				map.put("msg", "操作成功");
+			}else {
+				map.put("code", "9999");
+				map.put("msg", "操作失败");
+			}
+			
+		} catch (Exception e) {
+			map.put("code", "9999");
+			map.put("msg", "操作失败");
+		}
 		return map;
 	}
 }

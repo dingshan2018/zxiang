@@ -265,14 +265,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selecdevicelist"  resultType="java.util.HashMap">
 		   SELECT 
 			  device_sn deviceSn,
-			  CASE status WHEN 1 THEN '下线'
-              WHEN 2 THEN '上线'
-              WHEN 3 THEN '故障'
+			  CASE status WHEN 01 THEN '待投放'
+              WHEN 02 THEN '已投放'
+              WHEN 03 THEN '故障'
                ELSE '' END
               AS status
 			FROM
 			  zx_device 
 			WHERE  place_id = #{placeId} 
+			and status = '02'
 			ORDER BY create_time DESC 
 		  <if test="offset != null and limit != null">
 			   limit #{offset}, #{limit}
@@ -288,9 +289,43 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
      </select>
     
     
+     <!-- 设备投放 -->
+    <select id="selectdeviceAll"  resultType="java.util.HashMap">
+		   SELECT 
+			  device_id  deviceId,
+			  device_sn deviceSn
+			FROM
+			  zx_device 
+			  WHERE 
+			  status = '01'
+			  AND device_sn LIKE concat('%',#{deviceSn},'%')
+    </select>
     
+      <select id="selectplaceAll"  resultType="java.util.HashMap">
+		    SELECT 
+			  name,
+			  place_id placeId
+			FROM
+			  zx_place
+			  order by  create_time desc
+    </select>
     
+     <update id="updatedevice" >
+        update zx_device
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            update_time = now()
+        </trim>
+        where device_id = #{deviceId}
+    </update>
     
-    
+    <update id="updateplace" >
+        update zx_place
+        <trim prefix="SET" suffixOverrides=",">
+            device_count = IFNULL(device_count,0)+1,
+            update_time = now()
+        </trim>
+        where place_id = #{placeId}
+    </update>
     
 </mapper>
