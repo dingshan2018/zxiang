@@ -446,8 +446,8 @@ public class UserServiceImpl implements IUserService
 	 * 查找加盟商业务员（机主）
 	 */
 	@Override
-	public List<User> selectJoinSaleMan() {
-		return userMapper.selectJoinSaleMan();
+	public List<User> selectBuyer() {
+		return userMapper.selectBuyer();
 	}
 
 	@Override

@@ -135,7 +135,7 @@ public class DeviceStockController extends BaseController
 	public String outStockByTradeId(ModelMap mmap)
 	{
 		//查询机主
-		List<User> userListJoin = userService.selectJoinSaleMan();
+		List<User> userListJoin = userService.selectBuyer();
 		mmap.put("userListJoin", userListJoin);
 		//查询推荐人（目前用所有用户）
 		List<User> userList = userService.selectUserList(new User());
