@@ -213,11 +213,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  	</delete>
     
     <!-- 查找加盟商业务员（机主） -->
-    <select id="selectJoinSaleMan" resultMap="UserResult">
-	SELECT * FROM `sys_user` WHERE user_id IN 
-		(SELECT user_id FROM sys_user_role WHERE role_id=
-			(SELECT role_id FROM `sys_role` WHERE role_name='加盟商业务员' AND role_key='joinSalesman' AND STATUS=0 ORDER BY create_time DESC LIMIT 1))
-	AND del_flag != 1
+    <select id="selectBuyer" resultMap="UserResult">
+		SELECT * FROM `sys_user` WHERE user_id IN 
+		(SELECT DISTINCT user_id FROM `zx_trade_order` WHERE order_type=1 )
     </select>
     
 </mapper> 

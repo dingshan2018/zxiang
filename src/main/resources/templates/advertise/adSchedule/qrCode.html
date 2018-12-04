@@ -1,10 +1,17 @@
-<!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
 <meta charset="utf-8">
-<head ></head>
+<head th:include="include :: header"></head>
 <link href="/ajax/libs/iCheck/custom.css" th:href="@{/ajax/libs/iCheck/custom.css}" rel="stylesheet"/>
 <body class="white-bg">
 	<div id="qrcode" style="width:220px; height:220px; margin:57px auto 0;"></div>
+	<br>
+	<h3 align="center">
+		<span style="color: red;">*&nbsp;支付完成点此关闭  &nbsp;&nbsp;</span>
+		<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+	</h3>
+	
+<div th:include="include::footer"></div>
 <script th:src="@{/js/qrcode.js}"></script>
 <script th:inline="javascript">
 	var qrcode = new QRCode(document.getElementById("qrcode"), {

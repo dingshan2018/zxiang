@@ -172,7 +172,7 @@ public interface IUserService
 	 * 查找加盟商业务员（机主）
 	 * @return
 	 */
-	public List<User> selectJoinSaleMan();
+	public List<User> selectBuyer();
 
 	public void setRoleName(List<User> list);
 	/**
