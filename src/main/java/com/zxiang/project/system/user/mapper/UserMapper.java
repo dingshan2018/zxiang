@@ -134,4 +134,11 @@ public interface UserMapper
      * @return
      */
 	public List<User> selectBuyer();
+
+	/**
+	 * 根据城市查询服务商员工信息
+	 * @param city
+	 * @return
+	 */
+	public List<User> selectUserByCity(long cityId);
 }

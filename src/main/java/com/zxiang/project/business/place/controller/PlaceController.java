@@ -76,10 +76,10 @@ public class PlaceController extends BaseController
 		List<User> userListAll = userService.selectUserList(queryUser);
 		mmap.put("userListAll", userListAll);
 		
-		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
-		List<User> userListRepair = userService.selectUserList(queryUser);
-		
-		mmap.put("userListRepair", userListRepair);
+		//维修员送纸员根据场所选择了所在城市后进行加载
+		//queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
+		//List<User> userListRepair = userService.selectUserList(queryUser);
+		//mmap.put("userListRepair", userListRepair);
 		
 	    return prefix + "/add";
 	}
@@ -119,9 +119,10 @@ public class PlaceController extends BaseController
 		List<User> userListAll = userService.selectUserList(queryUser);
 		mmap.put("userListAll", userListAll);
 		
-		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
-		List<User> userListRepair = userService.selectUserList(queryUser);
-		
+		//维修员送纸员根据场所选择了所在城市后进行加载
+		//queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
+		//List<User> userListRepair = userService.selectUserList(queryUser);
+		List<User> userListRepair = userService.selectUserByCity(place.getCity());
 		mmap.put("userListRepair", userListRepair);
 		
 	    return prefix + "/edit";

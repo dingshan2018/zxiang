@@ -218,4 +218,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		(SELECT DISTINCT user_id FROM `zx_trade_order` WHERE order_type=1 )
     </select>
     
+    <!--  -->
+    <select id="selectUserByCity" parameterType="Long" resultMap="UserResult">
+		SELECT * FROM `sys_user` WHERE del_flag !=2 AND user_type='04' AND puser_id IN
+		(SELECT repair_id FROM `zx_repair_area` WHERE city_id = #{cityId})
+    </select>
+    
 </mapper> 

@@ -181,5 +181,12 @@ public interface IUserService
 	 * @return
 	 */
 	public AjaxResult wxLoginSelectRoles(String openId);
+
+	/**
+	 * 根据城市查询服务商员工信息
+	 * @param parseLong
+	 * @return
+	 */
+	public List<User> selectUserByCity(long city);
 	
 }

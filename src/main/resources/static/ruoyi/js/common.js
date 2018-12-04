@@ -185,6 +185,24 @@ function selectUserList(){
     return userList;
 }
 
+/**场所选择服务商员工下拉框选择*/
+function selectUserBycounty(city){
+	var userList = [];
+	$.ajax({
+    	type: "post",
+    	contentType:"application/json",
+        dataType: "json",
+        url: ctx + "system/user/selectUserByCity",
+        data: JSON.stringify({ "city": city}),
+        async: false,
+        success: function (data) {
+        	userList = data.rows;
+        },
+        error: function () { alert("获取用户信息失败"); }
+    });
+    return userList;
+}
+
 /**地区下拉框,根据父级地区获取*/
 function selectAreaListByPid(parentAreaId){
 	var areaList = [];

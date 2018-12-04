@@ -1,6 +1,7 @@
 package com.zxiang.project.system.user.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -21,6 +23,7 @@ import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
+import com.zxiang.project.system.area.domain.Area;
 import com.zxiang.project.system.post.service.IPostService;
 import com.zxiang.project.system.role.service.IRoleService;
 import com.zxiang.project.system.user.domain.User;
@@ -215,6 +218,17 @@ public class UserController extends BaseController
     @ResponseBody
     public TableDataInfo getDropBoxUserList() {
 		List<User> list  = userService.getDropBoxUserList();
+		return getDataTable(list);
+    }
+	
+	/**
+	 * 根据城市查询服务商员工信息
+	 */
+	@RequestMapping("/selectUserByCity")
+    @ResponseBody
+    public TableDataInfo selectUserByCity(@RequestBody Map<String, Object> params) {
+		String city = (String) params.get("city");
+		List<User> list  = userService.selectUserByCity(Long.parseLong(city));
 		return getDataTable(list);
     }
 }

@@ -486,4 +486,12 @@ public class UserServiceImpl implements IUserService
 		json.put("msg", roles);
 		return json;
 	}
+
+	/**
+	 * 根据城市查询服务商员工信息
+	 */
+	@Override
+	public List<User> selectUserByCity(long city) {
+		return userMapper.selectUserByCity(city);
+	}
 }
