@@ -11,7 +11,7 @@
 	            <div class="form-group">
 	                <label class="col-sm-3 control-label">投放名称：</label>
 	                <div class="col-sm-3">
-	                	<!-- <input id="scheduleName" name="scheduleName btn-white" th:field="*{scheduleName}" class="form-control" disabled type="text"> -->	
+	                	<!-- <input id="scheduleName" name="scheduleName btn-white" th:field="*{scheduleName}" class="form-control" disabled type="text"> -->
 	                    <label th:text="*{scheduleName}" class="form-control"></label>
 	                </div>
 	                <label class="col-sm-3 control-label">投放数量：</label>
@@ -88,7 +88,7 @@
 	                    <label th:text="*{approvedRemark}" class="form-control"></label>
 	                </div>
 	            </div>
-         		
+
           </div>
           <div>
             	<div style="height: 30px;line-height: 30px;background: #f1f1f1;color: #000;font-weight: 600;text-indent: 8px;margin-bottom: 18px;">投放时段范围</div>
@@ -228,8 +228,7 @@
       });
 
       var deviceChecks = $('.device-item.i-checks');
-      console.log(deviceChecks);
-      if (deviceChecks.length <= 1) {
+      if (deviceChecks.length >= 1) {
         deviceChecks.iCheck('check');
       } else {
         $('[data-id="noAdRangeDevices"]').show();
