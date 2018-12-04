@@ -87,6 +87,8 @@ public class AdSchedule extends BaseEntity
 	private String statusName;
 	private String advertiseName;
 	private String approvedName;
+	private String promotionerName;
+	private String releaserName;
 	
 	public void setAdScheduleId(Integer adScheduleId) 
 	{
@@ -446,4 +448,21 @@ public class AdSchedule extends BaseEntity
 	public void setReleaseDays(Integer releaseDays) {
 		this.releaseDays = releaseDays;
 	}
+
+	public String getPromotionerName() {
+		return promotionerName;
+	}
+
+	public void setPromotionerName(String promotionerName) {
+		this.promotionerName = promotionerName;
+	}
+
+	public String getReleaserName() {
+		return releaserName;
+	}
+
+	public void setReleaserName(String releaserName) {
+		this.releaserName = releaserName;
+	}
+	
 }

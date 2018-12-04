@@ -94,6 +94,16 @@
         $.each(advertiserList, function (i) {
           $('#advertiser').append('<option value=' + advertiserList[i].advertiseId + '>' + advertiserList[i].advertisorName + '</option>');
         });
+      	//推广用户下拉框数据
+        var promotionerList = getSearchUserList("promotioner");
+        $.each(promotionerList, function (i) {
+          $('#promotioner').append('<option value=' + promotionerList[i].userId + '>' + promotionerList[i].userName + '</option>');
+        });
+      	//投放人下拉框数据
+        var releaserList = getSearchUserList("releaser");
+        $.each(releaserList, function (i) {
+          $('#releaser').append('<option value=' + releaserList[i].userId + '>' + releaserList[i].userName + '</option>');
+        });
         
         var options = {
             url: prefix + "/list",
@@ -276,6 +286,8 @@
         $('#bootstrap-table').bootstrapTable('hideColumn', 'prepay');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'adScheduleId');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'pId');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'approvedUser');
+        
     });
 
 
@@ -703,6 +715,25 @@
     	}
     	
     	$.operate.removeAll();
+    }
+    
+    
+    /**搜索框查询条件获取用户数据*/
+    function getSearchUserList(searchKey){
+    	var userList = [];
+    	$.ajax({
+        	type: "post",
+        	contentType:"application/json",
+            dataType: "json",
+            url: ctx + "advertise/adSchedule/getSearchUserList",
+            data: JSON.stringify({ "searchKey": searchKey}),
+            async: false,
+            success: function (data) {
+            	userList = data.rows;
+            },
+            error: function () { alert("获取用户信息失败"); }
+        });
+        return userList;
     }
 </script>
 </body>

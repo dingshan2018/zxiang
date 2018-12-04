@@ -1,5 +1,6 @@
 package com.zxiang.project.advertise.adSchedule.controller;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -414,4 +416,22 @@ public class AdScheduleController extends BaseController
     	
     	throw new RRException("生成支付二维码失败!");
     }
+    
+    /**
+	 * 根据推荐人或者投放人查询用户下拉框数据列表
+	 */
+	@RequestMapping("/getSearchUserList")
+    @ResponseBody
+    public TableDataInfo getSearchUserList(@RequestBody Map<String, Object> params) {
+		List<User> list = new ArrayList<User>();
+		String searchKey = (String) params.get("searchKey");
+		if("releaser".equals(searchKey)){
+			list= userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE);
+		}else if("promotioner".equals(searchKey)){
+			list= userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,UserConstants.USER_TYPE_PARTNER,
+					UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+		}
+		return getDataTable(list);
+    }
+	
 }
