@@ -245,8 +245,7 @@ public class SettlementParamController extends BaseController
 	@ResponseBody
 	public Map<String, Object> selectdeviceAll(@RequestParam Map<String, Object> params)
 	{
-		Query query = new Query(params);
-		List<HashMap<String, Object>> list = settlementParamService.selectdeviceAll(query);
+		List<HashMap<String, Object>> list = settlementParamService.selectdeviceAll(params);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("list", list);
 		return map;
@@ -259,8 +258,7 @@ public class SettlementParamController extends BaseController
 	@ResponseBody
 	public Map<String, Object> selectplaceAll(@RequestParam Map<String, Object> params)
 	{
-		Query query = new Query(params);
-		List<HashMap<String, Object>> list = settlementParamService.selectplaceAll(query);
+		List<HashMap<String, Object>> list = settlementParamService.selectplaceAll(params);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("list", list);
 		return map;
@@ -276,8 +274,7 @@ public class SettlementParamController extends BaseController
 	{
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			Query query = new Query(params);
-			int i = settlementParamService.deviceSave(query);
+			int i = settlementParamService.deviceSave(params);
 			if(i>0) {
 				map.put("code", "0000");
 				map.put("msg", "操作成功");
