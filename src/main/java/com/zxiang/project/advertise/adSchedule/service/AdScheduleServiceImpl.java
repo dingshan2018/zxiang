@@ -54,6 +54,8 @@ import com.zxiang.project.business.device.mapper.DeviceMapper;
 import com.zxiang.project.business.server.service.IServerService;
 import com.zxiang.project.business.terminal.domain.Terminal;
 import com.zxiang.project.business.terminal.mapper.TerminalMapper;
+import com.zxiang.project.client.advertise.domain.Advertise;
+import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
 
 /**
  * 广告投放 服务层实现
@@ -86,6 +88,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	private TerminalMapper terminalMapper;
 	@Autowired
 	private ReleaseDeviceMapper releaseDeviceMapper;
+	@Autowired 
+	private AdvertiseMapper advertiseMapper;
 	
 	/**
      * 查询广告投放信息
@@ -167,8 +171,14 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			String releasePosition = adSchedule.getReleasePosition();
 			//是终端广告还是页面广告，页面H5广告不需要模板不需要审核不需要支付
 			if(AdConstant.RELEASE_TYPE_TERMINAL.equals(releasePosition)){
+				//如果是终端广告有广告商，投放人就是广告商的managerID
+				Advertise advertise = advertiseMapper.selectAdvertiseById(adSchedule.getAdvertiser());
+				if(advertise != null){
+					adSchedule.setReleaser(advertise.getManagerId());
+				}
+				
 				String templateId = adSchedule.getThemeTemplateId();
-				Integer advertiser = adSchedule.getAdvertiseId();
+				Integer advertiser = adSchedule.getAdvertiser();
 				String totalTime = adSchedule.getTotalTime();
 				
 				String result = savePlaybill(scheduleName, templateId, advertiser.toString(), totalTime);

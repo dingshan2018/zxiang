@@ -51,4 +51,10 @@ public interface IAdvertiseService
      */
 	public int deleteAdvertiseByIds(String ids);
 	
+	/**
+	 * 查找广告商下拉框数据
+	 * @return
+	 */
+	public List<Advertise> selectDropBoxList();
+	
 }

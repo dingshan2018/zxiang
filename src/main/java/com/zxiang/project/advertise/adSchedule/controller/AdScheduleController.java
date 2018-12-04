@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.utils.StringUtils;
 import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
@@ -48,6 +49,8 @@ import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
 import com.zxiang.project.system.area.domain.Area;
 import com.zxiang.project.system.area.mapper.AreaMapper;
+import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.service.IUserService;
 
 /**
  * 广告投放 信息操作处理
@@ -75,7 +78,9 @@ public class AdScheduleController extends BaseController
 	private AdReleaseRangeMapper adReleaseRangeMapper;
 	@Autowired
 	private AreaMapper areaMapper;
-	
+	@Autowired
+	private IUserService userService;
+	 
 	@RequiresPermissions("advertise:adSchedule:view")
 	@GetMapping()
 	public String adSchedule()
@@ -106,6 +111,10 @@ public class AdScheduleController extends BaseController
 		List<ThemeTemplate> ThemeTemplateList = adScheduleService.getThemeList();
 		mmap.put("ThemeTemplateList", ThemeTemplateList);
 		mmap.put("advertiserList", advertiseMapper.selectAdvertiseList(new Advertise()));
+		//推荐人下拉框
+		List<User> userList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,UserConstants.USER_TYPE_PARTNER,
+				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+		mmap.put("promotionerList", userList);
 		
 	    return prefix + "/add";
 	}

@@ -133,4 +133,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectTotal" resultType="int">
     	select count(*) from zx_advertise
     </select>
+    
+    <select id="selectDropBoxList" resultMap="AdvertiseResult">
+         select advertise_id, advertisor_name,manager_id,manager_name from zx_advertise
+    </select>
+    
 </mapper>

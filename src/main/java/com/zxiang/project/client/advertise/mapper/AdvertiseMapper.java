@@ -61,5 +61,11 @@ public interface AdvertiseMapper
 	public int deleteAdvertiseByIds(String[] advertiseIds);
 
 	public int selectTotal();
+
+	/**
+	 * 查找广告商下拉框数据
+	 * @return
+	 */
+	public List<Advertise> selectDropBoxList();
 	
 }

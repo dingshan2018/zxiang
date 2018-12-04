@@ -166,5 +166,13 @@ public class AdvertiseServiceImpl implements IAdvertiseService
 		}
 		return advertiseMapper.deleteAdvertiseByIds(Convert.toStrArray(ids));
 	}
+
+	/**
+	 * 查找广告商下拉框数据
+	 */
+	@Override
+	public List<Advertise> selectDropBoxList() {
+		return advertiseMapper.selectDropBoxList();
+	}
 	
 }

@@ -15,15 +15,21 @@
               </li>
               <li>
                 <span class="select-item-name">投放用户：</span>
-                <input type="text" name="releaser" id="releaser"/>
+               		<select id="releaser" name="releaser">
+	                	<option value="">全部</option>
+	              	</select>
               </li>
               <li>
                 <span class="select-item-name">广告商户：</span>
-                <input type="text" name="advertiser" id="advertiser"/>
+                	<select id="advertiser" name="advertiser">
+	                	<option value="">全部</option>
+	              	</select>
               </li>
               <li>
                 <span class="select-item-name">推广用户：</span>
-                <input type="text" name="promotioner" id="promotioner"/>
+               		<select id="promotioner" name="promotioner">
+	                	<option value="">全部</option>
+	              	</select>
               </li>
               <li>
                 <span class="select-item-name">投放状态：</span>
@@ -82,12 +88,20 @@
     var prefix = ctx + 'advertise/adSchedule';
 
     $(function() {
+    	
+    	//投放广告商下拉框数据
+        var advertiserList = selectAdvertiseList();
+        $.each(advertiserList, function (i) {
+          $('#advertiser').append('<option value=' + advertiserList[i].advertiseId + '>' + advertiserList[i].advertisorName + '</option>');
+        });
+        
         var options = {
             url: prefix + "/list",
             createUrl: prefix + "/add",
             updateUrl: prefix + "/edit/{id}",
             removeUrl: prefix + "/remove",
             modalName: "广告投放",
+            search    : false,
             columns: [{
 	            checkbox: true
 	        },

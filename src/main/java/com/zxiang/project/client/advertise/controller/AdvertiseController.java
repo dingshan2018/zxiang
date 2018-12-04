@@ -112,4 +112,13 @@ public class AdvertiseController extends BaseController
 		return toAjax(advertiseService.deleteAdvertiseByIds(ids));
 	}
 	
+	/**
+	 * 查找广告商下拉框数据
+	 */
+	@RequestMapping("/getDropBoxAdvertiseList")
+    @ResponseBody
+    public TableDataInfo getDropBoxJoinList() {
+		List<Advertise> list = advertiseService.selectDropBoxList();
+		return getDataTable(list);
+    }
 }

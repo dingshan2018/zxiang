@@ -18,6 +18,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="totalPay"    column="total_pay"    />
         <result property="prepay"    column="prepay"    />
         <result property="releaseTermNum"    column="release_term_num"    />
+        <result property="advertiser"    column="advertiser"    />
+        <result property="promotioner"    column="promotioner"    />
+        <result property="releaser"    column="releaser"    />
         <result property="approved"    column="approved"    />
         <result property="approvedRemark"    column="approved_remark"    />
         <result property="approvedUser"    column="approved_user"    />
@@ -27,7 +30,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
-        <result property="advertiseId"    column="advertise_id"    />
         <result property="totalTime"    column="total_time"    />
         <result property="payStatus"    column="pay_status"    />
         <result property="qrUrl"    column="qr_url"    />
@@ -45,12 +47,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         sx_schedule_id, pid,tid,theme_template_id,
         status, 
         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='schedule_status' AND sdd.dict_value=zas.`status` ) statusName,
-        total_pay, prepay, release_term_num,approved,
+        total_pay, prepay, release_term_num,promotioner,releaser,approved,
         CASE approved  WHEN '1' THEN '审核通过' WHEN '0' THEN '审核不通过' ELSE '待审核' END approvedName,
         approved_remark,approved_user, 
         is_del, release_note, create_by, create_time, update_by, update_time,
-        advertise_id,
-        (SELECT DISTINCT za.advertisor_name FROM zx_advertise za WHERE za.advertise_id =zas.`advertise_id`) advertiseName,
+        advertiser,
+        (SELECT DISTINCT za.advertisor_name FROM zx_advertise za WHERE za.advertise_id =zas.`advertiser`) advertiseName,
         total_time,pay_status,qr_url from zx_ad_schedule zas
     </sql>
     
@@ -64,12 +66,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         zas.sx_schedule_id, zas.pid,zas.tid,zas.theme_template_id,
         zas.status, 
         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='schedule_status' AND sdd.dict_value=zas.`status` ) statusName,
-        zas.total_pay, zas.prepay, zas.release_term_num,zas.approved,
+        zas.total_pay, zas.prepay, zas.release_term_num,zas.promotioner,zas.releaser,zas.approved,
         CASE zas.approved  WHEN '1' THEN '审核通过' WHEN '0' THEN '审核不通过' ELSE '待审核' END approvedName,
         zas.approved_remark,zas.approved_user, 
         zas.is_del, zas.release_note, zas.create_by, zas.create_time, zas.update_by, zas.update_time,
-        zas.advertise_id,
-        (SELECT DISTINCT za.advertisor_name FROM zx_advertise za WHERE za.advertise_id =zas.`advertise_id`) advertiseName,
+        zas.advertiser,
+        (SELECT DISTINCT za.advertisor_name FROM zx_advertise za WHERE za.advertise_id =zas.`advertiser`) advertiseName,
         total_time,pay_status,zas.qr_url FROM zx_ad_schedule zas  LEFT JOIN zx_ad_release_record a ON a.schedule_id = zas.ad_schedule_id LEFT JOIN zx_device b ON a.device_id=b.device_id
     </sql>
 	
@@ -91,6 +93,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="totalPay != null and totalPay != ''"> and zas.total_pay = #{totalPay}</if>
              <if test="prepay != null and prepay != ''"> and zas.prepay = #{prepay}</if>
              <if test="releaseTermNum != null and releaseTermNum != ''"> and zas.release_term_num = #{releaseTermNum}</if>
+             <if test="advertiser != null and advertiser != ''"> and zas.advertiser = #{advertiser}</if>
+             <if test="promotioner != null and promotioner != ''"> and zas.promotioner = #{promotioner}</if>
+             <if test="releaser != null and releaser != ''"> and zas.releaser = #{releaser}</if>
              <if test="approved != null and approved != ''"> and zas.approved = #{approved}</if>
              <if test="approvedRemark != null and approvedRemark != ''"> and zas.approved_remark = #{approvedRemark}</if>
              <if test="approvedUser != null and approvedUser != ''"> and zas.approved_user = #{approvedUser}</if>
@@ -105,7 +110,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 </if>
              <if test="updateBy != null and updateBy != ''"> and zas.update_by = #{updateBy}</if>
              <if test="updateTime != null "> and zas.update_time = #{updateTime}</if>
-             <if test="advertiseId != null and advertiseId != ''"> and zas.advertise_id = #{advertiseId}</if>
              <if test="totalTime != null and totalTime != ''"> and zas.total_time = #{totalTime}</if>
              <if test="payStatus != null and payStatus != ''"> and zas.pay_status = #{payStatus}</if>
              <if test="qrUrl != null and qrUrl != ''"> and zas.qr_url = #{qrUrl}</if>
@@ -133,6 +137,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="totalPay != null and totalPay != '' ">total_pay,</if>
 			<if test="prepay != null and prepay != '' ">prepay,</if>
 			<if test="releaseTermNum != null and releaseTermNum != '' ">release_term_num,</if>
+			<if test="advertiser != null and advertiser != '' ">advertiser,</if>
+			<if test="promotioner != null and promotioner != '' ">promotioner,</if>
+			<if test="releaser != null and releaser != '' ">releaser,</if>
 			<if test="approved != null and approved != '' ">approved,</if>
 			<if test="approvedRemark != null and approvedRemark != '' ">approved_remark,</if>
 			<if test="approvedUser != null and approvedUser != '' ">approved_user,</if>
@@ -142,7 +149,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createTime != null  ">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
 			<if test="updateTime != null ">update_time,</if>
-			<if test="advertiseId != null ">advertise_id,</if>
 			<if test="totalTime != null ">total_time,</if>
 			<if test="payStatus != null ">pay_status,</if>
 			<if test="qrUrl != null ">qr_url,</if>
@@ -161,6 +167,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="totalPay != null and totalPay != ''">#{totalPay},</if>
 			<if test="prepay != null and prepay != ''">#{prepay},</if>
 			<if test="releaseTermNum != null and releaseTermNum != ''">#{releaseTermNum},</if>
+			<if test="advertiser != null and advertiser != ''">#{advertiser},</if>
+			<if test="promotioner != null and promotioner != ''">#{promotioner},</if>
+			<if test="releaser != null and releaser != ''">#{releaser},</if>
 			<if test="approved != null and approved != ''">#{approved},</if>
 			<if test="approvedRemark != null and approvedRemark != ''">#{approvedRemark},</if>
 			<if test="approvedUser != null and approvedUser != ''">#{approvedUser},</if>
@@ -170,7 +179,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createTime != null ">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
 			<if test="updateTime != null ">#{updateTime},</if>
-			<if test="advertiseId != null ">#{advertiseId},</if>
 			<if test="totalTime != null ">#{totalTime},</if>
 			<if test="payStatus != null ">#{payStatus},</if>
 			<if test="qrUrl != null ">#{qrUrl},</if>
@@ -192,6 +200,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totalPay != null  ">total_pay = #{totalPay},</if>
             <if test="prepay != null  ">prepay = #{prepay},</if>
             <if test="releaseTermNum != null  ">release_term_num = #{releaseTermNum},</if>
+            <if test="advertiser != null  ">advertiser = #{advertiser},</if>
+            <if test="promotioner != null  ">promotioner = #{promotioner},</if>
+            <if test="releaser != null  ">releaser = #{releaser},</if>
             <if test="approved != null  and approved != ''  ">approved = #{approved},</if>
             <if test="approvedRemark != null  and approvedRemark != ''  ">approved_remark = #{approvedRemark},</if>
             <if test="approvedUser != null  and approvedUser != ''  ">approved_user = #{approvedUser},</if>
@@ -201,7 +212,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
-            <if test="advertiseId != null  ">advertise_id = #{advertiseId},</if>
             <if test="totalTime != null  ">total_time = #{totalTime},</if>
             <if test="payStatus != null  ">pay_status = #{payStatus},</if>
             <if test="qrUrl != null  ">qr_url = #{qrUrl},</if>
@@ -238,6 +248,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="totalPay != null and totalPay != ''"> and total_pay = #{totalPay}</if>
              <if test="prepay != null and prepay != ''"> and prepay = #{prepay}</if>
              <if test="releaseTermNum != null and releaseTermNum != ''"> and release_term_num = #{releaseTermNum}</if>
+             <if test="advertiser != null and advertiser != ''"> and advertiser = #{advertiser}</if>
+             <if test="promotioner != null and promotioner != ''"> and promotioner = #{promotioner}</if>
+             <if test="releaser != null and releaser != ''"> and releaser = #{releaser}</if>
              <if test="approved != null and approved != ''"> and approved = #{approved}</if>
              <if test="approvedRemark != null and approvedRemark != ''"> and approved_remark = #{approvedRemark}</if>
              <if test="approvedUser != null and approvedUser != ''"> and approved_user = #{approvedUser}</if>
@@ -252,7 +265,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 </if>
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
              <if test="updateTime != null "> and update_time = #{updateTime}</if>
-             <if test="advertiseId != null and advertiseId != ''"> and advertise_id = #{advertiseId}</if>
              <if test="totalTime != null and totalTime != ''"> and total_time = #{totalTime}</if>
              <if test="payStatus != null and payStatus != ''"> and pay_status = #{payStatus}</if>
              <if test="qrUrl != null and qrUrl != ''"> and qr_url = #{qrUrl}</if>
