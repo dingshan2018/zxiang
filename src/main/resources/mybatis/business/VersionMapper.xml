@@ -10,9 +10,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="sysVerCode"    column="sys_ver_code"    />
         <result property="sysVerSubject"    column="sys_ver_subject"    />
         <result property="sysVerInfo"    column="sys_ver_info"    />
+        <result property="subject"    column="subject"    />
+        <result property="downloadPath"    column="download_path"    />
+        <result property="md5Check"    column="md5_check"    />
+        <result property="oldVersionCode"    column="old_version_code"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="filesize"    column="filesize"    />
         <result property="effDate"    column="eff_date"    />
         <result property="expDate"    column="exp_date"    />
-        <result property="subject"    column="subject"    />
         <result property="createBy"    column="create_by"    />
         <result property="createDate"    column="create_date"    />
         <result property="remark"    column="remark"    />
@@ -20,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectVersionVo">
-        select sys_ver_id, system_code, sys_ver_code, sys_ver_subject, sys_ver_info, eff_date, exp_date, subject, create_by, create_date, remark, del_flag from sys_version
+        select sys_ver_id, system_code, sys_ver_code, sys_ver_subject, sys_ver_info, subject, download_path, md5_check, old_version_code, file_name, filesize, eff_date, exp_date, create_by, create_date, remark, del_flag from sys_version
     </sql>
 	
     <select id="selectVersionList" parameterType="Version" resultMap="VersionResult">
@@ -28,21 +33,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="sysVerId != null and sysVerId != ''"> and sys_ver_id = #{sysVerId}</if>
              <if test="systemCode != null and systemCode != ''"> and system_code = #{systemCode}</if>
-             <if test="sysVerCode != null and sysVerCode != ''"> 
-             	and sys_ver_code like concat('%', #{sysVerCode}, '%')</if>
+             <if test="sysVerCode != null and sysVerCode != ''"> and sys_ver_code = #{sysVerCode}</if>
              <if test="sysVerSubject != null and sysVerSubject != ''"> and sys_ver_subject = #{sysVerSubject}</if>
              <if test="sysVerInfo != null and sysVerInfo != ''"> and sys_ver_info = #{sysVerInfo}</if>
-             <if test="effDate != null "> and eff_date = #{effDate}</if>
-             <if test="expDate != null "> and exp_date = #{expDate}</if>
              <if test="subject != null and subject != ''"> and subject = #{subject}</if>
+             <if test="downloadPath != null and downloadPath != ''"> and download_path = #{downloadPath}</if>
+             <if test="md5Check != null and md5Check != ''"> and md5_check = #{md5Check}</if>
+             <if test="oldVersionCode != null and oldVersionCode != ''"> and old_version_code = #{oldVersionCode}</if>
+             <if test="fileName != null and fileName != ''"> and file_name = #{fileName}</if>
+             <if test="filesize != null and filesize != ''"> and filesize = #{filesize}</if>
+             <if test="effDate != null and effDate != ''"> and eff_date = #{effDate}</if>
+             <if test="expDate != null and expDate != ''"> and exp_date = #{expDate}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createDate != null "> and create_date = #{createDate}</if>
-             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
-				 AND date_format(create_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
-			 </if>
-			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
-				 AND date_format(create_date,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
-			 </if>
+             <if test="createDate != null and createDate != ''"> and create_date = #{createDate}</if>
              <if test="remark != null and remark != ''"> and remark = #{remark}</if>
              <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
          </where>
@@ -61,11 +64,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="sysVerCode != null and sysVerCode != '' ">sys_ver_code,</if>
 			<if test="sysVerSubject != null and sysVerSubject != '' ">sys_ver_subject,</if>
 			<if test="sysVerInfo != null and sysVerInfo != '' ">sys_ver_info,</if>
-			<if test="effDate != null  ">eff_date,</if>
-			<if test="expDate != null  ">exp_date,</if>
 			<if test="subject != null and subject != '' ">subject,</if>
+			<if test="downloadPath != null and downloadPath != '' ">download_path,</if>
+			<if test="md5Check != null and md5Check != '' ">md5_check,</if>
+			<if test="oldVersionCode != null and oldVersionCode != '' ">old_version_code,</if>
+			<if test="fileName != null and fileName != '' ">file_name,</if>
+			<if test="filesize != null and filesize != '' ">filesize,</if>
+			<if test="effDate != null and effDate != '' ">eff_date,</if>
+			<if test="expDate != null and expDate != '' ">exp_date,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
-			<if test="createDate != null  ">create_date,</if>
+			<if test="createDate != null and createDate != '' ">create_date,</if>
 			<if test="remark != null and remark != '' ">remark,</if>
 			<if test="delFlag != null and delFlag != '' ">del_flag,</if>
          </trim>
@@ -75,11 +83,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="sysVerCode != null and sysVerCode != ''">#{sysVerCode},</if>
 			<if test="sysVerSubject != null and sysVerSubject != ''">#{sysVerSubject},</if>
 			<if test="sysVerInfo != null and sysVerInfo != ''">#{sysVerInfo},</if>
-			<if test="effDate != null ">#{effDate},</if>
-			<if test="expDate != null ">#{expDate},</if>
 			<if test="subject != null and subject != ''">#{subject},</if>
+			<if test="downloadPath != null and downloadPath != ''">#{downloadPath},</if>
+			<if test="md5Check != null and md5Check != ''">#{md5Check},</if>
+			<if test="oldVersionCode != null and oldVersionCode != ''">#{oldVersionCode},</if>
+			<if test="fileName != null and fileName != ''">#{fileName},</if>
+			<if test="filesize != null and filesize != ''">#{filesize},</if>
+			<if test="effDate != null and effDate != ''">#{effDate},</if>
+			<if test="expDate != null and expDate != ''">#{expDate},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
-			<if test="createDate != null ">#{createDate},</if>
+			<if test="createDate != null and createDate != ''">#{createDate},</if>
 			<if test="remark != null and remark != ''">#{remark},</if>
 			<if test="delFlag != null and delFlag != ''">#{delFlag},</if>
          </trim>
@@ -92,9 +105,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sysVerCode != null  and sysVerCode != ''  ">sys_ver_code = #{sysVerCode},</if>
             <if test="sysVerSubject != null  and sysVerSubject != ''  ">sys_ver_subject = #{sysVerSubject},</if>
             <if test="sysVerInfo != null  and sysVerInfo != ''  ">sys_ver_info = #{sysVerInfo},</if>
+            <if test="subject != null  and subject != ''  ">subject = #{subject},</if>
+            <if test="downloadPath != null  and downloadPath != ''  ">download_path = #{downloadPath},</if>
+            <if test="md5Check != null  and md5Check != ''  ">md5_check = #{md5Check},</if>
+            <if test="oldVersionCode != null  and oldVersionCode != ''  ">old_version_code = #{oldVersionCode},</if>
+            <if test="fileName != null  and fileName != ''  ">file_name = #{fileName},</if>
+            <if test="filesize != null  ">filesize = #{filesize},</if>
             <if test="effDate != null  ">eff_date = #{effDate},</if>
             <if test="expDate != null  ">exp_date = #{expDate},</if>
-            <if test="subject != null  and subject != ''  ">subject = #{subject},</if>
             <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
             <if test="createDate != null  ">create_date = #{createDate},</if>
             <if test="remark != null  and remark != ''  ">remark = #{remark},</if>

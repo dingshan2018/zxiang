@@ -25,12 +25,22 @@ public class Version extends BaseEntity
 	private String sysVerSubject;
 	/** 版本更新信息 */
 	private String sysVerInfo;
+	/** 升级类型，1000：强制升级；2000：可选升级 */
+	private String subject;
+	/** 下载路径 */
+	private String downloadPath;
+	/** 文件MD5验证码 */
+	private String md5Check;
+	/** 旧版本号 */
+	private String oldVersionCode;
+	/** 文件名称 */
+	private String fileName;
+	/** 更新包大小 */
+	private Float filesize;
 	/** 启用时间 */
 	private Date effDate;
 	/** 失效时间 */
 	private Date expDate;
-	/** 升级类型，1000：强制升级；2000：可选升级 */
-	private String subject;
 	/** 创建者 */
 	private String createBy;
 	/** 创建时间 */
@@ -85,6 +95,60 @@ public class Version extends BaseEntity
 	{
 		return sysVerInfo;
 	}
+	public void setSubject(String subject) 
+	{
+		this.subject = subject;
+	}
+
+	public String getSubject() 
+	{
+		return subject;
+	}
+	public void setDownloadPath(String downloadPath) 
+	{
+		this.downloadPath = downloadPath;
+	}
+
+	public String getDownloadPath() 
+	{
+		return downloadPath;
+	}
+	public void setMd5Check(String md5Check) 
+	{
+		this.md5Check = md5Check;
+	}
+
+	public String getMd5Check() 
+	{
+		return md5Check;
+	}
+	public void setOldVersionCode(String oldVersionCode) 
+	{
+		this.oldVersionCode = oldVersionCode;
+	}
+
+	public String getOldVersionCode() 
+	{
+		return oldVersionCode;
+	}
+	public void setFileName(String fileName) 
+	{
+		this.fileName = fileName;
+	}
+
+	public String getFileName() 
+	{
+		return fileName;
+	}
+	public void setFilesize(Float filesize) 
+	{
+		this.filesize = filesize;
+	}
+
+	public Float getFilesize() 
+	{
+		return filesize;
+	}
 	public void setEffDate(Date effDate) 
 	{
 		this.effDate = effDate;
@@ -102,15 +166,6 @@ public class Version extends BaseEntity
 	public Date getExpDate() 
 	{
 		return expDate;
-	}
-	public void setSubject(String subject) 
-	{
-		this.subject = subject;
-	}
-
-	public String getSubject() 
-	{
-		return subject;
 	}
 	public void setCreateBy(String createBy) 
 	{
@@ -156,9 +211,14 @@ public class Version extends BaseEntity
             .append("sysVerCode", getSysVerCode())
             .append("sysVerSubject", getSysVerSubject())
             .append("sysVerInfo", getSysVerInfo())
+            .append("subject", getSubject())
+            .append("downloadPath", getDownloadPath())
+            .append("md5Check", getMd5Check())
+            .append("oldVersionCode", getOldVersionCode())
+            .append("fileName", getFileName())
+            .append("filesize", getFilesize())
             .append("effDate", getEffDate())
             .append("expDate", getExpDate())
-            .append("subject", getSubject())
             .append("createBy", getCreateBy())
             .append("createDate", getCreateDate())
             .append("remark", getRemark())

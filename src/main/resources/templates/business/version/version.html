@@ -94,6 +94,26 @@
 		            }
 				},
 				{
+					field : 'downloadPath', 
+					title : '下载路径' 
+				},
+				{
+					field : 'md5Check', 
+					title : '文件验证码' 
+				},
+				{
+					field : 'oldVersionCode', 
+					title : '旧版本号' 
+				},
+				{
+					field : 'fileName', 
+					title : '文件名称' 
+				},
+				{
+					field : 'filesize', 
+					title : '文件大小' 
+				},
+				{
 					field : 'effDate', 
 					title : '启用时间' 
 				},
@@ -133,6 +153,7 @@
             $('#bootstrap-table').bootstrapTable('hideColumn', 'systemCode');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'remark');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'delFlag');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'filesize');
             
         });
     </script>

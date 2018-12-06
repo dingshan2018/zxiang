@@ -31,6 +31,42 @@
                 </div>
             </div>
             <div class="form-group">	
+                <label class="col-sm-3 control-label">升级类型，1000：强制升级；2000：可选升级：</label>
+                <div class="col-sm-8">
+                    <input id="subject" name="subject" th:field="*{subject}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">下载路径：</label>
+                <div class="col-sm-8">
+                    <input id="downloadPath" name="downloadPath" th:field="*{downloadPath}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">文件MD5验证码：</label>
+                <div class="col-sm-8">
+                    <input id="md5Check" name="md5Check" th:field="*{md5Check}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">旧版本号：</label>
+                <div class="col-sm-8">
+                    <input id="oldVersionCode" name="oldVersionCode" th:field="*{oldVersionCode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">文件名称：</label>
+                <div class="col-sm-8">
+                    <input id="fileName" name="fileName" th:field="*{fileName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">更新包大小：</label>
+                <div class="col-sm-8">
+                    <input id="filesize" name="filesize" th:field="*{filesize}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
                 <label class="col-sm-3 control-label">启用时间：</label>
                 <div class="col-sm-8">
                     <input id="effDate" name="effDate" th:field="*{effDate}" class="form-control" type="text">
@@ -40,12 +76,6 @@
                 <label class="col-sm-3 control-label">失效时间：</label>
                 <div class="col-sm-8">
                     <input id="expDate" name="expDate" th:field="*{expDate}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">升级类型，1000：强制升级；2000：可选升级：</label>
-                <div class="col-sm-8">
-                    <input id="subject" name="subject" th:field="*{subject}" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">	
@@ -82,7 +112,7 @@
     </div>
     <div th:include="include::footer"></div>
     <script type="text/javascript">
-		var prefix = ctx + "business/version"
+		var prefix = ctx + "settle/version"
 		$("#form-version-edit").validate({
 			rules:{
 				xxxx:{
