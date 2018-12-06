@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.business.artifactVersion.mapper.ArtifactVersionMapper">
+    
+    <resultMap type="ArtifactVersion" id="ArtifactVersionResult">
+        <result property="artifactVerId"    column="artifact_ver_id"    />
+        <result property="artifactVerCode"    column="artifact_ver_code"    />
+        <result property="artifactVerSubject"    column="artifact_ver_subject"    />
+        <result property="artifactVerInfo"    column="artifact_ver_info"    />
+        <result property="artifaceDownloadPath"    column="artiface_download_path"    />
+        <result property="sysVerId"    column="sys_ver_id"    />
+        <result property="effDate"    column="eff_date"    />
+        <result property="expDate"    column="exp_date"    />
+        <result property="md5Check"    column="md5_check"    />
+        <result property="artifactType"    column="artifact_type"    />
+        <result property="oldArtifactCode"    column="old_artifact_code"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="filesize"    column="filesize"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createDate"    column="create_date"    />
+        <result property="remark"    column="remark"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+	
+	<sql id="selectArtifactVersionVo">
+        select artifact_ver_id, artifact_ver_code, artifact_ver_subject, artifact_ver_info, artiface_download_path, sys_ver_id, eff_date, exp_date, md5_check, artifact_type, old_artifact_code, file_name, filesize, create_by, create_date, remark, del_flag from sys_artifact_version
+    </sql>
+	
+    <select id="selectArtifactVersionList" parameterType="ArtifactVersion" resultMap="ArtifactVersionResult">
+        <include refid="selectArtifactVersionVo"/>
+        <where>  
+            <if test="artifactVerId != null and artifactVerId != ''"> and artifact_ver_id = #{artifactVerId}</if>
+             <if test="artifactVerCode != null and artifactVerCode != ''"> and artifact_ver_code = #{artifactVerCode}</if>
+             <if test="artifactVerSubject != null and artifactVerSubject != ''"> and artifact_ver_subject = #{artifactVerSubject}</if>
+             <if test="artifactVerInfo != null and artifactVerInfo != ''"> and artifact_ver_info = #{artifactVerInfo}</if>
+             <if test="artifaceDownloadPath != null and artifaceDownloadPath != ''"> and artiface_download_path = #{artifaceDownloadPath}</if>
+             <if test="sysVerId != null and sysVerId != ''"> and sys_ver_id = #{sysVerId}</if>
+             <if test="effDate != null and effDate != ''"> and eff_date = #{effDate}</if>
+             <if test="expDate != null and expDate != ''"> and exp_date = #{expDate}</if>
+             <if test="md5Check != null and md5Check != ''"> and md5_check = #{md5Check}</if>
+             <if test="artifactType != null and artifactType != ''"> and artifact_type = #{artifactType}</if>
+             <if test="oldArtifactCode != null and oldArtifactCode != ''"> and old_artifact_code = #{oldArtifactCode}</if>
+             <if test="fileName != null and fileName != ''"> and file_name = #{fileName}</if>
+             <if test="filesize != null and filesize != ''"> and filesize = #{filesize}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createDate != null and createDate != ''"> and create_date = #{createDate}</if>
+             <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+             <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
+         </where>
+    </select>
+    
+    <select id="selectArtifactVersionById" parameterType="Integer" resultMap="ArtifactVersionResult">
+        <include refid="selectArtifactVersionVo"/>
+        where artifact_ver_id = #{artifactVerId}
+    </select>
+        
+    <insert id="insertArtifactVersion" parameterType="ArtifactVersion">
+        insert into sys_artifact_version
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="artifactVerId != null and artifactVerId != '' ">artifact_ver_id,</if>
+			<if test="artifactVerCode != null and artifactVerCode != '' ">artifact_ver_code,</if>
+			<if test="artifactVerSubject != null and artifactVerSubject != '' ">artifact_ver_subject,</if>
+			<if test="artifactVerInfo != null and artifactVerInfo != '' ">artifact_ver_info,</if>
+			<if test="artifaceDownloadPath != null and artifaceDownloadPath != '' ">artiface_download_path,</if>
+			<if test="sysVerId != null and sysVerId != '' ">sys_ver_id,</if>
+			<if test="effDate != null and effDate != '' ">eff_date,</if>
+			<if test="expDate != null and expDate != '' ">exp_date,</if>
+			<if test="md5Check != null and md5Check != '' ">md5_check,</if>
+			<if test="artifactType != null and artifactType != '' ">artifact_type,</if>
+			<if test="oldArtifactCode != null and oldArtifactCode != '' ">old_artifact_code,</if>
+			<if test="fileName != null and fileName != '' ">file_name,</if>
+			<if test="filesize != null and filesize != '' ">filesize,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createDate != null and createDate != '' ">create_date,</if>
+			<if test="remark != null and remark != '' ">remark,</if>
+			<if test="delFlag != null and delFlag != '' ">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="artifactVerId != null and artifactVerId != ''">#{artifactVerId},</if>
+			<if test="artifactVerCode != null and artifactVerCode != ''">#{artifactVerCode},</if>
+			<if test="artifactVerSubject != null and artifactVerSubject != ''">#{artifactVerSubject},</if>
+			<if test="artifactVerInfo != null and artifactVerInfo != ''">#{artifactVerInfo},</if>
+			<if test="artifaceDownloadPath != null and artifaceDownloadPath != ''">#{artifaceDownloadPath},</if>
+			<if test="sysVerId != null and sysVerId != ''">#{sysVerId},</if>
+			<if test="effDate != null and effDate != ''">#{effDate},</if>
+			<if test="expDate != null and expDate != ''">#{expDate},</if>
+			<if test="md5Check != null and md5Check != ''">#{md5Check},</if>
+			<if test="artifactType != null and artifactType != ''">#{artifactType},</if>
+			<if test="oldArtifactCode != null and oldArtifactCode != ''">#{oldArtifactCode},</if>
+			<if test="fileName != null and fileName != ''">#{fileName},</if>
+			<if test="filesize != null and filesize != ''">#{filesize},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createDate != null and createDate != ''">#{createDate},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+			<if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateArtifactVersion" parameterType="ArtifactVersion">
+        update sys_artifact_version
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="artifactVerCode != null  and artifactVerCode != ''  ">artifact_ver_code = #{artifactVerCode},</if>
+            <if test="artifactVerSubject != null  and artifactVerSubject != ''  ">artifact_ver_subject = #{artifactVerSubject},</if>
+            <if test="artifactVerInfo != null  and artifactVerInfo != ''  ">artifact_ver_info = #{artifactVerInfo},</if>
+            <if test="artifaceDownloadPath != null  and artifaceDownloadPath != ''  ">artiface_download_path = #{artifaceDownloadPath},</if>
+            <if test="sysVerId != null  ">sys_ver_id = #{sysVerId},</if>
+            <if test="effDate != null  ">eff_date = #{effDate},</if>
+            <if test="expDate != null  ">exp_date = #{expDate},</if>
+            <if test="md5Check != null  and md5Check != ''  ">md5_check = #{md5Check},</if>
+            <if test="artifactType != null  and artifactType != ''  ">artifact_type = #{artifactType},</if>
+            <if test="oldArtifactCode != null  and oldArtifactCode != ''  ">old_artifact_code = #{oldArtifactCode},</if>
+            <if test="fileName != null  and fileName != ''  ">file_name = #{fileName},</if>
+            <if test="filesize != null  ">filesize = #{filesize},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createDate != null  ">create_date = #{createDate},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="delFlag != null  and delFlag != ''  ">del_flag = #{delFlag},</if>
+        </trim>
+        where artifact_ver_id = #{artifactVerId}
+    </update>
+
+	<delete id="deleteArtifactVersionById" parameterType="Integer">
+        delete from sys_artifact_version where artifact_ver_id = #{artifactVerId}
+    </delete>
+	
+    <delete id="deleteArtifactVersionByIds" parameterType="String">
+        delete from sys_artifact_version where artifact_ver_id in 
+        <foreach item="artifactVerId" collection="array" open="(" separator="," close=")">
+            #{artifactVerId}
+        </foreach>
+    </delete>
+    
+</mapper>
