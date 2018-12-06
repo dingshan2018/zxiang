@@ -5,29 +5,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.zxiang.project.client.advertise.mapper.AdvertiseMapper">
     
     <resultMap type="Advertise" id="AdvertiseResult">
-        <result property="advertiseId"    column="advertise_id"    />
-        <result property="advertisorName"    column="advertisor_name"    />
-        <result property="managerId"    column="manager_id"    />
-        <result property="managerName"    column="manager_name"    />
-        <result property="managerPhone"    column="manager_phone"    />
-        <result property="business"    column="business"    />
-        <result property="releaseNum"    column="release_num"    />
-        <result property="lastScheduler"    column="last_scheduler"    />
-        <result property="status"    column="status"    />
-        <result property="delFlag"    column="del_flag"    />
-        <result property="grade"    column="grade"    />
-        <result property="cutOff"    column="cut_off"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
+        <result property="advertiseId"    column="advertise_id"/>
+        <result property="advertisorName"    column="advertisor_name"/>
+        <result property="managerId"    column="manager_id"/>
+        <result property="managerName"    column="manager_name"/>
+        <result property="managerPhone"    column="manager_phone"/>
+        <result property="business"    column="business"/>
+        <result property="releaseNum"    column="release_num"/>
+        <result property="lastScheduler"    column="last_scheduler"/>
+        <result property="status"    column="status"/>
+        <result property="delFlag"    column="del_flag"/>
+        <result property="balance"    column="balance"/>
+        <result property="frozenBalance"    column="frozen_balance"/>
+        <result property="grade"    column="grade"/>
+        <result property="cutOff"    column="cut_off"/>
+        <result property="createBy"    column="create_by"/>
+        <result property="createTime"    column="create_time"/>
+        <result property="updateBy"    column="update_by"/>
+        <result property="updateTime"    column="update_time"/>
     </resultMap>
 	
 	<sql id="selectAdvertiseVo">
-        select advertise_id, advertisor_name, manager_id, manager_name, manager_phone, business, release_num, last_scheduler, status, del_flag, grade, cut_off, create_by, create_time, update_by, update_time from zx_advertise
+        select advertise_id, advertisor_name, manager_id, manager_name, manager_phone, business, release_num, last_scheduler, status, del_flag, grade,balance,frozen_balance, cut_off, create_by, create_time, update_by, update_time from zx_advertise
     </sql>
-    	<sql id="selectAdvertiseVos">
-        select distinct a.advertise_id, a.advertisor_name, a.manager_id, a.manager_name, a.manager_phone, a.business, a.release_num, a.last_scheduler, a.status, a.del_flag, a.grade, a.cut_off, a.create_by, a.create_time, a.update_by, a.update_time from zx_advertise a LEFT JOIN sys_user b ON b.puser_id = a.advertise_id
+    <sql id="selectAdvertiseVos">
+        select distinct a.advertise_id, a.advertisor_name, a.manager_id, a.manager_name, a.manager_phone, a.business, a.release_num, a.last_scheduler, a.status, a.del_flag, a.grade,a.balance,a.frozen_balance, a.cut_off, a.create_by, a.create_time, a.update_by, a.update_time from zx_advertise a LEFT JOIN sys_user b ON b.puser_id = a.advertise_id
     </sql>
 	
     <select id="selectAdvertiseList" parameterType="Advertise" resultMap="AdvertiseResult">

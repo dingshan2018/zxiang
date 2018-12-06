@@ -1,9 +1,9 @@
 package com.zxiang.project.client.advertise.domain;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import com.zxiang.framework.web.domain.BaseEntity;
+import java.math.BigDecimal;
 import java.util.Date;
+
+import com.zxiang.framework.web.domain.BaseEntity;
 
 /**
  * 广告商表 zx_advertise
@@ -47,6 +47,11 @@ public class Advertise extends BaseEntity
 	private String updateBy;
 	/**  */
 	private Date updateTime;
+	/** 余额 **/
+	private BigDecimal balance; 
+	/** 冻结余额 **/
+	private BigDecimal frozenBalance; 
+	
 
 	public void setAdvertiseId(Integer advertiseId) 
 	{
@@ -193,24 +198,30 @@ public class Advertise extends BaseEntity
 		return updateTime;
 	}
 
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("advertiseId", getAdvertiseId())
-            .append("advertisorName", getAdvertisorName())
-            .append("managerId", getManagerId())
-            .append("managerName", getManagerName())
-            .append("managerPhone", getManagerPhone())
-            .append("business", getBusiness())
-            .append("releaseNum", getReleaseNum())
-            .append("lastScheduler", getLastScheduler())
-            .append("status", getStatus())
-            .append("delFlag", getDelFlag())
-            .append("grade", getGrade())
-            .append("cutOff", getCutOff())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
-    }
+    public BigDecimal getBalance() {
+		return balance;
+	}
+
+	public void setBalance(BigDecimal balance) {
+		this.balance = balance;
+	}
+
+	public BigDecimal getFrozenBalance() {
+		return frozenBalance;
+	}
+
+	public void setFrozenBalance(BigDecimal frozenBalance) {
+		this.frozenBalance = frozenBalance;
+	}
+
+	@Override
+	public String toString() {
+		return "Advertise [advertiseId=" + advertiseId + ", advertisorName=" + advertisorName + ", managerId="
+				+ managerId + ", managerName=" + managerName + ", managerPhone=" + managerPhone + ", business="
+				+ business + ", releaseNum=" + releaseNum + ", lastScheduler=" + lastScheduler + ", status=" + status
+				+ ", delFlag=" + delFlag + ", grade=" + grade + ", cutOff=" + cutOff + ", createBy=" + createBy
+				+ ", createTime=" + createTime + ", updateBy=" + updateBy + ", updateTime=" + updateTime + ", balance="
+				+ balance + ", frozenBalance=" + frozenBalance + "]";
+	}
+
 }

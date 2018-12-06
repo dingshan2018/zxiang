@@ -84,9 +84,18 @@ public class UserServiceImpl implements IUserService
      * @return 用户信息集合信息
      */
     @Override
-    public List<User> selectUserList(User user)
-    {
-        return userMapper.selectUserList(user);
+    public List<User> selectUserList(User selUser){
+    	List<User> list = userMapper.selectUserList(selUser);
+    	if(list == null || list.size() == 0) {
+    		return list;
+    	}
+    	// 设置绑定状态
+    	Integer wxUserId = null;
+		for (User user : list) {
+			wxUserId = wxUserMapper.queryByUserId(user.getUserId());
+			user.setWxUserId(wxUserId);
+		}
+        return list;
     }
 
     /**

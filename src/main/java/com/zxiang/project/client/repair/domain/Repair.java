@@ -1,9 +1,7 @@
 package com.zxiang.project.client.repair.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.zxiang.framework.web.domain.BaseEntity;
 
@@ -53,6 +51,10 @@ public class Repair extends BaseEntity
 	private String status;
 	/** 是否删除 */
 	private String delFlag;
+	/** 余额 **/
+	private BigDecimal balance; 
+	/** 冻结余额 **/
+	private BigDecimal frozenBalance; 
 	/** 服务设备数量 */
 	private Integer deviceNum;
 	/**  */
@@ -267,26 +269,19 @@ public class Repair extends BaseEntity
 		return updateTime;
 	}
 
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("repairId", getRepairId())
-            .append("repairName", getRepairName())
-            .append("managerName", getManagerName())
-            .append("managerId", getManagerId())
-            .append("managerPhone", getManagerPhone())
-            .append("bankReceiver", getBankReceiver())
-            .append("bankAccount", getBankAccount())
-            .append("bankName", getBankName())
-            .append("promotionRate", getPromotionRate())
-            .append("adRate", getAdRate())
-            .append("scanRate", getScanRate())
-            .append("status", getStatus())
-            .append("delFlag", getDelFlag())
-            .append("deviceNum", getDeviceNum())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
-    }
+	public BigDecimal getBalance() {
+		return balance;
+	}
+
+	public void setBalance(BigDecimal balance) {
+		this.balance = balance;
+	}
+
+	public BigDecimal getFrozenBalance() {
+		return frozenBalance;
+	}
+
+	public void setFrozenBalance(BigDecimal frozenBalance) {
+		this.frozenBalance = frozenBalance;
+	}
 }

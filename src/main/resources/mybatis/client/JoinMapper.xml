@@ -28,17 +28,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="balance"    column="balance"/>
+        <result property="frozenBalance"    column="frozen_balance"/>
     </resultMap>
 	
 	<sql id="selectJoinVo">
         select join_id, joiner_name, joiner_id, device_num, bank_account, bank_receiver, bank_name,manager_name, manager_phone,status, del_flag,
-          ad_rate,ad_carousel_rate, scan_rate,prom_direct_rate,prom_indirect_rate,prom_paper_rate,promotion_rate,serve_rate,  
+          ad_rate,ad_carousel_rate, scan_rate,prom_direct_rate,prom_indirect_rate,prom_paper_rate,promotion_rate,serve_rate,balance,frozen_balance,  
           create_by, create_time, update_by, update_time from zx_join
     </sql>
     
     <sql id="selectJoinVos">
         select distinct a.join_id, a.joiner_name, a.joiner_id, a.device_num, a.bank_account, a.bank_receiver, a.bank_name,a.manager_name, a.manager_phone,a.status, a.del_flag,
-          a.ad_rate,a.ad_carousel_rate, a.scan_rate,a.prom_direct_rate,a.prom_indirect_rate,a.prom_paper_rate,a.promotion_rate,a.serve_rate,  
+          a.ad_rate,a.ad_carousel_rate, a.scan_rate,a.prom_direct_rate,a.prom_indirect_rate,a.prom_paper_rate,a.promotion_rate,a.serve_rate, a.balance,a.frozen_balance, 
           a.create_by, a.create_time, a.update_by, a.update_time from zx_join a LEFT JOIN sys_user b ON b.puser_id = a.join_id
     </sql>
 	

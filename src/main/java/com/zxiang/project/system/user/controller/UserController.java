@@ -58,6 +58,7 @@ public class UserController extends BaseController
     public TableDataInfo list(User user)
     {
         startPage();
+        user.setUserType("00");
         List<User> list = userService.selectUserList(user);
         return getDataTable(list);
     }

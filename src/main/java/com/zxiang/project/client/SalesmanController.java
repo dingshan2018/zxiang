@@ -67,7 +67,6 @@ public class SalesmanController extends BaseController
     public TableDataInfo list(User user)  {
         startPage();
         List<User> list = userService.selectUserList(user);
-        wxUserService.setbindStatus(list);
         userService.setRoleName(list);
         return getDataTable(list);
     }
