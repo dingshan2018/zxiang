@@ -47,12 +47,12 @@
                 <span class="select-item-name">手机号码：</span>
                 <input type="text" name="phonenumber"/>
               </li>
-              <li>
+              <!-- <li>
                 <span class="select-item-name">用户类型：</span><select name="userType" th:with="type=${@dict.getType('user_type')}">
                 <option value="">所有</option>
                 <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
               </select>
-              </li>
+              </li> -->
               <li>
                 <span class="select-item-name">用户状态：</span>
                 <select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
@@ -171,6 +171,19 @@
 	            }
 	        },
 	        {
+	            title: '绑定操作',
+	            align: 'center',
+	            formatter: function(value, row, index) {
+	            	 var actions = [];
+	            	 if(row.wxUserId == null || row.wxUserId == ''){
+		                 actions.push('<a class="btn btn-success btn-xs" href="#" onclick="addbind(\'' + row.userId + '\')"><i></i>点击绑定</a> ');
+	            	 }else {
+	            		 actions.push('<a class="btn btn-danger btn-xs" href="#" onclick="clearBind(\'' + row.wxUserId + '\')"><i></i>点击解绑</a> ');
+	            	 }
+	                 return actions.join('');
+	            }
+	        },
+	        {
 	            field: 'createTime',
 	            title: '创建时间',
 	            sortable: true
@@ -189,7 +202,22 @@
 	    };
 	    $.table.init(options);
 	}
-    
+    function clearBind (wxUserId) {
+        $.modal.confirm("确认解除绑定吗？", function() {
+        	$.post(ctx +"client/salesman/clearBind/"+wxUserId,function(result){
+        		$.table.refresh();
+        		if(result.code == 0){
+        			$.modal.alertSuccess(result.msg);
+        		}else{
+        			$.modal.alertError(result.msg);
+        		}
+        	});
+        	
+    	});
+    }
+    function addbind (userId) {
+        $.modal.open("二维码", ctx +"client/salesman/showQrCode/"+userId, 400, 400);
+    }
     function queryDeptTreeDaTa () {
       // 树结构初始化加载
       var setting       = {
