@@ -2,10 +2,21 @@ package com.zxiang.project.business.version.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSONObject;
+import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
+import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
+import com.zxiang.project.advertise.utils.AdHttpResult;
+import com.zxiang.project.advertise.utils.Tools;
+import com.zxiang.project.advertise.utils.constant.AdConstant;
 import com.zxiang.project.business.version.domain.Version;
 import com.zxiang.project.business.version.mapper.VersionMapper;
 
@@ -18,6 +29,8 @@ import com.zxiang.project.business.version.mapper.VersionMapper;
 @Service
 public class VersionServiceImpl implements IVersionService 
 {
+	Logger logger = Logger.getLogger(VersionServiceImpl.class);
+			
 	@Autowired
 	private VersionMapper versionMapper;
 
@@ -79,6 +92,45 @@ public class VersionServiceImpl implements IVersionService
 	public int deleteVersionByIds(String ids)
 	{
 		return versionMapper.deleteVersionByIds(Convert.toStrArray(ids));
+	}
+
+	@Override
+	@Transactional
+	public int uploadSave(HttpServletRequest request, List<MultipartFile> files, String operatorUser) {
+		int saveNum = 0;
+		try {
+			String sysVerCode = request.getParameter("sysVerCode");
+			String subject = request.getParameter("subject");
+			String oldArtifactCode = request.getParameter("oldArtifactCode");
+			String sysVerSubject = request.getParameter("sysVerSubject");
+			String sysVerInfo = request.getParameter("sysVerInfo");
+			
+			//1.上传素材文件
+			if (!files.isEmpty()) {
+		    	//TODO 调用上传文件的接口
+		    	String result = null;
+		    	//返回结果封装
+				AdHttpResult adHttp = Tools.analysisResult(result);
+				if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
+					JSONObject jsonResult =  (JSONObject) adHttp.get("data");
+					String filepath = jsonResult.getString("filepath");
+					//TODO 业务处理 保存素材文件
+					
+				}else{
+					logger.error("调用上传文件接口失败!" + adHttp.toString());
+					throw new RRException("调用上传文件接口失败!");
+				} 
+		    } else {
+		        logger.error("文件不能为空!");
+		        throw new RRException("文件不能为空!");
+		    }
+			return saveNum;
+			
+		} catch (Exception e) {
+			logger.error("materialUpload error: " + e);
+			throw e;
+		}
+	
 	}
 	
 }

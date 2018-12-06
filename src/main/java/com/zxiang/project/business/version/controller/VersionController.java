@@ -2,6 +2,8 @@ package com.zxiang.project.business.version.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,7 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
@@ -111,4 +116,23 @@ public class VersionController extends BaseController
 		return toAjax(versionService.deleteVersionByIds(ids));
 	}
 	
+	/**
+     * 更新包上传保存
+     */
+	@RequiresPermissions("business:version:add")
+	@Log(title = "更新包上传保存", businessType = BusinessType.UPDATE)
+	@RequestMapping(value = "/uploadSave", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxResult uploadSave(HttpServletRequest request)
+    {
+    	 try {
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			
+			 List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
+			 return toAjax(versionService.uploadSave(request,files,operatorUser));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error();
+		}
+    }
 }

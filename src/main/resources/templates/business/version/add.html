@@ -6,92 +6,160 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-version-add">
 			<div class="form-group">	
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>版本编号：</label>
+				<div class="col-sm-8">
+					<input id="sysVerCode" name="sysVerCode" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>升级类型：</label>
+				<div class="col-sm-8">
+					<select class="form-control" name="subject" id="subject">
+						<option value=""></option>
+                        <option value="2000">可选升级</option>
+                        <option value="1000">强制升级</option>
+                    </select>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>旧版本号：</label>
+				<div class="col-sm-8">
+					<input id="oldArtifactCode" name="oldArtifactCode" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>版本主题：</label>
+				<div class="col-sm-8">
+					<input id="sysVerSubject" name="sysVerSubject" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>更新内容：</label>
+				<div class="col-sm-8">
+					<textarea id="sysVerInfo" name="sysVerInfo" class="form-control" ></textarea>
+				</div>
+			</div>
+			<!-- <div class="form-group">	
 				<label class="col-sm-3 control-label">系统编码：</label>
 				<div class="col-sm-8">
 					<input id="systemCode" name="systemCode" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">版本号：</label>
-				<div class="col-sm-8">
-					<input id="sysVerCode" name="sysVerCode" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">版本主题：</label>
-				<div class="col-sm-8">
-					<input id="sysVerSubject" name="sysVerSubject" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">版本更新信息：</label>
-				<div class="col-sm-8">
-					<input id="sysVerInfo" name="sysVerInfo" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
 				<label class="col-sm-3 control-label">启用时间：</label>
 				<div class="col-sm-8">
-					<input id="effDate" name="effDate" class="form-control" type="text">
+					<input id="effDate" name="effDate" class="form-control" type="date">
 				</div>
 			</div>
 			<div class="form-group">	
 				<label class="col-sm-3 control-label">失效时间：</label>
 				<div class="col-sm-8">
-					<input id="expDate" name="expDate" class="form-control" type="text">
+					<input id="expDate" name="expDate" class="form-control" type="date">
 				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">升级类型，1000：强制升级；2000：可选升级：</label>
-				<div class="col-sm-8">
-					<input id="subject" name="subject" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">创建者：</label>
-				<div class="col-sm-8">
-					<input id="createBy" name="createBy" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">创建时间：</label>
-				<div class="col-sm-8">
-					<input id="createDate" name="createDate" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">备用字段：</label>
-				<div class="col-sm-8">
-					<input id="remark" name="remark" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">是否删除：</label>
-				<div class="col-sm-8">
-					<input id="delFlag" name="delFlag" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">
+			</div> -->
+			<!-- <div class="form-group">
 				<div class="form-control-static col-sm-offset-9">
 					<button type="submit" class="btn btn-primary">提交</button>
 					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
 				</div>
-			</div>
+			</div> -->
+			<br><br>
+			<div id="fileUploadContent" class="fileUploadContent"></div>
+			<span style="color: red;">*&nbsp;上传的apk文件最大30M</span>
+		  	<br><br>
+		  	<button onclick="submitUpload()" id="submit" class="btn btn-primary">上传</button>
 		</form>
 	</div>
     <div th:include="include::footer"></div>
+    <link th:href="@{/css/iconfont.css}" rel="stylesheet"/>
+  	<link th:href="@{/css/fileUpload.css}" rel="stylesheet"/>
+  	<script th:src="@{/js/fileUpload.js}"></script>
     <script type="text/javascript">
 		var prefix = ctx + "business/version"
 		$("#form-version-add").validate({
 			rules:{
-				xxxx:{
+				sysVerCode:{
+					required:true,
+				},
+				subject:{
+					required:true,
+				},
+				oldArtifactCode:{
 					required:true,
 				},
 			},
+			messages     : {
+			      'fileUpload': {
+			        	required: '请选择上传文件'
+			      }
+			},
 			submitHandler: function(form) {
-				$.operate.save(prefix + "/add", $('#form-version-add').serialize());
+				//$.operate.save(prefix + "/add", $('#form-version-add').serialize());
 			}
 		});
+		
+		$('#fileUploadContent').initUpload({
+	      	'uploadUrl'       : ctx + 'business/version/uploadSave',//上传文件信息地址
+	      	//'progressUrl'     : '#',//获取进度信息地址，可选，注意需要返回的data格式如下（{bytesRead: 102516060, contentLength: 102516060, items: 1, percent: 100, startTime: 1489223136317, useTime: 2767}）
+	      	//'selfUploadBtId'  : 'selfUploadBt',//自定义文件上传按钮id
+	      	'isHiddenUploadBt': false,//是否隐藏上传按钮
+	      	'isHiddenCleanBt' : false,//是否隐藏清除按钮
+	      	'isAutoClean'     : false,//是否上传完成后自动清除
+	      	//'velocity'        : 10,//模拟进度上传数据
+	      	//"showSummerProgress":false,//总进度条，默认限制
+	      	//"scheduleStandard":true,//模拟进度的方式，设置为true是按总进度，用于控制上传时间，如果设置为false,按照文件数据的总量,默认为false
+	      	"size":30720,//文件大小限制，单位kb,默认不限制
+	      	"maxFileNumber":1,//文件个数限制，为整数
+	      	//"filelSavePath":"",//文件上传地址，后台设置的根目录
+	      	"beforeUpload":beforeUploadFun,//在上传前执行的函数
+	      	"onUpload":onUploadFun,//在上传后执行的函数
+	      	// autoCommit:true,//文件是否自动上传
+	      	"fileType":['apk'],//文件类型限制，默认不限制，注意写的是文件后缀
+	    });
+
+	    function beforeUploadFun (opt) {
+	    	opt.otherData = [
+	        	{'name' : 'sysVerCode','value': $("#sysVerCode").val()},
+	        	{'name' : 'subject','value': $("#subject option:selected").text()},
+	        	{'name' : 'oldArtifactCode','value': $("#oldArtifactCode").val()},
+	        	{'name' : 'sysVerSubject','value': $("#sysVerSubject").val()},
+	        	{'name' : 'sysVerInfo','value': $("#sysVerInfo").val()}
+	        	];
+	    }
+
+	    function onUploadFun (opt, data) {
+	      	//alert(data);
+	      	//uploadTools.uploadError(opt); //显示上传错误
+	     	$(".subberProgress").css("display","none");
+	    	alert(data.msg);
+	        $.modal.close();
+	        //刷新管理页面
+	        $.modal.reload();
+	    }
+
+	    function submitUpload () {
+	    	$.modal.confirm("确定上传？", function() {
+	    		$("#submit").attr('disabled',true);
+		    	var opt = uploadTools.getOpt('fileUploadContent');
+			    uploadEvent.uploadFileEvent(opt);
+			});
+	    }
+
+	    function showUpError () {
+	      var opt = uploadTools.getOpt('fileUploadContent');
+	      uploadTools.uploadError(opt); //显示上传错误
+	    }
+
+	    //显示文件，设置删除事件
+	    // uploadTools.showFileResult('fileUploadContent', 'https://ps.ssl.qhmsg.com/t01e39e571b0b9b9867.jpg', '1', true, deleteFileByMySelf);
+
+	    //如果不需要删除
+	    // uploadTools.showFileResult('fileUploadContent', 'https://ps.ssl.qhmsg.com/t01e39e571b0b9b9867.jpg', '1', false);
+
+	    //多文件需要自己进行循环
+	    function deleteFileByMySelf (fileId) {
+	      alert('删除文件提醒：' + fileId);
+	    }
 	</script>
 </body>
 </html>

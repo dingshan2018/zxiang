@@ -4,6 +4,31 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
+    	<div class="col-sm-12 select-info">
+      <form id="terminal-form">
+        <div class="select-list">
+          <ul>
+            <li>
+              <span class="select-item-name">版本号：</span>
+              <input type="text" name="sysVerCode" id="sysVerCode"/>
+            </li>
+            <li class="select-time">
+              <label class="select-item-name">投放时间： </label>
+              <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+              <span>-</span>
+              <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+            </li>
+            <li class="select-btns">
+              <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
+              </a>
+              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
+              </a>
+            </li>
+          </ul>
+        </div>
+      </form>
+    </div>
+    	
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:version:add">
 				<i class="fa fa-plus"></i> 新增
@@ -30,6 +55,8 @@
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "版本",
+                search    : false,
+                showExport: false,
                 columns: [{
 		            checkbox: true
 		        },
@@ -51,7 +78,20 @@
 				},
 				{
 					field : 'sysVerInfo', 
-					title : '版本更新信息' 
+					title : '更新信息' 
+				},
+				{
+					field : 'subject', 
+					title : '升级类型' ,
+					formatter: function (value) {
+		              if (value === '2000') {
+		                return '可选升级';
+		              } else if (value === '1000') {
+		            	return '强制升级';
+		              } else {
+		                return '-';
+		              }
+		            }
 				},
 				{
 					field : 'effDate', 
@@ -60,10 +100,6 @@
 				{
 					field : 'expDate', 
 					title : '失效时间' 
-				},
-				{
-					field : 'subject', 
-					title : '升级类型，1000：强制升级；2000：可选升级' 
 				},
 				{
 					field : 'createBy', 
@@ -86,13 +122,18 @@
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	var actions = [];
-		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.sysVerId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+		            	//actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.sysVerId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.sysVerId + '\')"><i class="fa fa-remove"></i>删除</a>');
 						return actions.join('');
 		            }
 		        }]
             };
             $.table.init(options);
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'sysVerId');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'systemCode');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'remark');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'delFlag');
+            
         });
     </script>
 </body>

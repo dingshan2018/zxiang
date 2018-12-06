@@ -2,6 +2,10 @@ package com.zxiang.project.business.version.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.zxiang.project.business.version.domain.Version;
 
 /**
@@ -51,5 +55,14 @@ public interface IVersionService
      * @return 结果
      */
 	public int deleteVersionByIds(String ids);
+
+	/**
+	 * 更新包上传保存
+	 * @param request
+	 * @param files
+	 * @param operatorUser
+	 * @return
+	 */
+	public int uploadSave(HttpServletRequest request, List<MultipartFile> files, String operatorUser);
 	
 }
