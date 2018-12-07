@@ -36,7 +36,7 @@ public class Version extends BaseEntity
 	/** 文件名称 */
 	private String fileName;
 	/** 更新包大小 */
-	private Float filesize;
+	private double filesize;
 	/** 启用时间 */
 	private Date effDate;
 	/** 失效时间 */
@@ -140,15 +140,15 @@ public class Version extends BaseEntity
 	{
 		return fileName;
 	}
-	public void setFilesize(Float filesize) 
-	{
+
+	public double getFilesize() {
+		return filesize;
+	}
+
+	public void setFilesize(double filesize) {
 		this.filesize = filesize;
 	}
 
-	public Float getFilesize() 
-	{
-		return filesize;
-	}
 	public void setEffDate(Date effDate) 
 	{
 		this.effDate = effDate;

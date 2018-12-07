@@ -1,5 +1,8 @@
 package com.zxiang.project.business.version.service;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,12 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
-import com.zxiang.project.advertise.utils.AdHttpResult;
-import com.zxiang.project.advertise.utils.Tools;
-import com.zxiang.project.advertise.utils.constant.AdConstant;
 import com.zxiang.project.business.version.domain.Version;
 import com.zxiang.project.business.version.mapper.VersionMapper;
 
@@ -98,16 +97,36 @@ public class VersionServiceImpl implements IVersionService
 	public int uploadSave(HttpServletRequest request, List<MultipartFile> files, String operatorUser) {
 		int saveNum = 0;
 		try {
-			String sysVerCode = request.getParameter("sysVerCode");
+			String sysVerCode = request.getParameter("sysVerCode").trim();
 			String subject = request.getParameter("subject");
-			String oldArtifactCode = request.getParameter("oldArtifactCode");
+			String oldVersionCode = request.getParameter("oldVersionCode").trim();
 			String sysVerSubject = request.getParameter("sysVerSubject");
 			String sysVerInfo = request.getParameter("sysVerInfo");
 			
 			//1.上传素材文件
 			if (!files.isEmpty()) {
 		    	//TODO 调用上传文件的接口
-		    	String result = null;
+				MultipartFile file = files.get(0);
+				String fileName = file.getOriginalFilename();
+		        long fileSize = file.getSize();
+		        String md5Check = getMd5(file);
+		        
+				Version version = new Version();
+				version.setSysVerCode(sysVerCode);
+				version.setSubject(subject);
+				version.setOldVersionCode(oldVersionCode);
+				version.setSysVerSubject(sysVerSubject);
+				version.setSysVerInfo(sysVerInfo);
+				version.setFileName(fileName);
+				version.setFilesize(fileSize);
+				version.setMd5Check(md5Check);
+				
+				version.setCreateBy(operatorUser);
+				version.setCreateDate(new Date());
+				version.setDelFlag("0");
+				
+				saveNum = insertVersion(version);
+		    	/*String result = null;
 		    	//返回结果封装
 				AdHttpResult adHttp = Tools.analysisResult(result);
 				if(AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())){
@@ -118,7 +137,7 @@ public class VersionServiceImpl implements IVersionService
 				}else{
 					logger.error("调用上传文件接口失败!" + adHttp.toString());
 					throw new RRException("调用上传文件接口失败!");
-				} 
+				} */
 		    } else {
 		        logger.error("文件不能为空!");
 		        throw new RRException("文件不能为空!");
@@ -130,6 +149,35 @@ public class VersionServiceImpl implements IVersionService
 			throw e;
 		}
 	
+	}
+	
+	/** 
+     * 获取上传文件的md5 
+     */  
+	public String getMd5(MultipartFile file) {  
+        try {  
+            byte[] uploadBytes = file.getBytes();  
+            MessageDigest md5 = MessageDigest.getInstance("MD5");  
+            byte[] digest = md5.digest(uploadBytes);  
+            String hashString = new BigInteger(1, digest).toString(16);  
+            return hashString;  
+        } catch (Exception e) {  
+            e.printStackTrace();
+        }  
+        return null;  
+    }
+
+	/**
+	 * 校验版本编号唯一
+	 */
+	@Override
+	public String checkCodeUnique(String sysVerCode) {
+		int count = versionMapper.checkCodeUnique(sysVerCode);
+        if (count > 0)
+        {
+            return "1";
+        }
+        return "0";
 	}
 	
 }

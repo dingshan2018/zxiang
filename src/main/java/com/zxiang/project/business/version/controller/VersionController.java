@@ -135,4 +135,15 @@ public class VersionController extends BaseController
 			return error();
 		}
     }
+	
+	/**
+     * 校验版本编号唯一
+     */
+    @PostMapping("/checkCodeUnique")
+    @ResponseBody
+    public String checkCodeUnique(Version version)
+    {
+    	System.out.println("version:"+version.getSysVerCode());
+        return versionService.checkCodeUnique(version.getSysVerCode());
+    }
 }

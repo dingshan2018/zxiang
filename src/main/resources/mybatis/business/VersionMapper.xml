@@ -33,7 +33,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="sysVerId != null and sysVerId != ''"> and sys_ver_id = #{sysVerId}</if>
              <if test="systemCode != null and systemCode != ''"> and system_code = #{systemCode}</if>
-             <if test="sysVerCode != null and sysVerCode != ''"> and sys_ver_code = #{sysVerCode}</if>
+             <if test="sysVerCode != null and sysVerCode != ''"> 
+				sys_ver_code like concat('%', #{sysVerCode}, '%')</if>
              <if test="sysVerSubject != null and sysVerSubject != ''"> and sys_ver_subject = #{sysVerSubject}</if>
              <if test="sysVerInfo != null and sysVerInfo != ''"> and sys_ver_info = #{sysVerInfo}</if>
              <if test="subject != null and subject != ''"> and subject = #{subject}</if>
@@ -42,10 +43,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="oldVersionCode != null and oldVersionCode != ''"> and old_version_code = #{oldVersionCode}</if>
              <if test="fileName != null and fileName != ''"> and file_name = #{fileName}</if>
              <if test="filesize != null and filesize != ''"> and filesize = #{filesize}</if>
-             <if test="effDate != null and effDate != ''"> and eff_date = #{effDate}</if>
-             <if test="expDate != null and expDate != ''"> and exp_date = #{expDate}</if>
+             <if test="effDate != null "> and eff_date = #{effDate}</if>
+             <if test="expDate != null "> and exp_date = #{expDate}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createDate != null and createDate != ''"> and create_date = #{createDate}</if>
+             <if test="createDate != null "> and create_date = #{createDate}</if>
+             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				 AND date_format(create_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			 </if>
+			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				 AND date_format(create_date,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+			 </if>
              <if test="remark != null and remark != ''"> and remark = #{remark}</if>
              <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
          </where>
@@ -70,10 +77,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="oldVersionCode != null and oldVersionCode != '' ">old_version_code,</if>
 			<if test="fileName != null and fileName != '' ">file_name,</if>
 			<if test="filesize != null and filesize != '' ">filesize,</if>
-			<if test="effDate != null and effDate != '' ">eff_date,</if>
-			<if test="expDate != null and expDate != '' ">exp_date,</if>
+			<if test="effDate != null  ">eff_date,</if>
+			<if test="expDate != null  ">exp_date,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
-			<if test="createDate != null and createDate != '' ">create_date,</if>
+			<if test="createDate != null  ">create_date,</if>
 			<if test="remark != null and remark != '' ">remark,</if>
 			<if test="delFlag != null and delFlag != '' ">del_flag,</if>
          </trim>
@@ -89,10 +96,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="oldVersionCode != null and oldVersionCode != ''">#{oldVersionCode},</if>
 			<if test="fileName != null and fileName != ''">#{fileName},</if>
 			<if test="filesize != null and filesize != ''">#{filesize},</if>
-			<if test="effDate != null and effDate != ''">#{effDate},</if>
-			<if test="expDate != null and expDate != ''">#{expDate},</if>
+			<if test="effDate != null ">#{effDate},</if>
+			<if test="expDate != null ">#{expDate},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
-			<if test="createDate != null and createDate != ''">#{createDate},</if>
+			<if test="createDate != null ">#{createDate},</if>
 			<if test="remark != null and remark != ''">#{remark},</if>
 			<if test="delFlag != null and delFlag != ''">#{delFlag},</if>
          </trim>
@@ -131,5 +138,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{sysVerId}
         </foreach>
     </delete>
+    
+    <!-- 校验版本编号唯一 -->
+     <select id="checkCodeUnique" parameterType="String" resultType="int">
+		SELECT COUNT(1) FROM `sys_version` WHERE BINARY sys_ver_code=#{sysVerCode}
+	</select>
     
 </mapper>

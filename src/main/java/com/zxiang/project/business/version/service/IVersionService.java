@@ -64,5 +64,7 @@ public interface IVersionService
 	 * @return
 	 */
 	public int uploadSave(HttpServletRequest request, List<MultipartFile> files, String operatorUser);
+
+	public String checkCodeUnique(String sysVerCode);
 	
 }

@@ -65,20 +65,12 @@
 					title : '版本ID' 
 				},
 				{
-					field : 'systemCode', 
-					title : '系统编码' 
-				},
-				{
 					field : 'sysVerCode', 
 					title : '版本号' 
 				},
 				{
-					field : 'sysVerSubject', 
-					title : '版本主题' 
-				},
-				{
-					field : 'sysVerInfo', 
-					title : '更新信息' 
+					field : 'systemCode', 
+					title : '系统编码' 
 				},
 				{
 					field : 'subject', 
@@ -94,6 +86,10 @@
 		            }
 				},
 				{
+					field : 'fileName', 
+					title : '文件名称' 
+				},
+				{
 					field : 'downloadPath', 
 					title : '下载路径' 
 				},
@@ -102,12 +98,16 @@
 					title : '文件验证码' 
 				},
 				{
-					field : 'oldVersionCode', 
-					title : '旧版本号' 
+					field : 'sysVerSubject', 
+					title : '版本主题' 
 				},
 				{
-					field : 'fileName', 
-					title : '文件名称' 
+					field : 'sysVerInfo', 
+					title : '更新信息' 
+				},
+				{
+					field : 'oldVersionCode', 
+					title : '旧版本号' 
 				},
 				{
 					field : 'filesize', 
@@ -150,10 +150,12 @@
             };
             $.table.init(options);
             $('#bootstrap-table').bootstrapTable('hideColumn', 'sysVerId');
-            $('#bootstrap-table').bootstrapTable('hideColumn', 'systemCode');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'filesize');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'effDate');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'expDate');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'createBy');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'remark');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'delFlag');
-            $('#bootstrap-table').bootstrapTable('hideColumn', 'filesize');
             
         });
     </script>

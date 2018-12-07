@@ -59,5 +59,12 @@ public interface VersionMapper
      * @return 结果
      */
 	public int deleteVersionByIds(String[] sysVerIds);
+
+	/**
+	 * 校验版本编号唯一
+	 * @param sysVerCode
+	 * @return
+	 */
+	public int checkCodeUnique(String sysVerCode);
 	
 }

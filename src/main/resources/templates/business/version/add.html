@@ -24,7 +24,7 @@
 			<div class="form-group">	
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>旧版本号：</label>
 				<div class="col-sm-8">
-					<input id="oldArtifactCode" name="oldArtifactCode" class="form-control" type="text">
+					<input id="oldVersionCode" name="oldVersionCode" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
@@ -67,7 +67,13 @@
 			<div id="fileUploadContent" class="fileUploadContent"></div>
 			<span style="color: red;">*&nbsp;上传的apk文件最大30M</span>
 		  	<br><br>
-		  	<button onclick="submitUpload()" id="submit" class="btn btn-primary">上传</button>
+		  	<!-- <button onclick="submitUpload()" id="submit" class="btn btn-primary">上传</button> -->
+		  	<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
 		</form>
 	</div>
     <div th:include="include::footer"></div>
@@ -80,21 +86,35 @@
 			rules:{
 				sysVerCode:{
 					required:true,
+					remote: {
+                        url: prefix + "/checkCodeUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                        	name : function() {
+                                return $.common.trim($("#sysVerCode").val());
+                            }
+                        },
+                        dataFilter: function(data, type) {
+                        	return $.validate.unique(data);
+                        }
+                    }
 				},
 				subject:{
 					required:true,
 				},
-				oldArtifactCode:{
+				oldVersionCode:{
 					required:true,
 				},
 			},
 			messages     : {
-			      'fileUpload': {
-			        	required: '请选择上传文件'
-			      }
+				"sysVerCode": {
+                    remote: "该版本号已存在!"
+                }
 			},
 			submitHandler: function(form) {
 				//$.operate.save(prefix + "/add", $('#form-version-add').serialize());
+				submitUpload();
 			}
 		});
 		
@@ -120,8 +140,8 @@
 	    function beforeUploadFun (opt) {
 	    	opt.otherData = [
 	        	{'name' : 'sysVerCode','value': $("#sysVerCode").val()},
-	        	{'name' : 'subject','value': $("#subject option:selected").text()},
-	        	{'name' : 'oldArtifactCode','value': $("#oldArtifactCode").val()},
+	        	{'name' : 'subject','value': $("#subject option:selected").val()},
+	        	{'name' : 'oldVersionCode','value': $("#oldVersionCode").val()},
 	        	{'name' : 'sysVerSubject','value': $("#sysVerSubject").val()},
 	        	{'name' : 'sysVerInfo','value': $("#sysVerInfo").val()}
 	        	];
@@ -146,8 +166,8 @@
 	    }
 
 	    function showUpError () {
-	      var opt = uploadTools.getOpt('fileUploadContent');
-	      uploadTools.uploadError(opt); //显示上传错误
+	      	var opt = uploadTools.getOpt('fileUploadContent');
+	      	uploadTools.uploadError(opt); //显示上传错误
 	    }
 
 	    //显示文件，设置删除事件
@@ -158,8 +178,32 @@
 
 	    //多文件需要自己进行循环
 	    function deleteFileByMySelf (fileId) {
-	      alert('删除文件提醒：' + fileId);
+	      	alert('删除文件提醒：' + fileId);
 	    }
+	    
+	    //检验版本号
+	    /* function checkCode () {
+	    	var sysVerCode = $("#sysVerCode").val();
+	    	$.ajax({
+	        	type: "post",
+	        	contentType:"application/json",
+	            dataType: "json",
+	            url: ctx + "business/version/checkCodeUnique",
+	            data: {
+                	name : function() {
+                        return $.common.trim(sysVerCode);
+                    }
+                },
+	            async: false,
+	            success: function (data) {
+	            	if(data > 0){
+	            		$.modal.alertWarning("版本号 "+sysVerCode+" 已存在!");
+	            		$("#sysVerCode").val("");
+	            	}
+	            },
+	            error: function () { alert("版本号校验失败"); }
+	        });
+	    } */
 	</script>
 </body>
 </html>
