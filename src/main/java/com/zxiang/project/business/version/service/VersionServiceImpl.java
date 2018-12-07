@@ -1,5 +1,6 @@
 package com.zxiang.project.business.version.service;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.Date;
@@ -13,8 +14,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.file.FileUploadUtils;
+import com.zxiang.project.business.server.service.IServerService;
+import com.zxiang.project.business.terminal.domain.Terminal;
+import com.zxiang.project.business.terminal.mapper.TerminalMapper;
+import com.zxiang.project.business.version.domain.TerminalVersion;
 import com.zxiang.project.business.version.domain.Version;
 import com.zxiang.project.business.version.mapper.VersionMapper;
 
@@ -31,6 +38,10 @@ public class VersionServiceImpl implements IVersionService
 			
 	@Autowired
 	private VersionMapper versionMapper;
+	@Autowired
+	private TerminalMapper terminalMapper;
+	@Autowired 
+	private IServerService serverService;
 
 	/**
      * 查询版本信息
@@ -94,7 +105,7 @@ public class VersionServiceImpl implements IVersionService
 
 	@Override
 	@Transactional
-	public int uploadSave(HttpServletRequest request, List<MultipartFile> files, String operatorUser) {
+	public int uploadSave(HttpServletRequest request, List<MultipartFile> files, String operatorUser) throws Exception {
 		int saveNum = 0;
 		try {
 			String sysVerCode = request.getParameter("sysVerCode").trim();
@@ -105,7 +116,7 @@ public class VersionServiceImpl implements IVersionService
 			
 			//1.上传素材文件
 			if (!files.isEmpty()) {
-		    	//TODO 调用上传文件的接口
+		    	//调用上传文件的接口
 				MultipartFile file = files.get(0);
 				String fileName = file.getOriginalFilename();
 		        long fileSize = file.getSize();
@@ -124,6 +135,11 @@ public class VersionServiceImpl implements IVersionService
 				version.setCreateBy(operatorUser);
 				version.setCreateDate(new Date());
 				version.setDelFlag("0");
+				
+				
+				//TODO 先用本地文件保存方式，FTP接口提供以后提供FTP保存
+				String downloadPath = FileUploadUtils.upload(FileUploadUtils.getDefaultBaseDir(), file, fileName.substring(fileName.lastIndexOf(".")));
+				version.setDownloadPath(downloadPath);
 				
 				saveNum = insertVersion(version);
 		    	/*String result = null;
@@ -145,7 +161,7 @@ public class VersionServiceImpl implements IVersionService
 			return saveNum;
 			
 		} catch (Exception e) {
-			logger.error("materialUpload error: " + e);
+			logger.error("error: " + e);
 			throw e;
 		}
 	
@@ -178,6 +194,52 @@ public class VersionServiceImpl implements IVersionService
             return "1";
         }
         return "0";
+	}
+
+	@Override
+	public int versionIssued(String sysVerId, String terminals) throws NumberFormatException, IOException {
+		int sendNum = 0;
+		Version version = selectVersionById(Integer.parseInt(sysVerId));
+		if(version != null ){
+			String[] terminalArray = Convert.toStrArray(terminals);
+			if(terminalArray.length > 0){
+				for (String terminalId : terminalArray) {
+					sendNum += callSendMethod(Integer.parseInt(terminalId), version.getSysVerCode(), version.getDownloadPath());
+				}
+			}
+		}
+		
+		return sendNum;
+	}
+	
+	/**
+	 * 下发版本升级命令封装方法
+	 * @param terminalId
+	 * @param version
+	 * @param downloadUrl
+	 * @return
+	 * @throws IOException
+	 */
+	public int callSendMethod(Integer terminalId,String sysVerCode,String downloadUrl) throws IOException{
+		int issuedNum = 0;
+		//下发命令操作
+		Terminal terminal = terminalMapper.selectTerminalById(terminalId);
+		if(terminal != null){
+			TerminalVersion terminalVersion = new TerminalVersion();
+			terminalVersion.setTermCode(terminal.getTerminalCode());
+			terminalVersion.setVersion(sysVerCode);
+			terminalVersion.setDownloadUrl(downloadUrl);
+			
+			JSONObject reqJson = new JSONObject();
+			reqJson.put("termCode",terminal.getTerminalCode());
+			reqJson.put("terminalVersion",terminalVersion);
+			reqJson.put("command","22");//参数下发命令0x16,转十进制为22
+			
+			serverService.issuedCommand(terminal,reqJson);
+			issuedNum++;
+		}
+		
+		return issuedNum;
 	}
 	
 }

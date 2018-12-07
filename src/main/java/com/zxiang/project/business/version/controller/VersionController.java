@@ -22,6 +22,8 @@ import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
+import com.zxiang.project.business.terminal.domain.Terminal;
+import com.zxiang.project.business.terminal.mapper.TerminalMapper;
 import com.zxiang.project.business.version.domain.Version;
 import com.zxiang.project.business.version.service.IVersionService;
 
@@ -39,6 +41,9 @@ public class VersionController extends BaseController
 	
 	@Autowired
 	private IVersionService versionService;
+	@Autowired
+	private TerminalMapper terminalMapper;
+	
 	
 	@RequiresPermissions("business:version:view")
 	@GetMapping()
@@ -143,7 +148,38 @@ public class VersionController extends BaseController
     @ResponseBody
     public String checkCodeUnique(Version version)
     {
-    	System.out.println("version:"+version.getSysVerCode());
         return versionService.checkCodeUnique(version.getSysVerCode());
     }
+    
+    
+    /**
+	 * 下发升级命令弹窗
+	 */
+	@GetMapping("/versionIssued/{sysVerId}")
+	public String versionIssued(@PathVariable("sysVerId") Integer sysVerId, ModelMap mmap)
+	{
+		Version version = versionService.selectVersionById(sysVerId);
+		mmap.put("version", version);
+		mmap.put("terminalList", terminalMapper.selectTerminalList(new Terminal()));
+		
+	    return prefix + "/versionIssued";
+	}
+	
+    /**
+	 * 下发升级命令保存
+	 */
+	@Log(title = "下发升级命令", businessType = BusinessType.UPDATE)
+	@PostMapping("/versionIssued")
+	@ResponseBody
+	public AjaxResult versionIssued(String sysVerId,String terminals)
+	{
+		try {
+			versionService.versionIssued(sysVerId,terminals);
+			return success("已下发!");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error("下发失败!");
+		}
+	}
 }

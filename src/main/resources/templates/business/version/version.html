@@ -91,11 +91,13 @@
 				},
 				{
 					field : 'downloadPath', 
-					title : '下载路径' 
+					title : '下载路径',
+					width :100
 				},
 				{
 					field : 'md5Check', 
-					title : '文件验证码' 
+					title : '文件验证码',
+					width :100
 				},
 				{
 					field : 'sysVerSubject', 
@@ -103,7 +105,8 @@
 				},
 				{
 					field : 'sysVerInfo', 
-					title : '更新信息' 
+					title : '更新信息' ,
+					width :200
 				},
 				{
 					field : 'oldVersionCode', 
@@ -143,13 +146,15 @@
 		            formatter: function(value, row, index) {
 		            	var actions = [];
 		            	//actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.sysVerId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.sysVerId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        actions.push('<a class="btn btn-success btn-xs ' + removeFlag + '" href="#" onclick="versionIssuedModal(\'' + row.sysVerId + '\')"><i class="fa fa-edit"></i>版本下发</a> ');
+		            	actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.sysVerId + '\')"><i class="fa fa-remove"></i>删除</a>');
 						return actions.join('');
 		            }
 		        }]
             };
             $.table.init(options);
             $('#bootstrap-table').bootstrapTable('hideColumn', 'sysVerId');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'systemCode');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'filesize');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'effDate');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'expDate');
@@ -158,6 +163,34 @@
             $('#bootstrap-table').bootstrapTable('hideColumn', 'delFlag');
             
         });
+        
+        //下发版本升级命令弹窗
+    	function versionIssuedModal(sysVerId) {
+    		var url = prefix + "/versionIssued/" + sysVerId;
+    		$.modal.open("版本升级下发", url);
+      	}
+    	
+      	//下发版本升级函数
+        function versionIssued(sysVerId) {
+	   		$.modal.confirm("确定下发升级命令?", function() {
+	        	$.ajax({
+	        		cache : true,
+	        		type : "POST",
+	        		url : prefix + "/versionIssued",
+	        		data : {
+	        			"sysVerId": sysVerId
+	        		},
+	        		async : false,
+	        		error : function(request) {
+	        			$.modal.alertError("系统错误");
+	        		},
+	        		success : function(data) {
+	        			$.modal.alert(data.msg);
+	        		}
+	        	});
+	        	
+	    	});
+  		}
     </script>
 </body>
 </html>

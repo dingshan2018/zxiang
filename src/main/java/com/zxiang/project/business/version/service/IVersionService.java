@@ -1,5 +1,6 @@
 package com.zxiang.project.business.version.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,9 +63,19 @@ public interface IVersionService
 	 * @param files
 	 * @param operatorUser
 	 * @return
+	 * @throws Exception 
 	 */
-	public int uploadSave(HttpServletRequest request, List<MultipartFile> files, String operatorUser);
+	public int uploadSave(HttpServletRequest request, List<MultipartFile> files, String operatorUser) throws Exception;
 
 	public String checkCodeUnique(String sysVerCode);
+
+	/**
+	 * 
+	 * @param sysVerId
+	 * @param terminals 
+	 * @throws IOException 
+	 * @throws NumberFormatException 
+	 */
+	public int versionIssued(String sysVerId, String terminals) throws NumberFormatException, IOException;
 	
 }
