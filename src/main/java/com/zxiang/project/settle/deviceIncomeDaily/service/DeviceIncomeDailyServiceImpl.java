@@ -16,6 +16,7 @@ import com.alibaba.druid.util.StringUtils;
 import com.zxiang.common.constant.RateConstants;
 import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.support.Convert;
+import com.zxiang.project.client.fundLog.service.IFundLogService;
 import com.zxiang.project.settle.deviceIncomeDaily.domain.DeviceIncomeDaily;
 import com.zxiang.project.settle.deviceIncomeDaily.mapper.DeviceIncomeDailyMapper;
 import com.zxiang.project.settle.userExtension.domain.UserExtension;
@@ -39,7 +40,9 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	private IUserIncomeService iUserIncomeService;
 	@Autowired
 	private IUserExtensionService userExtensionService;
-    
+	@Autowired
+	private IFundLogService iFundLogService;
+	
 	/**
      * 查询设备收入日统计信息
      * 
@@ -161,9 +164,10 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		
 		List<HashMap<String, Object>> UsertotalIncomelist = iUserIncomeService.selectUsertotalIncome();
 		for(HashMap<String, Object> UsertotalIncome : UsertotalIncomelist) {
-			BigDecimal num = new BigDecimal(UsertotalIncome.get("totalIncome")+"");
+			BigDecimal totalIncome = new BigDecimal(UsertotalIncome.get("totalIncome")+"");
 			String puserId = UsertotalIncome.get("puserId")+"";
 			String puserType = UsertotalIncome.get("puserType")+"";
+			iFundLogService.incomeRecord(Integer.valueOf(puserId), puserType, totalIncome);
 		}
 		 
 	}
