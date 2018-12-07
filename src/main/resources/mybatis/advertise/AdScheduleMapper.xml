@@ -122,6 +122,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="payStatus != null and payStatus != ''"> and zas.pay_status = #{payStatus}</if>
              <if test="qrUrl != null and qrUrl != ''"> and zas.qr_url = #{qrUrl}</if>
          </where>
+         order by zas.ad_schedule_id desc
     </select>
     
     <select id="selectAdScheduleById" parameterType="Integer" resultMap="AdScheduleResult">

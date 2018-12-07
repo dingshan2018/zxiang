@@ -268,7 +268,7 @@
                     actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.adScheduleId + '\')"><i class="fa fa-remove"></i>删除</a>'); */
                     actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="preview(\'' + row.adScheduleId +
                     	'\')"><i class="fa fa-search"></i>素材预览</a> ');
-                    actions.push('<a class="btn btn-warning btn-xs" onclick="adPay(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>支付</a> ');
+                    actions.push('<a class="btn btn-warning btn-xs" onclick="adPayByAccount(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>支付</a> ');
                     actions.push(
                         	'<a class="btn btn-info btn-xs" href="#" onclick="adDetail(\'' + row.adScheduleId +
                         	'\')"><i class="fa fa-edit"></i>详情</a> ');
@@ -331,7 +331,7 @@
 	    			var url = http + sxScheduleId;
 	    			window.open(url);
 	    		}else{
-	    			$.modal.alertWarning("暂无广告素材!");
+	    			$.modal.alertWarning("暂未生成排期广告!");
 	    		}
 	        },
 	        error: function (data) {
@@ -663,7 +663,49 @@
     	var url = ctx + "advertise/adSchedule/adPay/" + adScheduleId;
         $.modal.open("广告支付二维码", url, 400, 400);
     }
+	
+  	//从钱包直接扣款
+    function adPayByAccount(adScheduleId) {
+    	var adSchedule = getAdScheduleInfo(adScheduleId);
+    	if(adSchedule.releasePosition == type_terminal){
+        	if (adSchedule.payStatus == hasPay) {
+       	        $.modal.alertWarning('该广告费用已支付,请勿重复支付!');
+       	        return;
+          	}
+        	if (adSchedule.status != toBeReleased) {
+       	        $.modal.alertWarning('广告审核通过后才能支付!');
+       	        return;
+          	}
+    		if(adSchedule.totalPay == '' || adSchedule.totalPay == null){
+        		$.modal.alertWarning("暂无支付信息!");
+        		return;
+        	}
+    	}else{
+    		$.modal.alertWarning("页面H5广告不需要支付!");
+    		return;
+    	}
+    	
+   		$.modal.confirm("确定支付 '" + adSchedule.scheduleName + "' 广告费用吗？", function() {
+        	$.ajax({
+        		cache : true,
+        		type : "POST",
+        		url : prefix + "/adPayByAccount",
+        		data : {
+        			"adScheduleId": adScheduleId,
+        		},
+        		async : false,
+        		error : function(request) {
+        			$.modal.alertError("系统错误");
+        		},
+        		success : function(data) {
+        			$.modal.alertWarning(data.msg);
+        			$.table.search();
+        		}
+        	});
 
+    	});
+  	}
+    
   	//获取广告数据信息--公共方法
     function getAdScheduleInfo(adScheduleId) {
     	var adSchedule;
@@ -735,6 +777,7 @@
         });
         return userList;
     }
+   
 </script>
 </body>
 </html>

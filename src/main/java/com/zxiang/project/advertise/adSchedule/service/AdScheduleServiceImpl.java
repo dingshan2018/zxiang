@@ -3,6 +3,7 @@ package com.zxiang.project.advertise.adSchedule.service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,6 +57,7 @@ import com.zxiang.project.business.terminal.domain.Terminal;
 import com.zxiang.project.business.terminal.mapper.TerminalMapper;
 import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
+import com.zxiang.project.client.fundLog.service.IFundLogService;
 
 /**
  * 广告投放 服务层实现
@@ -90,6 +92,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	private ReleaseDeviceMapper releaseDeviceMapper;
 	@Autowired 
 	private AdvertiseMapper advertiseMapper;
+	@Autowired
+	private IFundLogService fundLogService;
 	
 	/**
      * 查询广告投放信息
@@ -922,5 +926,23 @@ public class AdScheduleServiceImpl implements IAdScheduleService
         //在获得的绝对差天数上加1天
         return days + 1;
     }
+
+    /**
+     * 广告支付--通过广告商账户余额支付
+     */
+	@Override
+	@Transactional
+	public int adPayByAccount(Integer adScheduleId, String operatorUser) {
+		logger.info("通过广告钱包支付费用,操作者:"+operatorUser+",adScheduleId:"+adScheduleId);
+
+		AdSchedule adSchedule = selectAdScheduleById(adScheduleId);
+		if(adSchedule != null){
+			fundLogService.adPublishFrozen(adSchedule.getAdvertiser(), new BigDecimal(Float.toString(adSchedule.getTotalPay())));
+			adSchedule.setPayStatus("1");
+			return updateAdSchedule(adSchedule);
+		}
+		//否则抛异常
+		throw new RRException("广告信息已失效");
+	}
 
 }

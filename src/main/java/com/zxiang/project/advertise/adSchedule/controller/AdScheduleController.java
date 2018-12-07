@@ -434,4 +434,22 @@ public class AdScheduleController extends BaseController
 		return getDataTable(list);
     }
 	
+	
+	/**
+	 * 广告支付--通过广告商账户余额支付
+	 */
+	@Log(title = "广告费用通过钱包支付", businessType = BusinessType.UPDATE)
+	@PostMapping("/adPayByAccount")
+	@ResponseBody
+	public AjaxResult adPayByAccount(Integer adScheduleId)
+	{
+		try {
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			adScheduleService.adPayByAccount(adScheduleId,operatorUser);
+			return success("支付成功!");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error(e.getMessage()+" ,操作失败!");
+		}
+	}
 }
