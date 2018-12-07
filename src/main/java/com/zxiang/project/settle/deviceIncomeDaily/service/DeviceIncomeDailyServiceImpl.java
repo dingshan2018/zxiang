@@ -1,5 +1,6 @@
 package com.zxiang.project.settle.deviceIncomeDaily.service;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -155,9 +156,16 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				addata(device,buyer_id,tissuenum);
 			}
 		}
-		
 		//需要推广代理人（查询前一天加入代理商）
 		promotionagent();
+		
+		List<HashMap<String, Object>> UsertotalIncomelist = iUserIncomeService.selectUsertotalIncome();
+		for(HashMap<String, Object> UsertotalIncome : UsertotalIncomelist) {
+			BigDecimal num = new BigDecimal(UsertotalIncome.get("totalIncome")+"");
+			String puserId = UsertotalIncome.get("puserId")+"";
+			String puserType = UsertotalIncome.get("puserType")+"";
+		}
+		 
 	}
 	
 	//计算每日设备推广费用

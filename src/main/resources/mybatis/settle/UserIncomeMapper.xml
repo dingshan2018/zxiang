@@ -498,6 +498,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     
+    <select id="selectUsertotalIncome" resultType="java.util.HashMap">
+        select coperator_name puserName,coperator_id puserId,coperator_type puserType, (ad_income_rate+promotion_income_rate+scan_income_rate) totalIncome from zx_user_income where
+              DATE_FORMAT(sum_date, '%Y-%m-%d') = DATE_FORMAT(
+			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
+			    '%Y-%m-%d'
+			  )
+    </select>
     
     
     

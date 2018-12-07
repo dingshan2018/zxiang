@@ -89,5 +89,6 @@ public interface IUserIncomeService
 	
     void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
+    List<HashMap<String, Object>> selectUsertotalIncome();
 	
 }

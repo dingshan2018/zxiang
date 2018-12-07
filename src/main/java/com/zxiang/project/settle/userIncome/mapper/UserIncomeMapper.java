@@ -98,4 +98,6 @@ public interface UserIncomeMapper
 	
 	List<?> queryExport(HashMap<String, String> map);
 	
+	List<HashMap<String, Object>> selectUsertotalIncome();
+	
 }
