@@ -125,7 +125,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update zx_advertise
         <trim prefix="SET" suffixOverrides=",">
             <if test="balance != null">balance = #{balance},</if>
-            <if test="frozenBalance != null  ">frozenBalance = #{frozenBalance},</if>
+            <if test="frozenBalance != null">frozen_balance = #{frozenBalance},</if>
             update_time = now()
         </trim>
         where advertise_id = #{advertiseId}

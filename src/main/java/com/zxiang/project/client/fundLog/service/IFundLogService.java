@@ -54,7 +54,12 @@ public interface IFundLogService
      * @return 结果
      */
 	public int deleteFundLogByIds(String ids);
-	
+	/**
+	 * 显示客户信息
+	 * @param clientId
+	 * @param clientType
+	 */
+	public void showClientInfo(Integer clientId,String clientType,ModelMap mmap);
 	/**
 	 * 收益统计记录
 	 * @param clientId  主体id
@@ -63,10 +68,11 @@ public interface IFundLogService
 	 */
 	public void incomeRecord(Integer clientId,String clientType,BigDecimal money);
 	/**
-	 * 显示客户信息
-	 * @param clientId
-	 * @param clientType
+	 * 广告发布冻结资金
+	 * @param advertiseId  主体id
+	 * @param money 金额
 	 */
-	public void showClientInfo(Integer clientId,String clientType,ModelMap mmap);
+	public void adPublishFrozen(Integer advertiseId,BigDecimal money);
+	
 	
 }

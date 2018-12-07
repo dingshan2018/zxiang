@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.zxiang.common.exception.RRException;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -57,9 +56,7 @@ public class FundLogController extends BaseController
 	@ResponseBody
 	public AjaxResult moneyHandle(@RequestParam Integer clientId,@RequestParam String clientType,@RequestParam BigDecimal money) {
 		// TODO
-		if(money.compareTo(new BigDecimal(10)) == -1) {
-			throw new RRException("提现失败");
-		}
+		fundLogService.adPublishFrozen(1, money);
 		return AjaxResult.success("提现成功");
 	}
 	
