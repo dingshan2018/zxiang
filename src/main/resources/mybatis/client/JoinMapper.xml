@@ -156,7 +156,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where join_id = #{joinId}
     </update>
-
+	<update id="updateBalance">
+        update zx_join
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="balance != null">balance = #{balance},</if>
+            <if test="frozenBalance != null  ">frozenBalance = #{frozenBalance},</if>
+            update_time = now()
+        </trim>
+        where join_id = #{joinId}
+    </update>
 	<delete id="deleteJoinById" parameterType="Integer">
         delete from zx_join where join_id = #{joinId}
     </delete>
