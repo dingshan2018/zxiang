@@ -155,7 +155,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where repair_id = #{repairId}
     </update>
-
+	<update id="updateBalance">
+        update zx_repair
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="balance != null">balance = #{balance},</if>
+            <if test="frozenBalance != null  ">frozenBalance = #{frozenBalance},</if>
+            update_time = now()
+        </trim>
+        where repair_id = #{repairId}
+    </update>
 	<delete id="deleteRepairById" parameterType="Integer">
         delete from zx_repair where repair_id = #{repairId}
     </delete>

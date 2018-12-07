@@ -1,7 +1,11 @@
 package com.zxiang.project.client.join.mapper;
 
-import com.zxiang.project.client.join.domain.Join;
-import java.util.List;	
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.zxiang.project.client.join.domain.Join;	
 
 /**
  * 加盟商 数据层
@@ -63,5 +67,13 @@ public interface JoinMapper
 	 * 查找加盟商下拉框数据
 	 */
 	public List<Join> selectDropBoxList();
+	/**
+	 * 更新余额
+	 * @param advertiseId
+	 * @param balance
+	 * @param frozenBalance
+	 * @return
+	 */
+	public int updateBalance(@Param("joinId")Integer joinId,@Param("balance")BigDecimal balance,@Param("frozenBalance")BigDecimal frozenBalance);
 	
 }

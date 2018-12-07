@@ -1,6 +1,9 @@
 package com.zxiang.project.client.fundLog.service;
 
+import java.math.BigDecimal;
 import java.util.List;
+
+import org.springframework.ui.ModelMap;
 
 import com.zxiang.project.client.fundLog.domain.FundLog;
 
@@ -51,5 +54,19 @@ public interface IFundLogService
      * @return 结果
      */
 	public int deleteFundLogByIds(String ids);
+	
+	/**
+	 * 收益统计记录
+	 * @param clientId  主体id
+	 * @param clientType 主体类型
+	 * @param money 金额
+	 */
+	public void incomeRecord(Integer clientId,String clientType,BigDecimal money);
+	/**
+	 * 显示客户信息
+	 * @param clientId
+	 * @param clientType
+	 */
+	public void showClientInfo(Integer clientId,String clientType,ModelMap mmap);
 	
 }

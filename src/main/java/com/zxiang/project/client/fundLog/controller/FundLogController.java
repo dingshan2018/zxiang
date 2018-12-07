@@ -1,5 +1,6 @@
 package com.zxiang.project.client.fundLog.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -10,8 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.common.exception.RRException;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -40,7 +43,24 @@ public class FundLogController extends BaseController
 	public String fundLog(@PathVariable Integer clientId,@PathVariable String clientType, ModelMap mmap) {
 		mmap.put("clientId", clientId);
     	mmap.put("clientType", clientType);
+    	fundLogService.showClientInfo(clientId, clientType, mmap);
 	    return prefix + "/fundLog";
+	}
+	@GetMapping("/getMoney/{clientType}/{clientId}") // 提现弹框
+	public String getMoney(@PathVariable Integer clientId,@PathVariable String clientType, ModelMap mmap) {
+		mmap.put("clientId", clientId);
+		mmap.put("clientType", clientType);
+		fundLogService.showClientInfo(clientId, clientType, mmap);
+		return prefix + "/moneyDialogs";
+	}
+	@PostMapping("/moneyHandle") // 提现处理中
+	@ResponseBody
+	public AjaxResult moneyHandle(@RequestParam Integer clientId,@RequestParam String clientType,@RequestParam BigDecimal money) {
+		// TODO
+		if(money.compareTo(new BigDecimal(10)) == -1) {
+			throw new RRException("提现失败");
+		}
+		return AjaxResult.success("提现成功");
 	}
 	
 	/**

@@ -206,7 +206,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where agent_id = #{agentId}
     </update>
-
+	<update id="updateBalance">
+        update zx_agent
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="balance != null">balance = #{balance},</if>
+            <if test="frozenBalance != null  ">frozenBalance = #{frozenBalance},</if>
+            update_time = now()
+        </trim>
+        where agent_id = #{agentId}
+    </update>
 	<delete id="deleteAgentById" parameterType="Integer">
         delete from zx_agent where agent_id = #{agentId}
     </delete>

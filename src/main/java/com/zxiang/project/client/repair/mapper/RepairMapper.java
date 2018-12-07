@@ -1,7 +1,11 @@
 package com.zxiang.project.client.repair.mapper;
 
-import com.zxiang.project.client.repair.domain.Repair;
-import java.util.List;	
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.zxiang.project.client.repair.domain.Repair;	
 
 /**
  * 服务商 数据层
@@ -63,5 +67,13 @@ public interface RepairMapper
 	 * 查找服务商下拉框数据
 	 */
 	public List<Repair> selectDropBoxList();
+	/**
+	 * 更新余额
+	 * @param advertiseId
+	 * @param balance
+	 * @param frozenBalance
+	 * @return
+	 */
+	public int updateBalance(@Param("repairId")Integer repairId,@Param("balance")BigDecimal balance,@Param("frozenBalance")BigDecimal frozenBalance);
 	
 }

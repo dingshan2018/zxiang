@@ -25,6 +25,9 @@
       </form>
     </div>
 	    <div class="btn-group hidden-xs" id="toolbar" role="group">
+	        客户名称：<label th:text="${clientName}"></label>	&nbsp;&nbsp;&nbsp; 
+	        账户余额：<label th:text="${balance}"></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	
+	        账户冻结金额：<label th:text="${frozenBalance}"></label>
 	    </div>
 		<div class="col-sm-12 select-table table-striped">
 			<table id="bootstrap-table" data-mobile-responsive="true"></table>
@@ -50,18 +53,20 @@
 		            checkbox: true
 		        },
 				{ field : 'payId', title : 'ID', visible: false  },
-				{ field : 'serial', title : '流水号' },
-				{ field : 'totalFee',  title : '金额'  },
-				{ field : 'balance', title : '余额' },
+				{ field : 'serial', title : '流水号', visible: false },
+				{ field : 'totalFee',  title : '流水金额'  },
+				{ field : 'balance', title : '账户余额' },
 				{ field : 'content',  title : '内容'  },
 				{ field : 'type',  title : '类型',formatter: function(value, row, index) {
 						if(value == "1") {return "充值"}
 						if(value == "2") {return "广告付费"}
 						if(value == "3") {return "提现"}
+						if(value == "4") {return "收益"}
 						return "-";
 		            } 
 				},
-				{ field : 'status',  title : '流水状态' ,formatter: function(value, row, index) {
+				{ field : 'status',  title : '状态' ,formatter: function(value, row, index) {
+						if(value == "0") {return "处理中"}
 						if(value == "1") {return "成功"}
 						if(value == "2") {return "失败"}
 						return "-";

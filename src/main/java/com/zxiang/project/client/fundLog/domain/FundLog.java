@@ -23,9 +23,9 @@ public class FundLog extends BaseEntity
 	/** 流水号 */
 	private String serial;
 	/** 金额 */
-	private Double totalFee;
+	private String totalFee;
 	/** 余额 */
-	private Double balance;
+	private String balance;
 	/** 内容 */
 	private String content;
 	/** 类型：1:充值,2:广告付费,3:提现 */
@@ -71,24 +71,22 @@ public class FundLog extends BaseEntity
 	{
 		return serial;
 	}
-	public void setTotalFee(Double totalFee) 
-	{
+	public String getTotalFee() {
+		return totalFee;
+	}
+
+	public void setTotalFee(String totalFee) {
 		this.totalFee = totalFee;
 	}
 
-	public Double getTotalFee() 
-	{
-		return totalFee;
+	public String getBalance() {
+		return balance;
 	}
-	public void setBalance(Double balance) 
-	{
+
+	public void setBalance(String balance) {
 		this.balance = balance;
 	}
 
-	public Double getBalance() 
-	{
-		return balance;
-	}
 	public void setContent(String content) 
 	{
 		this.content = content;

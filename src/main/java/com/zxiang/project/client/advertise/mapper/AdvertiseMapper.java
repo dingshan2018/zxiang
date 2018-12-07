@@ -1,6 +1,9 @@
 package com.zxiang.project.client.advertise.mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 
 import com.zxiang.project.client.advertise.domain.Advertise;	
 
@@ -67,5 +70,13 @@ public interface AdvertiseMapper
 	 * @return
 	 */
 	public List<Advertise> selectDropBoxList();
+	/**
+	 * 更新余额
+	 * @param advertiseId
+	 * @param balance
+	 * @param frozenBalance
+	 * @return
+	 */
+	public int updateBalance(@Param("advertiseId")Integer advertiseId,@Param("balance")BigDecimal balance,@Param("frozenBalance")BigDecimal frozenBalance);
 	
 }
