@@ -13,6 +13,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="sellIncome"    column="sell_income"    />
         <result property="adIncome"    column="ad_income"    />
         <result property="scanIncome"    column="scan_income"    />
+         <result property="scanIncomeRate"    column="scan_income_rate"    />
         <result property="sumDate"    column="sum_date"    />
         <result property="refundIncome"    column="refund_income"    />
         <result property="refundNum"    column="refund_num"    />
@@ -23,27 +24,51 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectDeviceIncomeDailyVo">
-        select income_id, device_id, terminal_id, place_id,( SELECT DISTINCT NAME FROM  zx_place b WHERE b.place_id = 25) place_name, sell_income, ad_income, scan_income, sum_date, refund_income, refund_num, create_by, create_time, update_by, update_time from zx_device_income_daily
+        select income_id, device_id, terminal_id, place_id,( SELECT DISTINCT NAME FROM  zx_place b WHERE b.place_id = place_id) place_name, sell_income, ad_income, scan_income, sum_date, refund_income, refund_num, create_by, create_time, update_by, update_time from zx_device_income_daily
+    </sql>
+    
+    <sql id="selectDeviceIncomeDailyVos">
+        SELECT 
+		  a.income_id,
+		  a.device_id,
+		  CAST(a.scan_income*IFNULL(t.`price`,p.tissue_price)  AS  DECIMAL(8,2)) scan_income_rate,
+		  a.terminal_id,
+		  a.place_id,
+		  p.name place_name,
+		  a.sell_income,
+		  a.ad_income,
+		  a.scan_income,
+		  a.sum_date,
+		  a.refund_income,
+		  a.refund_num,
+		  a.create_by,
+		  a.create_time,
+		  a.update_by,
+		  a.update_time 
+		FROM
+		  zx_device_income_daily a , zx_device t,zx_place p
     </sql>
 	
     <select id="selectDeviceIncomeDailyList" parameterType="DeviceIncomeDaily" resultMap="DeviceIncomeDailyResult">
-        <include refid="selectDeviceIncomeDailyVo"/>
+        <include refid="selectDeviceIncomeDailyVos"/>
         <where>  
-            ${filterSql}
-            <if test="incomeId != null and incomeId != ''"> and income_id = #{incomeId}</if>
-             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
-             <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
-             <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
-             <if test="sellIncome != null and sellIncome != ''"> and sell_income = #{sellIncome}</if>
-             <if test="adIncome != null and adIncome != ''"> and ad_income = #{adIncome}</if>
-             <if test="scanIncome != null and scanIncome != ''"> and scan_income = #{scanIncome}</if>
-             <if test="refundIncome != null and refundIncome != ''"> and refund_income = #{refundIncome}</if>
-             <if test="refundNum != null and refundNum != ''"> and refund_num = #{refundNum}</if>
+              ${filterSql}
+              AND a.`device_id`=t.`device_id`
+              AND a.`place_id` = p.`place_id`
+            <if test="incomeId != null and incomeId != ''"> and a.income_id = #{incomeId}</if>
+             <if test="deviceId != null and deviceId != ''"> and a.device_id = #{deviceId}</if>
+             <if test="terminalId != null and terminalId != ''"> and a.terminal_id = #{terminalId}</if>
+             <if test="placeId != null and placeId != ''"> and a.place_id = #{placeId}</if>
+             <if test="sellIncome != null and sellIncome != ''"> and a.sell_income = #{sellIncome}</if>
+             <if test="adIncome != null and adIncome != ''"> and a.ad_income = #{adIncome}</if>
+             <if test="scanIncome != null and scanIncome != ''"> and a.scan_income = #{scanIncome}</if>
+             <if test="refundIncome != null and refundIncome != ''"> and a.refund_income = #{refundIncome}</if>
+             <if test="refundNum != null and refundNum != ''"> and a.refund_num = #{refundNum}</if>
               <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
-				AND date_format(sum_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+				AND date_format(a.sum_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
 			 </if>
 			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
-				AND date_format(sum_date,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+				AND date_format(a.sum_date,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
 			 </if>
          </where>
     </select>

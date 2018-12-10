@@ -29,6 +29,9 @@ public class DeviceIncomeDaily extends BaseEntity
 	private Double adIncome;
 	/** 出纸数量 */
 	private int scanIncome;
+	
+	private String scanIncomeRate;
+	
 	/** 合算时间 */
 	private Date sumDate;
 	/** 退款收入 */
@@ -175,7 +178,15 @@ public class DeviceIncomeDaily extends BaseEntity
 	
 	
 
-    public String getPlaceName() {
+	public String getScanIncomeRate() {
+		return scanIncomeRate;
+	}
+
+	public void setScanIncomeRate(String scanIncomeRate) {
+		this.scanIncomeRate = scanIncomeRate;
+	}
+
+	public String getPlaceName() {
 		return placeName;
 	}
 
