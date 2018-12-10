@@ -125,5 +125,13 @@ public interface IAdScheduleService
 	 */
 	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
+	/**
+	 * 广告支付--通过广告商账户余额支付
+	 * @param adScheduleId
+	 * @param operatorUser
+	 * @return
+	 */
+	public int adPayByAccount(Integer adScheduleId, String operatorUser);
+
 
 }

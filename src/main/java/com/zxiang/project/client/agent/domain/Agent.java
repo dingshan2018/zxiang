@@ -1,9 +1,7 @@
 package com.zxiang.project.client.agent.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.zxiang.framework.web.domain.BaseEntity;
 
@@ -35,6 +33,10 @@ public class Agent extends BaseEntity
 	private Integer deviceNum;
 	/** 是否删除 */
 	private String delFlag;
+	/** 余额 **/
+	private BigDecimal balance; 
+	/** 冻结余额 **/
+	private BigDecimal frozenBalance; 
 	/** 状态 */
 	private String status;
 	/** 管理者ID */
@@ -389,32 +391,19 @@ public class Agent extends BaseEntity
 		this.promotorName = promotorName;
 	}
 
-	public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("agentId", getAgentId())
-            .append("pagentId", getPagentId())
-            .append("agentName", getAgentName())
-            .append("province", getProvince())
-            .append("city", getCity())
-            .append("county", getCounty())
-            .append("level", getLevel())
-            .append("deviceNum", getDeviceNum())
-            .append("delFlag", getDelFlag())
-            .append("status", getStatus())
-            .append("managerId", getManagerId())
-            .append("managerName", getManagerName())
-            .append("managerPhone", getManagerPhone())
-            .append("bankReceiver", getBankReceiver())
-            .append("bankAccount", getBankAccount())
-            .append("bankName", getBankName())
-            .append("promotorId", getPromotorId())
-            .append("adRate", getAdRate())
-            .append("scanRate", getScanRate())
-            .append("promotionRate", getPromotionRate())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
-    }
+	public BigDecimal getBalance() {
+		return balance;
+	}
+
+	public void setBalance(BigDecimal balance) {
+		this.balance = balance;
+	}
+
+	public BigDecimal getFrozenBalance() {
+		return frozenBalance;
+	}
+
+	public void setFrozenBalance(BigDecimal frozenBalance) {
+		this.frozenBalance = frozenBalance;
+	}
 }

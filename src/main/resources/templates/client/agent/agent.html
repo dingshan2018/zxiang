@@ -40,6 +40,9 @@
       <a class="btn btn-outline btn-info btn-rounded" onclick="salesmanList()" shiro:hasPermission="client:repair:salesman">
         <i class="fa fa-list-ul"></i> 员工管理
       </a>
+      <a class="btn btn-outline btn-danger btn-rounded" onclick="fundDetail()" shiro:hasPermission="client:fundLog:list">
+        <i class="fa fa-usd"></i> 资金流水
+      </a>
     </div>
 
     <div class="col-sm-12 select-table table-striped">
@@ -92,6 +95,7 @@
 				{field : 'adRate',title : '广告收益', visible: false  },
 				{field : 'scanRate', title : '扫码收益', visible: false },
 				{field : 'promotionRate',title : '推广收益', visible: false },
+				{field : 'balance', title : '余额'},
 				{field : 'createBy', title : '创建人'},
 				{field : 'createTime', title : '创建时间' },
 				{field : 'updateBy', title : '更新人'},
@@ -99,7 +103,8 @@
 		        {title: '操作', align: 'center',
 		            formatter: function(value, row, index) {
 		            	var actions = [];
-		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.agentId + '\')"><i class="fa fa-edit"></i> 编辑</a> ');
+                        actions.push(' <a class="btn btn-info btn-xs" href="#" onclick="getMoney(\'' + row.agentId + '\')"><i class="fa fa-edit"></i> 提现</a>');
+		            	actions.push(' <a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.agentId + '\')"><i class="fa fa-edit"></i> 编辑</a> ');
 //                         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.agentId + '\')"><i class="fa fa-remove"></i> 删除</a>');
                         actions.push(' <a class="btn btn-info btn-xs ' + editParamFlag + '" href="#" onclick="editParam(\'' + row.agentId + '\')"><i class="fa fa-edit"></i> 参数</a>');
                         return actions.join('');
@@ -129,6 +134,20 @@
         	}
     		var url = ctx + "client/salesman/03/"+rowsData[0].agentId;
             createMenuItem(url, $.table._option.modalName+'员工管理');
+        }
+        function fundDetail() {
+        	var rowsData = $("#bootstrap-table").bootstrapTable('getSelections', function (row) {
+        		return row;
+	  		});
+        	if(rowsData.length == 0 || rowsData.length > 1){
+        		$.modal.alertWarning("请选择一条记录");
+    			return;
+        	}
+    		var url = ctx + "client/fundLog/03/"+rowsData[0].agentId;
+            createMenuItem(url, $.table._option.modalName+'资金流水管理');
+        }
+        function getMoney(clientId){
+        	$.modal.open("提现", ctx +"client/fundLog/getMoney/03/"+clientId, 500, 450);
         }
     </script>
 </body>

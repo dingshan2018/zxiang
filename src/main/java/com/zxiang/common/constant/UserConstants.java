@@ -94,6 +94,8 @@ public class UserConstants
 
     /** 用户类型：系统用户 * */
     public static final String USER_TYPE_SYS = "00";
+    /** 用户类型：合作伙伴 * */
+    public static final String USER_TYPE_PARTNER = "01";
     /** 用户类型：加盟商 * */
     public static final String USER_TYPE_JOIN = "02";
     /** 用户类型：代理商 * */

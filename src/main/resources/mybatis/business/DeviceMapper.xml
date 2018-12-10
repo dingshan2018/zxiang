@@ -13,6 +13,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="placeId"    column="place_id"    />
         <result property="ownerId"    column="owner_id"    />
         <result property="price"    column="price"    />
+        <result property="tissueLen"    column="tissue_len"    />
         <result property="lon"    column="lon"    />
         <result property="lat"    column="lat"    />
         <result property="releaseTime"    column="release_time"    />
@@ -38,7 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          place_id, owner_id,
          (select distinct u.user_name from sys_user u where u.user_id =d.`owner_id` ) ownerName,
          (select distinct p.name from zx_place p where p.place_id =d.`place_id` ) placeName,
-         price, lon, lat, release_time, remove_time, total_len, remain_len, last_heart_time, 
+         price,tissue_len, lon, lat, release_time, remove_time, total_len, remain_len, last_heart_time, 
          last_login_time, last_scan_time, note, 
          status,
          (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='device_status' AND sdd.dict_value=d.`status` ) statusName,
@@ -62,6 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
              <if test="ownerId != null and ownerId != ''"> and owner_id = #{ownerId}</if>
              <if test="price != null and price != ''"> and price = #{price}</if>
+             <if test="tissueLen != null and tissueLen != ''"> and tissue_len = #{tissueLen}</if>
              <if test="lon != null and lon != ''"> and lon = #{lon}</if>
              <if test="lat != null and lat != ''"> and lat = #{lat}</if>
              <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
@@ -108,6 +110,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
              <if test="ownerId != null and ownerId != ''"> and owner_id = #{ownerId}</if>
              <if test="price != null and price != ''"> and price = #{price}</if>
+             <if test="tissueLen != null and tissueLen != ''"> and tissue_len = #{tissueLen}</if>
              <if test="lon != null and lon != ''"> and lon = #{lon}</if>
              <if test="lat != null and lat != ''"> and lat = #{lat}</if>
              <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
@@ -153,6 +156,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="placeId != null and placeId != '' ">place_id,</if>
 			<if test="ownerId != null and ownerId != '' ">owner_id,</if>
 			<if test="price != null and price != '' ">price,</if>
+			<if test="tissueLen != null and tissueLen != '' ">tissue_len,</if>
 			<if test="lon != null and lon != '' ">lon,</if>
 			<if test="lat != null and lat != '' ">lat,</if>
 			<if test="releaseTime != null  ">release_time,</if>
@@ -179,6 +183,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="placeId != null and placeId != ''">#{placeId},</if>
 			<if test="ownerId != null and ownerId != ''">#{ownerId},</if>
 			<if test="price != null and price != ''">#{price},</if>
+			<if test="tissueLen != null and tissueLen != ''">#{tissueLen},</if>
 			<if test="lon != null and lon != ''">#{lon},</if>
 			<if test="lat != null and lat != ''">#{lat},</if>
 			<if test="releaseTime != null ">#{releaseTime},</if>
@@ -208,6 +213,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="placeId != null  and placeId != ''  ">place_id = #{placeId},</if>
             <if test="ownerId != null  and ownerId != ''  ">owner_id = #{ownerId},</if>
             <if test="price != null  ">price = #{price},</if>
+            <if test="tissueLen != null  ">tissue_len = #{tissueLen},</if>
             <if test="lon != null  and lon != ''  ">lon = #{lon},</if>
             <if test="lat != null  and lat != ''  ">lat = #{lat},</if>
             <if test="releaseTime != null  ">release_time = #{releaseTime},</if>

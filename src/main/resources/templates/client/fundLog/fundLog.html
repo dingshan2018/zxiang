@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+    <div class="col-sm-12 select-info">
+      <form id="change-form">
+          <input type="hidden" th:value="${clientId}" name="clientId" id="clientId"/>
+ 		  <input type="hidden" th:value="${clientType}" name="clientType" id="clientType"/>
+        <div class="select-list">
+          <ul>
+            <li>
+              <span class="select-item-name">流水号：</span>
+              <input type="text" name="serial" id="serial"/>
+            </li>
+            <li class="select-btns">
+              <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
+              </a>
+              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
+              </a>
+            </li>
+          </ul>
+        </div>
+      </form>
+    </div>
+	    <div class="btn-group hidden-xs" id="toolbar" role="group">
+	        客户名称：<label th:text="${clientName}"></label>	&nbsp;&nbsp;&nbsp; 
+	        账户余额：<label th:text="${balance}"></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	
+	        账户冻结金额：<label th:text="${frozenBalance}"></label>
+	    </div>
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('client:fundLog:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('client:fundLog:remove')}]];
+        var prefix = ctx + "client/fundLog"
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "资金流水",
+                queryParams: queryParams,
+                search: false,
+    	        showExport: false,
+                columns: [{
+		            checkbox: true
+		        },
+				{ field : 'payId', title : 'ID', visible: false  },
+				{ field : 'serial', title : '流水号', visible: false },
+				{ field : 'totalFee',  title : '流水金额'  },
+				{ field : 'balance', title : '账户余额' },
+				{ field : 'content',  title : '内容'  },
+				{ field : 'type',  title : '类型',formatter: function(value, row, index) {
+						if(value == "1") {return "充值"}
+						if(value == "2") {return "广告付费"}
+						if(value == "3") {return "提现"}
+						if(value == "4") {return "收益"}
+						return "-";
+		            } 
+				},
+				{ field : 'status',  title : '状态' ,formatter: function(value, row, index) {
+						if(value == "0") {return "处理中"}
+						if(value == "1") {return "成功"}
+						if(value == "2") {return "失败"}
+						return "-";
+		            }
+				},
+				{ field : 'createTime',  title : '创建时间' },
+				{ field : 'remark',  title : '备注' }]
+            };
+            $.table.init(options);
+        });
+        function queryParams (params) {
+            return {
+            	clientId: $('#clientId').val(),
+            	clientType: $('#clientType').val()
+            };
+          }
+    </script>
+</body>
+</html>

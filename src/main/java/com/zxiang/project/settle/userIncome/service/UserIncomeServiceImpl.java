@@ -174,5 +174,10 @@ public class UserIncomeServiceImpl implements IUserIncomeService
 		s.exportExcel("客户结算统计", excelName, exportFile, request, response);
 	}
 
+	@Override
+	public List<HashMap<String, Object>> selectUsertotalIncome() {
+		return userIncomeMapper.selectUsertotalIncome();
+	}
+
 	
 }

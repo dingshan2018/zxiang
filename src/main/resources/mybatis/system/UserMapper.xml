@@ -109,15 +109,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<select id="checkLoginNameUnique" parameterType="String" resultType="int">
-		select count(1) from sys_user where login_name=#{loginName}
+		select count(1) from sys_user where login_name=#{loginName} and del_flag !='2'
 	</select>
 	
 	<select id="checkPhoneUnique" parameterType="String" resultMap="UserResult">
-		select user_id, phonenumber from sys_user where phonenumber=#{phonenumber}
+		select user_id, phonenumber from sys_user where phonenumber=#{phonenumber} and del_flag !='2'
 	</select>
 	
 	<select id="checkEmailUnique" parameterType="String" resultMap="UserResult">
-		select user_id, email from sys_user where email=#{email}
+		select user_id, email from sys_user where email=#{email} and del_flag !='2'
 	</select>
 	
 	<select id="selectUserById" parameterType="Long" resultMap="UserResult">
@@ -136,7 +136,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach> 
  	</delete>
  	<select id="selectUserListByUserType" parameterType="String" resultType="User">
- 		select user_id as userId,user_name as userName from sys_user where user_type in
+ 		select user_id as userId,user_name as userName from sys_user where del_flag !=2 AND user_type in
  		<foreach collection="array" item="userTypes" open="(" separator="," close=")">
  			#{userTypes}
         </foreach> 
@@ -212,13 +212,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		delete from sys_user where phonenumber = #{phone}
  	</delete>
     
-    <!-- 查找加盟商业务员（机主） -->
+    <!-- 查找（机主） -->
     <select id="selectBuyer" resultMap="UserResult">
 		SELECT * FROM `sys_user` WHERE user_id IN 
 		(SELECT DISTINCT user_id FROM `zx_trade_order` WHERE order_type=1 )
     </select>
     
-    <!--  -->
+    <!-- 根据城市查询服务商员工信息 -->
     <select id="selectUserByCity" parameterType="Long" resultMap="UserResult">
 		SELECT * FROM `sys_user` WHERE del_flag !=2 AND user_type='04' AND puser_id IN
 		(SELECT repair_id FROM `zx_repair_area` WHERE city_id = #{cityId})

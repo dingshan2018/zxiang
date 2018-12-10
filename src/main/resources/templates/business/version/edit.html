@@ -1,0 +1,128 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-version-edit" th:object="${version}">
+            <input id="sysVerId" name="sysVerId" th:field="*{sysVerId}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">系统编码：</label>
+                <div class="col-sm-8">
+                    <input id="systemCode" name="systemCode" th:field="*{systemCode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">版本号：</label>
+                <div class="col-sm-8">
+                    <input id="sysVerCode" name="sysVerCode" th:field="*{sysVerCode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">版本主题：</label>
+                <div class="col-sm-8">
+                    <input id="sysVerSubject" name="sysVerSubject" th:field="*{sysVerSubject}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">版本更新信息：</label>
+                <div class="col-sm-8">
+                    <input id="sysVerInfo" name="sysVerInfo" th:field="*{sysVerInfo}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">升级类型，1000：强制升级；2000：可选升级：</label>
+                <div class="col-sm-8">
+                    <input id="subject" name="subject" th:field="*{subject}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">下载路径：</label>
+                <div class="col-sm-8">
+                    <input id="downloadPath" name="downloadPath" th:field="*{downloadPath}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">文件MD5验证码：</label>
+                <div class="col-sm-8">
+                    <input id="md5Check" name="md5Check" th:field="*{md5Check}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">旧版本号：</label>
+                <div class="col-sm-8">
+                    <input id="oldVersionCode" name="oldVersionCode" th:field="*{oldVersionCode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">文件名称：</label>
+                <div class="col-sm-8">
+                    <input id="fileName" name="fileName" th:field="*{fileName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">更新包大小：</label>
+                <div class="col-sm-8">
+                    <input id="filesize" name="filesize" th:field="*{filesize}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">启用时间：</label>
+                <div class="col-sm-8">
+                    <input id="effDate" name="effDate" th:field="*{effDate}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">失效时间：</label>
+                <div class="col-sm-8">
+                    <input id="expDate" name="expDate" th:field="*{expDate}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">创建者：</label>
+                <div class="col-sm-8">
+                    <input id="createBy" name="createBy" th:field="*{createBy}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">创建时间：</label>
+                <div class="col-sm-8">
+                    <input id="createDate" name="createDate" th:field="*{createDate}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">备用字段：</label>
+                <div class="col-sm-8">
+                    <input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">是否删除：</label>
+                <div class="col-sm-8">
+                    <input id="delFlag" name="delFlag" th:field="*{delFlag}" class="form-control" type="text">
+                </div>
+            </div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "settle/version"
+		$("#form-version-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			},
+			submitHandler: function(form) {
+				$.operate.save(prefix + "/edit", $('#form-version-edit').serialize());
+			}
+		});
+	</script>
+</body>
+</html>

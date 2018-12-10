@@ -1,6 +1,9 @@
 package com.zxiang.project.client.agent.mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 
 import com.zxiang.project.client.agent.domain.Agent;	
 
@@ -72,5 +75,13 @@ public interface AgentMapper
 	public List<Agent> selectDropBoxList();
 
 	public int selectTotal();
+	/**
+	 * 更新余额
+	 * @param advertiseId
+	 * @param balance
+	 * @param frozenBalance
+	 * @return
+	 */
+	public int updateBalance(@Param("agentId")Integer agentId,@Param("balance")BigDecimal balance,@Param("frozenBalance")BigDecimal frozenBalance);
 	
 }

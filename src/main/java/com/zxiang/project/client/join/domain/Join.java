@@ -1,9 +1,7 @@
 package com.zxiang.project.client.join.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.zxiang.framework.web.domain.BaseEntity;
 
@@ -39,6 +37,10 @@ public class Join extends BaseEntity
 	private String status;
 	/** 是否删除 */
 	private String delFlag;
+	/** 余额 **/
+	private BigDecimal balance; 
+	/** 冻结余额 **/
+	private BigDecimal frozenBalance; 
 	/** 视频广告系数 */
 	private Float adRate;
 	/** 轮播广告系数 */
@@ -266,24 +268,20 @@ public class Join extends BaseEntity
 		this.managerPhone = managerPhone;
 	}
 
-	public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("joinId", getJoinId())
-            .append("joinerName", getJoinerName())
-            .append("joinerId", getJoinerId())
-            .append("deviceNum", getDeviceNum())
-            .append("bankAccount", getBankAccount())
-            .append("bankReceiver", getBankReceiver())
-            .append("bankName", getBankName())
-            .append("status", getStatus())
-            .append("delFlag", getDelFlag())
-            .append("promotionRate", getPromotionRate())
-            .append("adRate", getAdRate())
-            .append("scanRate", getScanRate())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
-    }
+	public BigDecimal getBalance() {
+		return balance;
+	}
+
+	public void setBalance(BigDecimal balance) {
+		this.balance = balance;
+	}
+
+	public BigDecimal getFrozenBalance() {
+		return frozenBalance;
+	}
+
+	public void setFrozenBalance(BigDecimal frozenBalance) {
+		this.frozenBalance = frozenBalance;
+	}
+
 }

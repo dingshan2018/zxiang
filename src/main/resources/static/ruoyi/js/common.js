@@ -277,3 +277,22 @@ function selectJoinList(){
     })
     return joinList;
 }
+
+/**广告商下拉框选择*/
+function selectAdvertiseList(){
+	var advertiseList = [];
+	$.ajax({
+        url: ctx + "client/advertise/getDropBoxAdvertiseList",
+        type: "post",
+        dataType: "json",
+        data: 'data',
+        async:false,
+        success: function (data) {
+        	advertiseList = data.rows;
+        },
+        error: function (data) {
+            alert("查询广告商下拉列表失败");
+        }
+    })
+    return advertiseList;
+}

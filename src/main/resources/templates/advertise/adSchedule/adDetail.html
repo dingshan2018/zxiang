@@ -39,7 +39,7 @@
 						<label th:text="*{totalTime}" class="form-control"></label>
 					</div>
 	            </div>
-	             <div class="form-group">
+	            <div class="form-group">
 	                <label class="col-sm-3 control-label">总价：</label>
 	               <div class="col-sm-3">
 	                    <label th:text="*{totalPay}" class="form-control"></label>
@@ -61,6 +61,16 @@
 							<option th:each="c:${ThemeTemplateList}"  th:value="${c.themeTemplateId}"
 							th:text="${c.themeName}" th:field="*{themeTemplateId}"/>
 						</select>
+	                </div>
+	            </div>
+	            <div class="form-group">
+	                <label class="col-sm-3 control-label">推荐人：</label>
+	               <div class="col-sm-3">
+	                    <label th:text="*{promotionerName}" class="form-control"></label>
+	                </div>
+	                <label class="col-sm-3 control-label">投放人：</label>
+	                <div class="col-sm-3">
+	                    <label th:text="*{releaserName}" class="form-control"></label>
 	                </div>
 	            </div>
 	            <div class="form-group">

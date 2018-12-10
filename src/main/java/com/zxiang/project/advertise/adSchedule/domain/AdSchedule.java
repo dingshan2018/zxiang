@@ -35,6 +35,11 @@ public class AdSchedule extends BaseEntity
 	private Integer releaseTermNum;
 	/** 投放天数*/
 	private Integer releaseDays;
+	
+	private Integer advertiser;
+	private Integer promotioner;
+	private Integer releaser;
+	
 	/**  */
 	private String isDel;
 	/** 投放备注 */
@@ -59,8 +64,6 @@ public class AdSchedule extends BaseEntity
 	private String approvedRemark;
 	/**审核人员  */
 	private String approvedUser;
-	/**广告主体名称  */
-	private Integer advertiseId;
 	/**总共播放时长  */
 	private String totalTime;
 	/**支付状态:0未支付；1已全部支付；2押金已支付  */
@@ -84,6 +87,8 @@ public class AdSchedule extends BaseEntity
 	private String statusName;
 	private String advertiseName;
 	private String approvedName;
+	private String promotionerName;
+	private String releaserName;
 	
 	public void setAdScheduleId(Integer adScheduleId) 
 	{
@@ -301,14 +306,6 @@ public class AdSchedule extends BaseEntity
 		this.themeTemplateId = themeTemplateId;
 	}
 
-	public Integer getAdvertiseId() {
-		return advertiseId;
-	}
-
-	public void setAdvertiseId(Integer advertiseId) {
-		this.advertiseId = advertiseId;
-	}
-
 	public String getTotalTime() {
 		return totalTime;
 	}
@@ -397,6 +394,30 @@ public class AdSchedule extends BaseEntity
 		this.approvedName = approvedName;
 	}
 
+	public Integer getAdvertiser() {
+		return advertiser;
+	}
+
+	public void setAdvertiser(Integer advertiser) {
+		this.advertiser = advertiser;
+	}
+
+	public Integer getPromotioner() {
+		return promotioner;
+	}
+
+	public void setPromotioner(Integer promotioner) {
+		this.promotioner = promotioner;
+	}
+
+	public Integer getReleaser() {
+		return releaser;
+	}
+
+	public void setReleaser(Integer releaser) {
+		this.releaser = releaser;
+	}
+
 	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("adScheduleId", getAdScheduleId())
@@ -408,6 +429,9 @@ public class AdSchedule extends BaseEntity
             .append("totalPay", getTotalPay())
             .append("prepay", getPrepay())
             .append("releaseTermNum", getReleaseTermNum())
+            .append("advertiser", getAdvertiser())
+            .append("promotioner", getPromotioner())
+            .append("releaser", getReleaser())
             .append("isDel", getIsDel())
             .append("releaseNote", getReleaseNote())
             .append("createBy", getCreateBy())
@@ -424,4 +448,21 @@ public class AdSchedule extends BaseEntity
 	public void setReleaseDays(Integer releaseDays) {
 		this.releaseDays = releaseDays;
 	}
+
+	public String getPromotionerName() {
+		return promotionerName;
+	}
+
+	public void setPromotionerName(String promotionerName) {
+		this.promotionerName = promotionerName;
+	}
+
+	public String getReleaserName() {
+		return releaserName;
+	}
+
+	public void setReleaserName(String releaserName) {
+		this.releaserName = releaserName;
+	}
+	
 }

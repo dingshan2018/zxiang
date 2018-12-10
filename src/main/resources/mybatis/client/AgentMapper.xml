@@ -5,41 +5,43 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.zxiang.project.client.agent.mapper.AgentMapper">
     
     <resultMap type="Agent" id="AgentResult">
-        <result property="agentId"    column="agent_id"    />
-        <result property="pagentId"    column="pagent_id"    />
-        <result property="agentName"    column="agent_name"    />
-        <result property="province"    column="province"    />
-        <result property="city"    column="city"    />
-        <result property="county"    column="county"    />
-        <result property="level"    column="level"    />
-        <result property="deviceNum"    column="device_num"    />
-        <result property="delFlag"    column="del_flag"    />
-        <result property="status"    column="status"    />
-        <result property="managerId"    column="manager_id"    />
-        <result property="managerName"    column="manager_name"    />
-        <result property="managerPhone"    column="manager_phone"    />
-        <result property="bankReceiver"    column="bank_receiver"    />
-        <result property="bankAccount"    column="bank_account"    />
-        <result property="bankName"    column="bank_name"    />
-        <result property="promotorId"    column="promotor_id"    />
-        <result property="adRate"    column="ad_rate"    />
-        <result property="adCarouselRate"    column="ad_carousel_rate"    />
-        <result property="scanRate"    column="scan_rate"    />
-        <result property="promDirectRate"    column="prom_direct_rate"    />
-        <result property="promIndirectRate"    column="prom_indirect_rate"    />
-        <result property="promPaperRate"    column="prom_paper_rate"    />
-        <result property="promotionRate"    column="promotion_rate"    />
-        <result property="directAgentRate"    column="direct_agent_rate"    />
-        <result property="serveRate"    column="serve_rate"    />
-        <result property="subsidyRate"    column="subsidy_rate"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
+        <result property="agentId"    column="agent_id"/>
+        <result property="pagentId"    column="pagent_id"/>
+        <result property="agentName"    column="agent_name"/>
+        <result property="province"    column="province"/>
+        <result property="city"    column="city"/>
+        <result property="county"    column="county"/>
+        <result property="level"    column="level"/>
+        <result property="deviceNum"    column="device_num"/>
+        <result property="delFlag"    column="del_flag"/>
+        <result property="status"    column="status"/>
+        <result property="managerId"    column="manager_id"/>
+        <result property="managerName"    column="manager_name"/>
+        <result property="managerPhone"    column="manager_phone"/>
+        <result property="bankReceiver"    column="bank_receiver"/>
+        <result property="bankAccount"    column="bank_account"/>
+        <result property="bankName"    column="bank_name"/>
+        <result property="promotorId"    column="promotor_id"/>
+        <result property="adRate"    column="ad_rate"/>
+        <result property="adCarouselRate"    column="ad_carousel_rate"/>
+        <result property="scanRate"    column="scan_rate"/>
+        <result property="promDirectRate"    column="prom_direct_rate"/>
+        <result property="promIndirectRate"    column="prom_indirect_rate"/>
+        <result property="promPaperRate"    column="prom_paper_rate"/>
+        <result property="promotionRate"    column="promotion_rate"/>
+        <result property="directAgentRate"    column="direct_agent_rate"/>
+        <result property="serveRate"    column="serve_rate"/>
+        <result property="subsidyRate"    column="subsidy_rate"/>
+        <result property="createBy"    column="create_by"/>
+        <result property="createTime"    column="create_time"/>
+        <result property="updateBy"    column="update_by"/>
+        <result property="updateTime"    column="update_time"/>
+        <result property="balance"    column="balance"/>
+        <result property="frozenBalance"    column="frozen_balance"/>
     </resultMap>
 	
 	<sql id="selectAgentVo">
-        select agent_id, pagent_id, agent_name,
+        select agent_id, pagent_id, agent_name,balance,frozen_balance,
          province,(select distinct a.pname from sys_area a where a.id =a.`province` ) provinceName,
          city,(select distinct a.pname from sys_area a where a.id =a.`city` ) cityName,
          county,(select distinct a.pname from sys_area a where a.id =a.`county` ) countyName, 
@@ -50,7 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
     
     <sql id="selectAgentVos">
-         SELECT distinct a.agent_id, pagent_id, a.agent_name,
+         SELECT distinct a.agent_id, pagent_id, a.agent_name,a.balance,a.frozen_balance,
          a.province,(SELECT DISTINCT a.pname FROM sys_area a WHERE a.id =a.`province` ) provinceName,
          a.city,(SELECT DISTINCT a.pname FROM sys_area a WHERE a.id =a.`city` ) cityName,
          county,(SELECT DISTINCT a.pname FROM sys_area a WHERE a.id =a.`county` ) countyName, 
@@ -204,7 +206,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where agent_id = #{agentId}
     </update>
-
+	<update id="updateBalance">
+        update zx_agent
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="balance != null">balance = #{balance},</if>
+            <if test="frozenBalance != null  ">frozen_balance = #{frozenBalance},</if>
+            update_time = now()
+        </trim>
+        where agent_id = #{agentId}
+    </update>
 	<delete id="deleteAgentById" parameterType="Integer">
         delete from zx_agent where agent_id = #{agentId}
     </delete>

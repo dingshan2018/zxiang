@@ -15,15 +15,21 @@
               </li>
               <li>
                 <span class="select-item-name">投放用户：</span>
-                <input type="text" name="releaser" id="releaser"/>
+               		<select id="releaser" name="releaser">
+	                	<option value="">全部</option>
+	              	</select>
               </li>
               <li>
                 <span class="select-item-name">广告商户：</span>
-                <input type="text" name="advertiser" id="advertiser"/>
+                	<select id="advertiser" name="advertiser">
+	                	<option value="">全部</option>
+	              	</select>
               </li>
               <li>
                 <span class="select-item-name">推广用户：</span>
-                <input type="text" name="promotioner" id="promotioner"/>
+               		<select id="promotioner" name="promotioner">
+	                	<option value="">全部</option>
+	              	</select>
               </li>
               <li>
                 <span class="select-item-name">投放状态：</span>
@@ -82,12 +88,30 @@
     var prefix = ctx + 'advertise/adSchedule';
 
     $(function() {
+    	
+    	//投放广告商下拉框数据
+        var advertiserList = selectAdvertiseList();
+        $.each(advertiserList, function (i) {
+          $('#advertiser').append('<option value=' + advertiserList[i].advertiseId + '>' + advertiserList[i].advertisorName + '</option>');
+        });
+      	//推广用户下拉框数据
+        var promotionerList = getSearchUserList("promotioner");
+        $.each(promotionerList, function (i) {
+          $('#promotioner').append('<option value=' + promotionerList[i].userId + '>' + promotionerList[i].userName + '</option>');
+        });
+      	//投放人下拉框数据
+        var releaserList = getSearchUserList("releaser");
+        $.each(releaserList, function (i) {
+          $('#releaser').append('<option value=' + releaserList[i].userId + '>' + releaserList[i].userName + '</option>');
+        });
+        
         var options = {
             url: prefix + "/list",
             createUrl: prefix + "/add",
             updateUrl: prefix + "/edit/{id}",
             removeUrl: prefix + "/remove",
             modalName: "广告投放",
+            search    : false,
             columns: [{
 	            checkbox: true
 	        },
@@ -244,7 +268,7 @@
                     actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.adScheduleId + '\')"><i class="fa fa-remove"></i>删除</a>'); */
                     actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="preview(\'' + row.adScheduleId +
                     	'\')"><i class="fa fa-search"></i>素材预览</a> ');
-                    actions.push('<a class="btn btn-warning btn-xs" onclick="adPay(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>支付</a> ');
+                    actions.push('<a class="btn btn-warning btn-xs" onclick="adPayByAccount(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>支付</a> ');
                     actions.push(
                         	'<a class="btn btn-info btn-xs" href="#" onclick="adDetail(\'' + row.adScheduleId +
                         	'\')"><i class="fa fa-edit"></i>详情</a> ');
@@ -262,6 +286,8 @@
         $('#bootstrap-table').bootstrapTable('hideColumn', 'prepay');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'adScheduleId');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'pId');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'approvedUser');
+        
     });
 
 
@@ -305,7 +331,7 @@
 	    			var url = http + sxScheduleId;
 	    			window.open(url);
 	    		}else{
-	    			$.modal.alertWarning("暂无广告素材!");
+	    			$.modal.alertWarning("暂未生成排期广告!");
 	    		}
 	        },
 	        error: function (data) {
@@ -637,7 +663,49 @@
     	var url = ctx + "advertise/adSchedule/adPay/" + adScheduleId;
         $.modal.open("广告支付二维码", url, 400, 400);
     }
+	
+  	//从钱包直接扣款
+    function adPayByAccount(adScheduleId) {
+    	var adSchedule = getAdScheduleInfo(adScheduleId);
+    	if(adSchedule.releasePosition == type_terminal){
+        	if (adSchedule.payStatus == hasPay) {
+       	        $.modal.alertWarning('该广告费用已支付,请勿重复支付!');
+       	        return;
+          	}
+        	if (adSchedule.status != toBeReleased) {
+       	        $.modal.alertWarning('广告审核通过后才能支付!');
+       	        return;
+          	}
+    		if(adSchedule.totalPay == '' || adSchedule.totalPay == null){
+        		$.modal.alertWarning("暂无支付信息!");
+        		return;
+        	}
+    	}else{
+    		$.modal.alertWarning("页面H5广告不需要支付!");
+    		return;
+    	}
+    	
+   		$.modal.confirm("确定支付 '" + adSchedule.scheduleName + "' 广告费用吗？", function() {
+        	$.ajax({
+        		cache : true,
+        		type : "POST",
+        		url : prefix + "/adPayByAccount",
+        		data : {
+        			"adScheduleId": adScheduleId,
+        		},
+        		async : false,
+        		error : function(request) {
+        			$.modal.alertError("系统错误");
+        		},
+        		success : function(data) {
+        			$.modal.alertWarning(data.msg);
+        			$.table.search();
+        		}
+        	});
 
+    	});
+  	}
+    
   	//获取广告数据信息--公共方法
     function getAdScheduleInfo(adScheduleId) {
     	var adSchedule;
@@ -690,6 +758,26 @@
     	
     	$.operate.removeAll();
     }
+    
+    
+    /**搜索框查询条件获取用户数据*/
+    function getSearchUserList(searchKey){
+    	var userList = [];
+    	$.ajax({
+        	type: "post",
+        	contentType:"application/json",
+            dataType: "json",
+            url: ctx + "advertise/adSchedule/getSearchUserList",
+            data: JSON.stringify({ "searchKey": searchKey}),
+            async: false,
+            success: function (data) {
+            	userList = data.rows;
+            },
+            error: function () { alert("获取用户信息失败"); }
+        });
+        return userList;
+    }
+   
 </script>
 </body>
 </html>

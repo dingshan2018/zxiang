@@ -1,5 +1,6 @@
 package com.zxiang.project.advertise.adSchedule.controller;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.utils.StringUtils;
 import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
@@ -48,6 +51,8 @@ import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
 import com.zxiang.project.system.area.domain.Area;
 import com.zxiang.project.system.area.mapper.AreaMapper;
+import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.service.IUserService;
 
 /**
  * 广告投放 信息操作处理
@@ -75,7 +80,9 @@ public class AdScheduleController extends BaseController
 	private AdReleaseRangeMapper adReleaseRangeMapper;
 	@Autowired
 	private AreaMapper areaMapper;
-	
+	@Autowired
+	private IUserService userService;
+	 
 	@RequiresPermissions("advertise:adSchedule:view")
 	@GetMapping()
 	public String adSchedule()
@@ -106,6 +113,10 @@ public class AdScheduleController extends BaseController
 		List<ThemeTemplate> ThemeTemplateList = adScheduleService.getThemeList();
 		mmap.put("ThemeTemplateList", ThemeTemplateList);
 		mmap.put("advertiserList", advertiseMapper.selectAdvertiseList(new Advertise()));
+		//推荐人下拉框
+		List<User> userList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,UserConstants.USER_TYPE_PARTNER,
+				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+		mmap.put("promotionerList", userList);
 		
 	    return prefix + "/add";
 	}
@@ -405,4 +416,40 @@ public class AdScheduleController extends BaseController
     	
     	throw new RRException("生成支付二维码失败!");
     }
+    
+    /**
+	 * 根据推荐人或者投放人查询用户下拉框数据列表
+	 */
+	@RequestMapping("/getSearchUserList")
+    @ResponseBody
+    public TableDataInfo getSearchUserList(@RequestBody Map<String, Object> params) {
+		List<User> list = new ArrayList<User>();
+		String searchKey = (String) params.get("searchKey");
+		if("releaser".equals(searchKey)){
+			list= userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE);
+		}else if("promotioner".equals(searchKey)){
+			list= userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,UserConstants.USER_TYPE_PARTNER,
+					UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+		}
+		return getDataTable(list);
+    }
+	
+	
+	/**
+	 * 广告支付--通过广告商账户余额支付
+	 */
+	@Log(title = "广告费用通过钱包支付", businessType = BusinessType.UPDATE)
+	@PostMapping("/adPayByAccount")
+	@ResponseBody
+	public AjaxResult adPayByAccount(Integer adScheduleId)
+	{
+		try {
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			adScheduleService.adPayByAccount(adScheduleId,operatorUser);
+			return success("支付成功!");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error(e.getMessage()+" ,操作失败!");
+		}
+	}
 }

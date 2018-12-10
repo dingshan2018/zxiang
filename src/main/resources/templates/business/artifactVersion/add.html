@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-artifactVersion-add">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">组件版本号：</label>
+				<div class="col-sm-8">
+					<input id="artifactVerCode" name="artifactVerCode" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">组件版本主题：</label>
+				<div class="col-sm-8">
+					<input id="artifactVerSubject" name="artifactVerSubject" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">组件版本信息：</label>
+				<div class="col-sm-8">
+					<input id="artifactVerInfo" name="artifactVerInfo" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">下载路径：</label>
+				<div class="col-sm-8">
+					<input id="artifaceDownloadPath" name="artifaceDownloadPath" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">关联版本表ID：</label>
+				<div class="col-sm-8">
+					<input id="sysVerId" name="sysVerId" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">启用时间：</label>
+				<div class="col-sm-8">
+					<input id="effDate" name="effDate" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">失效时间：</label>
+				<div class="col-sm-8">
+					<input id="expDate" name="expDate" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">文件MD5验证码：</label>
+				<div class="col-sm-8">
+					<input id="md5Check" name="md5Check" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">类型，01：补丁，02：完整包：</label>
+				<div class="col-sm-8">
+					<input id="artifactType" name="artifactType" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">：</label>
+				<div class="col-sm-8">
+					<input id="oldArtifactCode" name="oldArtifactCode" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">：</label>
+				<div class="col-sm-8">
+					<input id="fileName" name="fileName" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">更新包大小：</label>
+				<div class="col-sm-8">
+					<input id="filesize" name="filesize" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">创建者：</label>
+				<div class="col-sm-8">
+					<input id="createBy" name="createBy" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">创建时间：</label>
+				<div class="col-sm-8">
+					<input id="createDate" name="createDate" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">备用字段：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">是否删除：</label>
+				<div class="col-sm-8">
+					<input id="delFlag" name="delFlag" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "business/artifactVersion"
+		$("#form-artifactVersion-add").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			},
+			submitHandler: function(form) {
+				$.operate.save(prefix + "/add", $('#form-artifactVersion-add').serialize());
+			}
+		});
+	</script>
+</body>
+</html>

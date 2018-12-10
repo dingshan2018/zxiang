@@ -31,6 +31,8 @@ public class Device extends BaseEntity
 	private String placeId;
 	/** 出纸价格 */
 	private Float price;
+	/** 每次出纸长度 */
+	private Integer tissueLen;
 	/**  */
 	private String lon;
 	/**  */
@@ -149,6 +151,15 @@ public class Device extends BaseEntity
 	{
 		return price;
 	}
+	
+	public Integer getTissueLen() {
+		return tissueLen;
+	}
+
+	public void setTissueLen(Integer tissueLen) {
+		this.tissueLen = tissueLen;
+	}
+
 	public void setLon(String lon) 
 	{
 		this.lon = lon;

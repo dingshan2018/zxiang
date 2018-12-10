@@ -45,10 +45,10 @@
 					</select>
 				</div>
 			</div>
-			<div class="form-group" id="advertiseIdDiv" style="display: none;">	
+			<div class="form-group" id="advertiserDiv" style="display: none;">	
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>广告商：</label>
 				<div class="col-sm-8">
-					<select id="advertiseId" name="advertiseId" class="form-control">
+					<select id="advertiser" name="advertiser" class="form-control">
 						<option value="">---请选择---</option>
 						<option th:each="c:${advertiserList}"  th:value="${c.advertiseId}" th:text="${c.advertisorName}"/>
 					</select>
@@ -99,6 +99,15 @@
 					<input id="releaseTermNum" name="releaseTermNum" class="form-control" type="text">
 				</div>
 			</div> -->
+			<div class="form-group" >	
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>推荐人：</label>
+				<div class="col-sm-8">
+					<select id="promotioner" name="promotioner" class="form-control">
+						<option value="">---请选择---</option>
+						<option th:each="c:${promotionerList}"  th:value="${c.userId}" th:text="${c.userName}"/>
+					</select>
+				</div>
+			</div>
 			<div class="form-group">	
 				<label class="col-sm-3 control-label">投放备注：</label>
 				<div class="col-sm-8">
@@ -130,10 +139,13 @@
 				themeTemplateId:{
 					required:true,
 				},
-				advertiseId:{
+				advertiser:{
 					required:true,
 				},
 				totalTime:{
+					required:true,
+				},
+				qrUrl:{
 					required:true,
 				},
 			},
@@ -146,7 +158,7 @@
 		function selectPosition(value){
 	        if(value=="01"){
 	        	$("#themeTemplateIdDiv").show();
-	        	$("#advertiseIdDiv").show();
+	        	$("#advertiserDiv").show();
 	        	$("#totalTimeDiv").show();
 	        	
 	        	$("#qrUrlDiv").hide();
@@ -154,20 +166,20 @@
 
 	        } else if(value=="02"){
 	        	$("#themeTemplateIdDiv").hide();
-	        	$("#advertiseIdDiv").hide();
+	        	$("#advertiserDiv").hide();
 	        	$("#totalTimeDiv").hide();
 	        	$("#themeTemplateId").val("");
-	        	$("#advertiseId").val("");
+	        	$("#advertiser").val("");
 	        	$("#totalTime").val("");
 	        	
 	        	$("#qrUrlDiv").show();
 	        	
 	        } else{
 	        	$("#themeTemplateIdDiv").hide();
-	        	$("#advertiseIdDiv").hide();
+	        	$("#advertiserDiv").hide();
 	        	$("#totalTimeDiv").hide();
 	        	$("#themeTemplateId").val("");
-	        	$("#advertiseId").val("");
+	        	$("#advertiser").val("");
 	        	$("#totalTime").val("");
 	        	$("#qrUrlDiv").hide();
 	        	$("#qrUrl").val("");

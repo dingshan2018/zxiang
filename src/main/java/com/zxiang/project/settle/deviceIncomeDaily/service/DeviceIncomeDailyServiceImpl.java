@@ -1,5 +1,6 @@
 package com.zxiang.project.settle.deviceIncomeDaily.service;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +16,7 @@ import com.alibaba.druid.util.StringUtils;
 import com.zxiang.common.constant.RateConstants;
 import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.support.Convert;
+import com.zxiang.project.client.fundLog.service.IFundLogService;
 import com.zxiang.project.settle.deviceIncomeDaily.domain.DeviceIncomeDaily;
 import com.zxiang.project.settle.deviceIncomeDaily.mapper.DeviceIncomeDailyMapper;
 import com.zxiang.project.settle.userExtension.domain.UserExtension;
@@ -38,7 +40,9 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	private IUserIncomeService iUserIncomeService;
 	@Autowired
 	private IUserExtensionService userExtensionService;
-    
+	@Autowired
+	private IFundLogService iFundLogService;
+	
 	/**
      * 查询设备收入日统计信息
      * 
@@ -155,9 +159,17 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				addata(device,buyer_id,tissuenum);
 			}
 		}
-		
 		//需要推广代理人（查询前一天加入代理商）
 		promotionagent();
+		
+		List<HashMap<String, Object>> UsertotalIncomelist = iUserIncomeService.selectUsertotalIncome();
+		for(HashMap<String, Object> UsertotalIncome : UsertotalIncomelist) {
+			BigDecimal totalIncome = new BigDecimal(UsertotalIncome.get("totalIncome")+"");
+			String puserId = UsertotalIncome.get("puserId")+"";
+			String puserType = UsertotalIncome.get("puserType")+"";
+			iFundLogService.incomeRecord(Integer.valueOf(puserId), puserType, totalIncome);
+		}
+		 
 	}
 	
 	//计算每日设备推广费用
