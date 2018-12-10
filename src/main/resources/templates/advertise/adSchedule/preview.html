@@ -82,10 +82,15 @@
 			})
 			
 			var html = '';
-			for (var i = 0; i < previewUrls.length; i++) {
-	       	 	html += `<div class="cover"><img src="${previewUrls[i].preview}" alt=""></div>`;
-	      	}
-	      	$('#image-list').html(html);
+			if(previewUrls.length > 0){
+				for (var i = 0; i < previewUrls.length; i++) {
+		       	 	html += `<div class="cover"><img src="${previewUrls[i].preview}" alt=""></div>`;
+		      	}
+		      	$('#image-list').html(html);
+			}else{
+				$('#image-list').html("<h4 align=\"center\">暂无素材信息!</h4>");
+			}
+			
 		}
     
   </script>

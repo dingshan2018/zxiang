@@ -57,5 +57,12 @@ public interface ISupplyTissueService
 	public int deleteSupplyTissueByIds(String ids);
 
 	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception;
+
+	/**
+	 * 设备补纸保存
+	 * @param supplyTissue
+	 * @return
+	 */
+	public int supplyTissueSave(SupplyTissue supplyTissue);
 	
 }
