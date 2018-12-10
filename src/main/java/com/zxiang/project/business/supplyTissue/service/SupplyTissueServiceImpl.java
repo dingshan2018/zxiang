@@ -9,9 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.excel.EXCELObject;
+import com.zxiang.project.business.device.domain.Device;
+import com.zxiang.project.business.device.mapper.DeviceMapper;
 import com.zxiang.project.business.supplyTissue.domain.SupplyTissue;
 import com.zxiang.project.business.supplyTissue.mapper.SupplyTissueMapper;
 
@@ -26,6 +29,8 @@ public class SupplyTissueServiceImpl implements ISupplyTissueService
 {
 	@Autowired
 	private SupplyTissueMapper supplyTissueMapper;
+	@Autowired
+	private DeviceMapper deviceMapper;
 
 	/**
      * 查询补纸记录信息
@@ -113,6 +118,25 @@ public class SupplyTissueServiceImpl implements ISupplyTissueService
   		//Excel文件名称
   		String excelName = "补纸记录" + System.currentTimeMillis() + ".xls";
   		s.exportExcel("补纸记录", excelName, exportFile, request, response);
+	}
+
+	/**
+	 * 设备补纸保存
+	 */
+	@Override
+	@Transactional
+	public int supplyTissueSave(SupplyTissue supplyTissue) {
+		Device device = deviceMapper.selectDeviceById(supplyTissue.getDeviceId());
+		if(device != null){
+			Integer remainLen = device.getRemainLen();
+			if(remainLen == null){
+				remainLen = 0;
+			}
+			remainLen = remainLen + supplyTissue.getTissueCount();
+			device.setRemainLen(remainLen);
+			deviceMapper.updateDevice(device);
+		}
+		return supplyTissueMapper.insertSupplyTissue(supplyTissue);
 	}
 	
 }

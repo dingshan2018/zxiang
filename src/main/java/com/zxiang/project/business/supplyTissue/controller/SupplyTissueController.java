@@ -103,7 +103,7 @@ public class SupplyTissueController extends BaseController
 		
 		supplyTissue.setCreateBy(createor+"("+userId+")");
 		supplyTissue.setCreateTime(new Date());
-		return toAjax(supplyTissueService.insertSupplyTissue(supplyTissue));
+		return toAjax(supplyTissueService.supplyTissueSave(supplyTissue));
 	}
 
 	/**

@@ -288,6 +288,16 @@ public class DeviceServiceImpl implements IDeviceService
 		Integer placeId = Integer.parseInt(device.getPlaceId());
 		Integer tissueCount = device.getTissueCount();
 		Integer supplierId = device.getSupplierId();
+		Device dev = deviceMapper.selectDeviceById(deviceId);
+		if(dev != null){
+			Integer remainLen = dev.getRemainLen();
+			if(remainLen == null){
+				remainLen = 0;
+			}
+			remainLen = remainLen + tissueCount;
+			dev.setRemainLen(remainLen);
+			updateDevice(dev);
+		}
 		
 		SupplyTissue supplyTissue = new SupplyTissue();
 		supplyTissue.setDeviceId(deviceId);

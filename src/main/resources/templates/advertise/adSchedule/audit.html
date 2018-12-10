@@ -120,7 +120,9 @@
 				window.open(url);
 		    	//$.modal.openFull("素材预览", url);
 			}else{
-				$.modal.alertWarning("暂未生成排期广告!");
+				//$.modal.alertWarning("暂未生成排期广告!");
+				var url = ctx + "advertise/adSchedule/preview/" + adScheduleId;
+		    	$.modal.openFull("素材预览", url);
 			}
 			
 		}
