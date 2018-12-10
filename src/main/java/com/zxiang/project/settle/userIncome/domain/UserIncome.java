@@ -41,6 +41,10 @@ public class UserIncome extends BaseEntity
 	    
 	    /** 出纸数量 */
 	    private Integer paperIncome;
+	    
+	    /** 服务出纸基数 */
+	    private Integer serveIncome;
+	    
 	    /** 推广二维码广告基数 */
 	    private Integer promPaperIncome;
 	    /** 直推代理基数 */
@@ -368,6 +372,14 @@ public class UserIncome extends BaseEntity
 
 		public void setCoperatorName(String coperatorName) {
 			this.coperatorName = coperatorName;
+		}
+
+		public Integer getServeIncome() {
+			return serveIncome;
+		}
+
+		public void setServeIncome(Integer serveIncome) {
+			this.serveIncome = serveIncome;
 		}
 
 	
