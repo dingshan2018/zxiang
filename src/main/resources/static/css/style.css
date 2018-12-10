@@ -7318,10 +7318,14 @@ body.skin-yellow {
     line-height: 30px;
     text-align: center;
     letter-spacing: 1px;
+    word-break: break-all;
     white-space: nowrap;
     font-weight: 600;
     font-size: 20px;
     color: #fff;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity .3s ease-in;
 }
 
 .mini-navbar .navbar-header .navbar-brand{
