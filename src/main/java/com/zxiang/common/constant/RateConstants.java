@@ -42,6 +42,12 @@ public class RateConstants
      */
 	 public static final String RATETYPE_PAPERINCOME = "paperIncome";
 	 
+
+	 /**
+     * 服务出纸基数
+     */
+	 public static final String SERVE_INCOME = "serveIncome";
+	 
 	 /**
      * 推广二维码广告基数
      */
