@@ -50,6 +50,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="updateTime != null "> and update_time = #{updateTime}</if>
              <if test="remainPaper != null and remainPaper != ''"> and remain_paper = #{remainPaper}</if>
          </where>
+         ORDER BY change_terminal_id DESC 
     </select>
     
     <select id="selectChangeTerminalById" parameterType="Integer" resultMap="ChangeTerminalResult">
@@ -131,7 +132,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
              <if test="updateTime != null "> and update_time = #{updateTime}</if>
              <if test="remainPaper != null and remainPaper != ''"> and remain_paper = #{remainPaper}</if>
-         </where>       
+         </where> 
+         ORDER BY change_terminal_id DESC       
     </select>
     
 </mapper>

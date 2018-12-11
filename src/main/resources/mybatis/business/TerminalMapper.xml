@@ -74,6 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="iccId != null and iccId != ''"> and iccid = #{iccId}</if>
              <if test="onlineStatus != null and onlineStatus != ''"> and online_status = #{onlineStatus}</if>
          </where>
+         ORDER BY t.terminal_id DESC 
     </select>
     
     <select id="selectTerminalById" parameterType="Integer" resultMap="TerminalResult">

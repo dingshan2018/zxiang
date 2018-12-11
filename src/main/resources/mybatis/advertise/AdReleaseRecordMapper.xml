@@ -60,6 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="updateBy != null and updateBy != ''"> and a.update_by = #{updateBy}</if>
              <if test="updateTime != null and updateTime != ''"> and a.update_time = #{updateTime}</if>
          </where>
+          ORDER BY a.release_device_id DESC
     </select>
     
     <select id="selectAdReleaseRecordById" parameterType="Integer" resultMap="AdReleaseRecordResult">
@@ -151,6 +152,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="createTime != null and createTime != ''"> and a.create_time = #{createTime}</if>
              <if test="updateBy != null and updateBy != ''"> and a.update_by = #{updateBy}</if>
              <if test="updateTime != null and updateTime != ''"> and a.update_time = #{updateTime}</if>
-         </where>            
+         </where>  
+         ORDER BY release_device_id DESC          
     </select>
 </mapper>
