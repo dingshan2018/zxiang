@@ -91,9 +91,14 @@ public interface DeviceIncomeDailyMapper
 	public List<HashMap<String, Object>> selectreleaserecordlist(HashMap<String, Object> map);
 	
 	/** 
-	 * 出纸记录表查询
+	 * h5出纸记录表查询
 	 * */
 	public List<HashMap<String, Object>> selectzxtissuerecordlist(HashMap<String, Object> map);
+	
+	/** 
+	 * 出纸记录表查询
+	 * */
+	public int selectzxtissuerecordAll(HashMap<String, Object> map);
 	
 	public List<HashMap<String, Object>> selectzxplace(HashMap<String, Object> map);
 	

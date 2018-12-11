@@ -18,6 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <result column="promotion_income" property="promotionIncome" jdbcType="DOUBLE" />
     <result column="prom_paper_income" property="promPaperIncome" jdbcType="INTEGER" />
     <result column="paper_income" property="paperIncome" jdbcType="INTEGER" />
+    <result column="serve_income" property="serveIncome" jdbcType="INTEGER" />
     <result column="direct_agent_income" property="directAgentIncome" jdbcType="DOUBLE" />
     <result column="subsidy_income" property="subsidyIncome" jdbcType="DOUBLE" />
     <result column="ad_income_rate" property="adIncomeRate" jdbcType="DOUBLE" />
@@ -52,7 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
               WHEN 06 THEN '业务员'
                ELSE '' END
               AS coperator_type, sum_date, ad_income, ad_carousel_income, 
-    scan_income, prom_direct_income, prom_indirect_income,promotion_income, paper_income, prom_paper_income, 
+    scan_income, prom_direct_income, prom_indirect_income,promotion_income, paper_income, prom_paper_income, serve_income,
     direct_agent_income, subsidy_income, ad_income_rate, promotion_income_rate, scan_income_rate, 
     subsidy_income_rate, ad_rate, ad_carousel_rate, scan_rate, prom_direct_rate, prom_indirect_rate, 
     concat('-',prom_paper_rate) prom_paper_rate, promotion_rate, direct_agent_rate, serve_rate, subsidy_rate, refund_income, 
@@ -70,7 +71,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
               WHEN 06 THEN '业务员'
                ELSE '' END
               AS coperator_type, a.sum_date, a.ad_income, a.ad_carousel_income, 
-    a.scan_income, a.prom_direct_income, a.prom_indirect_income,a.promotion_income, a.paper_income, a.prom_paper_income, 
+    a.scan_income, a.prom_direct_income, a.prom_indirect_income,a.promotion_income, a.paper_income, a.prom_paper_income, a.serve_income,
     a.direct_agent_income, a.subsidy_income, a.ad_income_rate, a.promotion_income_rate, a.scan_income_rate, 
     a.subsidy_income_rate, a.ad_rate, a.ad_carousel_rate, a.scan_rate, a.prom_direct_rate, a.prom_indirect_rate, 
     concat('-',a.prom_paper_rate) prom_paper_rate, a.promotion_rate, a.direct_agent_rate, a.serve_rate, a.subsidy_rate, a.refund_income, 
@@ -133,6 +134,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	      </if>
 	      <if test="promPaperIncome != null" >
 	        prom_paper_income,
+	      </if>
+	      <if test="serveIncome != null" >
+	        serve_income,
 	      </if>
 	      <if test="directAgentIncome != null" >
 	        direct_agent_income,
@@ -225,6 +229,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	     <if test="promPaperIncome != null" >
 	        #{promPaperIncome,jdbcType=INTEGER},
 	      </if>
+	      <if test="serveIncome != null" >
+	        #{serveIncome,jdbcType=INTEGER},
+	      </if>
 	      <if test="directAgentIncome != null" >
 	        #{directAgentIncome,jdbcType=DOUBLE},
 	      </if>
@@ -311,6 +318,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	      </if>
 	      <if test="promPaperIncome != null" >
 	        prom_paper_income = prom_paper_income+ #{promPaperIncome,jdbcType=INTEGER},
+	      </if>
+	      <if test="serveIncome != null" >
+	        serve_income = serve_income+ #{serveIncome,jdbcType=INTEGER},
 	      </if>
 	      <if test="directAgentIncome != null" >
 	        direct_agent_income =direct_agent_income+ #{directAgentIncome,jdbcType=DOUBLE},

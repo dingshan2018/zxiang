@@ -209,6 +209,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			  ) GROUP BY z.open_id
     </select>
     
+    
+     <select id="selectzxtissuerecordAll"  resultType="int">
+	        SELECT 
+			  count(1)
+			FROM
+			  zx_tissue_record 
+			  WHERE 
+			   device_id = #{deviceId}
+			   and status = '1'
+			AND DATE_FORMAT(create_time, '%Y-%m-%d') = DATE_FORMAT(
+			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
+			    '%Y-%m-%d'
+			  ) GROUP BY open_id
+    </select>
+    
       
     <select id="selectzxplace"  resultType="java.util.HashMap">
         select * from zx_place where  place_id = #{placeId}

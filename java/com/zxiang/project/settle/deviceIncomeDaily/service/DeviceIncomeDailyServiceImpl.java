@@ -122,6 +122,13 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		map.put("scheduleId", scheduleId);
 		return deviceIncomeDailyMapper.selectzxtissuerecordlist(map);
 	}
+	
+	@Override
+	public int selectzxtissuerecordAll(String deviceId) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("deviceId", deviceId);
+		return deviceIncomeDailyMapper.selectzxtissuerecordAll(map);
+	}
 
 	/**
 	 * 每日统计数据
@@ -148,6 +155,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				
 				List<HashMap<String, Object>> tissuenumlist= selectzxtissuerecordlist(device.get("device_id")+"",""); //出纸数量
 				int tissuenum = tissuenumlist.size();
+				int tissuenumAll = selectzxtissuerecordAll(device.get("device_id")+"")
 				//计算每日设备推广费用
 				deviceorder(isincome,promotioner_id,device,order);
 				if(tissuenum>0) {

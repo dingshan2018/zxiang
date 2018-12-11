@@ -73,6 +73,8 @@ public interface IDeviceIncomeDailyService
 	 * */
 	public List<HashMap<String, Object>> selectzxtissuerecordlist(String deviceId,String scheduleId);
 	
+	public int selectzxtissuerecordAll(HashMap<String, Object> map);
+	
 	/** 
 	 * 场所管理表
 	 * */
