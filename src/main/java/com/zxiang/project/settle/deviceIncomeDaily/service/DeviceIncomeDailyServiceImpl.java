@@ -242,7 +242,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		double serve_rate = Double.valueOf(user.get("serveRate")+"");
 		//------------------------客户昨日收入--------------------------------------------------------
 		// 机主 服务收益（0.025元）
-		insertdata(tissuenum*serve_rate,"03",RateConstants.SERVE_INCOME,0.0,tissuenumAll,user);
+		insertdata(tissuenumAll*serve_rate,"03",RateConstants.SERVE_INCOME,0.0,tissuenumAll,user);
 		
 		if(com.zxiang.common.utils.StringUtils.isNotNull(map.get("place_id"))) {
 			//代理商服务收益（0.025元）
@@ -255,7 +255,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				String agentId = promotionagent.get("agent_id")+"";
 				user = getusedata("",agentId,UserConstants.USER_TYPE_AGENT);
 				serve_rate = Double.valueOf(user.get("serveRate")+"");
-				insertdata(tissuenum*serve_rate,"03",RateConstants.SERVE_INCOME,0.0,tissuenumAll,user);
+				insertdata(tissuenumAll*serve_rate,"03",RateConstants.SERVE_INCOME,0.0,tissuenumAll,user);
 			}
 		}
 		  //h5广告费用
