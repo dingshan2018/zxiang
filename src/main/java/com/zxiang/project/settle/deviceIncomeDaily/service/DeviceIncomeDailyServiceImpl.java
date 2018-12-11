@@ -158,10 +158,13 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				int tissuenumAll = selectzxtissuerecordAll(device.get("device_id")+"");
 				//计算每日设备推广费用
 				deviceorder(isincome,promotioner_id,device,order);
-				if(tissuenum>0) {
-					String	promotionerh5 = tissuenumlist.get(0).get("promotioner").toString();
+				if(tissuenumAll>0) {
+					String	promotionerh5 ="";
+					if(tissuenum>0) {
+						promotionerh5 = tissuenumlist.get(0).get("promotioner").toString();
+					}
 					//计算每日出纸费用
-					tissuedata(device,buyer_id,tissuenum,promotionerh5);
+					tissuedata(device,buyer_id,tissuenumAll,tissuenum,promotionerh5);
 				}
 				//计算广告费用
 				addata(device,buyer_id,tissuenum);
@@ -232,14 +235,14 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	/**
 	 * 计算每日出纸费用服务收益
 	 * */
-	public void tissuedata(HashMap<String, Object> map,String buyerid,int tissuenum,String promotionerh5) {
+	public void tissuedata(HashMap<String, Object> map,String buyerid,int tissuenumAll,int tissuenum,String promotionerh5) {
 		//获取机主的信息
 		HashMap<String, Object> user = getusedata(buyerid,"","");
 		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
 		double serve_rate = Double.valueOf(user.get("serveRate")+"");
 		//------------------------客户昨日收入--------------------------------------------------------
 		// 机主 服务收益（0.025元）
-		insertdata(tissuenum*serve_rate,"03",RateConstants.RATETYPE_PAPERINCOME,0.0,0,user);
+		insertdata(tissuenum*serve_rate,"03",RateConstants.SERVE_INCOME,0.0,tissuenumAll,user);
 		
 		if(com.zxiang.common.utils.StringUtils.isNotNull(map.get("place_id"))) {
 			//代理商服务收益（0.025元）
@@ -252,7 +255,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				String agentId = promotionagent.get("agent_id")+"";
 				user = getusedata("",agentId,UserConstants.USER_TYPE_AGENT);
 				serve_rate = Double.valueOf(user.get("serveRate")+"");
-				insertdata(tissuenum*serve_rate,"03",RateConstants.RATETYPE_PAPERINCOME,0.0,0,user);
+				insertdata(tissuenum*serve_rate,"03",RateConstants.SERVE_INCOME,0.0,tissuenumAll,user);
 			}
 		}
 		//h5广告费用
@@ -520,6 +523,8 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				userIncome.setPromIndirectIncome(incomenum);//间推机子数量
 			}else if(ratetype.equals(RateConstants.RATETYPE_PAPERINCOME)) {
 				userIncome.setPaperIncome(incomenum);//出纸数量
+			}else if(ratetype.equals(RateConstants.SERVE_INCOME)) {
+				userIncome.setServeIncome(incomenum);//服务出纸数量
 			}else if(ratetype.equals(RateConstants.RATETYPE_DIRECTAGENTINCOME)) {
 				userIncome.setDirectAgentIncome(incomeprice);//直推代理基数
 			}else if(ratetype.equals(RateConstants.RATETYPE_SUBSIDYINCOME)){

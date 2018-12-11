@@ -63,7 +63,7 @@
                data-toggle="popover"
                data-trigger="hover"
                title="广告收益计算"
-               data-content="视频广告基数*视频广告系数+轮播广告基数*轮播广告系数+出纸数量*二维码广告系数">
+               data-content="（视频广告基数*视频广告系数）+（轮播广告基数*轮播广告系数）+（出纸数量*二维码广告系数）">
               <span class="fa fa-question-circle"></span>
             </a>
           </div>
@@ -133,7 +133,7 @@
                data-toggle="popover"
                data-trigger="hover"
                title="推广收益计算"
-               data-content="推广广告基数*推广广告系数+推广二维码广告基数*推广二维码广告系数+直推机子数量*直推机子系数+间推机子数量*间推机子系数+直推代理基数*直推代理系数">
+               data-content="（推广广告基数*推广广告系数）+（推广二维码广告基数*推广二维码广告系数）+（直推机子数量*直推机子系数）+（间推机子数量*间推机子系数）+（直推代理基数*直推代理系数）">
               <span class="fa fa-question-circle"></span>
             </a>
           </div>
@@ -145,7 +145,7 @@
         <div class="form-group">
           <label class="col-sm-3 control-label">服务出纸基数 ：</label>
           <div class="col-sm-3">
-            <label th:text="*{paperIncome}" class="form-control"></label>
+            <label th:text="*{serveIncome}" class="form-control"></label>
           </div>
           <label class="col-sm-3 control-label">服务出纸系数：</label>
           <div class="col-sm-3">
@@ -163,7 +163,7 @@
                data-toggle="popover"
                data-trigger="hover"
                title="服务收益计算"
-               data-content="服务出纸基数*服务出纸系数">
+               data-content="（服务出纸基数*服务出纸系数）">
               <span class="fa fa-question-circle"></span>
             </a>
           </div>
