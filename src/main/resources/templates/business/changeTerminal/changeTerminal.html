@@ -132,7 +132,8 @@
               actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' +
                 row.changeTerminalId + '\')"><i class="fa fa-remove"></i>删除</a>');
               return actions.join('');
-            }
+            },
+			visible: false
           }]
       };
       $.table.init(options);
