@@ -155,7 +155,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				
 				List<HashMap<String, Object>> tissuenumlist= selectzxtissuerecordlist(device.get("device_id")+"",""); //出纸数量
 				int tissuenum = tissuenumlist.size();
-				int tissuenumAll = selectzxtissuerecordAll(device.get("device_id")+"")
+				int tissuenumAll = selectzxtissuerecordAll(device.get("device_id")+"");
 				//计算每日设备推广费用
 				deviceorder(isincome,promotioner_id,device,order);
 				if(tissuenum>0) {
