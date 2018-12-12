@@ -38,6 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
              <if test="createTime != null "> and create_time = #{createTime}</if>
          </where>
+         ORDER BY id DESC 
     </select>
     
     <select id="selectTerminalParamById" parameterType="Integer" resultMap="TerminalParamResult">

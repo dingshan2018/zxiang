@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.business.deviceReleaseAudit.mapper.DeviceReleaseAuditMapper">
+    
+    <resultMap type="DeviceReleaseAudit" id="DeviceReleaseAuditResult">
+        <result property="auditId"    column="audit_id"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="placeId"    column="place_id"    />
+        <result property="approved"    column="approved"    />
+        <result property="approvedRemark"    column="approved_remark"    />
+        <result property="approvedUser"    column="approved_user"    />
+        <result property="auditDate"    column="audit_date"    />
+        <result property="createDate"    column="create_date"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+	
+	<sql id="selectDeviceReleaseAuditVo">
+        select audit_id, device_id,
+        (select distinct d.device_sn from zx_device d where d.device_id =adra.`device_id` ) deviceSnName,
+        place_id,
+        (select distinct p.name from zx_place p where p.place_id =adra.`place_id` ) placeName,
+        approved,
+        CASE approved  WHEN '0' THEN '待审核' WHEN '1' THEN '审核通过' WHEN '2' THEN '审核不通过' ELSE '-' END approvedStatus,
+        approved_remark, approved_user, audit_date, create_date, del_flag from zx_device_release_audit adra
+    </sql>
+	
+    <select id="selectDeviceReleaseAuditList" parameterType="DeviceReleaseAudit" resultMap="DeviceReleaseAuditResult">
+        <include refid="selectDeviceReleaseAuditVo"/>
+        <where>  
+            <if test="auditId != null and auditId != ''"> and audit_id = #{auditId}</if>
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
+             <if test="approved != null and approved != ''"> and approved = #{approved}</if>
+             <if test="approvedRemark != null and approvedRemark != ''"> and approved_remark = #{approvedRemark}</if>
+             <if test="approvedUser != null and approvedUser != ''"> and approved_user = #{approvedUser}</if>
+             <if test="auditDate != null "> and audit_date = #{auditDate}</if>
+             <if test="createDate != null "> and create_date = #{createDate}</if>
+             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				AND date_format(adra.create_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			 </if>
+			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				AND date_format(adra.create_date,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+			 </if>
+             <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
+         </where>
+         order by audit_id desc
+    </select>
+    
+    <select id="selectDeviceReleaseAuditById" parameterType="Integer" resultMap="DeviceReleaseAuditResult">
+        <include refid="selectDeviceReleaseAuditVo"/>
+        where audit_id = #{auditId}
+    </select>
+        
+    <insert id="insertDeviceReleaseAudit" parameterType="DeviceReleaseAudit">
+        insert into zx_device_release_audit
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="auditId != null and auditId != '' ">audit_id,</if>
+			<if test="deviceId != null and deviceId != '' ">device_id,</if>
+			<if test="placeId != null and placeId != '' ">place_id,</if>
+			<if test="approved != null and approved != '' ">approved,</if>
+			<if test="approvedRemark != null and approvedRemark != '' ">approved_remark,</if>
+			<if test="approvedUser != null and approvedUser != '' ">approved_user,</if>
+			<if test="auditDate != null  ">audit_date,</if>
+			<if test="createDate != null  ">create_date,</if>
+			<if test="delFlag != null and delFlag != '' ">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="auditId != null and auditId != ''">#{auditId},</if>
+			<if test="deviceId != null and deviceId != ''">#{deviceId},</if>
+			<if test="placeId != null and placeId != ''">#{placeId},</if>
+			<if test="approved != null and approved != ''">#{approved},</if>
+			<if test="approvedRemark != null and approvedRemark != ''">#{approvedRemark},</if>
+			<if test="approvedUser != null and approvedUser != ''">#{approvedUser},</if>
+			<if test="auditDate != null ">#{auditDate},</if>
+			<if test="createDate != null ">#{createDate},</if>
+			<if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateDeviceReleaseAudit" parameterType="DeviceReleaseAudit">
+        update zx_device_release_audit
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceId != null  ">device_id = #{deviceId},</if>
+            <if test="placeId != null  ">place_id = #{placeId},</if>
+            <if test="approved != null  and approved != ''  ">approved = #{approved},</if>
+            <if test="approvedRemark != null  and approvedRemark != ''  ">approved_remark = #{approvedRemark},</if>
+            <if test="approvedUser != null  and approvedUser != ''  ">approved_user = #{approvedUser},</if>
+            <if test="auditDate != null  ">audit_date = #{auditDate},</if>
+            <if test="createDate != null  ">create_date = #{createDate},</if>
+            <if test="delFlag != null  and delFlag != ''  ">del_flag = #{delFlag},</if>
+        </trim>
+        where audit_id = #{auditId}
+    </update>
+
+	<delete id="deleteDeviceReleaseAuditById" parameterType="Integer">
+        delete from zx_device_release_audit where audit_id = #{auditId}
+    </delete>
+	
+    <delete id="deleteDeviceReleaseAuditByIds" parameterType="String">
+        delete from zx_device_release_audit where audit_id in 
+        <foreach item="auditId" collection="array" open="(" separator="," close=")">
+            #{auditId}
+        </foreach>
+    </delete>
+    
+</mapper>

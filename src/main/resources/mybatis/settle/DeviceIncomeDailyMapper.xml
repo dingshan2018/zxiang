@@ -211,8 +211,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     
      <select id="selectzxtissuerecordAll"  resultType="int">
-	        SELECT 
-			  count(1)
+	       SELECT COUNT(1)  FROM ( SELECT 
+			  open_id
 			FROM
 			  zx_tissue_record 
 			  WHERE 
@@ -221,7 +221,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			AND DATE_FORMAT(create_time, '%Y-%m-%d') = DATE_FORMAT(
 			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
 			    '%Y-%m-%d'
-			  ) GROUP BY open_id
+			  ) GROUP BY open_id) t
     </select>
     
       

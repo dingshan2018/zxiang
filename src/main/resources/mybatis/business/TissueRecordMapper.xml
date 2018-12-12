@@ -66,6 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              			WHERE su.user_type='02' AND su.puser_id=#{joinId}  AND su.user_id=d.owner_id))
          	 </if>
          </where>
+         ORDER BY tissue_record_id DESC 
     </select>
     
     <select id="selectTissueRecordById" parameterType="Integer" resultMap="TissueRecordResult">
@@ -168,6 +169,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              		WHERE zd.owner_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_device d 
              			WHERE su.user_type='02' AND su.puser_id=#{joinId}  AND su.user_id=d.owner_id))
          	 </if>
-         </where>        
+         </where>  
+         ORDER BY tissue_record_id DESC      
     </select>
 </mapper>

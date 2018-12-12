@@ -91,6 +91,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="city != null and city != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.city = #{city})</if>
              <if test="county != null and county != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.county = #{county})</if>
          </where>
+         ORDER BY d.device_id DESC 
     </select>
     
     <!-- 查询库存设备列表  -->
@@ -138,6 +139,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="city != null and city != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.city = #{city})</if>
              <if test="county != null and county != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.county = #{county})</if>
          </where>
+         ORDER BY d.device_id DESC 
     </select>
     
     <select id="selectDeviceById" parameterType="Integer" resultMap="DeviceResult">
