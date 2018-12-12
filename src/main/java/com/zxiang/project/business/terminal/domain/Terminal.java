@@ -65,6 +65,7 @@ public class Terminal extends BaseEntity
 	private String offerKey;
 
 	private String deviceCode;
+	private String deviceSn;
 	private String placeName;
 	private String statusName;
 	private String onlineStatusName;
@@ -302,6 +303,14 @@ public class Terminal extends BaseEntity
 
 	public void setOnlineStatusName(String onlineStatusName) {
 		this.onlineStatusName = onlineStatusName;
+	}
+
+	public String getDeviceSn() {
+		return deviceSn;
+	}
+
+	public void setDeviceSn(String deviceSn) {
+		this.deviceSn = deviceSn;
 	}
 
 	public String toString() {

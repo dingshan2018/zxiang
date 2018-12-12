@@ -1,0 +1,134 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+    	<div class="col-sm-12 select-info">
+	      <form id="terminal-form">
+	        <div class="select-list">
+	          <ul>
+	          	<li>
+	              <span class="select-item-name">审核结果：</span>
+	              <select id="approved" name="approved">
+	                <option value="">全部</option>
+	                <option value="0">待审核</option>
+	                <option value="1">审核通过</option>
+	                <option value="2">审核不通过</option>
+	              </select>
+	            </li>
+	            <li>
+	              <span class="select-item-name">场所名称：</span>
+	              <select id="placeId" name="placeId">
+	                <option value="">全部</option>
+	              </select>
+	            </li>
+	            <li class="select-time">
+	              <label class="select-item-name">创建时间： </label>
+	              <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+	              <span>-</span>
+	              <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+	            </li>
+	            <li class="select-btns">
+	              <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
+	              </a>
+	              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
+	              </a>
+	            </li>
+	          </ul>
+	        </div>
+	      </form>
+	    </div>
+    	
+		<div class="btn-group hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:deviceReleaseAudit:add">
+				<i class="fa fa-plus"></i> 新增
+			</a>
+			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="business:deviceReleaseAudit:remove">
+				<i class="fa fa-trash-o"></i> 删除
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('business:deviceReleaseAudit:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('business:deviceReleaseAudit:remove')}]];
+        var prefix = ctx + "business/deviceReleaseAudit"
+
+        $(function() {
+        	//投放场所下拉框数据
+            var placeList = selectPlaceList();
+            $.each(placeList, function (i) {
+              $('#placeId').append('<option value=' + placeList[i].placeId + '>' + placeList[i].name + '</option>');
+            });
+            
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "设备投放审核",
+                search    : false,
+                showExport: false,
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'auditId', 
+					title : '主键ID' 
+				},
+				{
+					field : 'deviceSnName', 
+					title : '设备资产编号' 
+				},
+				{
+					field : 'placeName', 
+					title : '投放场所' 
+				},
+				{
+					field : 'approvedStatus', 
+					title : '审核结果' 
+				},
+				{
+					field : 'approvedRemark', 
+					title : '审核意见' 
+				},
+				{
+					field : 'approvedUser', 
+					title : '审核人员' 
+				},
+				{
+					field : 'auditDate', 
+					title : '审核时间' 
+				},
+				{
+					field : 'createDate', 
+					title : '创建时间' 
+				},
+				{
+					field : 'delFlag', 
+					title : '是否删除' 
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.auditId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.auditId + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'auditId');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'delFlag');
+            
+        });
+    </script>
+</body>
+</html>

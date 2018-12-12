@@ -30,7 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<sql id="selectTerminalVo">
         select terminal_id, terminal_code, 
         device_id, 
-        (select distinct d.device_code from zx_device d where d.device_id =t.`device_id` ) deviceCode,
+        (select distinct d.device_sn from zx_device d where d.device_id =t.`device_id` ) deviceSn,
         place_id, 
         (select distinct p.name from zx_place p where p.place_id =t.`place_id` ) placeName,
         rssi, last_heart_time, last_login_time, volumn, status,
