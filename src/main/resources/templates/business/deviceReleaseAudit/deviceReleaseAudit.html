@@ -34,6 +34,9 @@
 	              </a>
 	              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
 	              </a>
+	              <a class="btn btn-info btn-rounded btn-sm" onclick="batchAudit()" shiro:hasPermission="business:deviceReleaseAudit:audit">
+	                <i class="fa fa-edit"></i>&nbsp;批量审核
+	              </a>
 	            </li>
 	          </ul>
 	        </div>
@@ -129,6 +132,44 @@
             $('#bootstrap-table').bootstrapTable('hideColumn', 'delFlag');
             
         });
+        
+      	//批量导入设备资产编号弹窗函数
+        function batchAudit () {
+       	  var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+	      if (rows.length == 0) {
+	        $.modal.alertWarning('请至少选择一条记录');
+	        return;
+	      }
+	      for(var i=0;i<rows.length;i++){
+	    	  var auditInfo = getAuditInfo(rows[i]);
+	    	  //审核通过的不能再审核;未审核、审核不通过都可以重复审核
+	    	  if(auditInfo.approved == "1"){
+	    		  $.modal.alertWarning(auditInfo.deviceSnName+" 的投放申请已审核通过,请勿重复审核!");
+	    	  	  return; 
+	    	  }
+	      }
+	      
+          var url = prefix + '/batchAudit/'+rows.join();
+          $.modal.open('设备投放批量审核', url);
+        }
+      	
+      	//获取审核信息方法
+        function getAuditInfo(auditId) {
+        	var releaseAudit;
+        	$.ajax({
+    	        url: prefix + "/selectInfo/" + auditId,
+    	        type: "post",
+    	        async:false,
+    	        success: function (data) {
+    	        	releaseAudit = data;
+    	        },
+    	        error: function (data) {
+    	        	console.log("selectInfo:",data);
+    	            alert("后台查询失败");
+    	        }
+    		})
+    		return releaseAudit;
+        }
     </script>
 </body>
 </html>

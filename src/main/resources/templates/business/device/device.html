@@ -15,7 +15,7 @@
               </select>
             </li>
             <li>
-              <span class="select-item-name">资产编号：</span>
+              <span class="select-item-name">设备资产编号：</span>
               <input type="text" name="deviceSn" id="deviceSn"/>
             </li>
             <li>
@@ -50,17 +50,17 @@
               </a>
               <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
               </a>
-              <a class="btn btn-primary btn-rounded btn-sm" onclick="release()" shiro:hasPermission="business:device:release">
-                <i class="fa fa-search"></i>&nbsp;投放
+              <a class="btn btn-info btn-rounded btn-sm" onclick="release()" shiro:hasPermission="business:device:release">
+                <i class="fa fa-edit"></i>&nbsp;投放
               </a>
-              <a class="btn btn-primary btn-rounded btn-sm" onclick="removeDevice()" shiro:hasPermission="business:device:removeDevice">
-                <i class="fa fa-search"></i>&nbsp;撤机
+              <a class="btn btn-info btn-rounded btn-sm" onclick="removeDevice()" shiro:hasPermission="business:device:removeDevice">
+                <i class="fa fa-edit"></i>&nbsp;撤机
               </a>
-              <a class="btn btn-primary btn-rounded btn-sm" onclick="changeDevice()" shiro:hasPermission="business:device:changeDevice">
-                <i class="fa fa-search"></i>&nbsp;换板
+              <a class="btn btn-info btn-rounded btn-sm" onclick="changeDevice()" shiro:hasPermission="business:device:changeDevice">
+                <i class="fa fa-edit"></i>&nbsp;换板
               </a>
-              <a class="btn btn-primary btn-rounded btn-sm" onclick="supplyTissue()" shiro:hasPermission="business:device:supplyTissueAdd">
-                <i class="fa fa-search"></i>&nbsp;补纸
+              <a class="btn btn-info btn-rounded btn-sm" onclick="supplyTissue()" shiro:hasPermission="business:device:supplyTissueAdd">
+                <i class="fa fa-edit"></i>&nbsp;补纸
               </a>
             </li>
           </ul>
@@ -132,7 +132,7 @@
           },
           {
               field: 'deviceSn',
-              title: '资产编号'
+              title: '设备资产编号'
           },
           {
             field: 'placeName',
@@ -180,6 +180,23 @@
             title: '设备状态',
           },
           {
+              field: 'releaseStatus',
+              title: '投放申请',
+              formatter: function (value) {
+                 if (value === '0') {
+                   return '未申请';
+                 } else if (value === '1') {
+                   return '已申请';
+                 } else if (value === '2'){
+                   return '申请通过';
+                 } else if (value === '3'){
+                   return '申请失败';
+                 } else{
+                	 return '-';
+                 }
+              }
+          },
+          {
               field: 'note',
               title: '备注'
           },
@@ -224,6 +241,7 @@
       $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'status');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'deviceCode');
     });
 
     function proviceBind () {
@@ -286,11 +304,20 @@
         return;
       }
       //若已经有设备编号说明已经投放过，不允许再次投放
-     /*  var deviceCode = $.table.selectColumns($.table._option.columns[2].field);
-      if (deviceCode != '') {
-        $.modal.alertWarning('该设备已投放!');
-        return;
-      } */
+      var device = getDeviceInfo(rows);
+      if(device.status == "02"){
+ 		$.modal.alertWarning("该设备已投放!");
+	    return;
+	  }
+      if(device.releaseStatus == "1" || device.releaseStatus == "2"){
+    	  if(device.releaseStatus == "1"){
+    		  $.modal.alertWarning("投放申请已提交,请等候审核!");
+    	  	  return; 
+    	  }else{
+    		  $.modal.alertWarning("该设备已投放!");
+    	  	  return;
+    	  }
+  	  }
       //
       var url = ctx + 'business/device/release/' + rows;
       $.modal.open('选择投放场所', url);
@@ -308,25 +335,11 @@
         $.modal.alertWarning('只能选择一条记录');
         return;
       }
-      /*  //若当前状态不是已投放，不允许撤机
-      var status = $.table.selectColumns($.table._option.columns[14].field);
-      if (status != "02") {
-        $.modal.alertWarning('该设备未投放，不能撤机!');
-        return;
-      }
-      //若已经有撤机时间说明已经撤机，不允许再次撤机
-      var removeTime = $.table.selectColumns($.table._option.columns[9].field);
-      if (removeTime != '') {
-        $.modal.alertWarning('该设备已被撤机!');
-        return;
-      } */
-      
-      //若当前状态不是已投放，不允许撤机
-      var status = $.table.selectColumns($.table._option.columns[13].field);
-      if (status != "02") {
-        $.modal.alertWarning('该设备未投放，不能撤机!');
-        return;
-      }
+      var device = getDeviceInfo(rows);
+      if(device.status != "02"){
+    	  $.modal.alertWarning('该设备未投放，不能撤机!');
+          return;
+	  }
       //
       var url = ctx + 'business/device/removeDevice/' + rows;
       $.modal.open('撤机', url);
@@ -370,6 +383,24 @@
     function batchImport () {
       var url = ctx + 'business/device/batchImport';
       $.modal.open('批量导入设备资产编号', url);
+    }
+  	
+  	//获取运营设备数据信息方法
+    function getDeviceInfo(deviceId) {
+    	var device;
+    	$.ajax({
+	        url: ctx + "business/device/selectInfo/" + deviceId,
+	        type: "post",
+	        async:false,
+	        success: function (data) {
+	        	device = data;
+	        },
+	        error: function (data) {
+	        	console.log("selectInfo:",data);
+	            alert("后台查询失败");
+	        }
+		})
+		return device;
     }
   </script>
 </body>

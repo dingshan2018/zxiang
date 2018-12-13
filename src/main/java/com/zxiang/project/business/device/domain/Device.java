@@ -55,6 +55,10 @@ public class Device extends BaseEntity
 	private String note;
 	/** 设备状态(1 下线  2 上线  3 故障 ) */
 	private String status;
+	
+	/** 投放申请:0可提交;1已申请;2申请通过;3申请失败 */
+	private String releaseStatus;
+	
 	/** 是否删除 */
 	private String delFlag;
 	/**  */
@@ -415,6 +419,14 @@ public class Device extends BaseEntity
 
 	public void setOwnerName(String ownerName) {
 		this.ownerName = ownerName;
+	}
+
+	public String getReleaseStatus() {
+		return releaseStatus;
+	}
+
+	public void setReleaseStatus(String releaseStatus) {
+		this.releaseStatus = releaseStatus;
 	}
 
 	public String toString() {

@@ -2,6 +2,8 @@ package com.zxiang.project.business.deviceReleaseAudit.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.zxiang.project.business.deviceReleaseAudit.domain.DeviceReleaseAudit;	
 
 /**
@@ -59,5 +61,24 @@ public interface DeviceReleaseAuditMapper
      * @return 结果
      */
 	public int deleteDeviceReleaseAuditByIds(String[] auditIds);
+
+	/**
+	 * 通过设备ID查询审批数据
+	 * @param deviceId
+	 * @return
+	 */
+	public DeviceReleaseAudit selectAuditByDeviceId(@Param("deviceId")Integer deviceId);
+
+	/**
+	 * 批量更新投放审核数据
+	 * @param auditIds
+	 * @param approved
+	 * @param approvedRemark
+	 * @param operatorUser 
+	 * @return
+	 */
+	public int batchUpdateAudit(@Param("array")String[] auditIds, 
+			@Param("approved")String approved, @Param("approvedRemark")String approvedRemark,@Param("approvedUser") String approvedUser);
+	
 	
 }
