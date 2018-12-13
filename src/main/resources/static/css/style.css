@@ -88,6 +88,16 @@ body.body-small .navbar-top-links li:last-child {
     min-height: 50px;
 }
 
+/* bootstrap-select
+ ********************/
+.block-plugin__select-picker.selectpicker{
+    transition: all .3s ease-out;
+}
+.block-plugin__select-picker .dropdown-menu li{
+    float: none;
+    margin: 0;
+}
+
 .dropdown-menu {
     border: medium none;
     display: none;
@@ -887,6 +897,55 @@ body.canvas-menu.mini-navbar nav.navbar-static-side {
 
 .btn-white.disabled, .btn-white.disabled:hover, .btn-white.disabled:focus,  .btn-white.disabled:active, .btn-white.disabled.active, .btn-white[disabled],  .btn-white[disabled]:hover, .btn-white[disabled]:focus, .btn-white[disabled]:active,  .btn-white.active[disabled], fieldset[disabled] .btn-white, fieldset[disabled] .btn-white:hover,  fieldset[disabled] .btn-white:focus, fieldset[disabled] .btn-white:active,  fieldset[disabled] .btn-white.active {
     color: #cacaca;
+}
+
+.btn-light{
+    color: #212529;
+    background-color: #f8f9fa;
+    border-color: #f8f9fa;
+}
+
+.btn-light:hover{
+    color: #212529;
+    background-color: #e2e6ea;
+    border-color: #dae0e5;
+}
+
+.btn-light:not(:disabled):not(.disabled).active,
+.btn-light:not(:disabled):not(.disabled):active {
+    color: #212529;
+    background-color: #dae0e5;
+    border-color: #d3d9df;
+}
+
+.btn-light~.dropdown-menu a{
+    margin: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    font-size: 14px;
+}
+
+.btn-light~.dropdown-menu li:first-child a{
+    margin-top: 8px;
+}
+
+.btn-light~.dropdown-menu li:last-child a{
+    margin-bottom: 8px;
+}
+
+.btn-light~.dropdown-menu a:focus,
+.btn-light~.dropdown-menu a:hover {
+    color: #16181b;
+    text-decoration: none;
+    background-color: #f8f9fa;
+}
+
+.btn-light~.dropdown-menu a.active,
+.btn-light~.dropdown-menu a.active:active {
+    color: #fff;
+    text-decoration: none;
+    background-color: #007bff;
 }
 
 .form-control, .form-control:focus, .has-error .form-control:focus,  .has-success .form-control:focus, .has-warning .form-control:focus,  .navbar-collapse, .navbar-form, .navbar-form-custom .form-control:focus,  .navbar-form-custom .form-control:hover, .open .btn.dropdown-toggle,  .panel, .popover, .progress, .progress-bar {

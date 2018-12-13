@@ -219,18 +219,18 @@
     <script type="text/javascript">
       // 设置select的value
       if ("[[${adRange != null && adRange.releaseType == '1'}]]" === "true"){
-        $('.select-pca__province').val("[[${adRange.province}]]");
-        $('.select-pca__city').val("[[${adRange.city}]]");
-        $('.select-pca__areas').val("[[${adRange.county}]]");
+        $('.select-pca__province').val("[[${adRange != null ? adRange.province  : ''}]]");
+        $('.select-pca__city').val("[[${adRange != null ? adRange.city : ''}]]");
+        $('.select-pca__areas').val("[[${adRange != null ? adRange.county : ''}]]");
 
       }
       else if ("[[${adRange != null && adRange.releaseType == '2'}]]" === "true"){
-        $('[data-id="placeGrade"]').val("[[${adRange.placeGrade}]]");
+        $('[data-id="placeGrade"]').val("[[${adRange != null ? adRange.placeGrade : ''}]]");
 
       }
 
       // 投放设备
-      var adRangeDevices = "[[${adRange.devices}]]";
+      var adRangeDevices = "[[${adRange != null ? adRange.devices : ''}]]";
       $('.device-item').each(function (index, item) {
         !(new RegExp('(,|^)' + $(item).data('deviceId') + '(,|$)').test(adRangeDevices)) ?
         $(item).remove() :

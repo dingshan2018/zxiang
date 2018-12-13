@@ -20,7 +20,7 @@
                     <div class="ibox-title">
                         <h5>个人信息</h5>
                     <div class="ibox-tools">
-                        
+
                         <a class="dropdown-toggle" data-toggle="dropdown" href="profile.html#">
                             <i class="fa fa-edit"></i>
                         </a>
@@ -29,14 +29,14 @@
                             <li><a href="javascript:resetPwd()">修改密码</a></li>
                             <li><a href="javascript:avatar()">修改头像</a></li>
                         </ul>
-                       
+
                     </div>
                     </div>
                     <div class="contact-box">
 	                        <div class="col-sm-4">
 	                            <div class="text-center">
-	                                <img alt="image" class="img-circle m-t-xs img-responsive" th:src="${user.avatar} ? ${user.avatar} : @{/img/profile.jpg}">
-	                                <div class="m-t-xs font-bold">[[${user.loginIp}]]</div>
+	                                <img alt="image" class="img-circle m-t-xs img-responsive" style="width: 132px; height: 132px;" th:src="${user.avatar} ? ${user.avatar} : @{/img/profile.jpg}">
+	                                <div class="m-t-xs font-bold" style="width: 132px;">[[${user.loginIp}]]</div>
 	                            </div>
 	                        </div>
 	                        <div class="col-sm-8">
@@ -55,7 +55,7 @@
             </div>
         </div>
     </div>
-    
+
     <div th:include="include::footer"></div>
     <script>
         var userId = [[${user.userId}]];
