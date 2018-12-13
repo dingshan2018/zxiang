@@ -142,10 +142,9 @@
       width: 260px;
     }
 
-    .form-control[disabled],
-    .form-control[readonly],
-    fieldset[disabled] .form-control {
-      background-color: #f3f3f4;
+    .paper-echarts-wrapper .chart-date--filter .date-time-picker{
+      border-radius: 3px;
+      background-color: #fff;
     }
 
     .layui-laydate-content td.laydate-selected {
@@ -264,11 +263,10 @@
       });
     }
 
-    function tissueStatistical ([startDate, endDate]) {
-      $.post("/home/tissueStatistical", {
-        startDate: startDate,
-        endDate: endDate
-      }, function (data) {
+    function tissueStatistical (queryDate) {
+      $.post("/home/tissueStatistical", JSON.stringify({
+        dates: queryDate
+      }), function (data) {
         data = data.dataList;
         var selDate = [];
         var tissueTotal = [];
@@ -360,17 +358,29 @@
     function initDate () {
       var today = new Date();
       var lastWeek = new Date(today.getTime() - 6 * 24 * 3600 * 1000);
-      tissueStatistical([lastWeek.Format("yyyy-MM-dd"), today.Format("yyyy-MM-dd")]);
+
+      tissueStatistical(pushQueryDate(lastWeek, today));
 
       laydate.render({
         elem: ".date-time-picker",
         range: true,
         value: lastWeek.Format("yyyy-MM-dd") + " - " + today.Format("yyyy-MM-dd"),
         max: today.Format("yyyy-MM-dd"),
-        done: function (value, date, endDate) {
-          tissueStatistical(value.split(" - "));
+        done: function (value, startDate, endDate) {
+          var dates = value.split(" - ");
+          tissueStatistical(pushQueryDate(new Date(dates[0]), new Date(dates[1])));
         }
       });
+    }
+
+    function pushQueryDate (startDate, endDate) {
+      var queryDate = [];
+      var dateDifference = parseInt((endDate.getTime() - startDate.getTime()) / 1000 / 3600 / 24);
+      for (var i = dateDifference; i > 0; i--) {
+        queryDate.push(new Date(endDate.getTime() - (i * 24 * 3600 * 1000)).Format("yyyy-MM-dd"));
+      }
+      queryDate.push(endDate.Format("yyyy-MM-dd"));
+      return queryDate;
     }
 
     systemIndicators();
