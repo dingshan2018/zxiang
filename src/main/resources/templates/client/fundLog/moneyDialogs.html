@@ -25,18 +25,22 @@
 			</div>
 			<div class="form-group">	
 				<label class="col-sm-3 control-label" style="width: 120px;text-align: right;">提现金额：</label>
-				<input id="money" name="money" onchange="moneyValidate()" class="form-control" type="text" style="display: inline-block;width: auto;">
+				<input id="money" name="money" onkeyup="moneyValidate()" class="form-control" type="text" style="display: inline-block;width: auto;"/>
+				<a href="javascript:void(0);" onclick="allMoney()"> &nbsp;全部提现</a>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label" style="text-align: right; color: red;" id="reminder"></label>
 			</div>
 			<div class="form-group">
 				<div class="form-control-static col-sm-offset-20" style="text-align: right;margin-top: 30px;padding: 7px 25px;">
-					<button type="submit" class="btn btn-primary" id="submitButton">确定</button>
+					<button type="submit" class="btn btn-primary" id="submitButton" disabled="disabled">确定</button>
 					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
 				</div>
 			</div>
 		</form>
 	</div>
     <div th:include="include::footer"></div>
-    <script type="text/javascript">
+    <script th:inline="javascript">
 		$("#form-agent-add").validate({
 			rules:{
 				money:{
@@ -44,6 +48,15 @@
         		}
 			},
 			submitHandler: function(form) {
+				var money = $("#money").val();
+				if(/\.$/i.test(money)){
+					$("#reminder").text("提现金额输入有误");
+					return;
+				}
+				if(money > [[${balance-frozenBalance}]]){
+					$("#reminder").text("超过可提现金额");
+					return;
+				}
 				$.modal.loading("正在处理中，请稍后...");
             	var config = {
             	        url: ctx +"client/fundLog/moneyHandle",
@@ -59,7 +72,25 @@
 			}
 		});
 		function moneyValidate(){
-			$("#submitButton").css();
+			$("#reminder").text("");
+			$("#submitButton").prop('disabled',false);
+		}
+		$("#money").on('input  propertychange',function(){
+			//如果输入非数字，则替换为''
+			this.value = this.value.replace(/[^\d\.]/g, '');
+			//必须保证第一个为数字而不是.     
+		    this.value = this.value.replace(/^\./g,'');
+		    //保证只有出现一个.而没有多个.     
+		    this.value = this.value.replace(/\.{2,}/g,'.');
+		    //保证.只出现一次，而不能出现两次以上     
+		    this.value = this.value.replace('.','$#$').replace(/\./g,'').replace('$#$','.');
+		    //只能输入两位小数
+		    this.value = this.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');
+		});
+
+		function allMoney(){
+			$("#money").val([[${balance-frozenBalance}]]);
+			$("#submitButton").prop('disabled',false);
 		}
 	</script>
 </body>
