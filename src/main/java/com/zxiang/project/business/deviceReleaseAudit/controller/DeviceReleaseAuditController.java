@@ -68,7 +68,7 @@ public class DeviceReleaseAuditController extends BaseController
 	 * 新增保存设备投放审核
 	 */
 	@RequiresPermissions("business:deviceReleaseAudit:add")
-	@Log(title = "设备投放审核", businessType = BusinessType.INSERT)
+	@Log(title = "设备投放审核新增", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
 	public AjaxResult addSave(DeviceReleaseAudit deviceReleaseAudit)
@@ -91,7 +91,7 @@ public class DeviceReleaseAuditController extends BaseController
 	 * 修改保存设备投放审核
 	 */
 	@RequiresPermissions("business:deviceReleaseAudit:edit")
-	@Log(title = "设备投放审核", businessType = BusinessType.UPDATE)
+	@Log(title = "设备投放审核修改", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
 	public AjaxResult editSave(DeviceReleaseAudit deviceReleaseAudit)
@@ -103,7 +103,7 @@ public class DeviceReleaseAuditController extends BaseController
 	 * 删除设备投放审核
 	 */
 	@RequiresPermissions("business:deviceReleaseAudit:remove")
-	@Log(title = "设备投放审核", businessType = BusinessType.DELETE)
+	@Log(title = "设备投放审核删除", businessType = BusinessType.DELETE)
 	@PostMapping( "/remove")
 	@ResponseBody
 	public AjaxResult remove(String ids)
@@ -111,4 +111,42 @@ public class DeviceReleaseAuditController extends BaseController
 		return toAjax(deviceReleaseAuditService.deleteDeviceReleaseAuditByIds(ids));
 	}
 	
+	
+	/**
+     * 获取审核信息
+     */
+    @RequestMapping("/selectInfo/{auditId}")
+    @ResponseBody
+    public DeviceReleaseAudit selectInfo(@PathVariable("auditId") Integer auditId) {
+    	DeviceReleaseAudit deviceReleaseAudit = deviceReleaseAuditService.selectDeviceReleaseAuditById(auditId);
+        return deviceReleaseAudit;
+    }
+    
+	/**
+	 * 设备投放审核页面--跳转页面
+	 */
+	@GetMapping("/batchAudit/{auditIds}")
+	public String batchAudit(@PathVariable("auditIds") String auditIds,ModelMap mmap)
+	{
+		mmap.put("auditIds", auditIds);
+	    return prefix + "/batchAudit";
+	}
+	
+	/**
+	 * 设备投放审核保存
+	 */
+	@RequiresPermissions("business:deviceReleaseAudit:audit")
+	@Log(title = "设备投放审核保存", businessType = BusinessType.UPDATE)
+	@PostMapping( "/batchAuditSave")
+	@ResponseBody
+	public AjaxResult batchAuditSave(String ids,String approved,String approvedRemark)
+	{
+		// 保存逻辑处理
+		try {
+			return toAjax(deviceReleaseAuditService.batchAuditSave(ids,approved,approvedRemark));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error(e.getMessage());
+		}
+	}
 }

@@ -20,6 +20,8 @@ import com.zxiang.project.business.changeTerminal.domain.ChangeTerminal;
 import com.zxiang.project.business.changeTerminal.mapper.ChangeTerminalMapper;
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.mapper.DeviceMapper;
+import com.zxiang.project.business.deviceReleaseAudit.domain.DeviceReleaseAudit;
+import com.zxiang.project.business.deviceReleaseAudit.service.IDeviceReleaseAuditService;
 import com.zxiang.project.business.place.domain.Place;
 import com.zxiang.project.business.place.mapper.PlaceMapper;
 import com.zxiang.project.business.supplyTissue.domain.SupplyTissue;
@@ -55,6 +57,8 @@ public class DeviceServiceImpl implements IDeviceService
 	private DeviceOrderMapper deviceOrderMapper;
 	@Autowired
 	private TradeOrderMapper tradeOrderMapper;
+	@Autowired
+	private IDeviceReleaseAuditService deviceReleaseAuditService;
 	
 	/**
      * 查询共享设备信息
@@ -95,10 +99,12 @@ public class DeviceServiceImpl implements IDeviceService
      * @return 结果
      */
 	@Override
+	@Transactional
 	public int insertDevice(Device device)
 	{
 		device.setStatus("04");
 		device.setDeviceType("共享纸巾机");
+		device.setDeviceCode(device.getDeviceSn());
 		int deviceSave = deviceMapper.insertDevice(device);
 		//设备绑定终端后也要修改终端数据对应设备ID的值，设备不能再次绑定该终端
 		//终端不再平台绑定，由微信公众号去做绑定操作
@@ -108,8 +114,8 @@ public class DeviceServiceImpl implements IDeviceService
 		try {
 			this.saveTerminal(device);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new RRException("调用终端接口失败,操作失败!");
 		}
 		
 		return deviceSave;
@@ -143,8 +149,8 @@ public class DeviceServiceImpl implements IDeviceService
 				try {
 					this.delTerminal(id);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
+					throw new RRException("调用终端接口失败,操作失败!");
 				}
 			}
 		}
@@ -157,8 +163,33 @@ public class DeviceServiceImpl implements IDeviceService
 	}
 
 	@Override
+	@Transactional
 	public int releaseUpdateDevice(Device device) {
-		return getAutoCodeNum(device);
+		//投放流程修改，改为投放选择场所后需要审核，审核通过后才为投放状态
+		//return getAutoCodeNum(device);
+		Device deviceInfo = deviceMapper.selectDeviceById(device.getDeviceId());
+		if(deviceInfo != null){
+			// 插入投放审批表,如果审核表已有设备数据则更新
+			DeviceReleaseAudit hasDevAudit = deviceReleaseAuditService.selectAuditByDeviceId(device.getDeviceId());
+			if(hasDevAudit != null){
+				hasDevAudit.setPlaceId(Integer.parseInt(device.getPlaceId()));
+				hasDevAudit.setApproved("0");
+				deviceReleaseAuditService.updateDeviceReleaseAudit(hasDevAudit);
+			}else{
+				DeviceReleaseAudit devReleaseAudit = new DeviceReleaseAudit();
+				devReleaseAudit.setDeviceId(device.getDeviceId());
+				devReleaseAudit.setPlaceId(Integer.parseInt(device.getPlaceId()));
+				devReleaseAudit.setCreateDate(new Date());
+				devReleaseAudit.setApproved("0");//待审核
+				devReleaseAudit.setDelFlag("0");
+				deviceReleaseAuditService.insertDeviceReleaseAudit(devReleaseAudit);
+			}
+			
+			//更新设备投放状态为已提交申请
+			deviceInfo.setReleaseStatus("1");
+			return updateDevice(deviceInfo);
+		}
+		return 0;
 	}
 	
 	/**
@@ -166,6 +197,7 @@ public class DeviceServiceImpl implements IDeviceService
 	 * @param device
 	 * @return
 	 */
+	@Deprecated
 	public synchronized int getAutoCodeNum(Device device){
 		Device oldDevice = deviceMapper.selectDeviceById(device.getDeviceId());
 		String placeId = device.getPlaceId();
@@ -235,9 +267,13 @@ public class DeviceServiceImpl implements IDeviceService
 	}
 	
 	@Override
+	@Transactional
 	public int removeDeviceUpdate(Device device) {
 		//设置撤机时间
 		device.setRemoveTime(new Date());
+		//撤机时设置投放状态为可重新提交投放请求
+		device.setReleaseStatus("0");
+		
 		//场所投放的设备数量-1
 		Place place = placeMapper.selectPlaceById(Integer.parseInt(device.getPlaceId()));
 		Integer deviceCount = place.getDeviceCount();
@@ -357,6 +393,7 @@ public class DeviceServiceImpl implements IDeviceService
 			
 			Device device = new Device();
 			device.setDeviceSn(deviceSn);
+			device.setDeviceCode(deviceSn);
 			device.setStatus("04");
 			device.setDeviceType("共享纸巾机");
 			device.setCreateBy(operatorUser);
@@ -366,8 +403,8 @@ public class DeviceServiceImpl implements IDeviceService
 			try {
 				this.saveTerminal(device);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				throw new RRException("调用终端接口失败,操作失败!");
 			}
 			//end	
 		    return ret;

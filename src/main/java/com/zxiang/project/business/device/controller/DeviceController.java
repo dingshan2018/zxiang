@@ -366,4 +366,14 @@ public class DeviceController extends BaseController
 
         return success("成功导入 "+ saveCount +" 条数据!");
     }
+    
+    /**
+     * 获取运营设备信息
+     */
+    @RequestMapping("/selectInfo/{deviceId}")
+    @ResponseBody
+    public Device selectInfo(@PathVariable("deviceId") Integer deviceId) {
+    	Device device = deviceService.selectDeviceById(deviceId);
+        return device;
+    }
 }

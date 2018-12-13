@@ -51,5 +51,20 @@ public interface IDeviceReleaseAuditService
      * @return 结果
      */
 	public int deleteDeviceReleaseAuditByIds(String ids);
+
+	/**
+	 * 设备投放审核保存
+	 * @param ids
+	 * @param approved
+	 * @param approvedRemark
+	 * @return
+	 */
+	public int batchAuditSave(String ids, String approved, String approvedRemark);
+
+	/**
+	 * 通过设备ID查询审批数据
+	 * @param deviceId
+	 */
+	public DeviceReleaseAudit selectAuditByDeviceId(Integer deviceId);
 	
 }

@@ -105,4 +105,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <!-- 通过设备ID查询审批数据 -->
+    <select id="selectAuditByDeviceId" resultMap="DeviceReleaseAuditResult">
+        <include refid="selectDeviceReleaseAuditVo"/>
+        where device_id = #{deviceId}
+    </select>
+    
+    <!-- 批量更新投放审核数据 -->
+    <update id="batchUpdateAudit" >
+        update zx_device_release_audit set approved=#{approved},approved_remark = #{approvedRemark},
+        audit_date=SYSDATE() where audit_id in 
+        <foreach item="auditId" collection="array" open="(" separator="," close=")">
+            #{auditId}
+        </foreach>
+    </update>
+    
 </mapper>
