@@ -193,14 +193,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <select id="selectzxtissuerecordlist"  resultType="java.util.HashMap">
 	        SELECT 
 			  z.open_id,
-			  z.`schedule_id`,
+			  z.qr_schedule_id schedule_id,
 			   s.promotioner
 			FROM
 			  zx_tissue_record z, zx_ad_schedule s
 			  WHERE 
 			   z.device_id = #{deviceId}
 			   and z.status = '1'
-			   and  z.`schedule_id` = s.`ad_schedule_id`
+			   and  z.`qr_schedule_id` = s.`ad_schedule_id`
 			    AND s.promotioner != ''
 			    AND s.promotioner IS NOT NULL
 			AND DATE_FORMAT(z.create_time, '%Y-%m-%d') = DATE_FORMAT(
