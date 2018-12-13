@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zxiang.framework.web.controller.BaseController;
@@ -38,8 +39,8 @@ public class HomeController extends BaseController
 	 */
 	@PostMapping("/tissueStatistical") 
 	@ResponseBody
-	public Map<String, Object> tissueStatistical() {	
-		return wxUserService.tissueStatistical();
+	public Map<String, Object> tissueStatistical(@RequestParam(value = "dates[]") String[] dates) {	
+		return wxUserService.tissueStatistical(dates);
 	}
 
 	

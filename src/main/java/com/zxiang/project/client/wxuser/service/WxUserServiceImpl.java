@@ -1,7 +1,6 @@
 package com.zxiang.project.client.wxuser.service;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.zxiang.common.constant.Const;
 import com.zxiang.common.support.Convert;
-import com.zxiang.common.utils.DateUtils;
 import com.zxiang.project.business.device.mapper.DeviceMapper;
 import com.zxiang.project.business.tissueRecord.mapper.TissueRecordMapper;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
@@ -114,17 +112,12 @@ public class WxUserServiceImpl implements IWxUserService
 	}
 
 	@Override
-	public Map<String, Object> tissueStatistical() {
+	public Map<String, Object> tissueStatistical(String[] dates) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>> ();
 		Map<String, Object> data = null;
-		Calendar c = null;
-		String selDate = null;
-		for (int i = 6; i >= 0; i--) {
+		for (String selDate : dates) {
 			data = new HashMap<String, Object>();
-			c = Calendar.getInstance();
-			c.add(Calendar.DAY_OF_MONTH, -i);
-			selDate = DateUtils.formate(c.getTime());
 			data.put("tissueTotal", tissueRecordMapper.selectTotal(selDate)); // 单日出纸总量
 			data.put("fansManTotal", wxUserMapper.queryFansTotalBySex(Const.SEX_MAN, selDate)); // 单日累计男粉丝总量
 			data.put("fansWomanTotal", wxUserMapper.queryFansTotalBySex(Const.SEX_WOMAN, selDate)); // 单日累计女粉丝总量
