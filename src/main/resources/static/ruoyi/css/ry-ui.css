@@ -273,7 +273,7 @@ label {
 }
 
 .select-list ul {
-  overflow: auto;
+  /*overflow: auto;*/
 }
 
 .select-list li {
@@ -303,6 +303,7 @@ label {
 }
 
 .select-list li select {
+  vertical-align: middle;
   border: 1px solid #ddd;
   border-radius: 4px;
   background: transparent;
@@ -315,6 +316,10 @@ label {
   width: 133px;
 }
 
+.select-list .select-time .select-item-name + input {
+  margin-left: 3px;
+}
+
 @media ( max-width: 980px) {
   .select-list li {
     width: 33.332%;
@@ -325,7 +330,8 @@ label {
   .select-list li input,
   .select-list li select,
   .select-list li.select-cascade select,
-  .select-list li.select-time input{
+  .select-list li.select-time input,
+  .block-plugin__select-picker{
     width: calc(100% - 75px);
     max-width: 150px;
   }
@@ -339,7 +345,7 @@ label {
 
   .select-list li.select-cascade,
   .select-list li.select-time,
-  .select-list li.select-btns{
+  .select-list li.select-btns {
     display: block;
     width: 100%;
   }
@@ -354,7 +360,7 @@ label {
     margin-left: 5px;
   }
 
-  .select-list li.select-btns .btn{
+  .select-list li.select-btns .btn {
     margin-left: 10px;
   }
 }

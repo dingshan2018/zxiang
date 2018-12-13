@@ -2,6 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <meta charset="utf-8">
 <head th:include="include :: header"></head>
+<link rel="stylesheet" th:href="@{/js/plugins/bootstrap-select/css/bootstrap-select.css}">
 <body class="gray-bg">
   <div class="container-div">
     <div class="row">
@@ -15,7 +16,12 @@
               </li>
               <li>
                 <span class="select-item-name">投放用户：</span>
-               		<select id="releaser" name="releaser">
+               		<select id="releaser"
+                          name="releaser"
+                          data-live-search="true"
+                          class="block-plugin__select-picker selectpicker"
+                          data-style="btn-white btn-sm"
+                          data-width="280px">
 	                	<option value="">全部</option>
 	              	</select>
               </li>
@@ -79,6 +85,7 @@
     </div>
   </div>
   <div th:include="include::footer"></div>
+  <script th:src="@{/js/plugins/bootstrap-select/js/bootstrap-select.min.js}"></script>
   <script th:inline="javascript">
   	var addFlag = [[${@permission.hasPermi('advertise:adSchedule:add')}]];
     var editFlag = [[${@permission.hasPermi('advertise:adSchedule:edit')}]];
@@ -88,7 +95,7 @@
     var prefix = ctx + 'advertise/adSchedule';
 
     $(function() {
-    	
+
     	//投放广告商下拉框数据
         var advertiserList = selectAdvertiseList();
         $.each(advertiserList, function (i) {
@@ -104,7 +111,7 @@
         $.each(releaserList, function (i) {
           $('#releaser').append('<option value=' + releaserList[i].userId + '>' + releaserList[i].userName + '</option>');
         });
-        
+
         var options = {
             url: prefix + "/list",
             createUrl: prefix + "/add",
@@ -287,7 +294,7 @@
         $('#bootstrap-table').bootstrapTable('hideColumn', 'adScheduleId');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'pId');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'approvedUser');
-        
+
     });
 
 
@@ -305,7 +312,7 @@
     var type_h5 = "02";
     var hasMaterial = "该广告已上传过素材!";
     var noMaterial = "该广告无素材,请先上传素材!";
-    
+
   	//=======================本页面的函数方法=================================================
   	//素材预览
     function preview(adScheduleId) {
@@ -313,7 +320,7 @@
   		//var url = ctx + "advertise/adSchedule/preview/" + adScheduleId;
     	//$.modal.openFull("素材预览", url);
 		//$.modal.open("素材预览", url);
-		
+
 		//用直接跳转页面链接的方式预览
     	var http = "http://mmedia.bp.zcloudtechs.cn/mmedia/pageJump/go_programme_view.action?scheduleId=";
 		var sxScheduleId;
@@ -361,7 +368,7 @@
       		$.modal.alertWarning("页面H5广告不能上传素材!");
    	        return;
       	}
-      	
+
       	//改成在未预约之前可以上传多次素材，每次模板元素只能单选，即同一批次上传的文件都是同一模板元素的
       	var hasOrder = getOrderNum(rows);
    		if (hasOrder > 0) {
@@ -409,7 +416,7 @@
        	        return;
        		}
       	}
-      	
+
       	var hasOrder = getOrderNum(adScheduleId);
    		if (hasOrder > 0) {
    			$.modal.alertWarning("该广告已预约过!");
@@ -430,7 +437,7 @@
    			$.modal.alertWarning(onlyOneRecord);
    			return;
    		}
-   		
+
    		var adSchedule = getAdScheduleInfo(rows);
    		//var status = $.table.selectColumns($.table._option.columns[5].field);
    		var batch = getMaxBatch(rows);
@@ -472,7 +479,7 @@
       		$.modal.alertWarning("页面H5广告不需要审核!");
    	        return;
       	}
-   		
+
    		var url = ctx + "advertise/adSchedule/audit/" + adScheduleId;
     	$.modal.open("广告投放审核", url);
   	}
@@ -488,10 +495,10 @@
    			$.modal.alertWarning(onlyOneRecord);
    			return;
    		}
-   		
+
    		//var status = $.table.selectColumns($.table._option.columns[5].field);
    		//var pId = $.table.selectColumns($.table._option.columns[8].field);
-   		
+
    		//H5广告不需要上传素材不需要审核不需要支付
       	var adSchedule = getAdScheduleInfo(rows);
       	if(adSchedule.releasePosition == type_terminal){
@@ -509,7 +516,7 @@
        	        return;
           	}
       	}
-   		
+
    		$.modal.confirm("确定发布该条" + $.table._option.modalName + "信息吗？", function() {
 
         	$.ajax({
@@ -544,14 +551,14 @@
    	   		if (adSchedule.payStatus != hasPay) {
    	   	        $.modal.alertWarning('支付广告费用后才能发布!');
    	   	        return;
-   	      	}	
+   	      	}
    		}
-   		
+
    		if (adSchedule.status != toBeReleased) {
 	   	        $.modal.alertWarning('当前非待发布状态,只有投放状态为待发布的广告才能发布!');
 	   	        return;
 	    }
-   		
+
    		$.modal.confirm("确定发布" + adSchedule.scheduleName + " 广告信息吗？", function() {
 
         	$.ajax({
@@ -574,7 +581,7 @@
 
     	});
   	}
-  	
+
   	//判断该广告是否上传过素材 :batch>0
     function getMaxBatch(rows) {
     	var batch = 0;
@@ -640,7 +647,7 @@
     		$.modal.alert("导出成功!");
 		});
     }
-  	
+
   	//二维码支付弹窗
     function adPay (adScheduleId) {
     	var adSchedule = getAdScheduleInfo(adScheduleId);
@@ -661,11 +668,11 @@
     		$.modal.alertWarning("页面H5广告不需要支付!");
     		return;
     	}
-    	
+
     	var url = ctx + "advertise/adSchedule/adPay/" + adScheduleId;
         $.modal.open("广告支付二维码", url, 400, 400);
     }
-	
+
   	//从钱包直接扣款
     function adPayByAccount(adScheduleId) {
     	var adSchedule = getAdScheduleInfo(adScheduleId);
@@ -686,7 +693,7 @@
     		$.modal.alertWarning("页面H5广告不需要支付!");
     		return;
     	}
-    	
+
    		$.modal.confirm("确定支付 '" + adSchedule.scheduleName + "' 广告费用吗？", function() {
         	$.ajax({
         		cache : true,
@@ -707,7 +714,7 @@
 
     	});
   	}
-    
+
   	//获取广告数据信息--公共方法
     function getAdScheduleInfo(adScheduleId) {
     	var adSchedule;
@@ -725,7 +732,7 @@
 		})
 		return adSchedule;
     }
-  	
+
     function deleteAd(){
     	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
     	if (rows.length == 0) {
@@ -757,11 +764,11 @@
     		$.modal.alertWarning(warnInfo);
         	return;
     	}
-    	
+
     	$.operate.removeAll();
     }
-    
-    
+
+
     /**搜索框查询条件获取用户数据*/
     function getSearchUserList(searchKey){
     	var userList = [];
@@ -779,7 +786,7 @@
         });
         return userList;
     }
-   
+
 </script>
 </body>
 </html>

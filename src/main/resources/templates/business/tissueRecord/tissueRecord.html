@@ -118,7 +118,9 @@
           },
           {
             field: 'headimgurl',
-            title: '微信头像'
+            title: '微信头像',formatter: function(value, row, index) {
+				return '<img alt="" style="width:70px;height:70px;" src="'+value+'">';
+            } 
           },
           {
             field: 'tissueChannel',
@@ -149,7 +151,7 @@
       $.table.init(options);
       $('#bootstrap-table').bootstrapTable('hideColumn', 'tissueRecordId');
     });
-    
+
   	//导出Excel
     function exportExcel(){
     	$.modal.confirm("确认导出？", function() {
