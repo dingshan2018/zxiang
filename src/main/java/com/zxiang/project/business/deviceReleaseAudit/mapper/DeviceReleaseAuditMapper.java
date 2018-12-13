@@ -74,10 +74,11 @@ public interface DeviceReleaseAuditMapper
 	 * @param auditIds
 	 * @param approved
 	 * @param approvedRemark
+	 * @param operatorUser 
 	 * @return
 	 */
 	public int batchUpdateAudit(@Param("array")String[] auditIds, 
-			@Param("approved")String approved, @Param("approvedRemark")String approvedRemark);
+			@Param("approved")String approved, @Param("approvedRemark")String approvedRemark,@Param("approvedUser") String approvedUser);
 	
 	
 }

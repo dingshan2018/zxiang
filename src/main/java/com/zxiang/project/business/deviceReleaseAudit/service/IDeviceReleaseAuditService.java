@@ -57,9 +57,10 @@ public interface IDeviceReleaseAuditService
 	 * @param ids
 	 * @param approved
 	 * @param approvedRemark
+	 * @param operatorUser 
 	 * @return
 	 */
-	public int batchAuditSave(String ids, String approved, String approvedRemark);
+	public int batchAuditSave(String ids, String approved, String approvedRemark, String operatorUser);
 
 	/**
 	 * 通过设备ID查询审批数据

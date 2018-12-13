@@ -107,11 +107,11 @@ public class DeviceReleaseAuditServiceImpl implements IDeviceReleaseAuditService
 	 */
 	@Override
 	@Transactional
-	public int batchAuditSave(String ids, String approved, String approvedRemark) {
+	public int batchAuditSave(String ids, String approved, String approvedRemark,String operatorUser) {
 
 		String[] auditIds = Convert.toStrArray(ids);
 		//1.更新审核表数据
-		int updateAudit = deviceReleaseAuditMapper.batchUpdateAudit(auditIds,approved,approvedRemark);
+		int updateAudit = deviceReleaseAuditMapper.batchUpdateAudit(auditIds,approved,approvedRemark,operatorUser);
 		//2.若审核通过则更新设备投放场所信息
 		//3.更新场所投放设备数量信息
 		if(AUDIT_SUCC.equals(approved)){

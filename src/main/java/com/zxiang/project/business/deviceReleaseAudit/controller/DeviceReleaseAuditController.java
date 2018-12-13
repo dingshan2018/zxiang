@@ -143,7 +143,8 @@ public class DeviceReleaseAuditController extends BaseController
 	{
 		// 保存逻辑处理
 		try {
-			return toAjax(deviceReleaseAuditService.batchAuditSave(ids,approved,approvedRemark));
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			return toAjax(deviceReleaseAuditService.batchAuditSave(ids,approved,approvedRemark,operatorUser));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return error(e.getMessage());
