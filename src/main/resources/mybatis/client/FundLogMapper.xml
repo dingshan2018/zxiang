@@ -102,5 +102,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{payId}
         </foreach>
     </delete>
-    
+    <update id="updateStatus">
+        update zx_fund_log set status = #{status} where pay_id = #{payId}
+    </update>
 </mapper>

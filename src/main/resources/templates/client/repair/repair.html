@@ -53,6 +53,7 @@
     var editFlag = [[${@permission.hasPermi('client:repair:edit')}]];
     var removeFlag = [[${@permission.hasPermi('client:repair:remove')}]];
     var editParamFlag = [[${@permission.hasPermi('client:repair:params')}]];
+    var depositFlag = [[${@permission.hasPermi('client:withdraw:deposit')}]];
     var prefix = ctx + 'client/repair';
 
         $(function() {
@@ -146,7 +147,7 @@
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	var actions = [];
-		            	actions.push(' <a class="btn btn-info btn-xs" href="#" onclick="getMoney(\'' + row.repairId + '\')"><i class="fa fa-edit"></i> 提现</a>');
+		            	actions.push('<a class="btn btn-primary	 btn-xs '+depositFlag+'" href="#" onclick="getMoney(\'' + row.repairId + '\')"><i class="glyphicon glyphicon-yen"></i> 提现</a>');
 		            	actions.push(' <a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.repairId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
 //                         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.repairId + '\')"><i class="fa fa-remove"></i>删除</a>');
                         actions.push(' <a class="btn btn-info btn-xs ' + editParamFlag + '" href="#" onclick="editParam(\'' + row.repairId + '\')"><i class="fa fa-edit"></i>参数</a>');

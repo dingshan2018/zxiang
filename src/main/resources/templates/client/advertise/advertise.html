@@ -46,6 +46,7 @@
   <script th:inline="javascript">
     var editFlag = [[${@permission.hasPermi('client:advertise:edit')}]];
     var removeFlag = [[${@permission.hasPermi('client:advertise:remove')}]];
+    var depositFlag = [[${@permission.hasPermi('client:withdraw:deposit')}]];
     var prefix = ctx + 'client/advertise';
 
         $(function() {
@@ -103,6 +104,18 @@
 					title : '上次投放ID',
 					visible:false 
 				},
+				{
+					field : 'bankAccount', 
+					title : '收款账号' 
+				},
+				{
+					field : 'bankReceiver', 
+					title : '收款人' 
+				},
+				{
+					field : 'bankName', 
+					title : '开户行' 
+				},
 				{field : 'status',title : '状态',formatter: function(value, row, index) {
 					if(value == 0) {return "无效"}
 					if(value == 1) {return "有效"}
@@ -142,7 +155,7 @@
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	var actions = [];
-		            	actions.push('<a class="btn btn-info btn-xs" href="#" onclick="getMoney(\'' + row.advertiseId + '\')"><i class="fa fa-edit"></i> 提现</a>');
+		            	actions.push('<a class="btn btn-primary	 btn-xs '+depositFlag+'" href="#" onclick="getMoney(\'' + row.advertiseId + '\')"><i class="glyphicon glyphicon-yen"></i> 提现</a>');
 		            	actions.push(' <a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.advertiseId + '\')"><i class="fa fa-edit"></i> 编辑</a> ');
                         actions.push(' <a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.advertiseId + '\')"><i class="fa fa-remove"></i> 删除</a>');
 						return actions.join('');

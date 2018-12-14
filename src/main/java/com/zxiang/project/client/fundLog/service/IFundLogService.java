@@ -75,6 +75,11 @@ public interface IFundLogService
 	 */
 	public void clientWithdraw(Integer clientId,String clientType,BigDecimal money);
 	/**
+	 * 客户提现确认
+	 * @param id 提现记录id
+	 */
+	public void sureClientWithdraw(Integer id,String drawStatus);
+	/**
 	 * 广告发布冻结资金
 	 * @param advertiseId  主体id
 	 * @param money 金额

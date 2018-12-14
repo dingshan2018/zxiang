@@ -28,9 +28,6 @@
 				<input id="money" name="money" onkeyup="moneyValidate()" class="form-control" type="text" style="display: inline-block;width: auto;"/>
 				<a href="javascript:void(0);" onclick="allMoney()"> &nbsp;全部提现</a>
 			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label" style="text-align: right; color: red;" id="reminder"></label>
-			</div>
 			<div class="form-group">
 				<div class="form-control-static col-sm-offset-20" style="text-align: right;margin-top: 30px;padding: 7px 25px;">
 					<button type="submit" class="btn btn-primary" id="submitButton" disabled="disabled">确定</button>
@@ -50,11 +47,11 @@
 			submitHandler: function(form) {
 				var money = $("#money").val();
 				if(/\.$/i.test(money)){
-					$("#reminder").text("提现金额输入有误");
+					$.modal.alertError("提现金额输入有误");
 					return;
 				}
 				if(money > [[${balance-frozenBalance}]]){
-					$("#reminder").text("超过可提现金额");
+					$.modal.alertError("超过可提现金额");
 					return;
 				}
 				$.modal.loading("正在处理中，请稍后...");
@@ -64,15 +61,20 @@
             	        dataType: "json",
             	        data: $('#form-agent-add').serialize(),
             	        success: function(result) {
-            	        	$.modal.msgReload("操作成功,正在刷新数据请稍后……", modal_status.SUCCESS);
-            	        	$.modal.closeLoading();
+            	        	if (result.code == web_status.SUCCESS) {
+                            	$.modal.msgSuccess(result.msg);
+                        		$.modal.msgReload("操作成功,正在刷新数据请稍后……", modal_status.SUCCESS);
+                        		$.table.refresh();
+                            } else {
+                            	$.modal.alertError(result.msg);
+                            }
+                        	$.modal.closeLoading();
             	        }
             	    };
             	 $.ajax(config);
 			}
 		});
 		function moneyValidate(){
-			$("#reminder").text("");
 			$("#submitButton").prop('disabled',false);
 		}
 		$("#money").on('input  propertychange',function(){

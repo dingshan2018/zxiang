@@ -1,9 +1,11 @@
 package com.zxiang.project.client.fundLog.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zxiang.common.support.Convert;
 import com.zxiang.project.client.fundLog.domain.WithdrawDeposit;
@@ -20,6 +22,8 @@ public class WithdrawDepositServiceImpl implements IWithdrawDepositService
 {
 	@Autowired
 	private WithdrawDepositMapper withdrawDepositMapper;
+	@Autowired
+	private IFundLogService fundLogService;
 
 	/**
      * 查询提现记录信息
@@ -64,8 +68,11 @@ public class WithdrawDepositServiceImpl implements IWithdrawDepositService
      * @return 结果
      */
 	@Override
-	public int updateWithdrawDeposit(WithdrawDeposit withdrawDeposit)
-	{
+	@Transactional
+	public int updateWithdrawDeposit(WithdrawDeposit withdrawDeposit){
+		fundLogService.sureClientWithdraw(withdrawDeposit.getId(),withdrawDeposit.getStatus());
+		withdrawDeposit.setUpdateTime(new Date());
+		withdrawDeposit.setPayTime(new Date());
 	    return withdrawDepositMapper.updateWithdrawDeposit(withdrawDeposit);
 	}
 
