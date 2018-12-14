@@ -319,7 +319,7 @@ public class FundLogServiceImpl implements IFundLogService {
 		wd.setClientType(clientType);
 		wd.setClientName(clientName);
 		wd.setMoney(money);
-		wd.setBalance(balance);
+		wd.setBalance(balance.subtract(money));
 		wd.setManagerPhone(managerPhone);
 		wd.setBankAccount(bankAccount);
 		wd.setBankName(bankName);
