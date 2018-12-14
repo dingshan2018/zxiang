@@ -4,15 +4,31 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
-    <div class="col-sm-12 select-info"  style="display: none;"	>
+    <div class="col-sm-12 select-info">
       <form id="change-form">
           <input type="hidden" th:value="${clientId}" name="clientId" id="clientId"/>
  		  <input type="hidden" th:value="${clientType}" name="clientType" id="clientType"/>
         <div class="select-list">
           <ul>
             <li>
-              <span class="select-item-name">流水号：</span>
-              <input type="text" name="serial" id="serial"/>
+              <span class="select-item-name">类型：</span>
+              <select name="type" style="width: 140px;">
+              	<option value="">全部</option>
+              	<option value="1">充值</option>
+              	<option value="2">广告付费</option>
+              	<option value="3">提现</option>
+              	<option value="4">收益</option>
+              	<option value="5">广告费用冻结</option>
+              </select>
+            </li>
+            <li>
+              <span class="select-item-name">状态：</span>
+              <select name="status" style="width: 140px;">
+              	<option value="">全部</option>
+              	<option value="0">处理中</option>
+              	<option value="1">成功</option>
+              	<option value="2">失败</option>
+              </select>
             </li>
             <li class="select-btns">
               <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
@@ -24,7 +40,7 @@
         </div>
       </form>
     </div>
-	    <div class="btn-group hidden-xs" id="toolbar" role="group">
+	<div class="btn-group hidden-xs" id="toolbar" role="group">
 	        客户名称：<label th:text="${clientName}"></label>	&nbsp;&nbsp;&nbsp; 
 	        账户余额：<label th:text="${balance}"></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	
 	        账户冻结金额：<label th:text="${frozenBalance}"></label>

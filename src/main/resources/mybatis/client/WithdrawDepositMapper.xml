@@ -36,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="serial != null and serial != ''"> and serial = #{serial}</if>
              <if test="clientId != null and clientId != ''"> and client_id = #{clientId}</if>
              <if test="clientType != null and clientType != ''"> and client_type = #{clientType}</if>
-             <if test="clientName != null and clientName != ''"> and client_name = #{clientName}</if>
+             <if test="clientName != null and clientName != ''"> and client_name like concat('%', #{clientName}, '%')</if>
              <if test="money != null and money != ''"> and money = #{money}</if>
              <if test="balance != null and balance != ''"> and balance = #{balance}</if>
              <if test="managerPhone != null and managerPhone != ''"> and manager_phone = #{managerPhone}</if>

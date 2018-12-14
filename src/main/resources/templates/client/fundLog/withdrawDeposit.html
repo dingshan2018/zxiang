@@ -4,6 +4,35 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
+	    <div class="col-sm-12 select-info">
+	      <form id="change-form">
+	          <input type="hidden" th:value="${clientId}" name="clientId" id="clientId"/>
+	 		  <input type="hidden" th:value="${clientType}" name="clientType" id="clientType"/>
+	        <div class="select-list">
+	          <ul>
+		        <li>
+	                <span class="select-item-name">主体名称：</span>
+	                <input type="text" name="clientName"/>
+	            </li>
+	            <li>
+	              <span class="select-item-name">转账状态：</span>
+	              <select name="status" style="width: 140px;">
+	              	<option value="">全部</option>
+	              	<option value="1">转账中</option>
+	              	<option value="2">转载成功</option>
+	              	<option value="3">转账失败</option>
+	              </select>
+	            </li>
+	            <li class="select-btns">
+	              <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
+	              </a>
+	              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
+	              </a>
+	            </li>
+	          </ul>
+	        </div>
+	      </form>
+	    </div>
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="client:withdrawDeposit:add">
 				<i class="fa fa-plus"></i> 新增
