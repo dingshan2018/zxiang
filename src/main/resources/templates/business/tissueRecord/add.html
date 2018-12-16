@@ -5,47 +5,52 @@
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-tissueRecord-add">
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>出纸设备：</label>
 				<div class="col-sm-8">
-					<select id="deviceId" name="deviceId" class="form-control">
+					<select
+						id="deviceId"
+						name="deviceId"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 					</select>
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>出纸终端：</label>
 				<div class="col-sm-8">
 					<input id="terminalId" name="terminalId" class="form-control" readonly="readonly" type="hidden">
                 	<input id="terminalCode" name="terminalCode" class="form-control" readonly="readonly">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>出纸场所：</label>
 				<div class="col-sm-8">
 					<input id="placeId" name="placeId" class="form-control" type="hidden" readonly="readonly">
 					<input id="placeName" name="placeName" class="form-control" type="text" readonly="readonly">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">用户微信账号：</label>
 				<div class="col-sm-8">
 					<input id="openId" name="openId" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">微信昵称：</label>
 				<div class="col-sm-8">
 					<input id="nickName" name="nickName" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">微信头像：</label>
 				<div class="col-sm-8">
 					<input id="headimgurl" name="headimgurl" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">出纸类型：</label>
 				<div class="col-sm-8">
 					<input id="tissueChannel" name="tissueChannel" class="form-control" type="text">
@@ -61,22 +66,22 @@
 	</div>
     <div th:include="include::footer"></div>
     <script type="text/javascript">
-	    $(function(){ 
+	    $(function(){
 	    	var deviceList = selectDeviceList();
 	    	$.each(deviceList, function (i) {
 	        	$('#deviceId').append("<option value=" + deviceList[i].deviceId + ">" + deviceList[i].deviceCode + "</option>");
 	        });
-	    	
+
 	    	var terminalList = selectTerminalList();
 	    	$.each(terminalList, function (i) {
 	        	$('#terminalId').append("<option value=" + terminalList[i].terminalId + ">" + terminalList[i].terminalCode + "</option>");
 	        });
-	    	
+
 	    	var placeList = selectPlaceList();
 	    	$.each(placeList, function (i) {
 	        	$('#placeId').append("<option value=" + placeList[i].placeId + ">" + placeList[i].name + "</option>");
 	        });
-	    	
+
 	    	//绑定事件,选择设备之后自动选择终端和场所
 	        $("#deviceId").change( function () {
 	        	var deviceId = $("#deviceId option:selected").val();
@@ -105,10 +110,10 @@
 		                alert("查询设备信息失败" + data);
 		            }
 		        })
-		        
+
 	        })
 	 	});
-    
+
 		var prefix = ctx + "business/tissueRecord"
 		$("#form-tissueRecord-add").validate({
 			rules:{

@@ -12,7 +12,12 @@
           <ul>
             <li>
               <span class="select-item-name">类型：</span>
-              <select name="type" style="width: 140px;">
+              <select
+                name="type"
+                style="width: 140px;"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
               	<option value="">全部</option>
               	<option value="1">充值</option>
               	<option value="2">广告付费</option>
@@ -23,7 +28,12 @@
             </li>
             <li>
               <span class="select-item-name">状态：</span>
-              <select name="status" style="width: 140px;">
+              <select
+                name="status"
+                style="width: 140px;"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
               	<option value="">全部</option>
               	<option value="0">处理中</option>
               	<option value="1">成功</option>
@@ -41,8 +51,8 @@
       </form>
     </div>
 	<div class="btn-group hidden-xs" id="toolbar" role="group">
-	        客户名称：<label th:text="${clientName}"></label>	&nbsp;&nbsp;&nbsp; 
-	        账户余额：<label th:text="${balance}"></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	
+	        客户名称：<label th:text="${clientName}"></label>	&nbsp;&nbsp;&nbsp;
+	        账户余额：<label th:text="${balance}"></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	        账户冻结金额：<label th:text="${frozenBalance}"></label>
 	    </div>
 		<div class="col-sm-12 select-table table-striped">
@@ -80,7 +90,7 @@
 						if(value == "4") {return "收益"}
 						if(value == "5") {return "广告费用冻结"}
 						return "-";
-		            } 
+		            }
 				},
 				{ field : 'status',  title : '状态' ,formatter: function(value, row, index) {
 						if(value == "0") {return "处理中"}

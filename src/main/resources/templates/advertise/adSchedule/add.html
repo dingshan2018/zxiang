@@ -5,13 +5,13 @@
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-adSchedule-add">
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放名称：</label>
 				<div class="col-sm-8">
 					<input id="scheduleName" name="scheduleName" class="form-control" type="text">
 				</div>
 			</div>
-			<!-- <div class="form-group">	
+			<!-- <div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放方式：</label>
 				<div class="col-sm-8">
 					<select id="releaseType" name="releaseType" class="form-control" th:with="type=${@dict.getType('release_type')}">
@@ -20,13 +20,19 @@
 					</select>
 				</div>
 			</div> -->
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放类型：</label>
 				<div class="col-sm-8">
 					<!-- 投放位置 -->
-					<select id="releasePosition" name="releasePosition" th:with="type=${@dict.getType('release_position')}" 
-					class="form-control" onchange="selectPosition(this.options[this.options.selectedIndex].value)">
-						<option value="">---请选择---</option> 
+					<select
+						id="releasePosition"
+						name="releasePosition"
+						th:with="type=${@dict.getType('release_position')}"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm"
+						onchange="selectPosition(this.options[this.options.selectedIndex].value)">
+						<option value="">---请选择---</option>
 						<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 					</select>
 					<!-- 先使用广告类型替代投放位置，方便总价和押金的计算 -->
@@ -36,43 +42,53 @@
 					</select> -->
 				</div>
 			</div>
-			<div class="form-group" id="themeTemplateIdDiv" style="display: none;">	
+			<div class="form-group" id="themeTemplateIdDiv" style="display: none;">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>模板主题名称：</label>
 				<div class="col-sm-8">
-					<select id="themeTemplateId" name="themeTemplateId" class="form-control">
+					<select
+						id="themeTemplateId"
+						name="themeTemplateId"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 						<option th:each="c:${ThemeTemplateList}"  th:value="${c.themeTemplateId}" th:text="${c.themeName}"/>
 					</select>
 				</div>
 			</div>
-			<div class="form-group" id="advertiserDiv" style="display: none;">	
+			<div class="form-group" id="advertiserDiv" style="display: none;">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>广告商：</label>
 				<div class="col-sm-8">
-					<select id="advertiser" name="advertiser" class="form-control">
+					<select
+						id="advertiser"
+						name="advertiser"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 						<option th:each="c:${advertiserList}"  th:value="${c.advertiseId}" th:text="${c.advertisorName}"/>
 					</select>
 				</div>
 			</div>
-			<div class="form-group" id="totalTimeDiv" style="display: none;">	
+			<div class="form-group" id="totalTimeDiv" style="display: none;">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>总播放时长：</label>
 				<div class="col-sm-8">
 					<input id="totalTime" name="totalTime" class="form-control" type="text" placeholder="以秒为单位">
 				</div>
 			</div>
-			<div class="form-group" id="qrUrlDiv" style="display: none;">	
+			<div class="form-group" id="qrUrlDiv" style="display: none;">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>页面二维码URL：</label>
 				<div class="col-sm-8">
 					<input id="qrUrl" name="qrUrl" class="form-control" type="text" placeholder="请输入二维码URL">
 				</div>
 			</div>
-			<!-- <div class="form-group">	
+			<!-- <div class="form-group">
 				<label class="col-sm-3 control-label">视讯排期ID：</label>
 				<div class="col-sm-8">
 					<input id="sxScheduleId" name="sxScheduleId" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">投放状态：</label>
 				<div class="col-sm-8">
 					<select id="status" name="status" th:with="type=${@dict.getType('schedule_status')}" class="form-control">
@@ -81,34 +97,39 @@
 					</select>
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">总价：</label>
 				<div class="col-sm-8">
 					<input id="totalPay" name="totalPay" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">押金：</label>
 				<div class="col-sm-8">
 					<input id="prepay" name="prepay" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">投放终端数：</label>
 				<div class="col-sm-8">
 					<input id="releaseTermNum" name="releaseTermNum" class="form-control" type="text">
 				</div>
 			</div> -->
-			<div class="form-group" >	
+			<div class="form-group" >
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>推荐人：</label>
 				<div class="col-sm-8">
-					<select id="promotioner" name="promotioner" class="form-control">
+					<select
+						id="promotioner"
+						name="promotioner"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 						<option th:each="c:${promotionerList}"  th:value="${c.userId}" th:text="${c.userName}"/>
 					</select>
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">投放备注：</label>
 				<div class="col-sm-8">
 					<input id="releaseNote" name="releaseNote" class="form-control" type="text">
@@ -153,14 +174,14 @@
 				$.operate.save(prefix + "/add", $('#form-adSchedule-add').serialize());
 			}
 		});
-		
+
 		//投放位置onchange事件
 		function selectPosition(value){
 	        if(value=="01"){
 	        	$("#themeTemplateIdDiv").show();
 	        	$("#advertiserDiv").show();
 	        	$("#totalTimeDiv").show();
-	        	
+
 	        	$("#qrUrlDiv").hide();
 	        	$("#qrUrl").val("");
 
@@ -171,9 +192,9 @@
 	        	$("#themeTemplateId").val("");
 	        	$("#advertiser").val("");
 	        	$("#totalTime").val("");
-	        	
+
 	        	$("#qrUrlDiv").show();
-	        	
+
 	        } else{
 	        	$("#themeTemplateIdDiv").hide();
 	        	$("#advertiserDiv").hide();

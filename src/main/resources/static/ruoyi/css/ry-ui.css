@@ -2,7 +2,7 @@
  *   ruoyi.css
  */
 
-/** 用户管理 样式布局 */
+/** 鐢ㄦ埛绠＄悊 鏍峰紡甯冨眬 */
 
 .box {
   position: relative;
@@ -91,7 +91,7 @@
   margin: 5px 0 5px -25px
 }
 
-/** select2 样式修改 */
+/** select2 鏍峰紡淇敼 */
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
   background-color: #1ab394;
   border-color: #1ab394;
@@ -112,7 +112,7 @@
   padding-right: 10px
 }
 
-/** 表单验证 样式布局 */
+/** 琛ㄥ崟楠岃瘉 鏍峰紡甯冨眬 */
 label.error {
   position: absolute;
   right: 18px;
@@ -143,7 +143,7 @@ label.error {
   max-width: none;
 }
 
-/** 内联复选框&单选框  */
+/** 鍐呰仈澶嶉�夋&鍗曢�夋  */
 .check-box, .radio-box {
   display: inline-block;
   box-sizing: border-box;
@@ -153,7 +153,7 @@ label.error {
   padding-top: 7px;
 }
 
-/** 遮罩层 */
+/** 閬僵灞� */
 .loaderbox {
   display: inline-block;
   min-width: 125px;
@@ -218,7 +218,7 @@ label.error {
   }
 }
 
-/** 表单查询条件 */
+/** 琛ㄥ崟鏌ヨ鏉′欢 */
 ul {
   margin: 0;
   padding: 0;
@@ -321,6 +321,10 @@ label {
 }
 
 @media ( max-width: 980px) {
+  .select-list .select-time .select-item-name + input{
+    margin-left: 0;
+  }
+
   .select-list li {
     width: 33.332%;
     margin: 12px 0 0 0;
@@ -330,8 +334,7 @@ label {
   .select-list li input,
   .select-list li select,
   .select-list li.select-cascade select,
-  .select-list li.select-time input,
-  .block-plugin__select-picker{
+  .select-list li.select-time input{
     width: calc(100% - 75px);
     max-width: 150px;
   }
@@ -396,7 +399,7 @@ label {
   cursor: pointer;
 }
 
-/** 表格查询数据 */
+/** 琛ㄦ牸鏌ヨ鏁版嵁 */
 .table-striped {
   min-height: 75%;
 }

@@ -20,7 +20,12 @@
               </li>
               <li>
                 <span class="select-item-name">系统内置：</span>
-                <select name="configType" th:with="type=${@dict.getType('sys_yes_no')}">
+                <select
+                  name="configType"
+                  th:with="type=${@dict.getType('sys_yes_no')}"
+                  data-live-search="true"
+                  class="block-plugin__select-picker selectpicker"
+                  data-style="btn-white btn-sm">
                 <option value="">所有</option>
                 <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
               </select>

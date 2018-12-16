@@ -10,7 +10,12 @@
 					<ul>
 						<li>
 							终端：
-							<select id="terminalId" name="terminalId">
+							<select
+								id="terminalId"
+								name="terminalId"
+								data-live-search="true"
+								class="block-plugin__select-picker selectpicker"
+								data-style="btn-white btn-sm">
 								<option value="">全部</option>
 		                      	<option th:each="t : ${terminalParamList}" th:text="${t['terminalCode']}" th:value="${t['terminalId']}" th:field="*{terminal.terminalId}"></option>
 		                  	</select>
@@ -25,7 +30,7 @@
 				</div>
 			</form>
 		</div>
-		
+
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 			<!-- <a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:terminalParam:add">
 				<i class="fa fa-plus"></i> 新增
@@ -37,7 +42,7 @@
 				<i class="fa fa-trash-o"></i> 删除
 			</a>
 		</div>
-			
+
 		<div class="col-sm-12 select-table table-striped">
 			<table id="bootstrap-table" data-mobile-responsive="true"></table>
 		</div>
@@ -61,40 +66,40 @@
 		            checkbox: true
 		        },
 				{
-					field : 'id', 
-					title : 'ID' 
+					field : 'id',
+					title : 'ID'
 				},
 				{
-					field : 'terminalCode', 
-					title : '终端' 
+					field : 'terminalCode',
+					title : '终端'
 				},
 				{
-					field : 'paramKeyName', 
-					title : '终端参数' 
+					field : 'paramKeyName',
+					title : '终端参数'
 				},
 				{
-					field : 'paramValue1', 
-					title : '参数值1' 
+					field : 'paramValue1',
+					title : '参数值1'
 				},
 				{
-					field : 'paramValue2', 
-					title : '参数值2' 
+					field : 'paramValue2',
+					title : '参数值2'
 				},
 				{
-					field : 'paramValue3', 
-					title : '参数值3' 
+					field : 'paramValue3',
+					title : '参数值3'
 				},
 				{
-					field : 'paramValue4', 
-					title : '参数值4' 
+					field : 'paramValue4',
+					title : '参数值4'
 				},
 				{
-					field : 'createBy', 
-					title : '创建者' 
+					field : 'createBy',
+					title : '创建者'
 				},
 				{
-					field : 'createTime', 
-					title : '创建时间' 
+					field : 'createTime',
+					title : '创建时间'
 				},
 		        {
 		            title: '操作',
@@ -110,13 +115,13 @@
             $.table.init(options);
             $('#bootstrap-table').bootstrapTable('hideColumn', 'id');
         });
-        
+
         function queryParams(params) {
 			return {
 				terminalId:       $("#terminalId").val()
 			};
 		}
-        
+
         //下发参数函数
         function paramIssued() {
        	 	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
@@ -124,7 +129,7 @@
 	        	$.modal.alertWarning('请至少选择一条记录');
 	        	return;
 	      	}
-	      	
+
 	   		$.modal.confirm("确定下发?", function() {
 	        	$.ajax({
 	        		cache : true,
@@ -142,7 +147,7 @@
 	        			$.modal.alert(data.msg);
 	        		}
 	        	});
-	        	
+
 	    	});
   		}
 

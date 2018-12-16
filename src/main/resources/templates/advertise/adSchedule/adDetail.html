@@ -56,7 +56,13 @@
 					</div>
 					<label class="col-sm-3 control-label">模板主题：</label>
 	                <div class="col-sm-3">
-	                    <select id="themeTemplateId" name="themeTemplateId" class="form-control" disabled>
+	                    <select
+												id="themeTemplateId"
+												name="themeTemplateId"
+												disabled
+												data-live-search="true"
+												class="form-control block-plugin__select-picker selectpicker"
+												data-style="btn-white btn-sm">
 							<option value=""></option>
 							<option th:each="c:${ThemeTemplateList}"  th:value="${c.themeTemplateId}"
 							th:text="${c.themeName}" th:field="*{themeTemplateId}"/>
@@ -105,7 +111,14 @@
          		<div class="form-group">
 	            <label class="col-sm-3 control-label">投放方式：</label>
 	            <div class="col-sm-8">
-	              <select id="releaseType" name="releaseType" class="form-control" th:field="*{releaseType}" disabled>
+	              <select
+									id="releaseType"
+									name="releaseType"
+									th:field="*{releaseType}"
+									disabled
+									data-live-search="true"
+									class="form-control block-plugin__select-picker selectpicker"
+									data-style="btn-white btn-sm">
 	                <option value=""></option>
 	                <option value="0">全部</option>
 	                <option value="1">按地区投放</option>
@@ -122,19 +135,31 @@
 	                <!-- 按地区 -->
 	                <div th:if="${adRange != null && adRange.releaseType == '1'}" class="row m-n">
 	                  <div class="col-sm-4 p-n">
-	                    <select class="select-pca__province form-control" disabled>
+	                    <select
+												disabled
+												data-live-search="true"
+												class="select-pca__province form-control block-plugin__select-picker selectpicker"
+												data-style="btn-white btn-sm">
 	                      <option value=''>---未选择---</option>
 	                      <option th:each="list:${areaList}" th:value="${list.id}" th:text="${list.pname}"></option>
 	                    </select>
 	                  </div>
 	                  <div class="col-sm-4 p-n">
-	                    <select class="select-pca__city form-control" disabled>
+	                    <select
+												disabled
+												data-live-search="true"
+												class="select-pca__city form-control block-plugin__select-picker selectpicker"
+												data-style="btn-white btn-sm">
 	                      <option value=''>---未选择---</option>
 	                      <option th:each="list:${areaList}" th:value="${list.id}" th:text="${list.pname}"></option>
 	                    </select>
 	                  </div>
 	                  <div class="col-sm-4 p-n">
-	                    <select class="select-pca__areas form-control" disabled>
+	                    <select
+												disabled
+												data-live-search="true"
+												class="select-pca__areas form-control block-plugin__select-picker selectpicker"
+												data-style="btn-white btn-sm">
 	                      <option value=''>---未选择---</option>
 	                      <option th:each="list:${areaList}" th:value="${list.id}" th:text="${list.pname}"></option>
 	                    </select>
@@ -142,10 +167,13 @@
 	                </div>
 	                <!-- 按场所 -->
 	                <div th:if="${adRange != null && adRange.releaseType == '2'}">
-	                  <select class="form-control"
-	                          title="未选择场所"
-	                          data-id="placeGrade"
-	                          disabled>
+	                  <select
+											title="未选择场所"
+											data-id="placeGrade"
+											disabled
+											data-live-search="true"
+											class="form-control block-plugin__select-picker selectpicker"
+											data-style="btn-white btn-sm">
 	                    <option th:each="list:${placeList}" th:value="${list.placeId}" th:text="${list.name}"></option>
 	                  </select>
 	                </div>

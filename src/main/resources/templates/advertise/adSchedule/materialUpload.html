@@ -7,14 +7,14 @@
 
 	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
 		<form class="form-horizontal m" id="form-adSchedule-materialUpload" th:object="${adSchedule}">
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放名称：</label>
 				<div class="col-sm-8">
 					<input id="adScheduleId" name="adScheduleId" class="form-control" th:field="*{adScheduleId}" type="hidden">
 					<input id="scheduleName" name="scheduleName" class="form-control" th:field="*{scheduleName}" type="text"readonly="readonly">
 				</div>
 			</div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放位置：</label>
                 <div class="col-sm-8">
 	                <input id="releasePosition" name="releasePosition" th:field="*{releasePosition}"  type="hidden">
@@ -28,13 +28,18 @@
 					<!-- <label th:each="element:${elementList}" class="checkbox-inline i-checks">
 						<input name="element" type="checkbox" th:value="${element.id}" th:text="${element.elementName}">
 					</label> -->
-					<select class="form-control" name="element" id="element">
+					<select
+						name="element"
+						id="element"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
                     	<option value=""> -- 请选择 -- </option>
 	                    <option th:each="e:${elementList}"  th:value="${e.id}" th:text="${e.elementName}"/>
                     </select>
 				</div>
 			</div>
-            
+
 			<br><br>
 			<div id="fileUploadContent" class="fileUploadContent"></div>
 			<span style="color: red;">*&nbsp;最多上传10个图片/视频文件;每个文件最大30M</span>
@@ -42,7 +47,7 @@
 		  	<button onclick="submitUpload()" id="submit" class="btn btn-primary">上传</button>
 		  	<!-- <button onclick="showUpError()" class="btn btn-primary">显示错误</button> -->
 		</form>
-	</div> 
+	</div>
 
   <div th:include="include::footer"></div>
   <link th:href="@{/css/iconfont.css}" rel="stylesheet"/>
@@ -68,7 +73,7 @@
 	      //materialUploadSubmit();
 	    }
 	  });
-  	
+
     $('#fileUploadContent').initUpload({
       'uploadUrl'       : ctx + 'advertise/adSchedule/materialUploadSave',//上传文件信息地址
       //'progressUrl'     : '#',//获取进度信息地址，可选，注意需要返回的data格式如下（{bytesRead: 102516060, contentLength: 102516060, items: 1, percent: 100, startTime: 1489223136317, useTime: 2767}）
@@ -90,7 +95,7 @@
     });
 
     function beforeUploadFun (opt) {
-    	
+
     	opt.otherData = [
         	{
         		'name' : 'adScheduleId',
@@ -138,14 +143,14 @@
     			uploadNum++;
     		}
     	}
-    	
+
     	var adMaterialCount = getAdMaterialCount(adScheduleId);
     	//目前限制一个广告计划总数最多上传10个文件
     	if(uploadNum + adMaterialCount > 10){
     		$.modal.alertWarning("您最多还可上传 "+ (10-adMaterialCount) +"个文件!");
 			return;
     	}
-    	
+
     	$.modal.confirm("确定上传？", function() {
     		$("#submit").attr('disabled',true);
 	    	var opt = uploadTools.getOpt('fileUploadContent');
@@ -168,21 +173,21 @@
     function deleteFileByMySelf (fileId) {
       alert('删除文件提醒：' + fileId);
     }
-    
+
   	//提交请求
     function materialUploadSubmit () {
     	var formdata = new FormData();
     	formdata.append("adScheduleId", $("#adScheduleId").val());
 		console.log("adScheduleId",$("#adScheduleId").val());
-		
+
 		for(var i=0;i<$("#fileUpload")[0].files.length;i++){
 			formdata.append("fileUpload", $("#fileUpload")[0].files[i]);
 		}
     	$.ajax({
     		url : prefix + "/materialUploadSave",
-    		type:"post",  
-    		contentType: false,  
-            processData: false, 
+    		type:"post",
+    		contentType: false,
+            processData: false,
             data: formdata,
     		async : false,
     		error : function(request) {
@@ -194,14 +199,14 @@
     				$.modal.close();
         			//刷新管理页面
         			$.modal.reload();
-        			
+
     			}else{
     				alert(data.msg);
     			}
     		}
     	});
     }
-  	
+
   	//获取广告已上传素材数量
     function getAdMaterialCount(adScheduleId) {
   		var adMaterialCount = 0;

@@ -60,7 +60,11 @@
                             <div class="form-group draggable">
                                 <label class="col-sm-3 control-label">下拉框：</label>
                                 <div class="col-sm-9">
-                                    <select class="form-control" name="">
+                                    <select
+                                      name=""
+                                      data-live-search="true"
+                                      class="form-control block-plugin__select-picker selectpicker"
+                                      data-style="btn-white btn-sm">
                                         <option>选项 1</option>
                                         <option>选项 2</option>
                                         <option>选项 3</option>
@@ -140,7 +144,11 @@
                         <h5>拖拽左侧表单元素到此区域</h5>
                         <div class="ibox-tools">
                            	 请选择显示的列数：
-                            <select id="n-columns">
+                            <select
+                              id="n-columns"
+                              data-live-search="true"
+                              class="block-plugin__select-picker selectpicker"
+                              data-style="btn-white btn-sm">
                                 <option value="1">显示1列</option>
                                 <option value="2">显示2列</option>
                             </select>

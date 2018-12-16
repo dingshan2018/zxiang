@@ -18,7 +18,13 @@
 								<label>方法名称：</label><input type="text" name="methodName"/>
 							</li>
 							<li>
-								<label>执行状态：</label><select name="status" th:with="type=${@dict.getType('sys_common_status')}">
+								<label>执行状态：</label>
+								<select
+								name="status"
+								th:with="type=${@dict.getType('sys_common_status')}"
+								data-live-search="true"
+								class="block-plugin__select-picker selectpicker"
+								data-style="btn-white btn-sm">
 									<option value="">所有</option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
@@ -37,13 +43,13 @@
 					</div>
 				</form>
 			</div>
-			
+
 			<div class="btn-group hidden-xs" id="toolbar" role="group">
 				 <a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="monitor:job:remove">
 	                <i class="fa fa-trash-o"></i> 删除
 	            </a>
 	        </div>
-	        
+
 	        <div class="col-sm-12 select-table table-striped">
 			    <table id="bootstrap-table" data-mobile-responsive="true"></table>
 			</div>

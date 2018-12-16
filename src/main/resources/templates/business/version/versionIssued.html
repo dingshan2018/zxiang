@@ -6,34 +6,41 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-version-versionIssued" th:object="${version}">
             <input id="sysVerId" name="sysVerId" th:field="*{sysVerId}"  type="hidden">
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">版本号：</label>
                 <div class="col-sm-8">
                     <label th:text="*{sysVerCode}" class="form-control"></label>
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">旧版本号：</label>
                 <div class="col-sm-8">
                     <label th:text="*{oldVersionCode}" class="form-control"></label>
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">文件名称：</label>
                 <div class="col-sm-8">
                     <label th:text="*{fileName}" class="form-control"></label>
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">版本主题：</label>
                 <div class="col-sm-8">
                     <label th:text="*{sysVerSubject}" class="form-control"></label>
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">升级类型：</label>
                 <div class="col-sm-8">
-                    <select class="form-control" name="subject" id="subject" th:field="*{subject}" disabled="disabled">
+                    <select
+                      name="subject"
+                      id="subject"
+                      th:field="*{subject}"
+                      disabled="disabled"
+                      data-live-search="true"
+                      class="form-control block-plugin__select-picker selectpicker"
+                      data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
                         <option value="2000">可选升级</option>
                         <option value="1000">强制升级</option>
@@ -50,7 +57,7 @@
 						<input id="terminal" name="terminal" type="checkbox" th:value="${terminal.terminalId}"
 						 th:text="${terminal.terminalCode}">
 					</label>
-					
+
 				</div>
 			</div>
 			<div class="form-group">
@@ -75,7 +82,7 @@
 				versionIssued(sysVerId);
 			}
 		});
-		
+
 		$(function () {
 			// 设备全选或不选.
 	      	$('#checkAll').on('ifChecked ifUnchecked', function(event) {
@@ -87,14 +94,14 @@
 	        	}
 	      	});
 		});
-		
+
 		function versionIssued(sysVerId) {
 			var terminals = $.form.selectCheckeds("terminal");
 			if(terminals.length <= 0){
         		$.modal.alertWarning("没有选择要升级的终端!");
 				return;
 	       	}
-			
+
 	   		$.modal.confirm("确定下发升级命令?", function() {
 	        	$.ajax({
 	        		cache : true,
@@ -113,7 +120,7 @@
 	        			$.operate.saveSuccess(data);
 	        		}
 	        	});
-	        	
+
 	    	});
   		}
 	</script>

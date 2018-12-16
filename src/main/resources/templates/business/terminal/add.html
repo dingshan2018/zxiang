@@ -5,13 +5,13 @@
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-terminal-add">
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>终端编号：</label>
 				<div class="col-sm-8">
 					<input id="terminalCode" name="terminalCode" class="form-control" type="text">
 				</div>
 			</div>
-			<!-- <div class="form-group">	
+			<!-- <div class="form-group">
 				<label class="col-sm-3 control-label">绑定设备（仅可绑定一次）：</label>
 				<div class="col-sm-8">
 					<select id="deviceId" name="deviceId" class="form-control">
@@ -19,7 +19,7 @@
 					</select>
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">场所：</label>
 				<div class="col-sm-8">
 					<select id="placeId" name="placeId" class="form-control">
@@ -27,40 +27,45 @@
 					</select>
 				</div>
 			</div> -->
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">终端信号强度：</label>
 				<div class="col-sm-8">
 					<input id="rssi" name="rssi" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">终端音量：</label>
 				<div class="col-sm-8">
 					<input id="volumn" name="volumn" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">终端状态 ：</label>
 				<div class="col-sm-8">
-					<select id="status" name="status" class="form-control">
+					<select
+						id="status"
+						name="status"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="1">生效</option>
 						<option value="2">禁用</option>
 					</select>
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">经度：</label>
 				<div class="col-sm-8">
 					<input id="lon" name="lon" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">纬度：</label>
 				<div class="col-sm-8">
 					<input id="lat" name="lat" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">终端版本：</label>
 				<div class="col-sm-8">
 					<input id="version" name="version" class="form-control" type="text">
@@ -77,18 +82,18 @@
     <div th:include="include::footer"></div>
     <script type="text/javascript">
     	//初始化加载下拉列表
-	    $(function(){ 
+	    $(function(){
 	    	/* var deviceList = selectDeviceList();
 	    	$.each(deviceList, function (i) {
             	$('#deviceId').append("<option value=" + deviceList[i].deviceId + ">" + deviceList[i].deviceCode + "</option>");
             }); */
-	    	
+
 	    	/* var placeList = selectPlaceList();
 	    	$.each(placeList, function (i) {
             	$('#placeId').append("<option value=" + placeList[i].placeId + ">" + placeList[i].name + "</option>");
             }); */
 	 	});
-	    
+
 		var prefix = ctx + "business/terminal"
 		$("#form-terminal-add").validate({
 			rules:{
@@ -118,7 +123,7 @@
 				$.operate.save(prefix + "/add", $('#form-terminal-add').serialize());
 			}
 		});
-		
+
 	</script>
 </body>
 </html>

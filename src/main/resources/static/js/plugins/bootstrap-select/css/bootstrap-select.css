@@ -108,7 +108,13 @@ select.bs-select-hidden,
   width: auto !important;
 }
 .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
-  width: 220px;
+  width: 280px;
+}
+@media ( max-width: 980px) {
+  .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn){
+    width: calc(100% - 75px);
+    max-width: 150px;
+  }
 }
 .bootstrap-select .dropdown-toggle:focus {
   outline: thin dotted #333333 !important;

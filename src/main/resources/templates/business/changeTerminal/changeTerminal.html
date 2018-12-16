@@ -10,19 +10,34 @@
           <ul>
             <li>
               <span class="select-item-name">旧终端编号：</span>
-              <select id="oldTerminalId" name="oldTerminalId">
+              <select
+                id="oldTerminalId"
+                name="oldTerminalId"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
                 <option value="">全部</option>
               </select>
             </li>
             <li>
               <span class="select-item-name">新终端编号：</span>
-              <select id="newTerminalId" name="newTerminalId">
+              <select
+                id="newTerminalId"
+                name="newTerminalId"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
                 <option value="">全部</option>
               </select>
             </li>
             <li>
               <span class="select-item-name">更换人：</span>
-              <select id="changerId" name="changerId">
+              <select
+                id="changerId"
+                name="changerId"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
                 <option value="">全部</option>
               </select>
             </li>
@@ -139,7 +154,7 @@
       $.table.init(options);
       $('#bootstrap-table').bootstrapTable('hideColumn', 'changeTerminalId');
     });
-    
+
   	//导出Excel
     function exportExcel(){
     	$.modal.confirm("确认导出？", function() {

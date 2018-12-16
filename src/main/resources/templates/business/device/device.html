@@ -10,7 +10,12 @@
           <ul>
             <li>
               <span class="select-item-name">投放场所：</span>
-              <select id="placeId" name="placeId">
+              <select
+                id="placeId"
+                name="placeId"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
                 <option value="">全部</option>
               </select>
             </li>
@@ -20,7 +25,13 @@
             </li>
             <li>
               <span class="select-item-name">设备状态：</span>
-              <select id="status" name="status" th:with="type=${@dict.getType('device_status')}" >
+              <select
+                id="status"
+                name="status"
+                th:with="type=${@dict.getType('device_status')}"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
 				<option value="">全部</option>
 				<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 			  </select>
@@ -33,7 +44,12 @@
             </li>
             <li class="select-cascade">
               <span class="select-item-name">省：</span>
-              <select name="province" id="province">
+              <select
+                name="province"
+                id="province"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
                 <option value="">全部</option>
               </select>
               <span class="select-item-name">市：</span>
@@ -312,7 +328,7 @@
       if(device.releaseStatus == "1" || device.releaseStatus == "2"){
     	  if(device.releaseStatus == "1"){
     		  $.modal.alertWarning("投放申请已提交,请等候审核!");
-    	  	  return; 
+    	  	  return;
     	  }else{
     		  $.modal.alertWarning("该设备已投放!");
     	  	  return;
@@ -378,13 +394,13 @@
       var url = ctx + 'business/device/supplyTissueAdd/' + rows;
       $.modal.open('设备补纸', url);
     }
-  	
+
   	//批量导入设备资产编号弹窗函数
     function batchImport () {
       var url = ctx + 'business/device/batchImport';
       $.modal.open('批量导入设备资产编号', url);
     }
-  	
+
   	//获取运营设备数据信息方法
     function getDeviceInfo(deviceId) {
     	var device;

@@ -16,7 +16,12 @@
 	            </li>
 	            <li>
 	              <span class="select-item-name">转账状态：</span>
-	              <select name="status" style="width: 140px;">
+	              <select
+									name="status"
+									style="width: 140px;"
+									data-live-search="true"
+									class="block-plugin__select-picker selectpicker"
+									data-style="btn-white btn-sm">
 	              	<option value="">全部</option>
 	              	<option value="1">转账中</option>
 	              	<option value="2">转载成功</option>
@@ -41,7 +46,7 @@
 				<i class="fa fa-trash-o"></i> 删除
 			</a>
 		</div>
-			
+
 		<div class="col-sm-12 select-table table-striped">
 			<table id="bootstrap-table" data-mobile-responsive="true"></table>
 		</div>
@@ -63,45 +68,45 @@
 		            checkbox: true
 		        },
 				{
-					field : 'id', 
+					field : 'id',
 					title : 'ID' ,
 					visible:false
 				},
 				{
-					field : 'fundLogId', 
+					field : 'fundLogId',
 					title : '资金流水ID' ,
 					visible:false
 				},
 				{
-					field : 'clientName', 
-					title : '主体名称' 
+					field : 'clientName',
+					title : '主体名称'
 				},
 				{
-					field : 'money', 
-					title : '提现金额' 
+					field : 'money',
+					title : '提现金额'
 				},
 				{
-					field : 'balance', 
-					title : '账户可用余额' 
+					field : 'balance',
+					title : '账户可用余额'
 				},
 				{
-					field : 'managerPhone', 
-					title : '管理者电话' 
+					field : 'managerPhone',
+					title : '管理者电话'
 				},
 				{
-					field : 'bankAccount', 
-					title : '收款账号' 
+					field : 'bankAccount',
+					title : '收款账号'
 				},
 				{
-					field : 'bankReceiver', 
-					title : '收款人' 
+					field : 'bankReceiver',
+					title : '收款人'
 				},
 				{
-					field : 'bankName', 
-					title : '开户行' 
+					field : 'bankName',
+					title : '开户行'
 				},
 				{
-					field : 'status', 
+					field : 'status',
 					title : '提现状态',formatter: function(value, row, index) {
 						if(value == "1") {
 							return '转账中  <a class="btn btn-success btn-xs '+accountFlag+'" href="#" onclick="transferAccounts(\'' + row.id + '\')"><i class="glyphicon glyphicon-share-alt"></i> 确认转账</a>';
@@ -109,23 +114,23 @@
 						if(value == "2") {return "转账成功"}
 						if(value == "3") {return "转账失败"}
 						return "-";
-		            }  
+		            }
 				},
 				{
-					field : 'createTime', 
-					title : '提现时间' 
+					field : 'createTime',
+					title : '提现时间'
 				},
 				{
-					field : 'payer', 
-					title : '付款者' 
+					field : 'payer',
+					title : '付款者'
 				},
 				{
-					field : 'payTime', 
-					title : '付款时间' 
+					field : 'payTime',
+					title : '付款时间'
 				},
 				{
-					field : 'remark', 
-					title : '备注' 
+					field : 'remark',
+					title : '备注'
 				}]
             };
             $.table.init(options);

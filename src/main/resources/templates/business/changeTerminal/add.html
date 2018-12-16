@@ -5,38 +5,53 @@
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-changeTerminal-add">
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>旧终端：</label>
 				<div class="col-sm-8">
-					<select id="oldTerminalId" name="oldTerminalId" class="form-control">
+					<select
+						id="oldTerminalId"
+						name="oldTerminalId"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 					</select>
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>新终端：</label>
 				<div class="col-sm-8">
-					<select id="newTerminalId" name="newTerminalId" class="form-control">
+					<select
+						id="newTerminalId"
+						name="newTerminalId"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 					</select>
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>旧音量设置：</label>
 				<div class="col-sm-8">
 					<input id="oldVolumn" name="oldVolumn" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>剩余纸张：</label>
 				<div class="col-sm-8">
 					<input id="remainPaper" name="remainPaper" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>更换人：</label>
 				<div class="col-sm-8">
-					<select id="changerId" name="changerId" class="form-control">
+					<select
+						id="changerId"
+						name="changerId"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 						<option th:each="c:${userList}"  th:value="${c.userId}" th:text="${c.userName}"/>
 					</select>
@@ -52,15 +67,15 @@
 	</div>
     <div th:include="include::footer"></div>
     <script type="text/javascript">
-	    $(function(){ 
+	    $(function(){
 	    	var terminalList = selectTerminalList();
 	    	$.each(terminalList, function (i) {
 	        	$('#oldTerminalId').append("<option value=" + terminalList[i].terminalId + ">" + terminalList[i].terminalCode + "</option>");
 	        	$('#newTerminalId').append("<option value=" + terminalList[i].terminalId + ">" + terminalList[i].terminalCode + "</option>");
 	        });
-	    	
-	 	});	
-    
+
+	 	});
+
 		var prefix = ctx + "business/changeTerminal"
 		$("#form-changeTerminal-add").validate({
 			rules:{

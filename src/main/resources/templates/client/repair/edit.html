@@ -6,52 +6,56 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-repair-edit" th:object="${repair}">
             <input id="repairId" name="repairId" th:field="*{repairId}"  type="hidden">
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">服务网点名称：</label>
                 <div class="col-sm-8">
                     <input id="repairName" name="repairName" th:field="*{repairName}" class="form-control" type="text">
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">服务设备数量：</label>
                 <div class="col-sm-8">
                     <input id="deviceNum" name="deviceNum" th:field="*{deviceNum}" class="form-control" type="number">
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">负责人名称：</label>
                 <div class="col-sm-8">
                     <input id="managerName" name="managerName" th:field="*{managerName}" class="form-control" type="text">
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">负责人电话：</label>
                 <div class="col-sm-8">
                     <input id="managerPhone" name="managerPhone" th:field="*{managerPhone}" class="form-control" type="tel" maxlength="11" disabled="disabled">
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">收款人：</label>
                 <div class="col-sm-8">
                     <input id="bankReceiver" name="bankReceiver" th:field="*{bankReceiver}" class="form-control" type="text">
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">收款账号：</label>
                 <div class="col-sm-8">
                     <input id="bankAccount" name="bankAccount" th:field="*{bankAccount}" class="form-control" type="text" maxlength="18">
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">开户行：</label>
                 <div class="col-sm-8">
                     <input id="bankName" name="bankName" th:field="*{bankName}" class="form-control" type="text">
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">状态：</label>
                 <div class="col-sm-8">
-                   <select class="form-control" name="status">
+                   <select
+                     name="status"
+                     data-live-search="true"
+                     class="form-control block-plugin__select-picker selectpicker"
+                     data-style="btn-white btn-sm">
 						<option th:selected="*{status=='1'}" th:value="1">有效</option>
 						<option th:selected="*{status=='0'}" th:value="0">无效</option>
 					</select>

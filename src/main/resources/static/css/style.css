@@ -90,13 +90,35 @@ body.body-small .navbar-top-links li:last-child {
 
 /* bootstrap-select
  ********************/
+.select-info .select-list li {
+  overflow: visible;
+}
 .block-plugin__select-picker.selectpicker{
     transition: all .3s ease-out;
 }
 .block-plugin__select-picker .dropdown-menu li{
     float: none;
+    width: auto;
     margin: 0;
 }
+.layui-laydate .layui-laydate-header i{
+  height: 30px;
+  line-height: 30px;
+  font-size: 26px;
+}
+.layui-laydate .layui-laydate-header .fa-angle-double-left{
+  left: 15px;
+}
+.layui-laydate .layui-laydate-header .fa-angle-left{
+  left: 45px;
+}
+.layui-laydate .layui-laydate-header .fa-angle-double-right{
+  right: 15px;
+}
+.layui-laydate .layui-laydate-header .fa-angle-right{
+  right: 45px;
+}
+
 
 .dropdown-menu {
     border: medium none;

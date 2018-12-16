@@ -7,52 +7,62 @@
         <form class="form-horizontal m" id="form-device-change" th:object="${device}">
         	<input id="terminalId" name="terminalId" th:field="*{terminalId}" class="form-control" type="hidden">
         	<input id="placeId" name="placeId" th:field="*{placeId}" class="form-control" type="hidden">
-        	<div class="form-group">	
+        	<div class="form-group">
                 <label class="col-sm-3 control-label">设备ID：</label>
                 <div class="col-sm-8">
                    <input id="deviceId" name="deviceId" th:field="*{deviceId}" class="form-control" readonly="readonly">
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">设备编号：</label>
                 <div class="col-sm-8">
-                    <input id="deviceCode" name="deviceCode" th:field="*{deviceCode}" class="form-control" 
+                    <input id="deviceCode" name="deviceCode" th:field="*{deviceCode}" class="form-control"
                     type="text" readonly="readonly" placeholder="设备编号自动生成">
                 </div>
             </div>
             <!-- 终端换板数据  开始 -->
-            <div class="form-group">	
+            <div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>旧终端：</label>
 				<div class="col-sm-8">
 					<input id="oldTerminalCode" name="oldTerminalCode" th:field="*{terminalCode}" class="form-control" type="text" readonly="readonly">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>新终端：</label>
 				<div class="col-sm-8">
-					<select id="newTerminalId" name="newTerminalId" class="form-control" >
+					<select
+						id="newTerminalId"
+						name="newTerminalId"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
                     	<option value="">---请选择---</option>
 						<option th:each="terminal:${terminalDropBoxList}" th:value="${terminal.terminalId}"
 						 th:text="${terminal.terminalCode}"></option>
 					</select>
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">旧音量设置：</label>
 				<div class="col-sm-8">
 					<input id="oldVolumn" name="oldVolumn" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">剩余纸张：</label>
 				<div class="col-sm-8">
 					<input id="remainPaper" name="remainPaper" th:field="*{remainLen}" class="form-control" type="text" readonly="readonly">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>更换人：</label>
 				<div class="col-sm-8">
-					<select id="changerId" name="changerId" class="form-control">
+					<select
+						id="changerId"
+						name="changerId"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 						<option th:each="c:${userList}"  th:value="${c.userId}" th:text="${c.userName}"/>
 					</select>
@@ -86,18 +96,18 @@
 				changeDevice();
 			}
 		});
-		
+
 		//提交投放设备请求
 		function changeDevice() {
 			var deviceId = $("#deviceId").val();
 			var terminalId = $("#terminalId").val();
 			var placeId = $("#placeId").val();
-			
+
 			var newTerminalId = $.form.selectSelects("newTerminalId");
 			var oldVolumn = $("#oldVolumn").val();
 			var remainPaper = $("#remainPaper").val();
 			var changerId = $.form.selectSelects("changerId");
-        	
+
         	$.ajax({
         		cache : true,
         		type : "POST",
@@ -106,7 +116,7 @@
         			"deviceId": deviceId,
         			"terminalId":terminalId,
         			"placeId": placeId,
-        			
+
         			"oldVolumn":oldVolumn,
         			"newTerminalId": newTerminalId,
         			"remainPaper": remainPaper,

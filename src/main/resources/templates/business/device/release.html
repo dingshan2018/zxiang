@@ -6,30 +6,35 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-device-release" th:object="${device}">
         	<input id="terminalId" name="terminalId" th:field="*{terminalId}" class="form-control" type="hidden">
-        	<div class="form-group" style="display: none;">	
+        	<div class="form-group" style="display: none;">
                 <label class="col-sm-3 control-label">设备ID：</label>
                 <div class="col-sm-8">
                    <input id="deviceId" name="deviceId" th:field="*{deviceId}" class="form-control" readonly="readonly">
                 </div>
             </div>
-             <div class="form-group">	
+             <div class="form-group">
                 <label class="col-sm-3 control-label">设备资产编号：</label>
                 <div class="col-sm-8">
-                    <input id="deviceSn" name="deviceSn" th:field="*{deviceSn}" class="form-control" 
+                    <input id="deviceSn" name="deviceSn" th:field="*{deviceSn}" class="form-control"
                     type="text" readonly="readonly" placeholder="设备资产编号">
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">当前设备编号：</label>
                 <div class="col-sm-8">
-                    <input id="deviceCode" name="deviceCode" th:field="*{deviceCode}" class="form-control" 
+                    <input id="deviceCode" name="deviceCode" th:field="*{deviceCode}" class="form-control"
                     type="text" readonly="readonly" placeholder="设备编号自动生成">
                 </div>
             </div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>场所：</label>
 				<div class="col-sm-8">
-					<select id="placeId" name="placeId" class="form-control">
+					<select
+            id="placeId"
+            name="placeId"
+            data-live-search="true"
+            class="form-control block-plugin__select-picker selectpicker"
+            data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 						<option th:each="place:${placeDropBoxList}" th:value="${place.placeId}"
 						 th:text="${place.name}" th:field="*{placeId}"></option>
@@ -57,14 +62,14 @@
 				release();
 			}
 		});
-		
+
 		//提交投放设备请求
 		function release() {
 			var deviceId = $("#deviceId").val();
 			var terminalId = $("#terminalId").val();
         	var placeId = $.form.selectSelects("placeId");
         	var deviceCode = $("#deviceCode").val();
-        	
+
         	$.ajax({
         		cache : true,
         		type : "POST",

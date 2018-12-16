@@ -10,7 +10,12 @@
 	          <ul>
 	          	<li>
 	              <span class="select-item-name">审核结果：</span>
-	              <select id="approved" name="approved">
+	              <select
+									id="approved"
+									name="approved"
+									data-live-search="true"
+									class="block-plugin__select-picker selectpicker"
+									data-style="btn-white btn-sm">
 	                <option value="">全部</option>
 	                <option value="0">待审核</option>
 	                <option value="1">审核通过</option>
@@ -19,7 +24,12 @@
 	            </li>
 	            <li>
 	              <span class="select-item-name">场所名称：</span>
-	              <select id="placeId" name="placeId">
+	              <select
+									id="placeId"
+									name="placeId"
+									data-live-search="true"
+									class="block-plugin__select-picker selectpicker"
+									data-style="btn-white btn-sm">
 	                <option value="">全部</option>
 	              </select>
 	            </li>
@@ -42,7 +52,7 @@
 	        </div>
 	      </form>
 	    </div>
-    	
+
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:deviceReleaseAudit:add">
 				<i class="fa fa-plus"></i> 新增
@@ -51,7 +61,7 @@
 				<i class="fa fa-trash-o"></i> 删除
 			</a>
 		</div>
-			
+
 		<div class="col-sm-12 select-table table-striped">
 			<table id="bootstrap-table" data-mobile-responsive="true"></table>
 		</div>
@@ -68,7 +78,7 @@
             $.each(placeList, function (i) {
               $('#placeId').append('<option value=' + placeList[i].placeId + '>' + placeList[i].name + '</option>');
             });
-            
+
             var options = {
                 url: prefix + "/list",
                 createUrl: prefix + "/add",
@@ -81,40 +91,40 @@
 		            checkbox: true
 		        },
 				{
-					field : 'auditId', 
-					title : '主键ID' 
+					field : 'auditId',
+					title : '主键ID'
 				},
 				{
-					field : 'deviceSnName', 
-					title : '设备资产编号' 
+					field : 'deviceSnName',
+					title : '设备资产编号'
 				},
 				{
-					field : 'placeName', 
-					title : '投放场所' 
+					field : 'placeName',
+					title : '投放场所'
 				},
 				{
-					field : 'approvedStatus', 
-					title : '审核结果' 
+					field : 'approvedStatus',
+					title : '审核结果'
 				},
 				{
-					field : 'approvedRemark', 
-					title : '审核意见' 
+					field : 'approvedRemark',
+					title : '审核意见'
 				},
 				{
-					field : 'approvedUser', 
-					title : '审核人员' 
+					field : 'approvedUser',
+					title : '审核人员'
 				},
 				{
-					field : 'auditDate', 
-					title : '审核时间' 
+					field : 'auditDate',
+					title : '审核时间'
 				},
 				{
-					field : 'createDate', 
-					title : '创建时间' 
+					field : 'createDate',
+					title : '创建时间'
 				},
 				{
-					field : 'delFlag', 
-					title : '是否删除' 
+					field : 'delFlag',
+					title : '是否删除'
 				},
 		        {
 		            title: '操作',
@@ -130,9 +140,9 @@
             $.table.init(options);
             $('#bootstrap-table').bootstrapTable('hideColumn', 'auditId');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'delFlag');
-            
+
         });
-        
+
       	//批量导入设备资产编号弹窗函数
         function batchAudit () {
        	  var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
@@ -145,14 +155,14 @@
 	    	  //审核通过的不能再审核;未审核、审核不通过都可以重复审核
 	    	  if(auditInfo.approved == "1"){
 	    		  $.modal.alertWarning(auditInfo.deviceSnName+" 的投放申请已审核通过,请勿重复审核!");
-	    	  	  return; 
+	    	  	  return;
 	    	  }
 	      }
-	      
+
           var url = prefix + '/batchAudit/'+rows.join();
           $.modal.open('设备投放批量审核', url);
         }
-      	
+
       	//获取审核信息方法
         function getAuditInfo(auditId) {
         	var releaseAudit;

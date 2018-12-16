@@ -22,7 +22,12 @@
             </li> -->
             <li>
               <span class="select-item-name">广告类型：</span>
-              <select name="adType" th:with="type=${@dict.getType('ad_type')}">
+              <select
+                name="adType"
+                th:with="type=${@dict.getType('ad_type')}"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
               <option value="">所有</option>
               <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
             </select>
@@ -143,7 +148,7 @@
       $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'priceCfgId');
-      
+
     });
   </script>
 </body>

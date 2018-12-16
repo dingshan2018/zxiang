@@ -10,19 +10,34 @@
           <ul>
             <li>
               <span class="select-item-name">代理商户：</span><!-- <input type="text" name="agent"/> -->
-              <select id="agentId" name="agentId">
+              <select
+                id="agentId"
+                name="agentId"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
                 <option value="">全部</option>
               </select>
             </li>
             <li>
               <span class="select-item-name">服务网点：</span><!-- <input type="text" name="service"/> -->
-              <select id="repairId" name="repairId">
+              <select
+                id="repairId"
+                name="repairId"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
                 <option value="">全部</option>
               </select>
             </li>
             <li>
               <span class="select-item-name">加盟商户：</span><!-- <input type="text" name="joiner"/> -->
-              <select id="joinId" name="joinId">
+              <select
+                id="joinId"
+                name="joinId"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
                 <option value="">全部</option>
               </select>
             </li>
@@ -120,7 +135,7 @@
             field: 'headimgurl',
             title: '微信头像',formatter: function(value, row, index) {
 				return '<img alt="" style="width:70px;height:70px;" src="'+value+'">';
-            } 
+            }
           },
           {
             field: 'tissueChannel',

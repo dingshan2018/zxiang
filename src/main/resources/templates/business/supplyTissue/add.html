@@ -5,15 +5,20 @@
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-supplyTissue-add">
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>补纸设备：</label>
 				<div class="col-sm-8">
-					<select id="deviceId" name="deviceId" class="form-control">
+					<select
+						id="deviceId"
+						name="deviceId"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 					</select>
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>补纸场所：</label>
 				<div class="col-sm-8">
 					<!-- <select id="placeId" name="placeId" class="form-control">
@@ -23,16 +28,21 @@
 					<input id="placeName" name="placeName" class="form-control" type="text" readonly="readonly">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>补纸数量：</label>
 				<div class="col-sm-8">
 					<input id="tissueCount" name="tissueCount" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>补纸人员：</label>
 				<div class="col-sm-8">
-					<select id="supplierId" name="supplierId" class="form-control">
+					<select
+						id="supplierId"
+						name="supplierId"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 						<option th:each="c:${userList}"  th:value="${c.userId}" th:text="${c.userName}"/>
 					</select>
@@ -48,17 +58,17 @@
 	</div>
     <div th:include="include::footer"></div>
     <script type="text/javascript">
-	    $(function(){ 
+	    $(function(){
 	    	var deviceList = selectDeviceList();
 	    	$.each(deviceList, function (i) {
 	        	$('#deviceId').append("<option value=" + deviceList[i].deviceId + ">" + deviceList[i].deviceCode + "</option>");
 	        });
-	    	
+
 	    	var placeList = selectPlaceList();
 	    	$.each(placeList, function (i) {
             	$('#placeId').append("<option value=" + placeList[i].placeId + ">" + placeList[i].name + "</option>");
             });
-	    	
+
 	    	//绑定事件,选择设备之后自动选择终端和场所
 	        $("#deviceId").change( function () {
 	        	var deviceId = $("#deviceId option:selected").val();
@@ -85,10 +95,10 @@
 		                alert("查询设备信息失败" + data);
 		            }
 		        })
-		        
+
 	        })
 	 	});
-    
+
 		var prefix = ctx + "business/supplyTissue"
 		$("#form-supplyTissue-add").validate({
 			rules:{

@@ -19,7 +19,11 @@
 						</li>
 						<li>
 			                <span class="select-item-name">订单状态：</span>
-			                <select name="status">
+			                <select
+												name="status"
+												data-live-search="true"
+												class="block-plugin__select-picker selectpicker"
+												data-style="btn-white btn-sm">
 				                <option value="">所有</option>
 				                <option value="0">待支付</option>
 				                <option value="1">已支付</option>
@@ -44,7 +48,7 @@
 				<i class="fa fa-trash-o"></i> 删除
 			</a>
 		</div> -->
-			
+
 		<div class="col-sm-12 select-table table-striped">
 			<table id="bootstrap-table" data-mobile-responsive="true"></table>
 		</div>
@@ -68,44 +72,44 @@
 		            checkbox: true
 		        },
 				{
-					field : 'deviceOrderId', 
+					field : 'deviceOrderId',
 					title : '订单ID'  ,
 					visible: false
 				},
 				{
-					field : 'outTradeOrder', 
+					field : 'outTradeOrder',
 					title : '商户订单号'
 				},
 				{
-					field : 'buyerName', 
-					title : '机主名称' 
+					field : 'buyerName',
+					title : '机主名称'
 				},
 				{
-					field : 'deviceCode', 
-					title : '设备编码' 
+					field : 'deviceCode',
+					title : '设备编码'
 				},
 				{
-					field : 'terminalCode', 
-					title : '终端编码' 
+					field : 'terminalCode',
+					title : '终端编码'
 				},
 				{
-					field : 'promotionerName', 
-					title : '推荐人' 
+					field : 'promotionerName',
+					title : '推荐人'
 				},
 				{
-					field : 'price', 
-					title : '售价' 
+					field : 'price',
+					title : '售价'
 				},
 				{
-					field : 'cutOff', 
-					title : '折扣' 
+					field : 'cutOff',
+					title : '折扣'
 				},
 				{
-					field : 'sellerName', 
-					title : '销售员' 
+					field : 'sellerName',
+					title : '销售员'
 				},
 				{
-					field : 'status', 
+					field : 'status',
 					title : '订单状态' ,formatter: function(value, row, index) {
 						if(value == '0') {return " 待支付"}
 						if(value == '1') {return "已支付"}
@@ -113,29 +117,29 @@
 						if(value == '3') {return "已退款"}
 						if(value == '4') {return "退款失败"}
 						return "-";
-		            } 
+		            }
 				},
 				{
-					field : 'buyerOpenId', 
+					field : 'buyerOpenId',
 					title : '机主openID' ,
 					visible: false
 				},
 				{
-					field : 'createBy', 
+					field : 'createBy',
 					title : '创建者' ,
 					visible: false
 				},
 				{
-					field : 'createTime', 
-					title : '创建时间' 
+					field : 'createTime',
+					title : '创建时间'
 				},
 				{
-					field : 'updateBy', 
+					field : 'updateBy',
 					title : '更新者' ,
 					visible: false
 				},
 				{
-					field : 'updateTime', 
+					field : 'updateTime',
 					title : '更新时间' ,
 					visible: false
 				},

@@ -6,19 +6,30 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-terminalTimer-edit" th:object="${terminalTimer}">
             <input id="teminalTimerId" name="teminalTimerId" th:field="*{teminalTimerId}"  type="hidden">
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">终端ID：</label>
                 <div class="col-sm-8">
-                    <select id="terminalId" name="terminalId" class="form-control" readonly="true">
+                    <select
+                      id="terminalId"
+                      name="terminalId"
+                      readonly="true"
+                      data-live-search="true"
+                      class="form-control block-plugin__select-picker selectpicker"
+                      data-style="btn-white btn-sm">
 						<option th:each="terminal:${terminalDropBoxList}" th:value="${terminal.terminalId}"
 						 th:text="${terminal.terminalCode}" th:field="*{terminalId}"></option>
 					</select>
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">定时类型：</label>
                 <div class="col-sm-8">
-                    <select id="timerType" name="timerType" class="form-control">
+                    <select
+                      id="timerType"
+                      name="timerType"
+                      data-live-search="true"
+                      class="form-control block-plugin__select-picker selectpicker"
+                      data-style="btn-white btn-sm">
 						<option value="1" th:selected="${terminalTimer.timerType=='1'}">一次 </option>
                         <option value="2" th:selected="${terminalTimer.timerType=='2'}">按天</option>
                         <option value="3" th:selected="${terminalTimer.timerType=='3'}">按周</option>
@@ -26,7 +37,7 @@
 					</select>
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">开机时间：</label>
                 <div class="col-sm-8">
                     <!-- <input id="powerOnTime" name="powerOnTime" th:field="*{powerOnTime}" class="form-control" type="text"> -->
@@ -38,7 +49,7 @@
 				    </div>
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">关机时间：</label>
                 <div class="col-sm-8">
                     <!-- <input id="powerOffTime" name="powerOffTime" th:field="*{powerOffTime}" class="form-control" type="text"> -->
@@ -50,16 +61,21 @@
 				    </div>
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">状态：</label>
                 <div class="col-sm-8">
-                    <select id="status" name="status" class="form-control">
+                    <select
+                      id="status"
+                      name="status"
+                      data-live-search="true"
+                      class="form-control block-plugin__select-picker selectpicker"
+                      data-style="btn-white btn-sm">
                         <option value="1" th:selected="${terminalTimer.status=='1'}">生效</option>
                         <option value="2" th:selected="${terminalTimer.status=='2'}">禁用</option>
 					</select>
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">是否删除：</label>
                 <div class="col-sm-8">
 					<input type="radio" name="delFlag" value="0" class="radio-box" th:field="*{delFlag}">否
@@ -77,7 +93,7 @@
     <div th:include="include::footer"></div>
     <script type="text/javascript" src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js"></script>
     <script type="text/javascript">
-	    $(function(){ 
+	    $(function(){
 	    	//不用引入语言直接复制中文转换代码
 	    	$.fn.datetimepicker.dates['zh-CN'] = {
 	    			days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
@@ -99,7 +115,7 @@
 	            secondStep: 30,
 	            inputMask: true
 	      	});
-	    	
+
 	    	$('#datetimepicker2').datetimepicker({
 	            format: 'yyyy-MM-dd hh:mm:ss',
 	            language: 'zh-CN',
@@ -111,7 +127,7 @@
 	            inputMask: true
 	      	});
 	 	});
-    
+
 		var prefix = ctx + "business/terminalTimer"
 		$("#form-terminalTimer-edit").validate({
 			rules:{
@@ -124,7 +140,7 @@
 				edit();
 			}
 		});
-		
+
 		function edit() {
         	var teminalTimerId = $("#teminalTimerId").val();
         	var terminalId = $.form.selectSelects("terminalId");
@@ -133,7 +149,7 @@
         	var powerOffTime = $("#powerOffTime").val();
         	var status = $.form.selectSelects("status");
         	var delFlag = $("input[name='delFlag']:checked").val();
-        	
+
         	$.ajax({
         		cache : true,
         		type : "POST",
@@ -156,7 +172,7 @@
         		}
         	});
       	}
-		
+
 	</script>
 </body>
 </html>

@@ -39,7 +39,11 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label">回显样式：</label>
 				<div class="col-sm-8">
-					<select name="listClass" class="form-control m-b">
+					<select
+						name="listClass"
+						data-live-search="true"
+						class="form-control m-b block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 					    <option value=""        th:field="*{listClass}">---请选择---</option>
 	                    <option value="default" th:field="*{listClass}">默认</option>
 	                    <option value="primary" th:field="*{listClass}">主要</option>
@@ -75,7 +79,7 @@
 					<textarea id="remark" name="remark" class="form-control">[[*{remark}]]</textarea>
 				</div>
 			</div>
-			
+
 			<div class="form-group">
 				<div class="form-control-static col-sm-offset-9">
 					<button type="submit" class="btn btn-primary">提交</button>
@@ -87,7 +91,7 @@
 	<div th:include="include::footer"></div>
 	<script type="text/javascript">
 		var prefix = ctx + "system/dict/data"
-	
+
 		$("#form-dict-edit").validate({
 			rules:{
 				dictLabel:{

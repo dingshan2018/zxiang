@@ -25,9 +25,29 @@
 				<div class="form-group">
 				  <div class="row" >
 				  	 <label class="col-sm-2 control-label" th:text="区域"></label>
-					 <select class="col-sm-2 control-label province" name="province" onchange="cityBind(this)"><option value="-1">---请选择省---</option></select>
-					 <select class="col-sm-2 control-label" name="city" onchange="countyBind(this)"><option value="-1">---请选择市---</option></select>
-					 <select class="col-sm-2 control-label" name="county" ><option value="-1">---请选择县---</option></select>
+					 <select
+						 name="province"
+						 onchange="cityBind(this)"
+						 data-live-search="true"
+						 class="col-sm-2 control-label province block-plugin__select-picker selectpicker"
+						 data-style="btn-white btn-sm">
+						 <option value="-1">---请选择省---</option>
+					 </select>
+					 <select
+						 name="city"
+						 onchange="countyBind(this)"
+						 data-live-search="true"
+						 class="col-sm-2 control-label block-plugin__select-picker selectpicker"
+						 data-style="btn-white btn-sm">
+						 <option value="-1">---请选择市---</option>
+					 </select>
+					 <select
+						 name="county"
+						 data-live-search="true"
+						 class="col-sm-2 control-label block-plugin__select-picker selectpicker"
+						 data-style="btn-white btn-sm">
+						 <option value="-1">---请选择县---</option>
+					 </select>
 					 <label class="col-sm-3" style="font-size: 0;">
 						 <a class="btn btn-info btn-xs" style="margin-right: 5px;" href="javascript:void(0)" th:onclick="'javascript:repairAreaSure(this)'"><i class="fa fa-edit"></i>确定</a>
 						 <a class="btn btn-danger btn-xs" href="javascript:void(0)" th:onclick="'javascript:repairAreaCancel(this)'"><i class="fa fa-remove"></i>取消</a>
@@ -47,7 +67,7 @@
 				return;
 			}
 			$("#repairAreaInfo").append($("#addDiv").html());
-			
+
 		}
 		function repairAreaUpdate(id,_this){ // 更新按钮
 			$.modal.alertWarning("修改按钮"+id);
@@ -111,7 +131,7 @@
 	            },
 	            error: function () { $.modal.alertError("新增失败");}
 	        });
-			
+
 		}
 		function repairAreaCancel(_this){ // 取消按钮
 			$(_this).parent().parent().parent(".form-group").remove();
@@ -175,7 +195,7 @@
 		        }
 		        var str = "<option value='-1'>---请选择县---</option>";
 		        $(_this).siblings("select[name='county']").html("").append(str);
-		        //将市的ID拿到数据库进行查询，查询出他的下级进行绑定 
+		        //将市的ID拿到数据库进行查询，查询出他的下级进行绑定
 		        $.ajax({
 		        	type: "post",
 		        	contentType:"application/json",
@@ -184,12 +204,12 @@
 		            data: JSON.stringify({ "parentId": city}),
 		            async: false,
 		            success: function (data) {
-		                //从服务器获取数据进行绑定  
+		                //从服务器获取数据进行绑定
 		                var strData = "";
 		                $.each(data.rows, function (i, item) {
 		                	strData += "<option value=" + item.id + ">" + item.pname + "</option>";
 		                });
-		                //将数据添加到区县这个下拉框里面 
+		                //将数据添加到区县这个下拉框里面
 		                $(_this).siblings("select[name='county']").append(strData);
 		            },
 		            error: function () { alert("Error:获取地区信息失败"); }

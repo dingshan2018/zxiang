@@ -6,36 +6,41 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-changeTerminal-edit" th:object="${changeTerminal}">
             <input id="changeTerminalId" name="changeTerminalId" th:field="*{changeTerminalId}"  type="hidden">
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">旧终端：</label>
                 <div class="col-sm-8">
 					<input id="oldTerminalId" name="oldTerminalId" th:field="*{oldTerminalId}"  type="hidden">
 					<input id="oldTerminalCode" name="oldTerminalCode" th:field="*{oldTerminalCode}" class="form-control" type="text" readonly="readonly">
 				</div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label">新终端：</label>
                 <div class="col-sm-8">
 					<input id="newTerminalId" name="newTerminalId" th:field="*{newTerminalId}"  type="hidden">
 					<input id="newTerminalCode" name="newTerminalCode" th:field="*{newTerminalCode}" class="form-control" type="text" readonly="readonly">
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>旧音量设置：</label>
                 <div class="col-sm-8">
                     <input id="oldVolumn" name="oldVolumn" th:field="*{oldVolumn}" class="form-control" type="text">
                 </div>
             </div>
-            <div class="form-group">	
+            <div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>剩余纸张：</label>
 				<div class="col-sm-8">
 					<input id="remainPaper" name="remainPaper" th:field="*{remainPaper}" class="form-control" type="text">
 				</div>
 			</div>
-            <div class="form-group">	
+            <div class="form-group">
                 <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>换板人：</label>
                 <div class="col-sm-8">
-                    <select id="changerId" name="changerId" class="form-control">
+                    <select
+                      id="changerId"
+                      name="changerId"
+                      data-live-search="true"
+                      class="form-control block-plugin__select-picker selectpicker"
+                      data-style="btn-white btn-sm">
 						<option value=""></option>
 						<option th:each="user:${userList}" th:value="${user.userId}"
 						 th:text="${user.userName}" th:field="*{changerId}"></option>

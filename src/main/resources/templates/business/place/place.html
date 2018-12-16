@@ -21,15 +21,30 @@
             <li class="select-cascade">
               <!-- 投放地区：<input type="text" name="areaId"/> -->
               <span class="select-item-name">省：</span>
-              <select name="province" id="province">
+              <select
+                name="province"
+                id="province"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
                 <option value="">全部</option>
               </select>
               <span class="select-item-name">市：</span>
-              <select name="city" id="city">
+              <select
+                name="city"
+                id="city"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
                 <option value="">全部</option>
               </select>
               <span class="select-item-name">区县：</span>
-              <select name="county" id="county">
+              <select
+                name="county"
+                id="county"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
               <option value="">全部</option>
             </select>
             </li>
@@ -218,7 +233,7 @@
         $('#bootstrap-table').bootstrapTable('hideColumn', 'ctPhone');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'ctIdentity');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'serviceId');
-        
+
         $('#bootstrap-table').bootstrapTable('hideColumn', 'createBy');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
@@ -269,7 +284,7 @@
             //将数据添加到区县这个下拉框里面
             $("#county").append(str);
      }
-     
+
  	 //场所详情
      function placeDetail(placeId) {
  		var url = prefix + '/placeDetail/' + placeId;

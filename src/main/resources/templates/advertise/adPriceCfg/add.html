@@ -5,17 +5,17 @@
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-adPriceCfg-add">
-			<!-- <div class="form-group">	
+			<!-- <div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>计费类型：</label>
 				<div class="col-sm-8">
-					<select id="priceType" name="priceType" class="form-control" th:with="type=${@dict.getType('release_type')}" 
+					<select id="priceType" name="priceType" class="form-control" th:with="type=${@dict.getType('release_type')}"
 					onchange="showSelectTyte(this.options[this.options.selectedIndex].value)">
 						<option value="">---请选择---</option>
 						<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 					</select>
 				</div>
 			</div>
-			<div class="form-group" id="areaDiv" style="display: none;">	
+			<div class="form-group" id="areaDiv" style="display: none;">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>地区等级：</label>
 				<div class="col-sm-8">
 					<select id="areaGrade" name="areaGrade" class="form-control" th:with="type=${@dict.getType('area_grade')}">
@@ -24,7 +24,7 @@
 					</select>
 				</div>
 			</div>
-			<div class="form-group" id="placeDiv" style="display: none;">	
+			<div class="form-group" id="placeDiv" style="display: none;">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>场所类型：</label>
 				<div class="col-sm-8">
 					<select id="placeGrade" name="placeGrade" class="form-control" th:with="type=${@dict.getType('place_type')}">
@@ -33,7 +33,7 @@
 					</select>
 				</div>
 			</div>
-			<div class="form-group" id="dailyDiv" style="display: none;">	
+			<div class="form-group" id="dailyDiv" style="display: none;">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>时段类型：</label>
 				<div class="col-sm-8">
 					<select id="dailyGrade" name="dailyGrade" class="form-control" th:with="type=${@dict.getType('daily_grade')}">
@@ -42,16 +42,22 @@
 					</select>
 				</div>
 			</div> -->
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>广告类型：</label>
 				<div class="col-sm-8">
-					<select id="adType" name="adType" th:with="type=${@dict.getType('ad_type')}" class="form-control">
+					<select
+						id="adType"
+						name="adType"
+						th:with="type=${@dict.getType('ad_type')}"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 						<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 					</select>
 				</div>
 			</div>
-			<!-- <div class="form-group">	
+			<!-- <div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放位置：</label>
 				<div class="col-sm-8">
 					<select id="position" name="position" th:with="type=${@dict.getType('release_position')}" class="form-control">
@@ -60,13 +66,13 @@
 					</select>
 				</div>
 			</div> -->
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>日价格：</label>
 				<div class="col-sm-8">
 					<input id="dailyPrice" name="dailyPrice" class="form-control" type="text">
 				</div>
 			</div>
-			<!-- <div class="form-group">	
+			<!-- <div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>时段数目：</label>
 				<div class="col-sm-8">
 					<input id="timeCnt" name="timeCnt" class="form-control" type="text">
@@ -130,19 +136,19 @@
 						return;
 					}
 				}
-				
+
 				$.operate.save(prefix + "/add", $('#form-adPriceCfg-add').serialize());
 			}
 		});
-		
-		function showSelectTyte(value){   
+
+		function showSelectTyte(value){
 	        if(value=="01" || value=="99"){
 	        	$("#areaDiv").show();
 	        	$("#placeDiv").hide();
 	        	$("#dailyDiv").hide();
 	        	$("#placeGrade").val("");
 	        	$("#dailyGrade").val("");
-	        	
+
 	        } else if(value=="02"){
 	        	$("#areaDiv").hide();
 	        	$("#placeDiv").show();
@@ -155,9 +161,9 @@
 	        	$("#dailyDiv").show();
 	        	$("#areaGrade").val("");
 	        	$("#placeGrade").val("");
-	        } 
-	    } 
-		
+	        }
+	    }
+
 	</script>
 </body>
 </html>

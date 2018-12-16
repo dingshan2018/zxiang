@@ -5,41 +5,47 @@
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-terminalParam-add">
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">终端：</label>
 				<div class="col-sm-8">
 					<input id="terminalId" name="terminalId" class="form-control" readonly="readonly" th:value="${terminal.terminalId}" type="hidden">
 					<input id="terminalCode" name="terminalCode" class="form-control" readonly="readonly" th:value="${terminal.terminalCode}">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>终端参数KEY：</label>
 				<div class="col-sm-8">
-					<select id="paramKey" name="paramKey" class="form-control" th:with="type=${@dict.getType('terminal_param')}">
+					<select
+						id="paramKey"
+						name="paramKey"
+						th:with="type=${@dict.getType('terminal_param')}"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 						<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 					</select>
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>参数值1：</label>
 				<div class="col-sm-8">
 					<input id="paramValue1" name="paramValue1" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">参数值2：</label>
 				<div class="col-sm-8">
 					<input id="paramValue2" name="paramValue2" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">参数值3：</label>
 				<div class="col-sm-8">
 					<input id="paramValue3" name="paramValue3" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">参数值4：</label>
 				<div class="col-sm-8">
 					<input id="paramValue4" name="paramValue4" class="form-control" type="text">
@@ -55,13 +61,13 @@
 	</div>
     <div th:include="include::footer"></div>
     <script type="text/javascript">
-	    $(function(){ 
+	    $(function(){
 	    	var terminalList = selectTerminalList();
 	    	$.each(terminalList, function (i) {
 	        	$('#terminalId').append("<option value=" + terminalList[i].terminalId + ">" + terminalList[i].terminalCode + "</option>");
 	        });
-	 	});	
-    
+	 	});
+
 		var prefix = ctx + "business/terminalParam"
 		$("#form-terminalParam-add").validate({
 			rules:{

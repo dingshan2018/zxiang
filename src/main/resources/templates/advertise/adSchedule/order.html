@@ -24,8 +24,13 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放方式：</label>
 				<div class="col-sm-8">
-					<select id="releaseType" name="releaseType" class="form-control"
-					onchange="showSelectTyte(this.options[this.options.selectedIndex].value)">
+					<select
+						id="releaseType"
+						name="releaseType"
+						onchange="showSelectTyte(this.options[this.options.selectedIndex].value)"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 						<option value="0">全部</option>
 						<option value="1">按地区投放</option>
@@ -42,15 +47,33 @@
 					</select> -->
 					<div class="select-list">
 						<label >省份：</label>
-						<select name="province" id="province" onchange="getDeviceByareaId(this.options[this.options.selectedIndex].value)">
+						<select
+							name="province"
+							id="province"
+							onchange="getDeviceByareaId(this.options[this.options.selectedIndex].value)"
+							data-live-search="true"
+							class="block-plugin__select-picker selectpicker"
+							data-style="btn-white btn-sm">
 	                       	<option value="">---请选择---</option>
 	                    </select>
 	                    <label >&nbsp;城市：</label>
-						<select name="city" id="city" onchange="getDeviceByareaId(this.options[this.options.selectedIndex].value)">
+						<select
+							name="city"
+							id="city"
+							onchange="getDeviceByareaId(this.options[this.options.selectedIndex].value)"
+							data-live-search="true"
+							class="block-plugin__select-picker selectpicker"
+							data-style="btn-white btn-sm">
 	                        <option value="">---请选择---</option>
 	                    </select>
 	                    <label >&nbsp;区县：</label>
-						<select name="county" id="county" onchange="getDeviceByareaId(this.options[this.options.selectedIndex].value)">
+						<select
+							name="county"
+							id="county"
+							onchange="getDeviceByareaId(this.options[this.options.selectedIndex].value)"
+							data-live-search="true"
+							class="block-plugin__select-picker selectpicker"
+							data-style="btn-white btn-sm">
 	                        <option value="">---请选择---</option>
 	                    </select>
 					</div>
@@ -60,8 +83,13 @@
 			<div class="form-group" id="placeDiv" style="display: none;">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>场所：</label>
 				<div class="col-sm-8">
-					<select id="placeGrade" name="placeGrade" class="form-control"
-					onchange="getDeviceByPlaceId(this.options[this.options.selectedIndex].value)">
+					<select
+						id="placeGrade"
+						name="placeGrade"
+						onchange="getDeviceByPlaceId(this.options[this.options.selectedIndex].value)"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 						<option th:each="place:${placeDropBoxList}" th:value="${place.placeId}" th:text="${place.name}"></option>
 					</select>
@@ -162,8 +190,8 @@
 	    	for(var i=0;i<timeSlotArr.length;i++){
    				var beginTime = timeSlotArr[i].beginTime;
 	    		var endTime = timeSlotArr[i].endTime;
-	    		beginTime = beginTime.replace(/-/g,'/'); 
-	    		endTime = endTime.replace(/-/g,'/'); 
+	    		beginTime = beginTime.replace(/-/g,'/');
+	    		endTime = endTime.replace(/-/g,'/');
 	    		var beginTimestamp = new Date(beginTime).getTime();
 	    		var endTimestamp = new Date(endTime).getTime();
 	    		if( beginTime > endTime){
@@ -175,7 +203,7 @@
     			$.modal.alertWarning("投放时段结束时间必须大于开始时间!");
     			return;
     		}
-	    	
+
 			//时间范围不能重复
 			var timeCheck = false;
 	    	for(var i=0;i<timeSlotArr.length;i++){
@@ -184,18 +212,18 @@
 	    				//第i个时段
 	    				var beginTime = timeSlotArr[i].beginTime;
 			    		var endTime = timeSlotArr[i].endTime;
-			    		beginTime = beginTime.replace(/-/g,'/'); 
-			    		endTime = endTime.replace(/-/g,'/'); 
+			    		beginTime = beginTime.replace(/-/g,'/');
+			    		endTime = endTime.replace(/-/g,'/');
 			    		var beginTimestamp = new Date(beginTime).getTime();
 			    		var endTimestamp = new Date(endTime).getTime();
 			    		//console.log("beginTime:",beginTime,"endTime:",endTime);
 			    		//console.log("beginTimestamp:",beginTimestamp,",endTimestamp:",endTimestamp);
-			    		
+
 			    		//第j个时段
 			    		var beginTime_J = timeSlotArr[j].beginTime;
 			    		var endTime_J = timeSlotArr[j].endTime;
-			    		beginTime_J = beginTime_J.replace(/-/g,'/'); 
-			    		endTime_J = endTime_J.replace(/-/g,'/'); 
+			    		beginTime_J = beginTime_J.replace(/-/g,'/');
+			    		endTime_J = endTime_J.replace(/-/g,'/');
 			    		var beginTimestamp_J = new Date(beginTime_J).getTime();
 			    		var endTimestamp_J = new Date(endTime_J).getTime();
 			    		//console.log("beginTime_J:",beginTime_J,"endTime_J:",endTime_J);
@@ -211,14 +239,14 @@
     			$.modal.alertWarning("投放时段不可重复,请重新选择!");
     			return;
     		}
-	    	
+
 	    	//设备不能为空
 	    	var deviceIds = $.form.selectCheckeds("device");
         	if(deviceIds.length <= 0){
         		$.modal.alertWarning("没有选择可投放的设备!");
 				return;
 	       	}
-        	
+
 	    	$.modal.confirm("确定预约？", function() {
 	        	var adScheduleId = $("#adScheduleId").val();
 	        	var scheduleName = $("#scheduleName").val();
@@ -230,7 +258,7 @@
 	        	var city = $.form.selectSelects("city");
 	        	var county = $.form.selectSelects("county");
 	        	var placeGrade = $.form.selectSelects("placeGrade");
-	        	
+
 	        	$.ajax({
 	        		cache : true,
 	        		type : "POST",
@@ -265,7 +293,7 @@
 			//清空设备列表和全选选择
 			$('#loadDeviceDiv').html('');
 			$("#checkAll").iCheck("uncheck");
-			
+
 			$("#province").html("<option value=''>---请选择---</option>");
 			$("#city").html("<option value=''>---请选择---</option>");
 			$("#county").html("<option value=''>---请选择---</option>");
@@ -346,26 +374,26 @@
       		var html          = '',
           	$checkAll     = $('#checkAll'),
           	$deviceChecks = undefined;
-	
+
 	      	// 取消全选状态
 	      	$checkAll.iCheck('uncheck');
-	
+
 	      	for (var i = 0; i < deviceList.length; i++) {
 	       	 html += `<label class="checkbox-inline i-checks">
 	         	<input name="device" type="checkbox" value="${deviceList[i].deviceId}" >${deviceList[i].deviceSn}
 	          	</label>`;
 	      	}
-	
+
 	      	$('#loadDeviceDiv').html(html);
-	
+
 	      	$deviceChecks = $('#loadDeviceDiv input[name="device"]');
-	
+
 	      	// deviceChecks初始化
 	     	 $deviceChecks.iCheck({
 	        	checkboxClass : 'icheckbox_square-green',
 	        	radioClass: "iradio_square-green"
 	      	});
-	
+
 	      	// deviceChecks事件改变全选checkAll状态.
 	      	$deviceChecks.on('ifChanged', function(event){
 		        if($deviceChecks.filter(':checked').length === $deviceChecks.length) {
@@ -375,9 +403,9 @@
 		        }
 		        $checkAll.iCheck('update');
 	      	});
-	
+
     	}
-	
+
 		function proviceBind() {
 	        //清空下拉数据
 	        $("#province").html("");
@@ -423,7 +451,7 @@
             //将数据添加到区县这个下拉框里面
             $("#county").append(str);
 	    }
-	
+
 	    $(function () {
 	      // 设备全选或不选.
 	      $('#checkAll').on('ifChecked ifUnchecked', function(event) {
@@ -434,19 +462,19 @@
 	          deviceChecks.iCheck('uncheck');
 	        }
 	      });
-	
+
 	      //默认绑定省
 	      proviceBind();
 	      //绑定事件
 	      $('#province').change(function () {
 	        cityBind();
 	      });
-	
+
 	      $('#city').change(function () {
 	        countyBind();
 	      });
 	    });
-	
+
 	    // 日期选择器初始化
 	    function initDateTimePicker (select) {
 	      $(select || '.date-time-picker').datetimepicker({
@@ -465,7 +493,7 @@
 	      });
 	    }
 	    initDateTimePicker();
-	
+
 	    var addTimeSlotTemplate = `<div class="col-sm-8 control-time-slot col-sm-offset-3" style="margin-top: 15px;display: none;">
 	        <div class="col-sm-4" style="padding: 0;">
 	        <input type="text" class="time-input form-control date-time-picker" placeholder="开始时间" name="params[beginTime]" readonly/>
@@ -483,7 +511,7 @@
 	        <button class="btn btn-danger" type="button" onclick="deleteTimeSlot(this)">删除</button>
 	        </div>
 	        </div>`;
-	
+
 	    // 添加时间段
 	    function addTimeSlot (_this) {
 	      $(_this).parents('.form-group').append(addTimeSlotTemplate);
@@ -491,7 +519,7 @@
 	      initDateTimePicker('.control-time-slot:last .date-time-picker');
 	      $('.control-time-slot:last').css('display', 'block');
 	    }
-	
+
 	    var removeTimeSlotTemplate = `<div class="col-sm-8 control-time-slot">
 	        <div class="col-sm-4" style="padding: 0;">
 	        <input type="text" class="time-input form-control date-time-picker" placeholder="开始时间" name="params[beginTime]" readonly/>
@@ -510,7 +538,7 @@
 	        </div>
 	      </div>`;
 	    var timeSlotBtnAdd = `<button class="btn btn-primary btn-add-time-slot" type="button" onclick="addTimeSlot(this)">添加</button>`;
-	
+
 	    // 删除时间段
 	    function deleteTimeSlot (_this) {
 	      var formGroup = $(_this).parents('.form-group');

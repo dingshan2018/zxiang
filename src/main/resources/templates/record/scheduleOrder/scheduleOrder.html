@@ -13,7 +13,11 @@
 						</li>
 						<li>
 			                <span class="select-item-name">订单状态：</span>
-			                <select name="orderStatus">
+			                <select
+												name="orderStatus"
+												data-live-search="true"
+												class="block-plugin__select-picker selectpicker"
+												data-style="btn-white btn-sm">
 				                <option value="">所有</option>
 				                <option value="0">待支付</option>
 				                <option value="1">已支付</option>
@@ -38,7 +42,7 @@
 				<i class="fa fa-trash-o"></i> 删除
 			</a>
 		</div>
-			
+
 		<div class="col-sm-12 select-table table-striped">
 			<table id="bootstrap-table" data-mobile-responsive="true"></table>
 		</div>
@@ -62,20 +66,20 @@
 		            checkbox: true
 		        },
 				{
-					field : 'scheduleOrderId', 
+					field : 'scheduleOrderId',
 					title : ''  ,
 					visible: false
 				},
 				{
-					field : 'scheduleName', 
-					title : '排期投放名称' 
+					field : 'scheduleName',
+					title : '排期投放名称'
 				},
 				{
-					field : 'outTradeOrder', 
-					title : '商户订单号' 
+					field : 'outTradeOrder',
+					title : '商户订单号'
 				},
 				{
-					field : 'orderStatus', 
+					field : 'orderStatus',
 					title : '订单状态' ,formatter: function(value, row, index) {
 						if(value == '0') {return " 待支付"}
 						if(value == '1') {return "已支付"}
@@ -83,16 +87,16 @@
 						if(value == '3') {return "已退款"}
 						if(value == '4') {return "退款失败"}
 						return "-";
-		            } 
+		            }
 				},
 				{
-					field : 'createBy', 
+					field : 'createBy',
 					title : '创建者'  ,
 					visible: false
 				},
 				{
-					field : 'createTime', 
-					title : '创建时间' 
+					field : 'createTime',
+					title : '创建时间'
 				},
 		        {
 		            title: '操作',

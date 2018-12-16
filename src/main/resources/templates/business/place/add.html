@@ -5,43 +5,58 @@
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-place-add">
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>场所名称：</label>
 				<div class="col-sm-8">
 					<input id="name" name="name" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">场所简拼：</label>
 				<div class="col-sm-8">
 					<input id="sname" name="sname" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>省份：</label>
 				<div class="col-sm-8">
-					<select class="form-control" name="province" id="province">
+					<select
+						name="province"
+						id="province"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
                        	<option value="">---请选择---</option>
                     </select>
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>城市：</label>
 				<div class="col-sm-8">
-					<select class="form-control" name="city" id="city">
+					<select
+						name="city"
+						id="city"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
                         <option value="">---请选择---</option>
                     </select>
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>区县：</label>
 				<div class="col-sm-8">
-					<select class="form-control" name="county" id="county">
+					<select
+						name="county"
+						id="county"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
                         <option value="">---请选择---</option>
                     </select>
 				</div>
 			</div>
-			<!-- <div class="form-group">	
+			<!-- <div class="form-group">
 				<label class="col-sm-3 control-label">父级场所：</label>
 				<div class="col-sm-8">
 					<select class="form-control" name="parentPlaceId" id="parentPlaceId">
@@ -49,89 +64,115 @@
                     </select>
 				</div>
 			</div> -->
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">场所类型：</label>
 				<div class="col-sm-8">
-					<select class="form-control" name="placeType" id="placeType">
+					<select
+						name="placeType"
+						id="placeType"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
                         <option value="0">自营</option>
                         <option value="1">代理</option>
                         <option value="2">自购</option>
                     </select>
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>场景：</label>
 				<div class="col-sm-8">
-					<select id="scene" name="scene" class="form-control" th:with="type=${@dict.getType('place_type')}">
+					<select
+						id="scene"
+						name="scene"
+						th:with="type=${@dict.getType('place_type')}"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 						<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 					</select>
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">详细地址：</label>
 				<div class="col-sm-8">
 					<input id="address" name="address" class="form-control" type="text">
 				</div>
 			</div>
-			<!-- <div class="form-group">	
+			<!-- <div class="form-group">
 				<label class="col-sm-3 control-label">经度：</label>
 				<div class="col-sm-8">
 					<input id="lon" name="lon" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">纬度：</label>
 				<div class="col-sm-8">
 					<input id="lat" name="lat" class="form-control" type="text">
 				</div>
 			</div> -->
-			<!-- <div class="form-group">	
+			<!-- <div class="form-group">
 				<label class="col-sm-3 control-label">扫码套餐（备用）：</label>
 				<div class="col-sm-8">
 					<input id="packet" name="packet" class="form-control" type="text">
 				</div>
 			</div> -->
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">出纸价格：</label>
 				<div class="col-sm-8">
 					<input id="tissuePrice" name="tissuePrice" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">出纸长度：</label>
 				<div class="col-sm-8">
 					<input id="tissueLen" name="tissueLen" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>维修员：</label>
 				<div class="col-sm-8">
-					<select id="repairId" name="repairId" class="form-control">
+					<select
+						id="repairId"
+						name="repairId"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 						<option th:each="c:${userListRepair}"  th:value="${c.userId}" th:text="${c.userName}"/>
 					</select>
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>送纸员：</label>
 				<div class="col-sm-8">
-					<select id="supplyId" name="supplyId" class="form-control">
+					<select
+						id="supplyId"
+						name="supplyId"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 						<option th:each="c:${userListRepair}"  th:value="${c.userId}" th:text="${c.userName}"/>
 					</select>
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>经办人：</label>
 				<div class="col-sm-8">
-					<select id="operatorId" name="operatorId" class="form-control">
+					<select
+						id="operatorId"
+						name="operatorId"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 						<option th:each="c:${userListAll}"  th:value="${c.userId}" th:text="${c.userName}"/>
 					</select>
 				</div>
 			</div>
-			<!-- <div class="form-group">	
+			<!-- <div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>机主：</label>
 				<div class="col-sm-8">
 					<select id="ownerId" name="ownerId" class="form-control">
@@ -140,55 +181,55 @@
 					</select>
 				</div>
 			</div> -->
-			<!-- <div class="form-group">	
+			<!-- <div class="form-group">
 				<label class="col-sm-3 control-label">投放设备数量：</label>
 				<div class="col-sm-8">
 					<input id="deviceCount" name="deviceCount" class="form-control" type="text">
 				</div>
 			</div> -->
-			<!-- <div class="form-group">	
+			<!-- <div class="form-group">
 				<label class="col-sm-3 control-label">开户行（合同收款方）：</label>
 				<div class="col-sm-8">
 					<input id="ctBank" name="ctBank" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">收款账号：</label>
 				<div class="col-sm-8">
 					<input id="ctAccount" name="ctAccount" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">收款人：</label>
 				<div class="col-sm-8">
 					<input id="ctReceiver" name="ctReceiver" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">收款人联系电话：</label>
 				<div class="col-sm-8">
 					<input id="ctPhone" name="ctPhone" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">收款人身份证：</label>
 				<div class="col-sm-8">
 					<input id="ctIdentity" name="ctIdentity" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">商家分成比例：</label>
 				<div class="col-sm-8">
 					<input id="ctRate" name="ctRate" class="form-control" type="text">
 				</div>
 			</div> -->
-			<!-- <div class="form-group">	
+			<!-- <div class="form-group">
 				<label class="col-sm-3 control-label">场所状态：</label>
 				<div class="col-sm-8">
 					<input id="status" name="status" class="form-control" type="text">
 				</div>
 			</div> -->
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label">备注：</label>
 				<div class="col-sm-8">
 					<input id="note" name="note" class="form-control" type="text">
@@ -211,24 +252,24 @@
 	        $("#province").change( function () {
 	            cityBind();
 	        })
-	        
+
 	        $("#city").change(function () {
 	        	countyBind();
 	        	//根据城市区域缩小维修人员选择范围
 	        	getRepairUserList();
 	        })
-	        
+
 	        var placeList = selectPlaceList();
 	    	$.each(placeList, function (i) {
             	$('#parentPlaceId').append("<option value=" + placeList[i].placeId + ">" + placeList[i].name + "</option>");
             });
 	    })
-	    
+
 	    function proviceBind() {
 	        //清空下拉数据
 	        $("#province").html("");
 	        var str = "<option value=''>---请选择---</option>";
-	       
+
 	        var provinceAreaList = selectAreaListByPid("0");
 	        $.each(provinceAreaList, function (i, item) {
                 str += "<option value=" + item.id + ">" + item.pname + "</option>";
@@ -244,7 +285,7 @@
 	        }
 	        $("#city").html("");
 	        var str = "<option value=''>---请选择---</option>";
-	       
+
 	        var cityAreaList = selectAreaListByPid(provice);
 	        $.each(cityAreaList, function (i, item) {
                 str += "<option value=" + item.id + ">" + item.pname + "</option>";
@@ -260,15 +301,15 @@
 	        }
 	        $("#county").html("");
 	        var str = "<option value=''>---请选择---</option>";
-	        
+
 	        var countyAreaList = selectAreaListByPid(provice);
 	        $.each(countyAreaList, function (i, item) {
                 str += "<option value=" + item.id + ">" + item.pname + "</option>";
             })
             //将数据添加到区县这个下拉框里面
             $("#county").append(str);
-	    }	
-    	
+	    }
+
 	    //通过选择的区域获取维修员及送纸员
 	    function getRepairUserList() {
 	        var city = $("#city option:selected").val();
@@ -280,7 +321,7 @@
 	        var repairStr = "<option value=''>---请选择---</option>";
 	        $("#supplyId").html("");
 	        var supplyStr = "<option value=''>---请选择---</option>";
-	        
+
 	        var repairUserList = selectUserBycounty(city);
 	        $.each(repairUserList, function (i, item) {
 	        	repairStr += "<option value=" + item.userId + ">" + item.userName + "</option>";
@@ -289,9 +330,9 @@
             //将数据添加到区县这个下拉框里面
             $("#repairId").append(repairStr);
 	        $("#supplyId").append(supplyStr);
-	    }	
-	    
-	    
+	    }
+
+
 		var prefix = ctx + "business/place"
 		$("#form-place-add").validate({
 			rules:{

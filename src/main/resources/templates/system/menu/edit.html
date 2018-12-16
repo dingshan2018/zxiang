@@ -17,8 +17,8 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label">菜单类型：</label>
 				<div class="col-sm-8">
-					<label class="checkbox-inline i-checks"> <input type="radio" th:field="*{menuType}" name="menuType" value="M" /> 目录 </label> 
-					<label class="checkbox-inline i-checks"> <input type="radio" th:field="*{menuType}" name="menuType" value="C" /> 菜单 </label> 
+					<label class="checkbox-inline i-checks"> <input type="radio" th:field="*{menuType}" name="menuType" value="M" /> 目录 </label>
+					<label class="checkbox-inline i-checks"> <input type="radio" th:field="*{menuType}" name="menuType" value="C" /> 菜单 </label>
 					<label class="checkbox-inline i-checks"> <input type="radio" th:field="*{menuType}" name="menuType" value="F" /> 按钮 </label>
 				</div>
 			</div>
@@ -60,7 +60,12 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label">是否手机菜单：</label>
 				<div class="col-sm-8">
-                    <select id="isPhone" name="isPhone" class="form-control">
+                    <select
+											id="isPhone"
+											name="isPhone"
+											data-live-search="true"
+											class="form-control block-plugin__select-picker selectpicker"
+											data-style="btn-white btn-sm">
 						<option value="02" th:selected="*{isPhone=='02'}">否</option>
 						<option value="01" th:selected="*{isPhone=='01'}">是</option>
 					</select>
