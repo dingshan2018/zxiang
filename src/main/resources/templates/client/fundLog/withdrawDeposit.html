@@ -4,6 +4,35 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
+	    <div class="col-sm-12 select-info">
+	      <form id="change-form">
+	          <input type="hidden" th:value="${clientId}" name="clientId" id="clientId"/>
+	 		  <input type="hidden" th:value="${clientType}" name="clientType" id="clientType"/>
+	        <div class="select-list">
+	          <ul>
+		        <li>
+	                <span class="select-item-name">主体名称：</span>
+	                <input type="text" name="clientName"/>
+	            </li>
+	            <li>
+	              <span class="select-item-name">转账状态：</span>
+	              <select name="status" style="width: 140px;">
+	              	<option value="">全部</option>
+	              	<option value="1">转账中</option>
+	              	<option value="2">转载成功</option>
+	              	<option value="3">转账失败</option>
+	              </select>
+	            </li>
+	            <li class="select-btns">
+	              <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
+	              </a>
+	              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
+	              </a>
+	            </li>
+	          </ul>
+	        </div>
+	      </form>
+	    </div>
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="client:withdrawDeposit:add">
 				<i class="fa fa-plus"></i> 新增
@@ -19,8 +48,7 @@
     </div>
     <div th:include="include :: footer"></div>
     <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('client:withdrawDeposit:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('client:withdrawDeposit:remove')}]];
+        var accountFlag = [[${@permission.hasPermi('client:confirm:account')}]];
         var prefix = ctx + "client/withdrawDeposit"
 
         $(function() {
@@ -54,7 +82,7 @@
 				},
 				{
 					field : 'balance', 
-					title : '余额' 
+					title : '账户可用余额' 
 				},
 				{
 					field : 'managerPhone', 
@@ -75,7 +103,9 @@
 				{
 					field : 'status', 
 					title : '提现状态',formatter: function(value, row, index) {
-						if(value == "1") {return "提现中"}
+						if(value == "1") {
+							return '转账中  <a class="btn btn-success btn-xs '+accountFlag+'" href="#" onclick="transferAccounts(\'' + row.id + '\')"><i class="glyphicon glyphicon-share-alt"></i> 确认转账</a>';
+						}
 						if(value == "2") {return "转账成功"}
 						if(value == "3") {return "转账失败"}
 						return "-";
@@ -83,7 +113,7 @@
 				},
 				{
 					field : 'createTime', 
-					title : '创建时间' 
+					title : '提现时间' 
 				},
 				{
 					field : 'payer', 
@@ -96,20 +126,13 @@
 				{
 					field : 'remark', 
 					title : '备注' 
-				},
-		        {
-		            title: '操作',
-		            align: 'center',
-		            formatter: function(value, row, index) {
-		            	var actions = [];
-		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
-						return actions.join('');
-		            }
-		        }]
+				}]
             };
             $.table.init(options);
         });
+        function transferAccounts(id){
+        	$.modal.open("确认转账", ctx +"client/withdrawDeposit/toConfirmAccount/"+id, 768, 550);
+        }
     </script>
 </body>
 </html>

@@ -53,11 +53,11 @@ public class FundLogController extends BaseController
 		return prefix + "/moneyDialogs";
 	}
 	@PostMapping("/moneyHandle") // 提现处理中
+	@RequiresPermissions("client:withdraw:deposit")
 	@ResponseBody
 	public AjaxResult moneyHandle(@RequestParam Integer clientId,@RequestParam String clientType,@RequestParam BigDecimal money) {
-		// TODO
-		fundLogService.adPublishFrozen(1, money);
-		return AjaxResult.success("提现成功");
+		fundLogService.clientWithdraw(clientId, clientType, money);
+		return AjaxResult.success("提现已提交处理...");
 	}
 	
 	/**

@@ -19,7 +19,9 @@ import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
 import com.zxiang.project.client.agent.domain.Agent;
 import com.zxiang.project.client.agent.mapper.AgentMapper;
 import com.zxiang.project.client.fundLog.domain.FundLog;
+import com.zxiang.project.client.fundLog.domain.WithdrawDeposit;
 import com.zxiang.project.client.fundLog.mapper.FundLogMapper;
+import com.zxiang.project.client.fundLog.mapper.WithdrawDepositMapper;
 import com.zxiang.project.client.join.domain.Join;
 import com.zxiang.project.client.join.mapper.JoinMapper;
 import com.zxiang.project.client.repair.domain.Repair;
@@ -44,6 +46,8 @@ public class FundLogServiceImpl implements IFundLogService {
 	private JoinMapper joinMapper;
 	@Autowired
 	private RepairMapper repairMapper;
+	@Autowired
+	private WithdrawDepositMapper withdrawDepositMapper;
 
 	/**
      * 查询资金流水信息
@@ -194,20 +198,172 @@ public class FundLogServiceImpl implements IFundLogService {
 		if(advertise.getBalance() == null || advertise.getBalance().subtract(frozenBalance).compareTo(money) == -1) { // 可用余额 = 账户余额 - 冻结余额
 			throw new RRException("账户余额不足");
 		}
-		BigDecimal balance = advertise.getBalance().setScale(2, BigDecimal.ROUND_HALF_UP);;
-		frozenBalance = frozenBalance.add(money).setScale(2, BigDecimal.ROUND_HALF_UP);;
+		BigDecimal balance = advertise.getBalance().setScale(2, BigDecimal.ROUND_HALF_UP);
+		frozenBalance = frozenBalance.add(money).setScale(2, BigDecimal.ROUND_HALF_UP);
 		advertiseMapper.updateBalance(advertiseId, balance, frozenBalance); // 更新账户余额
 		// 生成资金流水记录
 		FundLog fundLog = new FundLog();
-		fundLog.setBalance(balance.toString());
+		fundLog.setBalance(balance.subtract(money).toString());
 		fundLog.setTotalFee("-"+money);
 		fundLog.setClientId(advertiseId);
 		fundLog.setClientType(UserConstants.USER_TYPE_ADVERTISE);
 		fundLog.setContent("广告发布资金冻结");
-		fundLog.setType(Const.FUND_AD_PAY);
+		fundLog.setType(Const.FUND_FREEZE);
 		fundLog.setStatus(Const.STATUS_SUCCESS);
 		fundLog.setCreateTime(new Date());
 		fundLogMapper.insertFundLog(fundLog);
+	}
+
+	@Override
+	@Transactional
+	public void clientWithdraw(Integer clientId, String clientType, BigDecimal money) {
+		if(money == null || money.compareTo(new BigDecimal(0)) <= 0) {
+			throw new RRException("提现余额须大于0");
+		}
+		BigDecimal frozenBalance = null;
+		BigDecimal balance = null;
+		String clientName = null;
+		String managerPhone = null;
+		String bankAccount = null;
+		String bankName = null;
+		String bankReceiver = null;
+		if(UserConstants.USER_TYPE_JOIN.equals(clientType)) { // 加盟商
+			Join join = joinMapper.selectJoinById(clientId);
+			if(join == null) {
+				throw new RRException("未找到客户");
+			}
+			frozenBalance = join.getFrozenBalance() == null ? new BigDecimal(0) : join.getFrozenBalance();
+			if(join.getBalance() == null || join.getBalance().subtract(frozenBalance).compareTo(money) == -1) {
+				throw new RRException("可提现余额不足");
+			}
+			balance = join.getBalance();
+			frozenBalance = frozenBalance.add(money);
+			joinMapper.updateBalance(clientId, null, frozenBalance);
+			clientName = join.getJoinerName();
+			managerPhone = join.getManagerPhone();
+			bankAccount = join.getBankAccount();
+			bankName = join.getBankName();
+			bankReceiver = join.getBankReceiver();
+		} else if(UserConstants.USER_TYPE_AGENT.equals(clientType)) { // 代理商
+			Agent agent = agentMapper.selectAgentById(clientId);
+			if(agent == null) {
+				throw new RRException("未找到客户");
+			}
+			frozenBalance = agent.getFrozenBalance() == null ? new BigDecimal(0) : agent.getFrozenBalance();
+			if(agent.getBalance() == null || agent.getBalance().subtract(frozenBalance).compareTo(money) == -1) {
+				throw new RRException("可提现余额不足");
+			}
+			balance = agent.getBalance();
+			frozenBalance = frozenBalance.add(money);
+			agentMapper.updateBalance(clientId, null, frozenBalance);
+			clientName = agent.getAgentName();
+			managerPhone = agent.getManagerPhone();
+			bankAccount = agent.getBankAccount();
+			bankName = agent.getBankName();
+			bankReceiver = agent.getBankReceiver();
+		} else if(UserConstants.USER_TYPE_REPAIR.equals(clientType)) { // 服务商
+			Repair repair = repairMapper.selectRepairById(clientId);
+			if(repair == null) {
+				throw new RRException("未找到客户");
+			}
+			frozenBalance = repair.getFrozenBalance() == null ? new BigDecimal(0) : repair.getFrozenBalance();
+			if(repair.getBalance() == null || repair.getBalance().subtract(frozenBalance).compareTo(money) == -1) {
+				throw new RRException("可提现余额不足");
+			}
+			balance = repair.getBalance();
+			frozenBalance = frozenBalance.add(money);
+			repairMapper.updateBalance(clientId, null, frozenBalance);
+			clientName = repair.getRepairName();
+			managerPhone = repair.getManagerPhone();
+			bankAccount = repair.getBankAccount();
+			bankName = repair.getBankName();
+			bankReceiver = repair.getBankReceiver();
+		} else if(UserConstants.USER_TYPE_ADVERTISE.equals(clientType)) { // 广告商
+			Advertise advertise = advertiseMapper.selectAdvertiseById(clientId);
+			if(advertise == null) {
+				throw new RRException("未找到客户");
+			}
+			frozenBalance = advertise.getFrozenBalance() == null ? new BigDecimal(0) : advertise.getFrozenBalance();
+			if(advertise.getBalance() == null || advertise.getBalance().subtract(frozenBalance).compareTo(money) == -1) {
+				throw new RRException("可提现余额不足");
+			}
+			balance = advertise.getBalance();
+			frozenBalance = frozenBalance.add(money);
+			advertiseMapper.updateBalance(clientId, null, frozenBalance);
+			clientName = advertise.getAdvertisorName();
+			managerPhone = advertise.getManagerPhone();
+			bankAccount = advertise.getBankAccount();
+			bankName = advertise.getBankName();
+			bankReceiver = advertise.getBankReceiver();
+		} else {
+			logger.error("客户类型有误，clientType："+clientType);
+			throw new RRException("客户类型有误");
+		}
+		balance = balance.setScale(2, BigDecimal.ROUND_HALF_UP); // 四舍五入 保留两位
+		money = money.setScale(2, BigDecimal.ROUND_HALF_UP); // 四舍五入 保留两位
+		// 资金流水
+		FundLog fundLog = new FundLog();
+		fundLog.setBalance(balance.subtract(money).toString());
+		fundLog.setTotalFee("-"+money);
+		fundLog.setClientId(clientId);
+		fundLog.setClientType(clientType);
+		fundLog.setContent("提现");
+		fundLog.setType(Const.FUND_WITHDRAW_DEPOSIT);
+		fundLog.setStatus("0");
+		fundLog.setCreateTime(new Date());
+		fundLogMapper.insertFundLog(fundLog);
+		// 提现记录
+		WithdrawDeposit wd = new WithdrawDeposit();
+		wd.setFundLogId(fundLog.getPayId());
+		wd.setClientId(clientId);
+		wd.setClientType(clientType);
+		wd.setClientName(clientName);
+		wd.setMoney(money);
+		wd.setBalance(balance.subtract(money));
+		wd.setManagerPhone(managerPhone);
+		wd.setBankAccount(bankAccount);
+		wd.setBankName(bankName);
+		wd.setBankReceiver(bankReceiver);
+		wd.setStatus("1");
+		wd.setCreateTime(new Date());
+		withdrawDepositMapper.insertWithdrawDeposit(wd);
+	}
+
+	@Override
+	public void sureClientWithdraw(Integer id,String drawStatus) {
+		WithdrawDeposit wd = withdrawDepositMapper.selectWithdrawDepositById(id);
+		if(wd == null) {
+			throw new RRException("无提现记录");
+		}
+		String status = Const.WITHDRAW_SUCCESS.equals(drawStatus) ? Const.STATUS_SUCCESS : Const.STATUS_FAIL;
+		fundLogMapper.updateStatus(wd.getFundLogId(), status);
+		if(UserConstants.USER_TYPE_JOIN.equals(wd.getClientType())) { // 加盟商
+			Join join = joinMapper.selectJoinById(wd.getClientId());
+			if(join == null) {
+				throw new RRException("未找到客户");
+			}
+			joinMapper.updateBalance(wd.getClientId(), join.getBalance().subtract(wd.getMoney()), join.getFrozenBalance().subtract(wd.getMoney()));
+		} else if(UserConstants.USER_TYPE_AGENT.equals(wd.getClientType())) { // 代理商
+			Agent agent = agentMapper.selectAgentById(wd.getClientId());
+			if(agent == null) {
+				throw new RRException("未找到客户");
+			}
+			agentMapper.updateBalance(wd.getClientId(), agent.getBalance().subtract(wd.getMoney()), agent.getFrozenBalance().subtract(wd.getMoney()));
+		} else if(UserConstants.USER_TYPE_REPAIR.equals(wd.getClientType())) { // 服务商
+			Repair repair = repairMapper.selectRepairById(wd.getClientId());
+			if(repair == null) {
+				throw new RRException("未找到客户");
+			}
+			repairMapper.updateBalance(wd.getClientId(), repair.getBalance().subtract(wd.getMoney()), repair.getFrozenBalance().subtract(wd.getMoney()));
+		} else if(UserConstants.USER_TYPE_ADVERTISE.equals(wd.getClientType())) { // 广告商
+			Advertise advertise = advertiseMapper.selectAdvertiseById(wd.getClientId());
+			if(advertise == null) {
+				throw new RRException("未找到客户");
+			}
+			advertiseMapper.updateBalance(wd.getClientId(), advertise.getBalance().subtract(wd.getMoney()), advertise.getFrozenBalance().subtract(wd.getMoney()));
+		} else {
+			throw new RRException("未找到客户");
+		}
 	}
 	
 }

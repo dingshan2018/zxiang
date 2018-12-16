@@ -44,6 +44,22 @@ public class Const {
      * 资金流水类型：4:收益
      */
     public static String FUND_INCOME = "4";
+    /**
+     * 资金流水类型：5:广告费用冻结
+     */
+    public static String FUND_FREEZE = "5";
+    /**
+     * 提现状态 1：提现中
+     */
+    public static String WITHDRAW_ING = "1";
+    /**
+     * 提现状态 2：转账成功
+     */
+    public static String WITHDRAW_SUCCESS = "2";
+    /**
+     * 提现状态 3：转载失败
+     */
+    public static String WITHDRAW_FAIL = "3";
     
     
 

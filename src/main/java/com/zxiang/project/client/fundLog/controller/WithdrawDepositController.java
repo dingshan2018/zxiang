@@ -59,11 +59,30 @@ public class WithdrawDepositController extends BaseController
 	 * 新增提现记录
 	 */
 	@GetMapping("/add")
-	public String add()
-	{
+	public String add() {
 	    return prefix + "/add";
 	}
-	
+	/**
+	 * 跳转确认转账页面
+	 */
+	@GetMapping("/toConfirmAccount/{id}")
+	public String toConfirmAccount(@PathVariable("id") Integer id, ModelMap mmap) {
+		WithdrawDeposit wd = withdrawDepositService.selectWithdrawDepositById(id);
+		mmap.put("id", id);
+		mmap.put("clientName", wd.getClientName());
+		mmap.put("bankAccount", wd.getBankAccount());
+		mmap.put("bankReceiver", wd.getBankReceiver());
+		mmap.put("bankName", wd.getBankName());
+		mmap.put("money", wd.getMoney());
+		return prefix + "/confirmAccount";
+	}
+	@PostMapping("/confirmAccount") // 提现处理中
+	@RequiresPermissions("client:confirm:account")
+	@ResponseBody
+	public AjaxResult confirmAccount(WithdrawDeposit withdrawDeposit) {
+		withdrawDepositService.updateWithdrawDeposit(withdrawDeposit);
+		return AjaxResult.success("提现已提交处理...");
+	}
 	/**
 	 * 新增保存提现记录
 	 */
@@ -71,8 +90,7 @@ public class WithdrawDepositController extends BaseController
 	@Log(title = "提现记录", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(WithdrawDeposit withdrawDeposit)
-	{		
+	public AjaxResult addSave(WithdrawDeposit withdrawDeposit){		
 		return toAjax(withdrawDepositService.insertWithdrawDeposit(withdrawDeposit));
 	}
 

@@ -55,8 +55,9 @@ public interface IWxUserService
 
 	/** 查询 系统指标 **/
 	public Map<String,Object> systemIndicators();
-	/** 出纸统计 **/
-	public Map<String, Object> tissueStatistical();
+	/** 出纸统计 
+	 * @param dates **/
+	public Map<String, Object> tissueStatistical(String[] dates);
 
 	public int updateUserIdNull(Integer wcUserId);
 	

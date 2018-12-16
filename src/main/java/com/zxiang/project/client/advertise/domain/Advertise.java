@@ -47,6 +47,12 @@ public class Advertise extends BaseEntity
 	private String updateBy;
 	/**  */
 	private Date updateTime;
+	/** 收款人 */
+	private String bankReceiver;
+	/** 收款账号 */
+	private String bankAccount;
+	/** 收款人姓名 */
+	private String bankName;
 	/** 余额 **/
 	private BigDecimal balance; 
 	/** 冻结余额 **/
@@ -214,14 +220,29 @@ public class Advertise extends BaseEntity
 		this.frozenBalance = frozenBalance;
 	}
 
-	@Override
-	public String toString() {
-		return "Advertise [advertiseId=" + advertiseId + ", advertisorName=" + advertisorName + ", managerId="
-				+ managerId + ", managerName=" + managerName + ", managerPhone=" + managerPhone + ", business="
-				+ business + ", releaseNum=" + releaseNum + ", lastScheduler=" + lastScheduler + ", status=" + status
-				+ ", delFlag=" + delFlag + ", grade=" + grade + ", cutOff=" + cutOff + ", createBy=" + createBy
-				+ ", createTime=" + createTime + ", updateBy=" + updateBy + ", updateTime=" + updateTime + ", balance="
-				+ balance + ", frozenBalance=" + frozenBalance + "]";
+	public String getBankReceiver() {
+		return bankReceiver;
 	}
+
+	public void setBankReceiver(String bankReceiver) {
+		this.bankReceiver = bankReceiver;
+	}
+
+	public String getBankAccount() {
+		return bankAccount;
+	}
+
+	public void setBankAccount(String bankAccount) {
+		this.bankAccount = bankAccount;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
 
 }

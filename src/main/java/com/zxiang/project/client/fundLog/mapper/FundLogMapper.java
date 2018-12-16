@@ -2,6 +2,8 @@ package com.zxiang.project.client.fundLog.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.zxiang.project.client.fundLog.domain.FundLog;	
 
 /**
@@ -59,5 +61,7 @@ public interface FundLogMapper
      * @return 结果
      */
 	public int deleteFundLogByIds(String[] payIds);
+	
+	public int updateStatus(@Param("payId")Integer payId,@Param("status")String status);
 	
 }

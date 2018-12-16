@@ -1,5 +1,6 @@
 package com.zxiang.project.client.fundLog.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -30,9 +31,9 @@ public class WithdrawDeposit extends BaseEntity
 	/** 主体名称 */
 	private String clientName;
 	/** 提现金额 */
-	private Double money;
+	private BigDecimal money;
 	/** 余额 */
-	private Double balance;
+	private BigDecimal balance;
 	/** 管理者电话 */
 	private String managerPhone;
 	/** 收款账号 */
@@ -106,27 +107,25 @@ public class WithdrawDeposit extends BaseEntity
 	{
 		return clientName;
 	}
-	public void setMoney(Double money) 
-	{
-		this.money = money;
-	}
-
-	public Double getMoney() 
-	{
-		return money;
-	}
-	public void setBalance(Double balance) 
-	{
-		this.balance = balance;
-	}
-
-	public Double getBalance() 
-	{
-		return balance;
-	}
 	public void setManagerPhone(String managerPhone) 
 	{
 		this.managerPhone = managerPhone;
+	}
+
+	public BigDecimal getMoney() {
+		return money;
+	}
+
+	public void setMoney(BigDecimal money) {
+		this.money = money;
+	}
+
+	public BigDecimal getBalance() {
+		return balance;
+	}
+
+	public void setBalance(BigDecimal balance) {
+		this.balance = balance;
 	}
 
 	public String getManagerPhone() 

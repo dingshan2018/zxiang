@@ -264,9 +264,7 @@
     }
 
     function tissueStatistical (queryDate) {
-      $.post("/home/tissueStatistical", JSON.stringify({
-        dates: queryDate
-      }), function (data) {
+      $.post("/home/tissueStatistical", {dates: queryDate}, function (data) {
         data = data.dataList;
         var selDate = [];
         var tissueTotal = [];
