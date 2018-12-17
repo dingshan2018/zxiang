@@ -2,6 +2,28 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <meta charset="utf-8">
 <head th:include="include :: header"></head>
+<style>
+  .bootstrap-table__tool{
+    overflow: auto;
+  }
+
+  .bootstrap-table__tool-total {
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+
+  .bootstrap-table__tool-total > a {
+    padding: 8px 14px
+  }
+
+  .bootstrap-table__tool-total .glyphicon {
+    font-size: 13px;
+  }
+
+  .bootstrap-table__tool-total strong {
+    font-size: 16px;
+  }
+</style>
 <body class="gray-bg">
   <div class="container-div">
     <div class="col-sm-12 select-info">
@@ -70,6 +92,16 @@
     </div>
 
     <div class="col-sm-12 select-table table-striped">
+      <div class="bootstrap-table__tool">
+        <div class="bootstrap-table__tool-total btn-group" role="group">
+          <a class="btn btn-white btn-outline">
+            <i class="glyphicon glyphicon-save-file"></i> 出纸数量 <strong>5133</strong> 张
+          </a>
+          <a class="btn btn-white btn-outline">
+            <i class="glyphicon glyphicon-usd"></i> 出纸金额 <strong>2101.30</strong> 元
+          </a>
+        </div>
+      </div>
       <table id="bootstrap-table" data-mobile-responsive="true"></table>
     </div>
   </div>
