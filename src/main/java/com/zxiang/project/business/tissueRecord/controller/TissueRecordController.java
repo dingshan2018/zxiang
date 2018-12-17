@@ -3,7 +3,7 @@ package com.zxiang.project.business.tissueRecord.controller;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -149,6 +149,14 @@ public class TissueRecordController extends BaseController
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@DataFilter(placeAlias="tr.place_id")
+	@RequestMapping("/tissueCount")
+	@ResponseBody
+	public Map<String, Object> tissueCount(@RequestParam HashMap<String, String> params){
+		Map<String, Object> result = tissueRecordService.tissueCount(params);
+		return result;
 	}
 	
 }
