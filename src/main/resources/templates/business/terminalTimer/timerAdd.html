@@ -6,17 +6,22 @@
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-terminalTimer-add">
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>终端：</label>
 				<div class="col-sm-8">
 					<input id="terminalId" name="terminalId" th:value="${terminalId}" class="form-control" type="hidden">
 					<input id="terminalCode" name="terminalCode" th:value="${terminalCode}" class="form-control" readonly="readonly">
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>定时类型：</label>
 				<div class="col-sm-8">
-					<select id="timerType" name="timerType" class="form-control">
+					<select
+						id="timerType"
+						name="timerType"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
 						<option value="1">一次</option>
 						<option value="2">按天</option>
@@ -25,7 +30,7 @@
 					</select>
 				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>开机时间：</label>
 				<div class="col-sm-8">
 					<div id="datetimepicker1" class="input-append date">
@@ -34,9 +39,9 @@
 				      	  <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
 				      	</span>
 				    </div>
-				</div> 
+				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>关机时间：</label>
 				<div class="col-sm-8">
 					<div id="datetimepicker2" class="input-append date">
@@ -45,12 +50,17 @@
 				      	  <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
 				      	</span>
 				    </div>
-				</div> 
+				</div>
 			</div>
-			<div class="form-group">	
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>状态 ：</label>
 				<div class="col-sm-8">
-					<select id="status" name="status" class="form-control">
+					<select
+						id="status"
+						name="status"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
 						<option value="1">生效</option>
 						<option value="2">禁用</option>
 					</select>
@@ -68,7 +78,7 @@
     <!-- <script type="text/javascript" src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script> -->
     <script type="text/javascript" src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js"></script>
     <script type="text/javascript">
-	    $(function(){ 
+	    $(function(){
 	    	//不用引入语言直接复制中文转换代码
 	    	$.fn.datetimepicker.dates['zh-CN'] = {
 	    			days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
@@ -92,7 +102,7 @@
 	            autoclose:true,//日期选择完成后是否关闭选择框
 	            inputMask: true
           	});
-	    	
+
 	    	$('#datetimepicker2').datetimepicker({
 	            format: 'yyyy-MM-dd hh:mm:ss',
 	            language: 'zh-CN',
@@ -103,8 +113,8 @@
 	            secondStep: 30,
 	            inputMask: true
           	});
-	 	});	
-    	
+	 	});
+
 		var prefix = ctx + "business/terminalTimer"
 		$("#form-terminalTimer-add").validate({
 			rules:{
@@ -128,14 +138,14 @@
 				add();
 			}
 		});
-		
+
 		function add() {
         	var terminalId = $("#terminalId").val();
         	var timerType = $.form.selectSelects("timerType");
         	var powerOnTime = $("#powerOnTime").val();
         	var powerOffTime = $("#powerOffTime").val();
         	var status = $.form.selectSelects("status");
-        	
+
         	if(powerOnTime == ''){
         		alert("开机时间不能为空!");
         		return false;
@@ -144,7 +154,7 @@
         		alert("关机时间不能为空!");
         		return false;
         	}
-        	
+
         	$.ajax({
         		cache : true,
         		type : "POST",
@@ -165,7 +175,7 @@
         		}
         	});
         }
-		
+
 	</script>
 </body>
 </html>

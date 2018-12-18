@@ -271,7 +271,7 @@
                 str += "<option value=" + item.id + ">" + item.pname + "</option>";
             })
             //将数据添加到市这个下拉框里面
-            $("#city").append(str);
+            $("#city").append(str).selectpicker("refresh");
 	    }
 	    function countyBind() {
 	        var provice = $("#city option:selected").val();
@@ -287,7 +287,7 @@
                 str += "<option value=" + item.id + ">" + item.pname + "</option>";
             })
             //将数据添加到区县这个下拉框里面
-            $("#county").append(str);
+            $("#county").append(str).selectpicker("refresh");
 	    }
 
 	  	//通过选择的区域获取维修员及送纸员

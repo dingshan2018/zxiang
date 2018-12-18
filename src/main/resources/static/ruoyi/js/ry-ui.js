@@ -24,11 +24,11 @@
                     sortOrder: _sortOrder,                              // 排序方式  asc 或者 desc
                     pagination: $.common.visible(options.pagination),   // 是否显示分页（*）
                     pageNumber: 1,                                      // 初始化加载第一页，默认第一页
-                    pageSize: 10,                                       // 每页的记录行数（*） 
+                    pageSize: 10,                                       // 每页的记录行数（*）
                     pageList: [10, 25, 50],                             // 可供选择的每页的行数（*）
                     iconSize: 'outline',                                // 图标大小：undefined默认的按钮尺寸 xs超小按钮sm小按钮lg大按钮
         	        toolbar: '#toolbar',                                // 指定工作栏
-                    sidePagination: "server",                           // 启用服务端分页 
+                    sidePagination: "server",                           // 启用服务端分页
                     search: $.common.visible(options.search),           // 是否显示搜索框功能
                     showRefresh: $.common.visible(options.showRefresh), // 是否显示刷新按钮
         			showColumns: $.common.visible(options.showColumns), // 是否显示隐藏某列下拉框
@@ -48,7 +48,7 @@
         			searchValue:    params.search,
         			orderByColumn:  params.sort,
         			isAsc:          params.order
-        		}; 
+        		};
             },
             // 请求获取数据后处理回调函数
             responseHandler: function(res) {
@@ -162,7 +162,9 @@
     		reset: function(formId) {
             	var currentId = $.common.isEmpty(formId) ? $('form').attr('id') : formId;
             	$("#" + currentId)[0].reset();
-            },
+            	// bootstrap-select 刷新
+          $("#" + currentId +' .selectpicker').selectpicker("refresh");
+        },
             // 获取选中复选框项
             selectCheckeds: function(name) {
             	var checkeds = "";
