@@ -1,8 +1,10 @@
 package com.zxiang.project.business.tissueRecord.service;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -114,6 +116,25 @@ public class TissueRecordServiceImpl implements ITissueRecordService
   		String excelName = "出纸记录" + System.currentTimeMillis() + ".xls";
   		s.exportExcel("出纸记录", excelName, exportFile, request, response);
 		
+	}
+
+	/**
+	 * 根据条件查询出纸数量及出纸金额统计
+	 */
+	@Override
+	public Map<String, Object> tissueCount(HashMap<String, String> params) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		HashMap<String, Object> tissueCount = tissueRecordMapper.tissueCount(params);
+		
+		if(tissueCount != null){
+			result.put("paperSum", tissueCount.get("paperSum"));
+			result.put("moneySum", new DecimalFormat("###,##0.00").format(tissueCount.get("moneySum")));
+		}else{
+			result.put("paperSum", "0");
+			result.put("moneySum", "0");
+		}
+		
+		return result;
 	}
 	
 }

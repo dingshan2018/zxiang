@@ -66,5 +66,12 @@ public interface TissueRecordMapper
 	public int selectTotal(@Param("selDate")String selDate);
 
 	public List queryExport(HashMap<String, String> params);
+
+	/**
+	 * 根据条件查询出纸数量及出纸金额统计
+	 * @param params
+	 * @return
+	 */
+	public HashMap<String, Object> tissueCount(HashMap<String, String> params);
 	
 }

@@ -70,7 +70,7 @@
               <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
             </li>
             <li class="select-btns">
-              <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
+              <a class="btn btn-primary btn-rounded btn-sm" onclick="tissueSearch()"><i class="fa fa-search"></i>&nbsp;搜索
               </a>
               <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
               </a>
@@ -95,10 +95,10 @@
       <div class="bootstrap-table__tool">
         <div class="bootstrap-table__tool-total btn-group" role="group">
           <a class="btn btn-white btn-outline">
-            <i class="glyphicon glyphicon-save-file"></i> 出纸数量 <strong>5133</strong> 张
+            <i class="glyphicon glyphicon-save-file"></i> 出纸数量： <strong id="paperSum"></strong> 
           </a>
           <a class="btn btn-white btn-outline">
-            <i class="glyphicon glyphicon-usd"></i> 出纸金额 <strong>2101.30</strong> 元
+            <i class="glyphicon glyphicon-yen"></i> 出纸金额： <strong id="moneySum"></strong> 元
           </a>
         </div>
       </div>
@@ -112,6 +112,10 @@
     var prefix = ctx + 'business/tissueRecord';
 
     $(function () {
+    	
+      //加载统计数据
+      tissueSearch();
+    	
       //代理商下拉框数据
       var agentList = selectAgentList();
       $.each(agentList, function (i) {
@@ -134,6 +138,7 @@
         updateUrl: prefix + '/edit/{id}',
         removeUrl: prefix + '/remove',
         search    : false,
+        showExport: false,
         modalName: '出纸记录',
         columns  : [
           {
@@ -166,7 +171,7 @@
           {
             field: 'headimgurl',
             title: '微信头像',formatter: function(value, row, index) {
-				return '<img alt="" style="width:70px;height:70px;" src="'+value+'">';
+				return '<img alt="" style="width:50px;height:50px;" src="'+value+'">';
             }
           },
           {
@@ -197,6 +202,7 @@
       };
       $.table.init(options);
       $('#bootstrap-table').bootstrapTable('hideColumn', 'tissueRecordId');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'openId');
     });
 
   	//导出Excel
@@ -213,6 +219,36 @@
     		//$.modal.alert("导出成功!");
 		});
     }
+  	
+  	//搜索查询
+    function tissueSearch(){
+    	var agentId = $("#agentId").val();
+		var repairId = $("#repairId").val();
+		var joinId = $("#joinId").val();
+		var startTime = $("#startTime").val();
+		var endTime = $("#endTime").val();
+		
+		var paperSum=document.getElementById("paperSum");
+		var moneySum=document.getElementById("moneySum");
+
+    	$.ajax({
+	        url: prefix + "/tissueCount?agentId="+agentId+'&repairId='+repairId+'&joinId='+joinId
+				+'&startTime='+startTime+'&endTime='+endTime ,
+	        type: "post",
+	        async:false,
+	        success: function (data) {
+	        	paperSum.innerText=data.paperSum;
+	        	moneySum.innerText=data.moneySum;
+	        },
+	        error: function (data) {
+	        	console.log("tissueCount:",data);
+	        	paperSum.innerText("查询失败");
+	        	moneySum.innerText("查询失败");
+	            //alert("后台查询失败");
+	        }
+		})
+    	$.table.search();
+  	}
   </script>
 </body>
 </html>

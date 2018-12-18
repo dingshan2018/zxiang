@@ -19,14 +19,20 @@ public class TissueRecord extends BaseEntity
 	
 	/**  */
 	private Integer tissueRecordId;
+	/** 二维码推广计划 */
+	private Integer qrScheduleId;
 	/** 出纸设备 */
 	private Integer deviceId;
 	/** 出纸终端 */
 	private Integer terminalId;
 	/** 出纸场所 */
 	private Integer placeId;
+	/** 粉丝用户ID */
+	private Integer wxUserId;
 	/** 用户微信账号 */
 	private String openId;
+	/** 出纸状态 0：未出纸 1：出纸成功  2：出纸失败 */
+	private String status;
 	/** 微信昵称 */
 	private String nickName;
 	/** 微信头像 */
@@ -37,6 +43,12 @@ public class TissueRecord extends BaseEntity
 	private String createBy;
 	/** 出纸时间 */
 	private Date createTime;
+	/** 推广计划 */
+	private Integer scheduleId;
+	/** 出纸价格 */
+	private double price;
+	/** 每次出纸长度 */
+	private Integer tissueLen;
 
 	private String terminalCode;
 	private String placeName;
@@ -194,18 +206,72 @@ public class TissueRecord extends BaseEntity
 		this.deviceSn = deviceSn;
 	}
 
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+	public Integer getTissueLen() {
+		return tissueLen;
+	}
+
+	public void setTissueLen(Integer tissueLen) {
+		this.tissueLen = tissueLen;
+	}
+
+	public Integer getQrScheduleId() {
+		return qrScheduleId;
+	}
+
+	public void setQrScheduleId(Integer qrScheduleId) {
+		this.qrScheduleId = qrScheduleId;
+	}
+
+	public Integer getWxUserId() {
+		return wxUserId;
+	}
+
+	public void setWxUserId(Integer wxUserId) {
+		this.wxUserId = wxUserId;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Integer getScheduleId() {
+		return scheduleId;
+	}
+
+	public void setScheduleId(Integer scheduleId) {
+		this.scheduleId = scheduleId;
+	}
+
 	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("tissueRecordId", getTissueRecordId())
+            .append("qrScheduleId", getQrScheduleId())
             .append("deviceId", getDeviceId())
             .append("terminalId", getTerminalId())
             .append("placeId", getPlaceId())
+            .append("wxUserId", getWxUserId())
             .append("openId", getOpenId())
+            .append("status", getStatus())
             .append("nickName", getNickName())
             .append("headimgurl", getHeadimgurl())
             .append("tissueChannel", getTissueChannel())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
+            .append("scheduleId", getScheduleId())
+            .append("price", getPrice())
+            .append("tissueLen", getTissueLen())
             .toString();
     }
 }

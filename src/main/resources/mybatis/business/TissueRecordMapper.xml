@@ -6,27 +6,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <resultMap type="TissueRecord" id="TissueRecordResult">
         <result property="tissueRecordId"    column="tissue_record_id"    />
+        <result property="qrScheduleId"    column="qr_schedule_id"    />
         <result property="deviceId"    column="device_id"    />
         <result property="terminalId"    column="terminal_id"    />
         <result property="placeId"    column="place_id"    />
+        <result property="wxUserId"    column="wx_user_id"    />
         <result property="openId"    column="open_id"    />
+        <result property="status"    column="status"    />
         <result property="nickName"    column="nick_name"    />
         <result property="headimgurl"    column="headimgurl"    />
         <result property="tissueChannel"    column="tissue_channel"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
+        <result property="scheduleId"    column="schedule_id"    />
+        <result property="price"    column="price"    />
+        <result property="tissueLen"    column="tissue_len"    />
     </resultMap>
 	
 	<sql id="selectTissueRecordVo">
-        select tissue_record_id, 
+        select tissue_record_id, qr_schedule_id,
         device_id, 
         (select distinct d.device_sn from zx_device d where d.device_id =tr.`device_id` ) deviceSn,
         terminal_id,
         (select distinct t.terminal_code from zx_terminal t where t.terminal_id =tr.`terminal_id` ) terminalCode,
         place_id, 
         (select distinct p.name from zx_place p where p.place_id =tr.`place_id` ) placeName,
-        open_id, nick_name, headimgurl, tissue_channel,
-        create_by, create_time from zx_tissue_record tr
+        wx_user_id,open_id,status, nick_name, headimgurl, tissue_channel,
+        create_by, create_time,schedule_id, price, tissue_len from zx_tissue_record tr
     </sql>
 	
     <select id="selectTissueRecordList" parameterType="TissueRecord" resultMap="TissueRecordResult">
@@ -34,18 +40,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             ${filterSql}
             <if test="tissueRecordId != null and tissueRecordId != ''"> and tissue_record_id = #{tissueRecordId}</if>
+             <if test="qrScheduleId != null and qrScheduleId != ''"> and qr_schedule_id = #{qrScheduleId}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
              <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
              <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
+             <if test="wxUserId != null and wxUserId != ''"> and wx_user_id = #{wxUserId}</if>
              <if test="openId != null and openId != ''"> and open_id = #{openId}</if>
+             <if test="status != null and status != ''"> and status = #{status}</if>
              <if test="nickName != null and nickName != ''"> and nick_name = #{nickName}</if>
              <if test="headimgurl != null and headimgurl != ''"> and headimgurl = #{headimgurl}</if>
              <if test="tissueChannel != null and tissueChannel != ''"> and tissue_channel = #{tissueChannel}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+             <if test="params.beginTime != null and params.beginTime != '' "><!-- 开始时间检索 -->
 				AND date_format(tr.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
 			 </if>
-			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+			 <if test="params.endTime != null and params.endTime != '' "><!-- 结束时间检索 -->
 				AND date_format(tr.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
 			 </if>
 			 <!-- 按照代理商搜索  通过场所经办人关联-->
@@ -65,6 +74,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              		WHERE zd.owner_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_device d 
              			WHERE su.user_type='02' AND su.puser_id=#{joinId}  AND su.user_id=d.owner_id))
          	 </if>
+         	 <if test="scheduleId != null and scheduleId != ''"> and schedule_id = #{scheduleId}</if>
+             <if test="price != null and price != ''"> and price = #{price}</if>
+             <if test="tissueLen != null and tissueLen != ''"> and tissue_len = #{tissueLen}</if>
          </where>
          ORDER BY tissue_record_id DESC 
     </select>
@@ -78,42 +90,60 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into zx_tissue_record
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="tissueRecordId != null and tissueRecordId != '' ">tissue_record_id,</if>
+			<if test="qrScheduleId != null and qrScheduleId != '' ">qr_schedule_id,</if>
 			<if test="deviceId != null and deviceId != '' ">device_id,</if>
 			<if test="terminalId != null and terminalId != '' ">terminal_id,</if>
 			<if test="placeId != null and placeId != '' ">place_id,</if>
+			<if test="wxUserId != null and wxUserId != '' ">wx_user_id,</if>
 			<if test="openId != null and openId != '' ">open_id,</if>
+			<if test="status != null and status != '' ">status,</if>
 			<if test="nickName != null and nickName != '' ">nick_name,</if>
 			<if test="headimgurl != null and headimgurl != '' ">headimgurl,</if>
 			<if test="tissueChannel != null and tissueChannel != '' ">tissue_channel,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
 			<if test="createTime != null ">create_time,</if>
+			<if test="scheduleId != null and scheduleId != '' ">schedule_id,</if>
+			<if test="price != null and price != '' ">price,</if>
+			<if test="tissueLen != null and tissueLen != '' ">tissue_len,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="tissueRecordId != null and tissueRecordId != ''">#{tissueRecordId},</if>
+			<if test="qrScheduleId != null and qrScheduleId != ''">#{qrScheduleId},</if>
 			<if test="deviceId != null and deviceId != ''">#{deviceId},</if>
 			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
 			<if test="placeId != null and placeId != ''">#{placeId},</if>
+			<if test="wxUserId != null and wxUserId != ''">#{wxUserId},</if>
 			<if test="openId != null and openId != ''">#{openId},</if>
+			<if test="status != null and status != ''">#{status},</if>
 			<if test="nickName != null and nickName != ''">#{nickName},</if>
 			<if test="headimgurl != null and headimgurl != ''">#{headimgurl},</if>
 			<if test="tissueChannel != null and tissueChannel != ''">#{tissueChannel},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
 			<if test="createTime != null ">#{createTime},</if>
+			<if test="scheduleId != null and scheduleId != ''">#{scheduleId},</if>
+			<if test="price != null and price != ''">#{price},</if>
+			<if test="tissueLen != null and tissueLen != ''">#{tissueLen},</if>
          </trim>
     </insert>
 	 
     <update id="updateTissueRecord" parameterType="TissueRecord">
         update zx_tissue_record
         <trim prefix="SET" suffixOverrides=",">
+            <if test="qrScheduleId != null  ">qr_schedule_id = #{qrScheduleId},</if>
             <if test="deviceId != null  ">device_id = #{deviceId},</if>
             <if test="terminalId != null  ">terminal_id = #{terminalId},</if>
             <if test="placeId != null  ">place_id = #{placeId},</if>
+             <if test="wxUserId != null  ">wx_user_id = #{wxUserId},</if>
             <if test="openId != null  and openId != ''  ">open_id = #{openId},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
             <if test="nickName != null  and nickName != ''  ">nick_name = #{nickName},</if>
             <if test="headimgurl != null  and headimgurl != ''  ">headimgurl = #{headimgurl},</if>
             <if test="tissueChannel != null  and tissueChannel != ''  ">tissue_channel = #{tissueChannel},</if>
             <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
             <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="scheduleId != null  ">schedule_id = #{scheduleId},</if>
+            <if test="price != null  ">price = #{price},</if>
+            <if test="tissueLen != null  ">tissue_len = #{tissueLen},</if>
         </trim>
         where tissue_record_id = #{tissueRecordId}
     </update>
@@ -138,10 +168,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
         ${filterSql}
             <if test="tissueRecordId != null and tissueRecordId != ''"> and tissue_record_id = #{tissueRecordId}</if>
+            <if test="qrScheduleId != null and qrScheduleId != ''"> and qr_schedule_id = #{qrScheduleId}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
              <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
              <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
+             <if test="wxUserId != null and wxUserId != ''"> and wx_user_id = #{wxUserId}</if>
              <if test="openId != null and openId != ''"> and open_id = #{openId}</if>
+             <if test="status != null and status != ''"> and status = #{status}</if>
              <if test="nickName != null and nickName != ''"> and nick_name = #{nickName}</if>
              <if test="headimgurl != null and headimgurl != ''"> and headimgurl = #{headimgurl}</if>
              <if test="tissueChannel != null and tissueChannel != ''"> and tissue_channel = #{tissueChannel}</if>
@@ -169,7 +202,57 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              		WHERE zd.owner_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_device d 
              			WHERE su.user_type='02' AND su.puser_id=#{joinId}  AND su.user_id=d.owner_id))
          	 </if>
+         	 <if test="scheduleId != null and scheduleId != ''"> and schedule_id = #{scheduleId}</if>
+             <if test="price != null and price != ''"> and price = #{price}</if>
+             <if test="tissueLen != null and tissueLen != ''"> and tissue_len = #{tissueLen}</if>
          </where>  
          ORDER BY tissue_record_id DESC      
     </select>
+    
+    <!--  根据条件查询出纸数量及出纸金额统计 -->
+	<select id="tissueCount" resultType="java.util.HashMap">
+		SELECT SUM(tissue_len) paperSum ,SUM(price) moneySum FROM `zx_tissue_record` tr
+        <where>  
+        ${filterSql}
+            <if test="tissueRecordId != null and tissueRecordId != ''"> and tissue_record_id = #{tissueRecordId}</if>
+            <if test="qrScheduleId != null and qrScheduleId != ''"> and qr_schedule_id = #{qrScheduleId}</if>
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
+             <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
+             <if test="wxUserId != null and wxUserId != ''"> and wx_user_id = #{wxUserId}</if>
+             <if test="openId != null and openId != ''"> and open_id = #{openId}</if>
+             <if test="status != null and status != ''"> and status = #{status}</if>
+             <if test="nickName != null and nickName != ''"> and nick_name = #{nickName}</if>
+             <if test="headimgurl != null and headimgurl != ''"> and headimgurl = #{headimgurl}</if>
+             <if test="tissueChannel != null and tissueChannel != ''"> and tissue_channel = #{tissueChannel}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="startTime != null and startTime != ''"><!-- 开始时间检索 -->
+				AND date_format(tr.create_time,'%y%m%d') &gt;= date_format(#{startTime},'%y%m%d')
+			 </if>
+			 <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+				AND date_format(tr.create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+			 </if>
+			 <!-- 按照代理商搜索  通过场所经办人关联-->
+             <if test="agentId != null and agentId != ''"> and tr.place_id in 
+             	( SELECT DISTINCT zp.place_id FROM zx_place zp 
+             		WHERE zp.operator_id = (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
+             			WHERE su.user_type='03' AND su.puser_id=#{agentId} AND su.user_id=p.operator_id))</if>
+           	 <!-- 按照服务商搜索  通过场所维修员关联-->
+             <if test="repairId != null and repairId != ''">  and tr.place_id in 
+             	(SELECT DISTINCT zp.place_id FROM zx_place zp 
+             		WHERE zp.repair_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
+             			WHERE su.user_type='04' AND su.puser_id=#{repairId}  AND su.user_id=p.repair_id))
+             </if>
+             <!-- 按照加盟商搜索 通过设备机主关联-->
+             <if test="joinId != null and joinId != ''">  and tr.device_id in 
+             	(SELECT DISTINCT zd.device_id FROM zx_device zd 
+             		WHERE zd.owner_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_device d 
+             			WHERE su.user_type='02' AND su.puser_id=#{joinId}  AND su.user_id=d.owner_id))
+         	 </if>
+         	 <if test="scheduleId != null and scheduleId != ''"> and schedule_id = #{scheduleId}</if>
+             <if test="price != null and price != ''"> and price = #{price}</if>
+             <if test="tissueLen != null and tissueLen != ''"> and tissue_len = #{tissueLen}</if>
+         </where>  
+    </select>
+	
 </mapper>
