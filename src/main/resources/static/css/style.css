@@ -118,7 +118,27 @@ body.body-small .navbar-top-links li:last-child {
 .layui-laydate .layui-laydate-header .fa-angle-right{
   right: 45px;
 }
-
+.input-addon{
+    position: absolute;
+    top: 1px;
+    right: 16px;
+    width: 35px;
+    height: 32px;
+    padding: 0;
+    cursor: pointer;
+    border: none;
+    /*border-left: 1px solid #e5e6e7;*/
+    outline: none;
+    background-color: transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+}
+.input-addon~input,
+.input-addon~textarea{
+    padding-right: 47px;
+}
 
 .dropdown-menu {
     border: medium none;
