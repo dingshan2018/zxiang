@@ -365,5 +365,33 @@ public class FundLogServiceImpl implements IFundLogService {
 			throw new RRException("未找到客户");
 		}
 	}
+
+	@Override
+	public void advertiseToUp(Integer advertiseId, BigDecimal money,String status) {
+		if(money == null || money.compareTo(new BigDecimal(0)) <= 0) {
+			throw new RRException("充值须大于0");
+		}
+		Advertise advertise = advertiseMapper.selectAdvertiseById(advertiseId);
+		if(advertise == null) {
+			throw new RRException("未找到客户");
+		}
+		BigDecimal balance = advertise.getBalance() == null ? new BigDecimal(0) : advertise.getBalance();
+		if("1".equals(status)) {
+			balance = balance.add(money);
+			advertiseMapper.updateBalance(advertiseId, balance, null);
+		}
+		balance = balance.setScale(2, BigDecimal.ROUND_HALF_UP); // 四舍五入 保留两位
+		// 充值记录
+		FundLog fundLog = new FundLog();
+		fundLog.setBalance(balance.toString());
+		fundLog.setTotalFee("+"+money);
+		fundLog.setClientId(advertiseId);
+		fundLog.setClientType(UserConstants.USER_TYPE_ADVERTISE);
+		fundLog.setContent("充值");
+		fundLog.setType(Const.FUND_TOP_UP);
+		fundLog.setStatus(status);
+		fundLog.setCreateTime(new Date());
+		fundLogMapper.insertFundLog(fundLog);
+	}
 	
 }
