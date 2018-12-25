@@ -33,6 +33,9 @@
       <a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="client:advertise:remove">
         <i class="fa fa-trash-o"></i> 删除
       </a>
+      <a class="btn btn-outline btn-info btn-rounded" onclick="fundTopUp()" shiro:hasPermission="client:fund:topUp">
+        <i class="glyphicon glyphicon-yen"></i> 充值
+      </a>
       <a class="btn btn-outline btn-danger btn-rounded" onclick="fundDetail()" shiro:hasPermission="client:fundLog:list">
         <i class="fa fa-usd"></i> 资金流水
       </a>
@@ -175,8 +178,19 @@
     		var url = ctx + "client/fundLog/05/"+rowsData[0].advertiseId;
             createMenuItem(url, $.table._option.modalName+'资金流水管理');
         }
+        function fundTopUp() {
+        	var rowsData = $("#bootstrap-table").bootstrapTable('getSelections', function (row) {
+        		return row;
+	  		});
+        	if(rowsData.length == 0 || rowsData.length > 1){
+        		$.modal.alertWarning("请选择一条记录");
+    			return;
+        	}
+    		var url = ctx + "client/fundLog/fundTopUp/"+rowsData[0].advertiseId;
+    		$.modal.open("微信扫码充值", url, 500, 450);
+        }
         function getMoney(clientId){
-        	$.modal.open("提现", ctx +"client/fundLog/getMoney/05/"+clientId, 500, 450);
+        	$.modal.open("提现", ctx +"client/fundLog/getMoney/05/"+clientId, 500, 550);
         }
     </script>
 </body>

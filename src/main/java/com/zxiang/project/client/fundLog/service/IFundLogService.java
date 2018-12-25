@@ -80,6 +80,13 @@ public interface IFundLogService
 	 */
 	public void sureClientWithdraw(Integer id,String drawStatus);
 	/**
+	 * 充值
+	 * @param advertiseId 广告商id
+	 * @param money 充值金额
+	 * @param status 1:成功,2:失败
+	 */
+	public void advertiseToUp(Integer advertiseId,BigDecimal money,String status);
+	/**
 	 * 广告发布冻结资金
 	 * @param advertiseId  主体id
 	 * @param money 金额

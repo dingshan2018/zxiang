@@ -64,6 +64,8 @@ public class AdConstant {
 	public final static String PAY_TYPE_ALL = "2";
 	/** 广告支付类型 押金支付 3	 */
 	public final static String PAY_TYPE_PRE = "3";
+	/** 广告支付类型  充值 4	 */
+	public final static String PAY_TYPE_TO_UP = "4";
 	
 	/******************** 广告投放位置（类型）	*******************/
 	/** 终端广告	 */

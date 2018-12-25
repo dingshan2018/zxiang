@@ -45,6 +45,11 @@ public class FundLogController extends BaseController
     	fundLogService.showClientInfo(clientId, clientType, mmap);
 	    return prefix + "/fundLog";
 	}
+	@GetMapping("/fundTopUp/{advertiseId}") // 充值
+	public String getMoney(@PathVariable Integer advertiseId,ModelMap mmap) {
+		mmap.put("advertiseId", advertiseId);
+		return prefix + "/toUpQrCode";
+	}
 	@GetMapping("/getMoney/{clientType}/{clientId}") // 提现弹框
 	public String getMoney(@PathVariable Integer clientId,@PathVariable String clientType, ModelMap mmap) {
 		mmap.put("clientId", clientId);
