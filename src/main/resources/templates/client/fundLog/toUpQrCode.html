@@ -19,7 +19,7 @@
 	});
 	function makeCode () {		
 		var advertiseId = [[${advertiseId}]];
-		var url = "http://mp.bp.zcloudtechs.cn/wx/wxpay/dingshanScheduleCode";
+		var url = "http://mp.bp.zcloudtechs.cn/wx/wxpay/dingshanIncomeCode";
 		var elText = url+"?order_type=4&advertiseId="+advertiseId+"&total_fee="+$("#money").val();
 		qrcode.makeCode(elText);
 	}
