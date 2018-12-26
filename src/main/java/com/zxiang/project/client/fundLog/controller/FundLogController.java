@@ -1,7 +1,10 @@
 package com.zxiang.project.client.fundLog.controller;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +17,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
+import com.zxiang.common.utils.StringUtils;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
+import com.zxiang.project.advertise.utils.AdHttpResult;
+import com.zxiang.project.advertise.utils.Tools;
+import com.zxiang.project.advertise.utils.constant.AdConstant;
 import com.zxiang.project.client.fundLog.domain.FundLog;
 import com.zxiang.project.client.fundLog.service.IFundLogService;
 
@@ -44,6 +52,36 @@ public class FundLogController extends BaseController
     	mmap.put("clientType", clientType);
     	fundLogService.showClientInfo(clientId, clientType, mmap);
 	    return prefix + "/fundLog";
+	}
+	@GetMapping("/fundTopUp/{advertiseId}") // 充值
+	public String getMoney(@PathVariable Integer advertiseId,ModelMap mmap) {
+		mmap.put("advertiseId", advertiseId);
+		return prefix + "/toUpQrCode";
+	}
+	@GetMapping("/buildPayQrCode") // 生成支付二维码
+	@ResponseBody
+	public AjaxResult buildPayQrCode(@RequestParam String advertiseId,@RequestParam String total_fee ) {
+		try {
+//			String url = AdConstant.AD_PAY_PREFIX;
+			String url = "http://mp.bp.zcloudtechs.cn/wx/wxpay/dingshanIncomeCode";
+			Map<String, String> paramsMap = new HashMap<String, String>();
+			paramsMap.put("total_fee", total_fee);
+			paramsMap.put("advertiseId", advertiseId);
+			paramsMap.put("order_type", AdConstant.PAY_TYPE_TO_UP);
+			
+			String requst = Tools.paramsToString(paramsMap);
+			String result = Tools.doPostForm(url, requst);
+			
+			AdHttpResult adHttp = Tools.analysisResult(result);
+			JSONObject jsonResult =  (JSONObject) adHttp.get("data");
+			String qrCode = jsonResult.getString("qrCode");
+			if(StringUtils.isNotEmpty(qrCode)){
+				return AjaxResult.success(qrCode);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return AjaxResult.error();
 	}
 	@GetMapping("/getMoney/{clientType}/{clientId}") // 提现弹框
 	public String getMoney(@PathVariable Integer clientId,@PathVariable String clientType, ModelMap mmap) {

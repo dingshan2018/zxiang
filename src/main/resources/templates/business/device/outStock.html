@@ -184,7 +184,7 @@
 			        		 var tradeOrderList = data.rows;
 			        		 $.each(tradeOrderList, function (i) {
 			     	        	$('#tradeOrderId').append("<option value=" + tradeOrderList[i].tradeOrderId + ">"
-			     	        			+ tradeOrderList[i].outTradeOrder + "</option>");
+			     	        			+ tradeOrderList[i].outTradeOrder + "</option>").selectpicker("refresh");;
 			     	        });
 			        	 }
 			         },
