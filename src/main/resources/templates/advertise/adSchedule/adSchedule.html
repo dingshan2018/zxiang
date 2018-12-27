@@ -699,7 +699,7 @@
        	        $.modal.alertWarning('广告审核通过后才能支付!');
        	        return;
           	}
-    		if(adSchedule.totalPay == '' || adSchedule.totalPay == null){
+    		if(adSchedule.totalPay == null ){
         		$.modal.alertWarning("暂无支付信息!");
         		return;
         	}

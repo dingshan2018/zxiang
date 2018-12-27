@@ -456,6 +456,10 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 					adSchedule.setPrepay(prepay);
 					adSchedule.setReleaseDays(days);
 				}
+			}else{
+				adSchedule.setTotalPay((float) 0);
+				adSchedule.setPrepay((float) 0);
+				adSchedule.setReleaseDays(days);
 			}
 			
 			//4.插入zx_release_device表
