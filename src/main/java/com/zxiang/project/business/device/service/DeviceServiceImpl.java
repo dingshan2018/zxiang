@@ -321,7 +321,13 @@ public class DeviceServiceImpl implements IDeviceService
 	public int supplyTissueAdd(Device device, String operatorUser) {
 		
 		Integer deviceId = device.getDeviceId(); 
-		Integer placeId = Integer.parseInt(device.getPlaceId());
+		SupplyTissue supplyTissue = new SupplyTissue();
+		
+		if(StringUtils.isNotEmpty(device.getPlaceId())){
+			Integer placeId = Integer.parseInt(device.getPlaceId());
+			supplyTissue.setPlaceId(placeId);
+		}
+		
 		Integer tissueCount = device.getTissueCount();
 		Integer supplierId = device.getSupplierId();
 		Device dev = deviceMapper.selectDeviceById(deviceId);
@@ -335,9 +341,8 @@ public class DeviceServiceImpl implements IDeviceService
 			updateDevice(dev);
 		}
 		
-		SupplyTissue supplyTissue = new SupplyTissue();
+		
 		supplyTissue.setDeviceId(deviceId);
-		supplyTissue.setPlaceId(placeId);
 		supplyTissue.setTissueCount(tissueCount);
 		supplyTissue.setSupplierId(supplierId);
 		supplyTissue.setCreateBy(operatorUser);
