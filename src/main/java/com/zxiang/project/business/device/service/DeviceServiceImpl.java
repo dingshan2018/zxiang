@@ -174,6 +174,10 @@ public class DeviceServiceImpl implements IDeviceService
 			if(hasDevAudit != null){
 				hasDevAudit.setPlaceId(Integer.parseInt(device.getPlaceId()));
 				hasDevAudit.setApproved("0");
+				hasDevAudit.setApprovedRemark("");
+				hasDevAudit.setApprovedUser("");
+				hasDevAudit.setAuditDate(null);
+				
 				deviceReleaseAuditService.updateDeviceReleaseAudit(hasDevAudit);
 			}else{
 				DeviceReleaseAudit devReleaseAudit = new DeviceReleaseAudit();
@@ -301,9 +305,12 @@ public class DeviceServiceImpl implements IDeviceService
 		changeTerminal.setCreateTime(new Date());
 		TerminalMapper.insertChangeTerminal(changeTerminal);
 		//换板后旧终端状态置为无效
-		Terminal oldTerminal = terminalMapper.selectTerminalById(device.getTerminalId());
-		oldTerminal.setStatus("2");
-		terminalMapper.updateTerminal(oldTerminal);
+		if(device.getTerminalId() != null){
+			Terminal oldTerminal = terminalMapper.selectTerminalById(device.getTerminalId());
+			oldTerminal.setStatus("2");
+			terminalMapper.updateTerminal(oldTerminal);
+		}
+		
 		//若设备已经投放，则新终端也要插入设备编号和场所编号信息，但场所投放数量不再增加设备count
 		Terminal newTerminal = terminalMapper.selectTerminalById(device.getNewTerminalId());
 		newTerminal.setDeviceId(device.getDeviceId());
