@@ -75,7 +75,7 @@ function createMenuItem(dataUrl, menuName) {
 $.ajaxSetup({
     complete: function(XMLHttpRequest, textStatus) {
         if (textStatus == "parsererror") {
-        	$.modal.confirm("登陆超时！请重新登陆！", function() {
+        	$.modal.confirm("登录超时！请重新登陆！", function() {
         		window.location.href = ctx + "login";
         	})
         }
