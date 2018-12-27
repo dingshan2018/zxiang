@@ -77,8 +77,9 @@ public interface IFundLogService
 	/**
 	 * 客户提现确认
 	 * @param id 提现记录id
+	 * @param remark 
 	 */
-	public void sureClientWithdraw(Integer id,String drawStatus);
+	public void sureClientWithdraw(Integer id,String drawStatus, String remark);
 	/**
 	 * 充值
 	 * @param advertiseId 广告商id

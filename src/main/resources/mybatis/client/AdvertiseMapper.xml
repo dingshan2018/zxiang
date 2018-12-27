@@ -123,16 +123,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="business != null  and business != ''  ">business = #{business},</if>
             <if test="releaseNum != null  ">release_num = #{releaseNum},</if>
             <if test="lastScheduler != null  ">last_scheduler = #{lastScheduler},</if>
-            <if test="bankAccount != null  and bankAccount != ''  ">bank_account = #{bankAccount},</if>
-            <if test="bankReceiver != null  and bankReceiver != ''  ">bank_receiver = #{bankReceiver},</if>
-            <if test="bankName != null  and bankName != ''  ">bank_name = #{bankName},</if>
-            <if test="status != null  and status != ''  ">status = #{status},</if>
-            <if test="grade != null  and grade != ''  ">grade = #{grade},</if>
-            <if test="cutOff != null  ">cut_off = #{cutOff},</if>
-            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
-            <if test="createTime != null  ">create_time = #{createTime},</if>
-            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
-            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            bank_account = #{bankAccount},
+            bank_receiver = #{bankReceiver},
+            bank_name = #{bankName},
+            status = #{status},
+            grade = #{grade},
+            update_by = #{updateBy},
+            update_time = #{updateTime}
         </trim>
         where advertise_id = #{advertiseId}
     </update>
@@ -147,7 +144,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
 	<update id="deleteAdvertiseById" parameterType="Integer">
-        update zx_advertise set del_flag = '2'  where advertise_id = #{advertiseId}
+        update zx_advertise set del_flag = '2' where advertise_id = #{advertiseId}
     </update>
 	
     <update id="deleteAdvertiseByIds" parameterType="String">

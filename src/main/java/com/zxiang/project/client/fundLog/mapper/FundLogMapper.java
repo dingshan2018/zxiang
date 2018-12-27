@@ -62,6 +62,6 @@ public interface FundLogMapper
      */
 	public int deleteFundLogByIds(String[] payIds);
 	
-	public int updateStatus(@Param("payId")Integer payId,@Param("status")String status);
+	public int updateStatus(@Param("payId")Integer payId,@Param("status")String status,@Param("remark")String remark);
 	
 }
