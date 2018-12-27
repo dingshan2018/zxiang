@@ -70,7 +70,7 @@ public class WithdrawDepositServiceImpl implements IWithdrawDepositService
 	@Override
 	@Transactional
 	public int updateWithdrawDeposit(WithdrawDeposit withdrawDeposit){
-		fundLogService.sureClientWithdraw(withdrawDeposit.getId(),withdrawDeposit.getStatus());
+		fundLogService.sureClientWithdraw(withdrawDeposit.getId(),withdrawDeposit.getStatus(),withdrawDeposit.getRemark());
 		withdrawDeposit.setUpdateTime(new Date());
 		withdrawDeposit.setPayTime(new Date());
 	    return withdrawDepositMapper.updateWithdrawDeposit(withdrawDeposit);

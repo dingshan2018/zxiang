@@ -335,37 +335,53 @@ public class FundLogServiceImpl implements IFundLogService {
 	}
 
 	@Override
-	public void sureClientWithdraw(Integer id,String drawStatus) {
+	public void sureClientWithdraw(Integer id,String drawStatus,String remark) {
 		WithdrawDeposit wd = withdrawDepositMapper.selectWithdrawDepositById(id);
 		if(wd == null) {
 			throw new RRException("无提现记录");
 		}
 		String status = Const.WITHDRAW_SUCCESS.equals(drawStatus) ? Const.STATUS_SUCCESS : Const.STATUS_FAIL;
-		fundLogMapper.updateStatus(wd.getFundLogId(), status);
+		fundLogMapper.updateStatus(wd.getFundLogId(), status,remark);
 		if(UserConstants.USER_TYPE_JOIN.equals(wd.getClientType())) { // 加盟商
 			Join join = joinMapper.selectJoinById(wd.getClientId());
 			if(join == null) {
 				throw new RRException("未找到客户");
 			}
-			joinMapper.updateBalance(wd.getClientId(), join.getBalance().subtract(wd.getMoney()), join.getFrozenBalance().subtract(wd.getMoney()));
+			if(Const.WITHDRAW_SUCCESS.equals(drawStatus)) {
+				joinMapper.updateBalance(wd.getClientId(), join.getBalance().subtract(wd.getMoney()), join.getFrozenBalance().subtract(wd.getMoney()));
+			}else {
+				joinMapper.updateBalance(wd.getClientId(), null, join.getFrozenBalance().subtract(wd.getMoney()));
+			}
 		} else if(UserConstants.USER_TYPE_AGENT.equals(wd.getClientType())) { // 代理商
 			Agent agent = agentMapper.selectAgentById(wd.getClientId());
 			if(agent == null) {
 				throw new RRException("未找到客户");
 			}
-			agentMapper.updateBalance(wd.getClientId(), agent.getBalance().subtract(wd.getMoney()), agent.getFrozenBalance().subtract(wd.getMoney()));
+			if(Const.WITHDRAW_SUCCESS.equals(drawStatus)) {
+				agentMapper.updateBalance(wd.getClientId(), agent.getBalance().subtract(wd.getMoney()), agent.getFrozenBalance().subtract(wd.getMoney()));
+			}else {
+				agentMapper.updateBalance(wd.getClientId(), null, agent.getFrozenBalance().subtract(wd.getMoney()));
+			}
 		} else if(UserConstants.USER_TYPE_REPAIR.equals(wd.getClientType())) { // 服务商
 			Repair repair = repairMapper.selectRepairById(wd.getClientId());
 			if(repair == null) {
 				throw new RRException("未找到客户");
 			}
-			repairMapper.updateBalance(wd.getClientId(), repair.getBalance().subtract(wd.getMoney()), repair.getFrozenBalance().subtract(wd.getMoney()));
+			if(Const.WITHDRAW_SUCCESS.equals(drawStatus)) {
+				repairMapper.updateBalance(wd.getClientId(), repair.getBalance().subtract(wd.getMoney()), repair.getFrozenBalance().subtract(wd.getMoney()));
+			}else {
+				repairMapper.updateBalance(wd.getClientId(), null, repair.getFrozenBalance().subtract(wd.getMoney()));
+			}
 		} else if(UserConstants.USER_TYPE_ADVERTISE.equals(wd.getClientType())) { // 广告商
 			Advertise advertise = advertiseMapper.selectAdvertiseById(wd.getClientId());
 			if(advertise == null) {
 				throw new RRException("未找到客户");
 			}
-			advertiseMapper.updateBalance(wd.getClientId(), advertise.getBalance().subtract(wd.getMoney()), advertise.getFrozenBalance().subtract(wd.getMoney()));
+			if(Const.WITHDRAW_SUCCESS.equals(drawStatus)) {
+				advertiseMapper.updateBalance(wd.getClientId(), advertise.getBalance().subtract(wd.getMoney()), advertise.getFrozenBalance().subtract(wd.getMoney()));
+			}else {
+				advertiseMapper.updateBalance(wd.getClientId(), null, advertise.getFrozenBalance().subtract(wd.getMoney()));
+			}
 		} else {
 			throw new RRException("未找到客户");
 		}
