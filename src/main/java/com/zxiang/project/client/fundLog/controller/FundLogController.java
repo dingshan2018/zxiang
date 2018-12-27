@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,8 +39,8 @@ import com.zxiang.project.client.fundLog.service.IFundLogService;
  */
 @Controller
 @RequestMapping("/client/fundLog")
-public class FundLogController extends BaseController
-{
+public class FundLogController extends BaseController {
+	Logger logger = Logger.getLogger(FundLogController.class);
     private String prefix = "client/fundLog";
 	
 	@Autowired
@@ -78,6 +79,7 @@ public class FundLogController extends BaseController
 			if(StringUtils.isNotEmpty(qrCode)){
 				return AjaxResult.success(qrCode);
 			}
+			logger.error("toUpPayRes:"+jsonResult.toJSONString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -104,8 +106,7 @@ public class FundLogController extends BaseController
 	@RequiresPermissions("client:fundLog:list")
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(FundLog fundLog)
-	{
+	public TableDataInfo list(FundLog fundLog) {
 		startPage();
         List<FundLog> list = fundLogService.selectFundLogList(fundLog);
 		return getDataTable(list);
@@ -115,8 +116,7 @@ public class FundLogController extends BaseController
 	 * 新增资金流水
 	 */
 	@GetMapping("/add")
-	public String add()
-	{
+	public String add() {
 	    return prefix + "/add";
 	}
 	
@@ -127,8 +127,7 @@ public class FundLogController extends BaseController
 	@Log(title = "资金流水", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(FundLog fundLog)
-	{		
+	public AjaxResult addSave(FundLog fundLog) {		
 		return toAjax(fundLogService.insertFundLog(fundLog));
 	}
 
@@ -136,8 +135,7 @@ public class FundLogController extends BaseController
 	 * 修改资金流水
 	 */
 	@GetMapping("/edit/{payId}")
-	public String edit(@PathVariable("payId") Integer payId, ModelMap mmap)
-	{
+	public String edit(@PathVariable("payId") Integer payId, ModelMap mmap) {
 		FundLog fundLog = fundLogService.selectFundLogById(payId);
 		mmap.put("fundLog", fundLog);
 	    return prefix + "/edit";
@@ -150,8 +148,7 @@ public class FundLogController extends BaseController
 	@Log(title = "资金流水", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
-	public AjaxResult editSave(FundLog fundLog)
-	{		
+	public AjaxResult editSave(FundLog fundLog) {		
 		return toAjax(fundLogService.updateFundLog(fundLog));
 	}
 	
@@ -162,8 +159,7 @@ public class FundLogController extends BaseController
 	@Log(title = "资金流水", businessType = BusinessType.DELETE)
 	@PostMapping( "/remove")
 	@ResponseBody
-	public AjaxResult remove(String ids)
-	{		
+	public AjaxResult remove(String ids) {		
 		return toAjax(fundLogService.deleteFundLogByIds(ids));
 	}
 	

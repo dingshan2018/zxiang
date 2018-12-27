@@ -76,7 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="county != null and county != ''"> and a.county = #{county}</if>
              <if test="level != null and level != ''"> and a.level = #{level}</if>
              <if test="deviceNum != null and deviceNum != ''"> and a.device_num = #{deviceNum}</if>
-             <if test="delFlag != null and delFlag != ''"> and a.del_flag = #{delFlag}</if>
+             and a.del_flag != '2'
              <if test="status != null and status != ''"> and a.status = #{status}</if>
              <if test="managerId != null and managerId != ''"> and a.manager_id = #{managerId}</if>
              <if test="managerName != null and managerName != ''"> and a.manager_name like concat('%', #{managerName}, '%')</if>
@@ -111,7 +111,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="county != null and county != '' ">county,</if>
 			<if test="level != null and level != '' ">level,</if>
 			<if test="deviceNum != null and deviceNum != '' ">device_num,</if>
-			<if test="delFlag != null and delFlag != '' ">del_flag,</if>
+			del_flag,
 			<if test="status != null and status != '' ">status,</if>
 			<if test="managerId != null and managerId != '' ">manager_id,</if>
 			<if test="managerName != null and managerName != '' ">manager_name,</if>
@@ -144,7 +144,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="county != null and county != ''">#{county},</if>
 			<if test="level != null and level != ''">#{level},</if>
 			<if test="deviceNum != null and deviceNum != ''">#{deviceNum},</if>
-			<if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+			'0',
 			<if test="status != null and status != ''">#{status},</if>
 			<if test="managerId != null and managerId != ''">#{managerId},</if>
 			<if test="managerName != null and managerName != ''">#{managerName},</if>
@@ -215,25 +215,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where agent_id = #{agentId}
     </update>
-	<delete id="deleteAgentById" parameterType="Integer">
-        delete from zx_agent where agent_id = #{agentId}
-    </delete>
+	<update id="deleteAgentById" parameterType="Integer">
+        update zx_agent set del_flag = '2' where agent_id = #{agentId}
+    </update>
 	
-    <delete id="deleteAgentByIds" parameterType="String">
-        delete from zx_agent where agent_id in 
+    <update id="deleteAgentByIds" parameterType="String">
+        update zx_agent set del_flag = '2' where agent_id in 
         <foreach item="agentId" collection="array" open="(" separator="," close=")">
             #{agentId}
         </foreach>
-    </delete>
+    </update>
     <select id="queryParentAgent" parameterType="Integer" resultMap="AgentResult">
-    	select * from zx_agent  where city = #{city} and county is null limit 1
+    	select * from zx_agent  where del_flag !=2 and city = #{city} and county is null limit 1
     </select>
     
     <select id="selectDropBoxList" resultMap="AgentResult">
-         select agent_id, agent_name,manager_id,manager_name from zx_agent
+         select agent_id, agent_name,manager_id,manager_name from zx_agent where del_flag !=2 
     </select>
     <select id="selectTotal" resultType="int">
-         select count(*) from zx_agent
+         select count(*) from zx_agent where del_flag !=2 
     </select>
     
 </mapper>

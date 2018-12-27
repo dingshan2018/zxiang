@@ -29,14 +29,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectAdvertiseVo">
-        select advertise_id, advertisor_name, manager_id, manager_name, manager_phone,bank_account, bank_receiver, bank_name, business, release_num, last_scheduler, status, del_flag, grade,balance,frozen_balance, cut_off, create_by, create_time, update_by, update_time from zx_advertise
+        select a.advertise_id, a.advertisor_name, a.manager_id, a.manager_name, a.manager_phone,a.bank_account, a.bank_receiver, a.bank_name, a.business, a.release_num, a.last_scheduler, a.status, a.del_flag, a.grade,a.balance,a.frozen_balance, a.cut_off, a.create_by, a.create_time, a.update_by, a.update_time from zx_advertise a
     </sql>
     <sql id="selectAdvertiseVos">
-        select distinct a.advertise_id, a.advertisor_name, a.manager_id, a.manager_name, a.manager_phone,a.bank_account, a.bank_receiver, a.bank_name, a.business, a.release_num, a.last_scheduler, a.status, a.del_flag, a.grade,a.balance,a.frozen_balance, a.cut_off, a.create_by, a.create_time, a.update_by, a.update_time from zx_advertise a LEFT JOIN sys_user b ON b.puser_id = a.advertise_id
+        select distinct a.advertise_id, a.advertisor_name, a.manager_id, a.manager_name, a.manager_phone,a.bank_account, a.bank_receiver, a.bank_name, a.business, a.release_num, a.last_scheduler, a.status, a.del_flag, a.grade,a.balance,a.frozen_balance, a.cut_off, a.create_by, a.create_time, a.update_by, a.update_time 
+        from zx_advertise a LEFT JOIN sys_user b ON b.puser_id = a.advertise_id
     </sql>
 	
     <select id="selectAdvertiseList" parameterType="Advertise" resultMap="AdvertiseResult">
-        <include refid="selectAdvertiseVo"/>
+        <include refid="selectAdvertiseVos"/>
         <where>  
           ${filterSql}
             <if test="advertiseId != null and advertiseId != ''"> and a.advertise_id = #{advertiseId}</if>
@@ -51,7 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="bankAccount != null and bankAccount != ''"> and a.bank_account = #{bankAccount}</if>
              <if test="bankReceiver != null and bankReceiver != ''"> and a.bank_receiver = #{bankReceiver}</if>
              <if test="bankName != null and bankName != ''"> and a.bank_name = #{bankName}</if>
-             <if test="delFlag != null and delFlag != ''"> and a.del_flag = #{delFlag}</if>
+             and a.del_flag != '2'
              <if test="grade != null and grade != ''"> and a.grade = #{grade}</if>
              <if test="cutOff != null and cutOff != ''"> and a.cut_off = #{cutOff}</if>
              <if test="createBy != null and createBy != ''"> and a.create_by = #{createBy}</if>
@@ -63,7 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="selectAdvertiseById" parameterType="Integer" resultMap="AdvertiseResult">
         <include refid="selectAdvertiseVo"/>
-        where advertise_id = #{advertiseId}
+        where advertise_id = #{advertiseId} 
     </select>
         
     <insert id="insertAdvertise" parameterType="Advertise" useGeneratedKeys="true" keyProperty="advertiseId">
@@ -81,7 +82,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="bankReceiver != null and bankReceiver != '' ">bank_receiver,</if>
 			<if test="bankName != null and bankName != '' ">bank_name,</if>
 			<if test="status != null and status != '' ">status,</if>
-			<if test="delFlag != null and delFlag != '' ">del_flag,</if>
+			del_flag,
 			<if test="grade != null and grade != '' ">grade,</if>
 			<if test="cutOff != null and cutOff != '' ">cut_off,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
@@ -102,7 +103,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="bankReceiver != null and bankReceiver != ''">#{bankReceiver},</if>
 			<if test="bankName != null and bankName != ''">#{bankName},</if>
 			<if test="status != null and status != ''">#{status},</if>
-			<if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+			'0',
 			<if test="grade != null and grade != ''">#{grade},</if>
 			<if test="cutOff != null and cutOff != ''">#{cutOff},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
@@ -126,7 +127,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="bankReceiver != null  and bankReceiver != ''  ">bank_receiver = #{bankReceiver},</if>
             <if test="bankName != null  and bankName != ''  ">bank_name = #{bankName},</if>
             <if test="status != null  and status != ''  ">status = #{status},</if>
-            <if test="delFlag != null  and delFlag != ''  ">del_flag = #{delFlag},</if>
             <if test="grade != null  and grade != ''  ">grade = #{grade},</if>
             <if test="cutOff != null  ">cut_off = #{cutOff},</if>
             <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
@@ -146,22 +146,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where advertise_id = #{advertiseId}
     </update>
 
-	<delete id="deleteAdvertiseById" parameterType="Integer">
-        delete from zx_advertise where advertise_id = #{advertiseId}
-    </delete>
+	<update id="deleteAdvertiseById" parameterType="Integer">
+        update zx_advertise set del_flag = '2'  where advertise_id = #{advertiseId}
+    </update>
 	
-    <delete id="deleteAdvertiseByIds" parameterType="String">
-        delete from zx_advertise where advertise_id in 
+    <update id="deleteAdvertiseByIds" parameterType="String">
+        update zx_advertise set del_flag = '2' where advertise_id in 
         <foreach item="advertiseId" collection="array" open="(" separator="," close=")">
             #{advertiseId}
         </foreach>
-    </delete>
+    </update>
     <select id="selectTotal" resultType="int">
-    	select count(*) from zx_advertise
+    	select count(*) from zx_advertise a where a.del_flag != '2'
     </select>
     
     <select id="selectDropBoxList" resultMap="AdvertiseResult">
-         select advertise_id, advertisor_name,manager_id,manager_name from zx_advertise
+         select advertise_id, advertisor_name,manager_id,manager_name from zx_advertise a where a.del_flag != '2'
     </select>
     
 </mapper>
