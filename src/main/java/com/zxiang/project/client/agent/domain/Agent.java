@@ -71,6 +71,8 @@ public class Agent extends BaseEntity
 	private Float directAgentRate;
 	/** 服务出纸收益 */
 	private Float serveRate;
+	/** 代理费 */
+	private Float agencyFee;
 	/** 办公补贴 */
 	private Float subsidyRate;
 	/**  */
@@ -405,5 +407,11 @@ public class Agent extends BaseEntity
 
 	public void setFrozenBalance(BigDecimal frozenBalance) {
 		this.frozenBalance = frozenBalance;
+	}
+	public Float getAgencyFee() {
+		return agencyFee;
+	}
+	public void setAgencyFee(Float agencyFee) {
+		this.agencyFee = agencyFee;
 	}
 }
