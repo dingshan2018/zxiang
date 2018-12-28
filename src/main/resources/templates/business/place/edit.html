@@ -92,9 +92,15 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">详细地址：</label>
                 <div class="col-sm-8">
-                	<button class="pwd-eye input-addon" type="button" title="点击获取经纬度" onclick="addressResolution()">
-						<span class="glyphicon glyphicon-map-marker"></span>
-					</button>
+                  <button class="pwd-eye input-addon"
+                          type="button"
+                          title="点击获取经纬度"
+                          style="font-size: 20px;"
+                          data-toggle="tooltip"
+                          data-placement="top"
+                          onclick="addressResolution()">
+                    <span class="glyphicon glyphicon-map-marker"></span>
+                  </button>
                     <input id="address" name="address" th:field="*{address}" class="form-control" type="text" onblur="addressResolution()">
                 </div>
             </div>
@@ -260,6 +266,8 @@
 	        })
 	    })
 
+      $('[data-toggle="tooltip"]').tooltip('show');
+
 	    function cityBind() {
 	        var provice = $("#province option:selected").val();
 	        //判断省份这个下拉框选中的值是否为空
@@ -314,7 +322,7 @@
             $("#repairId").append(repairStr);
 	        $("#supplyId").append(supplyStr);
 	    }
-		
+
 	 	// 腾讯地图api获取经纬度
 	    function addressResolution () {
 	        var address = document.getElementById("address");
@@ -344,7 +352,7 @@
 	          console.error(data.message);
 	        }
 	    }
-	      
+
 		var prefix = ctx + "business/place"
 		$("#form-place-edit").validate({
 			rules:{

@@ -2,6 +2,23 @@
 <html  lang="zh" xmlns:th="http://www.thymeleaf.org">
 <meta charset="utf-8">
 <head th:include="include :: header"></head>
+<style>
+  .address-simple{
+    display: none;
+    position: absolute;
+    top: 1px;
+    left: 16px;
+    height: 30px;
+    line-height: 26px;
+    padding: 3px 3px 3px 12px;
+    font-size: 0;
+    background-color: #eeeeee;
+  }
+
+  .address-simple span{
+    font-size: 14px;
+  }
+</style>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-place-add">
@@ -97,10 +114,16 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label">详细地址：</label>
 				<div class="col-sm-8">
-					<button class="pwd-eye input-addon" type="button" title="点击获取经纬度" onclick="addressResolution()">
-						<span class="glyphicon glyphicon-map-marker"></span>
-					</button>
-          <textarea id="address" name="address" class="form-control" type="text" placeholder="填写详细地址（需包含省、市、区县）" rows="3" onblur="addressResolution()"></textarea>
+          <button class="pwd-eye input-addon"
+                  type="button"
+                  title="点击获取经纬度"
+                  style="font-size: 20px;"
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  onclick="addressResolution()">
+            <span class="glyphicon glyphicon-map-marker"></span>
+          </button>
+          <textarea id="address" name="address" class="form-control" type="text" placeholder="填写详细地址（需包含省、市、区县）" rows="3"></textarea>
 				</div>
 			</div>
           <div class="form-group">
@@ -261,10 +284,24 @@
     <div th:include="include::footer"></div>
     <script type="text/javascript">
 
+      $('[data-toggle="tooltip"]').tooltip('show');
+
       // 腾讯地图api获取经纬度
       function addressResolution () {
+        var province = $("#province ~ button[data-id=\"province\"] .filter-option-inner-inner").html();
+        var city = $("#city ~ button[data-id=\"city\"] .filter-option-inner-inner").html();
+        var county = $("#county ~ button[data-id=\"county\"] .filter-option-inner-inner").html();
         var address = document.getElementById("address");
-        if (!address.value) return;
+        var lon = $("#lon");
+        var lat = $("#lat");
+
+        // if (!address.value) return $.modal.alert("请先选择省份、城市、区县");
+        if (!(address.value && address.value.indexOf(province) > -1 && address.value.indexOf(city)  > -1 && address.value.indexOf(county)  > -1)) {
+          lon.val("");
+          lat.val("");
+         return $.modal.alert("请填写省市县详细（详细地址需包含省份、城市、区县）");
+        }
+
         $.ajax({
           url: "https://apis.map.qq.com/ws/geocoder/v1/",
           type: "GET",
@@ -297,11 +334,19 @@
         var city = $("#city ~ button[data-id=\"city\"] .filter-option-inner-inner").html();
         var county = $("#county ~ button[data-id=\"county\"] .filter-option-inner-inner").html();
         var address = $("#address");
+        var lon = $("#lon");
+        var lat = $("#lat");
+
         if ((province && province !== "---请选择---")
           && (city && city !== "---请选择---")
           && (county && county !== "---请选择---")
           && !address.val()) {
           address.val(province + city + county);
+          addressResolution();
+        }else{
+          address.val("");
+          lon.val("");
+          lat.val("");
         }
       });
 

@@ -489,7 +489,13 @@
 	        showMeridian: 1,
 	        minuteStep: 1
 	      }).on('changeDate', function(ev){
-	        $(ev.target).parents('.control-time-slot').find('.date-time-picker:last').eq(0).datetimepicker('setStartDate', ev.date);
+          if (ev.target.name === "params[beginTime]") {
+            var endTime = $("[name=\"params[endTime]\"]").eq(0);
+            if (endTime.val() && new Date(endTime.val()) < ev.date) {
+              endTime.val("");
+            }
+              endTime.datetimepicker('setStartDate',ev.date);
+          }
 	      });
 	    }
 	    initDateTimePicker();
