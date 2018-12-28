@@ -101,13 +101,13 @@
       'uploadUrl'       : ctx + 'advertise/adSchedule/materialUploadSave',//上传文件信息地址
       //'progressUrl'     : '#',//获取进度信息地址，可选，注意需要返回的data格式如下（{bytesRead: 102516060, contentLength: 102516060, items: 1, percent: 100, startTime: 1489223136317, useTime: 2767}）
       //'selfUploadBtId'  : 'selfUploadBt',//自定义文件上传按钮id
-      'isHiddenUploadBt': false,//是否隐藏上传按钮
+      'isHiddenUploadBt': true,//是否隐藏上传按钮
       'isHiddenCleanBt' : false,//是否隐藏清除按钮
       'isAutoClean'     : false,//是否上传完成后自动清除
       //'velocity'        : 10,//模拟进度上传数据
       //"showSummerProgress":false,//总进度条，默认限制
       //"scheduleStandard":true,//模拟进度的方式，设置为true是按总进度，用于控制上传时间，如果设置为false,按照文件数据的总量,默认为false
-      "size":30720,//文件大小限制，单位kb,默认不限制
+      "size":122880,//文件大小限制，单位kb,默认不限制
       "maxFileNumber":10,//文件个数限制，为整数
       //"filelSavePath":"",//文件上传地址，后台设置的根目录
       "beforeUpload":beforeUploadFun,//在上传前执行的函数
