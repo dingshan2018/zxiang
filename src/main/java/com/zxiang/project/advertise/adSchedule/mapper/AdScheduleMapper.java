@@ -67,5 +67,12 @@ public interface AdScheduleMapper
 	 * @return map类型的list
 	 */
 	public List queryExport(HashMap<String, String> params);
+
+	/**
+	 * 校验广告投放名称是否唯一
+	 * @param scheduleName
+	 * @return
+	 */
+	public int checkNameUnique(String scheduleName);
 	
 }

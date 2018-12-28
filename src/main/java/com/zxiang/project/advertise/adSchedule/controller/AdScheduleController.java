@@ -452,4 +452,14 @@ public class AdScheduleController extends BaseController
 			return error(e.getMessage()+" ,操作失败!");
 		}
 	}
+	
+	/**
+     * 校验广告投放名称是否唯一
+     */
+    @PostMapping("/checkNameUnique")
+    @ResponseBody
+    public String checkNameUnique(String scheduleName)
+    {
+        return adScheduleService.checkNameUnique(scheduleName);
+    }
 }

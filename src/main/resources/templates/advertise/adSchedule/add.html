@@ -150,6 +150,19 @@
 			rules:{
 				scheduleName:{
 					required:true,
+					remote: {
+                        url: prefix + "/checkNameUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                        	name : function() {
+                                return $.common.trim($("#scheduleName").val());
+                            }
+                        },
+                        dataFilter: function(data, type) {
+                        	return $.validate.unique(data);
+                        }
+                    }
 				},
 				releaseType:{
 					required:true,
@@ -170,6 +183,11 @@
 					required:true,
 				},
 			},
+			messages: {
+                "scheduleName": {
+                    remote: "广告投放名称已存在!"
+                }
+            },
 			submitHandler: function(form) {
 				$.operate.save(prefix + "/add", $('#form-adSchedule-add').serialize());
 			}

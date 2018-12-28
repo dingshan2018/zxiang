@@ -133,5 +133,12 @@ public interface IAdScheduleService
 	 */
 	public int adPayByAccount(Integer adScheduleId, String operatorUser);
 
+	/**
+	 * 校验广告投放名称是否唯一
+	 * @param scheduleName
+	 * @return
+	 */
+	public String checkNameUnique(String scheduleName);
+
 
 }

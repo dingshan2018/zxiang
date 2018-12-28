@@ -280,4 +280,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </where>
          order by ad_schedule_id desc
     </select>
+    
+    <!-- 校验广告投放名称是否唯一  -->
+    <select id="checkNameUnique" parameterType="String" resultType="int">
+		SELECT COUNT(1) FROM `zx_ad_schedule` WHERE BINARY schedule_name=#{scheduleName}
+	</select>
+	
 </mapper>

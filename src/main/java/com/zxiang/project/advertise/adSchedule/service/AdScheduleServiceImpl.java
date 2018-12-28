@@ -949,4 +949,17 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		throw new RRException("广告信息已失效");
 	}
 
+	/**
+	 * 校验广告投放名称是否唯一
+	 */
+	@Override
+	public String checkNameUnique(String scheduleName) {
+		int count = adScheduleMapper.checkNameUnique(scheduleName);
+        if (count > 0)
+        {
+            return "1";
+        }
+        return "0";
+	}
+
 }

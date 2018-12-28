@@ -79,6 +79,14 @@
 				},
 			},
 			submitHandler: function(form) {
+				var paramKey = $("#paramKey").val();
+				var paramValue1 = $("#paramValue1").val();
+				if(paramKey == "volumn" ){
+					if(paramValue1 < 0 || paramValue1 > 15){
+						$.modal.alertWarning("音量值范围在0~15");
+						return;
+					}
+				}
 				$.operate.save(prefix + "/add", $('#form-terminalParam-add').serialize());
 			}
 		});
