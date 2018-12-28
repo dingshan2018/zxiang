@@ -140,6 +140,11 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		// 办公费用就是代理费得*系数
 		//另外单个二维码第一次出纸为有效，第2-5次出纸为无效出纸 不计算出纸收益
 		//获取所有设备信息
+		UserIncome userIncome = new UserIncome();
+		List<UserIncome> userIncomeList = iUserIncomeService.selectUserIncome(userIncome);
+		if(userIncomeList.size()>0) {
+			return;
+		}
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		List<HashMap<String, Object>> devicelist =selectzxdevicelist(map);
 	    //计算前一日售出设备的金额
