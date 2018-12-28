@@ -211,7 +211,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <!--  根据条件查询出纸数量及出纸金额统计 -->
 	<select id="tissueCount" resultType="java.util.HashMap">
-		SELECT SUM(tissue_len) paperSum ,SUM(price) moneySum FROM `zx_tissue_record` tr
+		SELECT COUNT(tissue_len) paperSum ,SUM(price) moneySum FROM `zx_tissue_record` tr WHERE  STATUS = 1 
         <where>  
         ${filterSql}
             <if test="tissueRecordId != null and tissueRecordId != ''"> and tissue_record_id = #{tissueRecordId}</if>

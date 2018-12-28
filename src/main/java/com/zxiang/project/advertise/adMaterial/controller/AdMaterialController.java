@@ -1,5 +1,6 @@
 package com.zxiang.project.advertise.adMaterial.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -143,5 +144,20 @@ public class AdMaterialController extends BaseController
 		String adScheduleId = (String) params.get("adScheduleId");
 		List<AdMaterial> list = adMaterialService.selectListByAdSchId(Integer.parseInt(adScheduleId));
 		return getDataTable(list);
+    }
+	
+	/**
+     *	查询模板元素各种类型是否都有上传
+     */
+    @PostMapping("/judgeAllType/{adScheduleId}")
+    @ResponseBody
+    public String judgeAllType(@PathVariable("adScheduleId") Integer adScheduleId)
+    {
+        try {
+			return adMaterialService.judgeAllType(adScheduleId);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "error";
+		}
     }
 }

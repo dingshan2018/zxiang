@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.StringUtils;
@@ -24,6 +25,7 @@ import com.zxiang.project.business.deviceReleaseAudit.domain.DeviceReleaseAudit;
 import com.zxiang.project.business.deviceReleaseAudit.service.IDeviceReleaseAuditService;
 import com.zxiang.project.business.place.domain.Place;
 import com.zxiang.project.business.place.mapper.PlaceMapper;
+import com.zxiang.project.business.server.service.IServerService;
 import com.zxiang.project.business.supplyTissue.domain.SupplyTissue;
 import com.zxiang.project.business.supplyTissue.mapper.SupplyTissueMapper;
 import com.zxiang.project.business.terminal.domain.Terminal;
@@ -59,6 +61,8 @@ public class DeviceServiceImpl implements IDeviceService
 	private TradeOrderMapper tradeOrderMapper;
 	@Autowired
 	private IDeviceReleaseAuditService deviceReleaseAuditService;
+	@Autowired
+	private IServerService serverService;
 	
 	/**
      * 查询共享设备信息
@@ -288,6 +292,20 @@ public class DeviceServiceImpl implements IDeviceService
 		}
 		place.setDeviceCount(deviceCount);
 		placeMapper.updatePlace(place);
+		
+		//下发下线信息给终端01
+		Terminal terminal = terminalMapper.selectTerminalById(device.getTerminalId());
+		if(terminal != null ){
+			JSONObject reqJson = new JSONObject();
+			reqJson.put("termCode",terminal.getTerminalCode());
+			reqJson.put("status","01");//
+			reqJson.put("command","26");//参数下发命令0x1A,转十进制为26	
+			try {
+				serverService.issuedCommand(terminal,reqJson);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		
 		return deviceMapper.updateDevice(device);
 	}

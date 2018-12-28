@@ -1,5 +1,6 @@
 package com.zxiang.project.business.deviceReleaseAudit.service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
 import com.zxiang.project.business.device.domain.Device;
@@ -15,6 +17,9 @@ import com.zxiang.project.business.deviceReleaseAudit.domain.DeviceReleaseAudit;
 import com.zxiang.project.business.deviceReleaseAudit.mapper.DeviceReleaseAuditMapper;
 import com.zxiang.project.business.place.domain.Place;
 import com.zxiang.project.business.place.mapper.PlaceMapper;
+import com.zxiang.project.business.server.service.IServerService;
+import com.zxiang.project.business.terminal.domain.Terminal;
+import com.zxiang.project.business.terminal.mapper.TerminalMapper;
 
 /**
  * 设备投放审核 服务层实现
@@ -31,6 +36,10 @@ public class DeviceReleaseAuditServiceImpl implements IDeviceReleaseAuditService
 	private DeviceMapper deviceMapper;
 	@Autowired
 	private PlaceMapper placeMapper;
+	@Autowired
+	private IServerService serverService;
+	@Autowired
+	private TerminalMapper terminalMapper;
 	
 	/** 投放审核-通过 */
 	public static final String AUDIT_SUCC = "1";
@@ -124,6 +133,21 @@ public class DeviceReleaseAuditServiceImpl implements IDeviceReleaseAuditService
 				device.setReleaseStatus(RELEASE_SUCC);
 				device.setReleaseTime(new Date());
 				deviceMapper.updateDevice(device);
+				
+				//下发上线信息给终端02
+				Terminal terminal = terminalMapper.selectTerminalById(device.getTerminalId());
+				if(terminal != null ){
+					JSONObject reqJson = new JSONObject();
+					reqJson.put("termCode",terminal.getTerminalCode());
+					reqJson.put("status","02");//
+					reqJson.put("command","26");//参数下发命令0x1A,转十进制为26	
+					try {
+						serverService.issuedCommand(terminal,reqJson);
+					} catch (IOException e) {
+						e.printStackTrace();
+						continue;
+					}
+				}
 			}
 			//更新场所信息
 			for (int i = 0; i < auditIds.length; i++) {
