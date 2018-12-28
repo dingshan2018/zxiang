@@ -21,6 +21,11 @@ $(document).ready(function(){
 		var name=/^[\u4e00-\u9fa5]{2,6}$/;
 		return this.optional(element) || (name.test(value));
 	},"姓名只能用汉字,长度2-4位");
+	//金额校验
+	jQuery.validator.addMethod("isMoney",function(value,element){
+		var money=/(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/;
+		return this.optional(element) || (money.test(value));
+	},"金额类型有误");
 	//校验用户名
 	jQuery.validator.addMethod("isUserName",function(value,element){
 		var userName=/^[a-zA-Z0-9]{2,13}$/;
