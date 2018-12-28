@@ -429,6 +429,18 @@
        			$.modal.alertWarning(noMaterial);
        	        return;
        		}
+       		//判断还有哪种模板元素没有上传素材
+       		var allType = judgeAllType(adScheduleId);
+       		if(allType != "allHas"){
+       			if(allType == "error"){
+       				$.modal.alertWarning("暂不能预约,请联系管理员!");
+           	        return;
+       			}else{
+       				$.modal.alertWarning("您还有模板元素为 '"+allType+ "' 的素材类型未上传,请先上传!");
+           	        return;
+       			}
+       		}
+       		
       	}
 
       	var hasOrder = getOrderNum(adScheduleId);
@@ -614,6 +626,25 @@
 		        }
 		})
 		return batch;
+    }
+  	//判断广告模板元素类型是否全部有素材上传
+    function judgeAllType(rows) {
+    	var allType = "error";
+	    $.ajax({
+		        url: ctx + "settle/adMaterial/judgeAllType/" + rows,
+		        type: "post",
+		        //dataType: "json",
+		        //data: 'data',
+		        async:false,
+		        success: function (data) {
+		        	allType = data;
+		        },
+		        error: function (data) {
+		        	console.log("judgeAllType:",data);
+		            //alert("查询失败");
+		        }
+		})
+		return allType;
     }
 
 

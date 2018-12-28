@@ -1,5 +1,6 @@
 package com.zxiang.project.advertise.adMaterial.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.zxiang.project.advertise.adMaterial.domain.AdMaterial;
@@ -72,5 +73,13 @@ public interface IAdMaterialService
 	 * @return
 	 */
 	public List<AdMaterial> selectListByAdSchId(Integer adScheduleId);
+
+	/**
+	 * 查询模板元素各种类型是否都有上传
+	 * @param adScheduleId
+	 * @return 返回哪个模板元素类型没有素材
+	 * @throws IOException 
+	 */
+	public String judgeAllType(Integer adScheduleId) throws IOException;
 	
 }

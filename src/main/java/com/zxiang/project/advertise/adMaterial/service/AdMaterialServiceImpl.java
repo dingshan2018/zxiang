@@ -1,5 +1,7 @@
 package com.zxiang.project.advertise.adMaterial.service;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,9 @@ import org.springframework.stereotype.Service;
 import com.zxiang.common.support.Convert;
 import com.zxiang.project.advertise.adMaterial.domain.AdMaterial;
 import com.zxiang.project.advertise.adMaterial.mapper.AdMaterialMapper;
+import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
+import com.zxiang.project.advertise.adSchedule.domain.ElementType;
+import com.zxiang.project.advertise.adSchedule.service.IAdScheduleService;
 
 /**
  * 广告投放素材 服务层实现
@@ -20,7 +25,9 @@ public class AdMaterialServiceImpl implements IAdMaterialService
 {
 	@Autowired
 	private AdMaterialMapper adMaterialMapper;
-
+	@Autowired
+	private IAdScheduleService adScheduleService;
+	
 	/**
      * 查询广告投放素材信息
      * 
@@ -100,6 +107,37 @@ public class AdMaterialServiceImpl implements IAdMaterialService
 	@Override
 	public List<AdMaterial> selectListByAdSchId(Integer adScheduleId) {
 		return adMaterialMapper.selectListByAdSchId(adScheduleId);
+	}
+
+	@Override
+	public String judgeAllType(Integer adScheduleId) throws IOException {
+		AdSchedule adschedule = adScheduleService.selectAdScheduleById(adScheduleId);
+		if(adschedule != null){
+			//获取不同的广告已上传类型
+			List<AdMaterial> materialList = adMaterialMapper.getDistinctList(adScheduleId);
+			if(materialList.size() > 0){
+				//将已有的素材类型作为一个list，待会获取到广告的所有模板判断是否contains，没有则返回没有哪个模板的元素
+				List<String> hasTypeList = new ArrayList<>();
+				for (AdMaterial adMaterial : materialList) {
+					hasTypeList.add(adMaterial.getRemark());
+				}
+				
+				//获取广告模板元素
+				List<ElementType> elementList = adScheduleService.getElementList(adschedule.getThemeTemplateId());
+				if(elementList.size() > 0){
+					for (ElementType elementType : elementList) {
+						String elementName = elementType.getElementName();
+						if(hasTypeList.contains(elementName)){
+							continue;
+						}else{
+							return elementName;
+						}
+					}
+				}
+			}
+		}
+		//如果全部都有则说明素材上传完整
+		return "allHas";
 	}
 	
 }
