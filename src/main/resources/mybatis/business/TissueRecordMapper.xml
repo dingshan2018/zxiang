@@ -42,6 +42,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="tissueRecordId != null and tissueRecordId != ''"> and tissue_record_id = #{tissueRecordId}</if>
              <if test="qrScheduleId != null and qrScheduleId != ''"> and qr_schedule_id = #{qrScheduleId}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="deviceSn != null and deviceSn != ''"> and device_id in 
+             (SELECT DISTINCT zd.device_id FROM zx_device zd WHERE zd.device_sn LIKE concat('%', #{deviceSn}, '%'))</if>
              <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
              <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
              <if test="wxUserId != null and wxUserId != ''"> and wx_user_id = #{wxUserId}</if>
@@ -170,6 +172,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="tissueRecordId != null and tissueRecordId != ''"> and tissue_record_id = #{tissueRecordId}</if>
             <if test="qrScheduleId != null and qrScheduleId != ''"> and qr_schedule_id = #{qrScheduleId}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="deviceSn != null and deviceSn != ''"> and device_id in 
+             (SELECT DISTINCT zd.device_id FROM zx_device zd WHERE zd.device_sn LIKE concat('%', #{deviceSn}, '%'))</if>
              <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
              <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
              <if test="wxUserId != null and wxUserId != ''"> and wx_user_id = #{wxUserId}</if>
@@ -217,6 +221,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="tissueRecordId != null and tissueRecordId != ''"> and tissue_record_id = #{tissueRecordId}</if>
             <if test="qrScheduleId != null and qrScheduleId != ''"> and qr_schedule_id = #{qrScheduleId}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="deviceSn != null and deviceSn != ''"> and device_id in 
+             (SELECT DISTINCT zd.device_id FROM zx_device zd WHERE zd.device_sn LIKE concat('%', #{deviceSn}, '%'))</if>
              <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
              <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
              <if test="wxUserId != null and wxUserId != ''"> and wx_user_id = #{wxUserId}</if>

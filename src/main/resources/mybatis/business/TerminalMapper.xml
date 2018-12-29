@@ -51,6 +51,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              	AND t.terminal_code like concat('%', #{terminalCode}, '%')
              </if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="deviceSn != null and deviceSn != ''"> and device_id in 
+             (SELECT DISTINCT zd.device_id FROM zx_device zd WHERE zd.device_sn LIKE concat('%', #{deviceSn}, '%'))</if>
              <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
              <if test="rssi != null and rssi != ''"> and rssi = #{rssi}</if>
              <if test="lastHeartTime != null "> and last_heart_time = #{lastHeartTime}</if>
