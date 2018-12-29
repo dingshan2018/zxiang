@@ -597,7 +597,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 				for (String deviceId : deviceIds) {
 					try {
 						//下发更新终端二维码 
-						qrCodeIssued(deviceId,qrUrl);
+						qrCodeIssued(deviceId,qrUrl,adScheduleId);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -640,9 +640,10 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	 *  参数封装方法
 	 * @param deviceId
 	 * @param qrCodeUrl
+	 * @param adScheduleId 
 	 * @throws IOException
 	 */
-	private void qrCodeIssued(String deviceId,String qrCodeUrl) throws IOException{
+	private void qrCodeIssued(String deviceId,String qrCodeUrl, Integer adScheduleId) throws IOException{
 		
 		Terminal terminal = terminalMapper.selectTerByDeviceId(Integer.parseInt(deviceId));
 		if(terminal != null){
@@ -655,6 +656,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			}
 			reqJson.put("offerKey",offerKey);
 			reqJson.put("qrUrl",qrCodeUrl);
+			reqJson.put("scheduleId",adScheduleId);
 			reqJson.put("command","18");//参数下发命令0x12,转十进制为18
 			
 			serverService.issuedCommand(terminal,reqJson);
