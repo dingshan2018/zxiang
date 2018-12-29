@@ -215,9 +215,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <!--  根据条件查询出纸数量及出纸金额统计 -->
 	<select id="tissueCount" resultType="java.util.HashMap">
-		SELECT COUNT(tissue_len) paperSum ,SUM(price) moneySum FROM `zx_tissue_record` tr WHERE  STATUS = 1 
+		SELECT COUNT(tissue_len) paperSum ,SUM(price) moneySum FROM `zx_tissue_record` tr
         <where>  
         ${filterSql}
+        	<if test="1==1"> and status = 1</if>
             <if test="tissueRecordId != null and tissueRecordId != ''"> and tissue_record_id = #{tissueRecordId}</if>
             <if test="qrScheduleId != null and qrScheduleId != ''"> and qr_schedule_id = #{qrScheduleId}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
@@ -238,18 +239,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
 				AND date_format(tr.create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
 			 </if>
-			 <!-- 按照代理商搜索  通过场所经办人关联-->
+			 <!-- 按照代理商搜索  通过场所经办人关联 (查找出纸场所,用户表用户类型为03,且用户表的主体ID与查询条件所选择的的代理商ID相等的场所)-->
              <if test="agentId != null and agentId != ''"> and tr.place_id in 
              	( SELECT DISTINCT zp.place_id FROM zx_place zp 
              		WHERE zp.operator_id = (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
              			WHERE su.user_type='03' AND su.puser_id=#{agentId} AND su.user_id=p.operator_id))</if>
-           	 <!-- 按照服务商搜索  通过场所维修员关联-->
+           	 <!-- 按照服务商搜索  通过场所维修员关联 (查找出纸场所,用户表用户类型为04,且用户表的主体ID与查询条件所选择的的服务商ID相等的场所)-->
              <if test="repairId != null and repairId != ''">  and tr.place_id in 
              	(SELECT DISTINCT zp.place_id FROM zx_place zp 
              		WHERE zp.repair_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
              			WHERE su.user_type='04' AND su.puser_id=#{repairId}  AND su.user_id=p.repair_id))
              </if>
-             <!-- 按照加盟商搜索 通过设备机主关联-->
+             <!-- 按照加盟商搜索 通过设备机主关联 (查找出纸设备,用户表用户类型为02,且用户表的主体ID与查询条件所选择的的加盟商ID相等的设备)-->
              <if test="joinId != null and joinId != ''">  and tr.device_id in 
              	(SELECT DISTINCT zd.device_id FROM zx_device zd 
              		WHERE zd.owner_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_device d 
