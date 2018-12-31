@@ -53,7 +53,7 @@
               </select>
             </li>
             <li>
-              <span class="select-item-name">加盟商户：</span><!-- <input type="text" name="joiner"/> -->
+              <span class="select-item-name">机主户：</span><!-- <input type="text" name="joiner"/> -->
               <select
                 id="joinId"
                 name="joinId"
@@ -130,7 +130,7 @@
       $.each(repairList, function (i) {
         $('#repairId').append('<option value=' + repairList[i].repairId + '>' + repairList[i].repairName + '</option>');
       });
-      //加盟商下拉框数据
+      //机主下拉框数据
       var joinList = selectJoinList();
       $.each(joinList, function (i) {
         $('#joinId').append('<option value=' + joinList[i].joinId + '>' + joinList[i].joinerName + '</option>');

@@ -452,7 +452,7 @@ public class UserServiceImpl implements IUserService
 	}
 
 	/**
-	 * 查找加盟商业务员（机主）
+	 * 查找机主业务员（机主）
 	 */
 	@Override
 	public List<User> selectBuyer() {

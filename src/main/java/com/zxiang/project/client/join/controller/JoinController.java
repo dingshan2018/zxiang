@@ -24,7 +24,7 @@ import com.zxiang.project.system.role.service.IRoleService;
 import com.zxiang.project.system.user.service.IUserService;
 
 /**
- * 加盟商 信息操作处理
+ * 机主 信息操作处理
  * 
  * @author ZXiang
  * @date 2018-09-11
@@ -50,7 +50,7 @@ public class JoinController extends BaseController
 	}
 	
 	/**
-	 * 查询加盟商列表
+	 * 查询机主列表
 	 */
 	@DataFilter(personAlias="b.user_id")
 	@RequiresPermissions("client:join:list")
@@ -64,7 +64,7 @@ public class JoinController extends BaseController
 	}
 	
 	/**
-	 * 新增加盟商
+	 * 新增机主
 	 */
 	@GetMapping("/add")
 	public String add() {
@@ -72,10 +72,10 @@ public class JoinController extends BaseController
 	}
 	
 	/**
-	 * 新增保存加盟商
+	 * 新增保存机主
 	 */
 	@RequiresPermissions("client:join:add")
-	@Log(title = "加盟商", businessType = BusinessType.INSERT)
+	@Log(title = "机主", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
 	public AjaxResult addSave(Join join) {		
@@ -83,7 +83,7 @@ public class JoinController extends BaseController
 	}
 
 	/**
-	 * 修改加盟商
+	 * 修改机主
 	 */
 	@GetMapping("/edit/{joinId}")
 	public String edit(@PathVariable("joinId") Integer joinId, ModelMap mmap)
@@ -94,17 +94,17 @@ public class JoinController extends BaseController
 	}
 	
 	/**
-	 * 修改保存加盟商
+	 * 修改保存机主
 	 */
 	@RequiresPermissions("client:join:edit")
-	@Log(title = "加盟商", businessType = BusinessType.UPDATE)
+	@Log(title = "机主", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
 	public AjaxResult editSave(Join join) {		
 		return toAjax(joinService.updateJoin(join));
 	}
 	/**
-	 * 修改加盟商参数配置
+	 * 修改机主参数配置
 	 */
 	@GetMapping("/editParam/{joinId}")
 	public String editParam(@PathVariable("joinId") Integer joinId, ModelMap mmap)
@@ -115,10 +115,10 @@ public class JoinController extends BaseController
 	}
 	
 	/**
-	 * 删除加盟商
+	 * 删除机主
 	 */
 	@RequiresPermissions("client:join:remove")
-	@Log(title = "加盟商", businessType = BusinessType.DELETE)
+	@Log(title = "机主", businessType = BusinessType.DELETE)
 	@PostMapping( "/remove")
 	@ResponseBody
 	public AjaxResult remove(String ids) {		
@@ -126,7 +126,7 @@ public class JoinController extends BaseController
 	}
 	
 	/**
-	 * 查找加盟商下拉框数据
+	 * 查找机主下拉框数据
 	 */
 	@RequestMapping("/getDropBoxJoinList")
     @ResponseBody

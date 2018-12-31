@@ -259,7 +259,7 @@ function selectAgentList(){
     return agentList;
 }
 
-/**加盟商下拉框选择*/
+/**机主下拉框选择*/
 function selectJoinList(){
 	var joinList = [];
 	$.ajax({
@@ -272,7 +272,7 @@ function selectJoinList(){
         	joinList = data.rows;
         },
         error: function (data) {
-            alert("查询加盟商下拉列表失败");
+            alert("查询机主下拉列表失败");
         }
     })
     return joinList;
