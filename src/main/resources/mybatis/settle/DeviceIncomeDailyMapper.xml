@@ -8,6 +8,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="incomeId"    column="income_id"    />
         <result property="deviceId"    column="device_id"    />
         <result property="terminalId"    column="terminal_id"    />
+        <result property="deviceSn"    column="device_sn"    />
+        <result property="terminalCode"    column="terminal_code"    />
         <result property="placeId"    column="place_id"    />
          <result property="placeName"    column="place_name"    />
         <result property="sellIncome"    column="sell_income"    />
@@ -31,6 +33,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT 
 		  a.income_id,
 		  a.device_id,
+		  t.device_sn,
+		  (SELECT b.terminal_code FROM zx_terminal  b WHERE b.terminal_id = a.terminal_id) terminal_code,
 		  CAST(a.scan_income*IFNULL(t.`price`,p.tissue_price)  AS  DECIMAL(8,2)) scan_income_rate,
 		  a.terminal_id,
 		  a.place_id,
@@ -56,7 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
               AND a.`device_id`=t.`device_id`
               AND a.`place_id` = p.`place_id`
             <if test="incomeId != null and incomeId != ''"> and a.income_id = #{incomeId}</if>
-             <if test="deviceId != null and deviceId != ''"> and a.device_id = #{deviceId}</if>
+             <if test="deviceSn != null and deviceSn != ''"> and t.device_sn = #{deviceSn}</if>
              <if test="terminalId != null and terminalId != ''"> and a.terminal_id = #{terminalId}</if>
              <if test="placeId != null and placeId != ''"> and a.place_id = #{placeId}</if>
              <if test="sellIncome != null and sellIncome != ''"> and a.sell_income = #{sellIncome}</if>
