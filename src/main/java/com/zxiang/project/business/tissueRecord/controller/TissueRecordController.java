@@ -29,6 +29,7 @@ import com.zxiang.project.business.place.service.IPlaceService;
 import com.zxiang.project.business.terminal.service.ITerminalService;
 import com.zxiang.project.business.tissueRecord.domain.TissueRecord;
 import com.zxiang.project.business.tissueRecord.service.ITissueRecordService;
+import com.zxiang.project.system.user.domain.User;
 
 /**
  * 出纸记录 信息操作处理
@@ -68,6 +69,11 @@ public class TissueRecordController extends BaseController
 	public TableDataInfo list(TissueRecord tissueRecord)
 	{
 		startPage();
+		User user =getUser();
+		String userType = user.getUserType();
+		if(userType.equals("02")) {
+			tissueRecord.setUserId(user.getUserId()+"");
+		}
         List<TissueRecord> list = tissueRecordService.selectTissueRecordList(tissueRecord);
 		return getDataTable(list);
 	}
@@ -155,6 +161,11 @@ public class TissueRecordController extends BaseController
 	@RequestMapping("/tissueCount")
 	@ResponseBody
 	public Map<String, Object> tissueCount(@RequestParam HashMap<String, String> params){
+		User user =getUser();
+		String userType = user.getUserType();
+		if(userType.equals("02")) {
+			params.put("userId", user.getUserId()+"");
+		}
 		Map<String, Object> result = tissueRecordService.tissueCount(params);
 		return result;
 	}

@@ -57,6 +57,7 @@ import com.zxiang.project.business.terminal.domain.Terminal;
 import com.zxiang.project.business.terminal.mapper.TerminalMapper;
 import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
+import com.zxiang.project.client.advertise.service.IAdvertiseService;
 import com.zxiang.project.client.fundLog.service.IFundLogService;
 
 /**
@@ -94,6 +95,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	private AdvertiseMapper advertiseMapper;
 	@Autowired
 	private IFundLogService fundLogService;
+	@Autowired
+	private IAdvertiseService advertiseService;
 	
 	/**
      * 查询广告投放信息
@@ -585,6 +588,24 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 				logger.error("调用审核通过下发排期计划接口失败!" + adHttp.toString());
 				throw new RRException("调用排期接口失败!");
 			}
+			
+			// 广告商累计投放广告次数加1
+			if(ad.getAdvertiser() != null ){
+				Advertise advertise = advertiseService.selectAdvertiseById(ad.getAdvertiser());
+				if(advertise != null ){
+					Integer releaseNum = advertise.getReleaseNum();
+					if(releaseNum != null){
+						++releaseNum;
+					}else{
+						releaseNum = 1;
+					}
+					advertise.setReleaseNum(releaseNum);
+					advertiseService.updateAdvertise(advertise);
+				}else{
+					logger.warn("插入广告商累计投放广告次数失败!广告id："+ad.getAdScheduleId());
+				}
+			}
+			
 		}else if(AdConstant.RELEASE_TYPE_H5.equals(releasePosition)){
 			//更新H5的二维码URL
 			//保存qrURL链接,deviceIds通过设备投放范围关联
@@ -597,7 +618,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 				for (String deviceId : deviceIds) {
 					try {
 						//下发更新终端二维码 
-						qrCodeIssued(deviceId,qrUrl);
+						qrCodeIssued(deviceId,qrUrl,adScheduleId);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -640,9 +661,10 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	 *  参数封装方法
 	 * @param deviceId
 	 * @param qrCodeUrl
+	 * @param adScheduleId 
 	 * @throws IOException
 	 */
-	private void qrCodeIssued(String deviceId,String qrCodeUrl) throws IOException{
+	private void qrCodeIssued(String deviceId,String qrCodeUrl, Integer adScheduleId) throws IOException{
 		
 		Terminal terminal = terminalMapper.selectTerByDeviceId(Integer.parseInt(deviceId));
 		if(terminal != null){
@@ -655,6 +677,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 			}
 			reqJson.put("offerKey",offerKey);
 			reqJson.put("qrUrl",qrCodeUrl);
+			reqJson.put("scheduleId",adScheduleId);
 			reqJson.put("command","18");//参数下发命令0x12,转十进制为18
 			
 			serverService.issuedCommand(terminal,reqJson);

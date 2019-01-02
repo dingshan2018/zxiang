@@ -127,8 +127,16 @@ public class TissueRecordServiceImpl implements ITissueRecordService
 		HashMap<String, Object> tissueCount = tissueRecordMapper.tissueCount(params);
 		
 		if(tissueCount != null){
-			result.put("paperSum", tissueCount.get("paperSum"));
-			result.put("moneySum", new DecimalFormat("###,##0.00").format(tissueCount.get("moneySum")));
+			Long paperSum = 0L;
+			if(tissueCount.get("paperSum") != null){
+				paperSum =  (Long) tissueCount.get("paperSum");
+			}
+			String moneySum = "0";
+			if(tissueCount.get("moneySum") != null){
+				moneySum = new DecimalFormat("###,##0.00").format(tissueCount.get("moneySum"));
+			}
+			result.put("paperSum", paperSum);
+			result.put("moneySum", moneySum);
 		}else{
 			result.put("paperSum", "0");
 			result.put("moneySum", "0");

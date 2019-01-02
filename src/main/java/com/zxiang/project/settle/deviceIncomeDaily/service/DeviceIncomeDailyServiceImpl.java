@@ -142,9 +142,12 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		//获取所有设备信息
 		UserIncome userIncome = new UserIncome();
 		List<UserIncome> userIncomeList = iUserIncomeService.selectUserIncome(userIncome);
-		if(userIncomeList.size()>0) {
+		DeviceIncomeDaily deviceIncomeDaily = new DeviceIncomeDaily();
+		List<DeviceIncomeDaily> deviceIncomeDailylist = deviceIncomeDailyMapper.selectDeviceIncomeDaily(deviceIncomeDaily);
+		if(userIncomeList.size()>0 || deviceIncomeDailylist.size()>0) {
 			return;
 		}
+		
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		List<HashMap<String, Object>> devicelist =selectzxdevicelist(map);
 	    //计算前一日售出设备的金额

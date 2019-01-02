@@ -1,5 +1,6 @@
 package com.zxiang.project.system.user.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.zxiang.framework.web.domain.AjaxResult;
@@ -169,7 +170,7 @@ public interface IUserService
 	public User selectUserByOpenId(String openId);
 
 	/**
-	 * 查找加盟商业务员（机主）
+	 * 查找机主业务员（机主）
 	 * @return
 	 */
 	public List<User> selectBuyer();
@@ -188,5 +189,9 @@ public interface IUserService
 	 * @return
 	 */
 	public List<User> selectUserByCity(long city);
+	
+    public List<HashMap<String, Object>> selectzxagent(String agentId);
+	
+	public List<HashMap<String, Object>> selectzxrepairarea(String repairId);
 	
 }

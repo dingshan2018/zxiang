@@ -49,6 +49,8 @@ public class TissueRecord extends BaseEntity
 	private double price;
 	/** 每次出纸长度 */
 	private Integer tissueLen;
+	
+	private String userId;
 
 	private String terminalCode;
 	private String placeName;
@@ -252,6 +254,14 @@ public class TissueRecord extends BaseEntity
 
 	public void setScheduleId(Integer scheduleId) {
 		this.scheduleId = scheduleId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String toString() {

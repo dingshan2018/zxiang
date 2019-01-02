@@ -96,7 +96,7 @@ public class UserConstants
     public static final String USER_TYPE_SYS = "00";
     /** 用户类型：合作伙伴 * */
     public static final String USER_TYPE_PARTNER = "01";
-    /** 用户类型：加盟商 * */
+    /** 用户类型：机主 * */
     public static final String USER_TYPE_JOIN = "02";
     /** 用户类型：代理商 * */
     public static final String USER_TYPE_AGENT = "03";
@@ -104,7 +104,7 @@ public class UserConstants
     public static final String USER_TYPE_REPAIR = "04";
     /** 用户类型：广告商 * */
     public static final String USER_TYPE_ADVERTISE = "05";
-    /** 用户类型：加盟商业务员 * */
+    /** 用户类型：机主业务员 * */
     public static final String USER_TYPE_JOIN_SALESMAN = "12";
     /** 用户类型：代理商业务员 * */
     public static final String USER_TYPE_AGENT_SALESMAN = "13";
@@ -121,8 +121,8 @@ public class UserConstants
     public static final String DEPT_NAME = "合作伙伴";
     public static final String ROLE_NAME_AGENT = "代理商";
     public static final String ROLE_NAME_AGENT_SALESMAN = "代理商业务员";
-    public static final String ROLE_NAME_JOIN = "加盟商";
-    public static final String ROLE_NAME_JOIN_SALESMAN = "加盟商业务员";
+    public static final String ROLE_NAME_JOIN = "机主";
+    public static final String ROLE_NAME_JOIN_SALESMAN = "机主业务员";
     public static final String ROLE_NAME_REPAIR = "服务商";
     public static final String ROLE_NAME_REPAIR_SALESMAN = "服务商业务员";
     public static final String ROLE_NAME_TISSUESMAN = "补纸员";

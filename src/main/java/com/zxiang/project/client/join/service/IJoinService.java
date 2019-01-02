@@ -1,10 +1,11 @@
 package com.zxiang.project.client.join.service;
 
-import com.zxiang.project.client.join.domain.Join;
 import java.util.List;
 
+import com.zxiang.project.client.join.domain.Join;
+
 /**
- * 加盟商 服务层
+ * 机主 服务层
  * 
  * @author ZXiang
  * @date 2018-09-11
@@ -12,39 +13,39 @@ import java.util.List;
 public interface IJoinService 
 {
 	/**
-     * 查询加盟商信息
+     * 查询机主信息
      * 
-     * @param joinId 加盟商ID
-     * @return 加盟商信息
+     * @param joinId 机主ID
+     * @return 机主信息
      */
 	public Join selectJoinById(Integer joinId);
 	
 	/**
-     * 查询加盟商列表
+     * 查询机主列表
      * 
-     * @param join 加盟商信息
-     * @return 加盟商集合
+     * @param join 机主信息
+     * @return 机主集合
      */
 	public List<Join> selectJoinList(Join join);
 	
 	/**
-     * 新增加盟商
+     * 新增机主
      * 
-     * @param join 加盟商信息
+     * @param join 机主信息
      * @return 结果
      */
 	public int insertJoin(Join join);
 	
 	/**
-     * 修改加盟商
+     * 修改机主
      * 
-     * @param join 加盟商信息
+     * @param join 机主信息
      * @return 结果
      */
 	public int updateJoin(Join join);
 		
 	/**
-     * 删除加盟商信息
+     * 删除机主信息
      * 
      * @param ids 需要删除的数据ID
      * @return 结果
@@ -52,7 +53,7 @@ public interface IJoinService
 	public int deleteJoinByIds(String ids);
 
 	/**
-	 * 查找加盟商下拉框数据
+	 * 查找机主下拉框数据
 	 */
 	public List<Join> selectDropBoxList();
 	

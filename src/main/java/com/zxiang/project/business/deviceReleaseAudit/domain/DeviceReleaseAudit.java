@@ -38,6 +38,7 @@ public class DeviceReleaseAudit extends BaseEntity
 	private String deviceSnName;
 	private String placeName;
 	private String approvedStatus;
+	private String deviceSn;
 	
 	public void setAuditId(Integer auditId) 
 	{
@@ -143,6 +144,14 @@ public class DeviceReleaseAudit extends BaseEntity
 
 	public void setApprovedStatus(String approvedStatus) {
 		this.approvedStatus = approvedStatus;
+	}
+
+	public String getDeviceSn() {
+		return deviceSn;
+	}
+
+	public void setDeviceSn(String deviceSn) {
+		this.deviceSn = deviceSn;
 	}
 
 	public String toString() {

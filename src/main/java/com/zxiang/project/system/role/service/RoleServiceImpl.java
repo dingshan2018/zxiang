@@ -287,7 +287,7 @@ public class RoleServiceImpl implements IRoleService
 				if(UserConstants.USER_TYPE_AGENT.equals(userType)){
 					list.add(UserConstants.ROLE_NAME_AGENT_SALESMAN);//
 				}else if(UserConstants.USER_TYPE_JOIN.equals(userType)) {
-					list.add(UserConstants.ROLE_NAME_AGENT_SALESMAN);
+					list.add(UserConstants.ROLE_NAME_JOIN_SALESMAN);
 				}
 				roles = roleMapper.selectByRoleName(list);
 			}else {
