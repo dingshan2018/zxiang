@@ -224,4 +224,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		(SELECT repair_id FROM `zx_repair_area` WHERE city_id = #{cityId})
     </select>
     
+    
+     <select id="selectzxagent"  resultType="java.util.HashMap" parameterType="String">
+		 SELECT 
+		  z.city,
+		  z.county,
+		  z.level
+		FROM
+		  zx_agent z 
+		  WHERE 
+	       agent_id = #{agentId}
+    </select>
+    
+   <select id="selectzxrepairarea"  resultType="java.util.HashMap" parameterType="String">
+	  SELECT 
+		  county_id 
+		FROM
+		  zx_repair_area 
+		WHERE  
+		   repair_id= #{repairId} 
+    </select>
+    
+    
 </mapper> 
