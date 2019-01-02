@@ -38,7 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectTissueRecordList" parameterType="TissueRecord" resultMap="TissueRecordResult">
         <include refid="selectTissueRecordVo"/>
         <where>  
-            ${filterSql}
+            <if test="userId == null">  ${filterSql} </if>
             <if test="userId != null and userId != ''"> and #{userId} = 
              (SELECT DISTINCT zd.owner_id FROM zx_device zd WHERE zd.device_id = tr.device_id)</if>
             <if test="tissueRecordId != null and tissueRecordId != ''"> and tissue_record_id = #{tissueRecordId}</if>
@@ -219,8 +219,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="tissueCount" resultType="java.util.HashMap">
 		SELECT COUNT(tissue_len) paperSum ,SUM(price) moneySum FROM `zx_tissue_record` tr
         <where>  
-        ${filterSql}
+           <if test="userId == null">  ${filterSql} </if>
         	<if test="1==1"> and status = 1</if>
+        	<if test="userId != null and userId != ''"> and #{userId} = 
+             (SELECT DISTINCT zd.owner_id FROM zx_device zd WHERE zd.device_id = tr.device_id)</if>
             <if test="tissueRecordId != null and tissueRecordId != ''"> and tissue_record_id = #{tissueRecordId}</if>
             <if test="qrScheduleId != null and qrScheduleId != ''"> and qr_schedule_id = #{qrScheduleId}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>

@@ -161,6 +161,11 @@ public class TissueRecordController extends BaseController
 	@RequestMapping("/tissueCount")
 	@ResponseBody
 	public Map<String, Object> tissueCount(@RequestParam HashMap<String, String> params){
+		User user =getUser();
+		String userType = user.getUserType();
+		if(userType.equals("02")) {
+			params.put("userId", user.getUserId()+"");
+		}
 		Map<String, Object> result = tissueRecordService.tissueCount(params);
 		return result;
 	}
