@@ -1,6 +1,7 @@
 package com.zxiang.project.system.user.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -502,5 +503,15 @@ public class UserServiceImpl implements IUserService
 	@Override
 	public List<User> selectUserByCity(long city) {
 		return userMapper.selectUserByCity(city);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> selectzxagent(String agentId) {
+		return userMapper.selectzxagent(agentId);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> selectzxrepairarea(String repairId) {
+		return userMapper.selectzxrepairarea(repairId);
 	}
 }

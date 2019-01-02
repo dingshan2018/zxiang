@@ -1,5 +1,6 @@
 package com.zxiang.project.system.user.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.zxiang.project.system.user.domain.User;
@@ -141,4 +142,8 @@ public interface UserMapper
 	 * @return
 	 */
 	public List<User> selectUserByCity(long cityId);
+	
+	public List<HashMap<String, Object>> selectzxagent(String agentId);
+	
+	public List<HashMap<String, Object>> selectzxrepairarea(String repairId);
 }
