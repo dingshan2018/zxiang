@@ -53,7 +53,7 @@
               </select>
             </li>
             <li>
-              <span class="select-item-name">加盟商户：</span><!-- <input type="text" name="joiner"/> -->
+              <span class="select-item-name">机主：</span><!-- <input type="text" name="joiner"/> -->
               <select
                 id="joinId"
                 name="joinId"
@@ -95,7 +95,7 @@
       <div class="bootstrap-table__tool">
         <div class="bootstrap-table__tool-total btn-group" role="group">
           <a class="btn btn-white btn-outline">
-            <i class="glyphicon glyphicon-save-file"></i> 出纸数量： <strong id="paperSum"></strong> 
+            <i class="glyphicon glyphicon-save-file"></i> 出纸数量： <strong id="paperSum"></strong>
           </a>
           <a class="btn btn-white btn-outline">
             <i class="glyphicon glyphicon-yen"></i> 出纸金额： <strong id="moneySum"></strong> 元
@@ -112,10 +112,10 @@
     var prefix = ctx + 'business/tissueRecord';
 
     $(function () {
-    	
+
       //加载统计数据
       tissueSearch();
-    	
+
       //代理商下拉框数据
       var agentList = selectAgentList();
       $.each(agentList, function (i) {
@@ -126,7 +126,7 @@
       $.each(repairList, function (i) {
         $('#repairId').append('<option value=' + repairList[i].repairId + '>' + repairList[i].repairName + '</option>');
       });
-      //加盟商下拉框数据
+      //机主下拉框数据
       var joinList = selectJoinList();
       $.each(joinList, function (i) {
         $('#joinId').append('<option value=' + joinList[i].joinId + '>' + joinList[i].joinerName + '</option>');
@@ -227,7 +227,7 @@
     		//$.modal.alert("导出成功!");
 		});
     }
-  	
+
   	//搜索查询
     function tissueSearch(){
     	var agentId = $("#agentId").val();
@@ -235,7 +235,7 @@
 		var joinId = $("#joinId").val();
 		var startTime = $("#startTime").val();
 		var endTime = $("#endTime").val();
-		
+
 		var paperSum=document.getElementById("paperSum");
 		var moneySum=document.getElementById("moneySum");
 

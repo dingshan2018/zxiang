@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zxiang.project.settle.userIncome.mapper.UserIncomeMapper">
-    
+
     <resultMap type="UserIncome" id="UserIncomeResult">
       <id column="income_id" property="incomeId" jdbcType="INTEGER" />
     <result column="coperator_id" property="coperatorId" jdbcType="INTEGER" />
@@ -41,46 +41,46 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
     </resultMap>
-	
+
 	<sql id="selectUserIncomeVo">
-	select income_id, coperator_id, coperator_name,  
+	select income_id, coperator_id, coperator_name,
 	 CASE coperator_type WHEN 00 THEN '系统用户'
               WHEN 01 THEN '合作伙伴'
-              WHEN 02 THEN '加盟商'
+              WHEN 02 THEN '机主'
               WHEN 03 THEN '代理商'
               WHEN 04 THEN '服务商'
               WHEN 05 THEN '广告商'
               WHEN 06 THEN '业务员'
                ELSE '' END
-              AS coperator_type, sum_date, ad_income, ad_carousel_income, 
+              AS coperator_type, sum_date, ad_income, ad_carousel_income,
     scan_income, prom_direct_income, prom_indirect_income,promotion_income, paper_income, prom_paper_income, serve_income,
-    direct_agent_income, subsidy_income, ad_income_rate, promotion_income_rate, scan_income_rate, 
-    subsidy_income_rate, ad_rate, ad_carousel_rate, scan_rate, prom_direct_rate, prom_indirect_rate, 
-    concat('-',prom_paper_rate) prom_paper_rate, promotion_rate, direct_agent_rate, serve_rate, subsidy_rate, refund_income, 
+    direct_agent_income, subsidy_income, ad_income_rate, promotion_income_rate, scan_income_rate,
+    subsidy_income_rate, ad_rate, ad_carousel_rate, scan_rate, prom_direct_rate, prom_indirect_rate,
+    concat('-',prom_paper_rate) prom_paper_rate, promotion_rate, direct_agent_rate, serve_rate, subsidy_rate, refund_income,
     refund_income_rate, create_by, create_time, update_by, update_time from zx_user_income
     </sql>
-    
+
    <sql id="selectUserIncomeVos">
-	select distinct a.income_id, a.coperator_id, a.coperator_name,  
+	select distinct a.income_id, a.coperator_id, a.coperator_name,
 	 CASE a.coperator_type WHEN 00 THEN '系统用户'
               WHEN 01 THEN '合作伙伴'
-              WHEN 02 THEN '加盟商'
+              WHEN 02 THEN '机主'
               WHEN 03 THEN '代理商'
               WHEN 04 THEN '服务商'
               WHEN 05 THEN '广告商'
               WHEN 06 THEN '业务员'
                ELSE '' END
-              AS coperator_type, a.sum_date, a.ad_income, a.ad_carousel_income, 
+              AS coperator_type, a.sum_date, a.ad_income, a.ad_carousel_income,
     a.scan_income, a.prom_direct_income, a.prom_indirect_income,a.promotion_income, a.paper_income, a.prom_paper_income, a.serve_income,
-    a.direct_agent_income, a.subsidy_income, a.ad_income_rate, a.promotion_income_rate, a.scan_income_rate, 
-    a.subsidy_income_rate, a.ad_rate, a.ad_carousel_rate, a.scan_rate, a.prom_direct_rate, a.prom_indirect_rate, 
-    concat('-',a.prom_paper_rate) prom_paper_rate, a.promotion_rate, a.direct_agent_rate, a.serve_rate, a.subsidy_rate, a.refund_income, 
+    a.direct_agent_income, a.subsidy_income, a.ad_income_rate, a.promotion_income_rate, a.scan_income_rate,
+    a.subsidy_income_rate, a.ad_rate, a.ad_carousel_rate, a.scan_rate, a.prom_direct_rate, a.prom_indirect_rate,
+    concat('-',a.prom_paper_rate) prom_paper_rate, a.promotion_rate, a.direct_agent_rate, a.serve_rate, a.subsidy_rate, a.refund_income,
     a.refund_income_rate, a.create_by, a.create_time, a.update_by, a.update_time from zx_user_income a LEFT JOIN sys_user b ON b.puser_id = a.coperator_id and b.user_type = a.coperator_type
     </sql>
-	
+
     <select id="selectUserIncomeList" parameterType="UserIncome" resultMap="UserIncomeResult">
         <include refid="selectUserIncomeVos"/>
-        <where>  
+        <where>
             ${filterSql}
             <if test="incomeId != null and incomeId != ''"> and a.income_id = #{incomeId}</if>
              <if test="coperatorName != null and coperatorName != ''"> and a.coperator_name like concat('%',#{coperatorName},'%')</if>
@@ -93,12 +93,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 </if>
          </where>
     </select>
-    
+
     <select id="selectUserIncomeById" parameterType="Integer" resultMap="UserIncomeResult">
         <include refid="selectUserIncomeVo"/>
         where income_id = #{incomeId}
     </select>
-        
+
     <insert id="insertUserIncome" parameterType="UserIncome">
         insert into zx_user_income
           <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -291,7 +291,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    </trim>
 
     </insert>
-	 
+
     <update id="updateUserIncome" parameterType="UserIncome">
         update zx_user_income
         <trim prefix="SET" suffixOverrides=",">
@@ -347,18 +347,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<delete id="deleteUserIncomeById" parameterType="Integer">
         delete from zx_user_income where income_id = #{incomeId}
     </delete>
-	
+
     <delete id="deleteUserIncomeByIds" parameterType="String">
-        delete from zx_user_income where income_id in 
+        delete from zx_user_income where income_id in
         <foreach item="incomeId" collection="array" open="(" separator="," close=")">
             #{incomeId}
         </foreach>
     </delete>
-    
-    
+
+
     <select id="selectUserIncome" parameterType="UserIncome" resultMap="UserIncomeResult">
         select income_id from zx_user_income
-        <where>  
+        <where>
              <if test="coperatorId != null and coperatorId != ''"> and coperator_id = #{coperatorId}</if>
               <if test="coperatorType != null and coperatorType != ''"> and coperator_type = #{coperatorType}</if>
              and DATE_FORMAT(sum_date, '%Y-%m-%d') = DATE_FORMAT(
@@ -368,31 +368,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </where>
     </select>
     <!-- 用户角色信息数据 -->
-    
+
       <!-- 判断销售人类型 -->
       <select id="selectzxsellerlist" parameterType="string"  resultType="java.util.HashMap">
 		  SELECT  * FROM  sys_user WHERE user_id = #{sellerId}
     </select>
-    
+
      <!-- 判断销售人类型 -->
       <select id="selectuserbypuserId" parameterType="string"  resultType="java.util.HashMap">
 		  SELECT  * FROM  sys_user WHERE puser_id = #{puserId}
     </select>
-    
-    
+
+
     <!-- 代理商 -->
      <select id="selectzxagentlist"  resultType="java.util.HashMap">
-		 SELECT 
+		 SELECT
 		  agent_id,
 		  z.city,
 		  z.county,
 		  z.level,
 		  z.promotor_id,
 		  z.agency_fee,
-		  z.create_time 
+		  z.create_time
 		FROM
-		  zx_agent z 
-		  WHERE 
+		  zx_agent z
+		  WHERE
 	       1=1
 		  <if test="placeId != null and placeId != ''">
 		     AND ((z.level = 1 AND z.city = #{placeId} ) OR (z.level = 2 AND z.county = #{placeId} ))
@@ -401,12 +401,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		     AND DATE_FORMAT(z.create_time, '%Y-%m-%d') = DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 DAY),'%Y-%m-%d')
 		  </if>
     </select>
-    
+
 
 
         <!-- 代理商 -->
      <select id="selectzxagent"  resultType="java.util.HashMap">
-		 SELECT 
+		 SELECT
 		 agent_id coperatorId,
          agent_name coperatorName,
 		 ad_rate adRate,
@@ -420,19 +420,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 serve_rate serveRate,
 		 subsidy_rate subsidyRate
 		FROM
-		  zx_agent  
-		  WHERE 
+		  zx_agent
+		  WHERE
 		  1=1
 		  <if test="agentId != null and agentId != ''">
 		    AND agent_id = #{agentId}
 		  </if>
     </select>
-    
-    <!-- 加盟商（机主） -->
+
+    <!-- 机主（机主） -->
     <select id="selectzxjoinlist"  resultType="java.util.HashMap">
 	    SELECT
 	     join_id coperatorId,
-         joiner_name coperatorName, 
+         joiner_name coperatorName,
 		 ad_rate adRate,
 		 ad_carousel_rate adCarouselRate,
 		 scan_rate  scanRate,
@@ -444,7 +444,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 serve_rate serveRate,
 		 0.0 subsidyRate
 		FROM
-		  zx_join 
+		  zx_join
 		WHERE 1=1
 		<if test="joinId != null and joinId != ''">
 		   AND join_id= #{joinId}
@@ -457,7 +457,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
      <select id="selectzxrepairlist"  resultType="java.util.HashMap">
 	   SELECT
 	     repair_id coperatorId,
-         repair_name coperatorName, 
+         repair_name coperatorName,
 		 ad_rate adRate,
 		 ad_carousel_rate adCarouselRate,
 		 scan_rate  scanRate,
@@ -469,31 +469,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 0.0 serveRate,
 		 subsidy_rate subsidyRate
 		FROM
-		  zx_repair 
-		WHERE 1=1 
+		  zx_repair
+		WHERE 1=1
 		<if test="repairId != null and repairId != ''">
-		  AND repair_id= #{repairId} 
+		  AND repair_id= #{repairId}
 		</if>
     </select>
      <!-- 服务网点地区 -->
     <select id="selectzxrepairarealist"  resultType="java.util.HashMap">
-	  SELECT 
-		  * 
+	  SELECT
+		  *
 		FROM
-		  zx_repair_area 
+		  zx_repair_area
 		WHERE  1=1
 		<if test="repairId != null and repairId != ''">
-		  AND repair_id= #{repairId} 
+		  AND repair_id= #{repairId}
 		</if>
 		<if test="countyId != null and countyId != ''">
-		  AND county_id= #{countyId} 
+		  AND county_id= #{countyId}
 		</if>
     </select>
-    
-    
+
+
      <select id="queryExport" resultType="java.util.HashMap">
         	 <include refid="selectUserIncomeVos"/>
-        <where>  
+        <where>
          ${filterSql}
             <if test="incomeId != null and incomeId != ''"> and a.income_id = #{incomeId}</if>
              <if test="coperatorName != null and coperatorName != ''"> and a.coperator_name like concat('%',#{coperatorName},'%')</if>
@@ -506,8 +506,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 </if>
          </where>
     </select>
-    
-    
+
+
     <select id="selectUsertotalIncome" resultType="java.util.HashMap">
         select coperator_name puserName,coperator_id puserId,coperator_type puserType, (ad_income_rate+promotion_income_rate+scan_income_rate) totalIncome from zx_user_income where
               DATE_FORMAT(sum_date, '%Y-%m-%d') = DATE_FORMAT(
@@ -515,6 +515,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			    '%Y-%m-%d'
 			  )
     </select>
-    
-    
+
+
 </mapper>
