@@ -310,6 +310,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </update>
     <select id="selectTotal" resultType="int">
-    	select count(*) from zx_device
+    	select count(*) from zx_device d where 1=1 
+    	<if test="userId == null"> ${filterSql} </if>
+        <if test="userId != null and userId != ''">
+       	  and #{userId} = (SELECT DISTINCT zd.owner_id FROM zx_device zd WHERE zd.device_id = d.device_id)
+         </if>
     </select>
 </mapper>

@@ -219,8 +219,8 @@
 		    function cityBind() {
 		        var provice = $("#province option:selected").val();
 		        var str = "<option value=''>---请选择---</option>";
-		        $("#city").html(str);
-		        $("#county").html(str);
+		        $("#city").html(str).selectpicker("refresh");
+		        $("#county").html(str).selectpicker("refresh");
 		        //判断省份这个下拉框选中的值是否为空
 		        if (provice == "") {
 		            return;
