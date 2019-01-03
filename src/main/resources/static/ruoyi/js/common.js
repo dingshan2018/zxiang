@@ -186,14 +186,14 @@ function selectUserList(){
 }
 
 /**场所选择服务商员工下拉框选择*/
-function selectUserBycounty(city){
+function selectUserBycounty(city,county){
 	var userList = [];
 	$.ajax({
     	type: "post",
     	contentType:"application/json",
         dataType: "json",
         url: ctx + "system/user/selectUserByCity",
-        data: JSON.stringify({ "city": city}),
+        data: JSON.stringify({ "city": city,"county":county}),
         async: false,
         success: function (data) {
         	userList = data.rows;

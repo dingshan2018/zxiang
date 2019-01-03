@@ -134,6 +134,15 @@ public class DeviceReleaseAuditServiceImpl implements IDeviceReleaseAuditService
 				device.setReleaseTime(new Date());
 				deviceMapper.updateDevice(device);
 				
+				//终端绑定场所信息
+				if(device.getTerminalId() != null){
+					Terminal terminal = terminalMapper.selectTerminalById(device.getTerminalId());
+					if(terminal != null ){
+						terminal.setPlaceId(deviceReleaseAudit.getPlaceId());
+						terminalMapper.updateTerminal(terminal);
+					}
+				}
+				
 				//下发上线信息给终端02
 				Terminal terminal = terminalMapper.selectTerminalById(device.getTerminalId());
 				if(terminal != null ){

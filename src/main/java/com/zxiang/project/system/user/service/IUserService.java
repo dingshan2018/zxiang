@@ -184,11 +184,11 @@ public interface IUserService
 	public AjaxResult wxLoginSelectRoles(String openId);
 
 	/**
-	 * 根据城市查询服务商员工信息
+	 * 根据区县查询服务商员工信息,区县没有数据时根据城市来查
 	 * @param parseLong
 	 * @return
 	 */
-	public List<User> selectUserByCity(long city);
+	public List<User> selectUserByCity(long city,long countyId);
 	
     public List<HashMap<String, Object>> selectzxagent(String agentId);
 	

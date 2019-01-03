@@ -498,11 +498,16 @@ public class UserServiceImpl implements IUserService
 	}
 
 	/**
-	 * 根据城市查询服务商员工信息
+	 * 根据区域ID查询服务商员工信息,若所属区县没有服务网点，则选择所属城市服务网点的员工
+	 * 
 	 */
 	@Override
-	public List<User> selectUserByCity(long city) {
-		return userMapper.selectUserByCity(city);
+	public List<User> selectUserByCity(long city,long countyId) {
+		List<User> repairList = userMapper.selectUserByCounty(countyId);
+		if(repairList == null || repairList.size() <= 0){
+			repairList = userMapper.selectUserByCity(city);
+		}
+		return repairList;
 	}
 
 	@Override
