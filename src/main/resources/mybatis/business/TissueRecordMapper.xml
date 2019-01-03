@@ -32,7 +32,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         place_id, 
         (select distinct p.name from zx_place p where p.place_id =tr.`place_id` ) placeName,
         wx_user_id,open_id,status, nick_name, headimgurl, tissue_channel,
-        create_by, create_time,schedule_id, price, tissue_len from zx_tissue_record tr
+        create_by, create_time,schedule_id, price, tissue_len,
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='tissue_len' AND sdd.dict_value=tr.`tissue_len` ) tissueLenName
+        from zx_tissue_record tr
     </sql>
 	
     <select id="selectTissueRecordList" parameterType="TissueRecord" resultMap="TissueRecordResult">

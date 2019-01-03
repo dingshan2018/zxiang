@@ -61,6 +61,8 @@ public class TissueRecord extends BaseEntity
 	private Integer repairId;//代理商查询条件
 	private Integer joinId;//代理商查询条件
 	
+	private String tissueLenName;
+	
 	public void setTissueRecordId(Integer tissueRecordId) 
 	{
 		this.tissueRecordId = tissueRecordId;
@@ -262,6 +264,14 @@ public class TissueRecord extends BaseEntity
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public String getTissueLenName() {
+		return tissueLenName;
+	}
+
+	public void setTissueLenName(String tissueLenName) {
+		this.tissueLenName = tissueLenName;
 	}
 
 	public String toString() {
