@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
@@ -71,7 +72,7 @@ public class TissueRecordController extends BaseController
 		startPage();
 		User user =getUser();
 		String userType = user.getUserType();
-		if(userType.equals("02")) {
+		if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
 			tissueRecord.setUserId(user.getUserId()+"");
 		}
         List<TissueRecord> list = tissueRecordService.selectTissueRecordList(tissueRecord);
@@ -163,7 +164,7 @@ public class TissueRecordController extends BaseController
 	public Map<String, Object> tissueCount(@RequestParam HashMap<String, String> params){
 		User user =getUser();
 		String userType = user.getUserType();
-		if(userType.equals("02")) {
+		if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
 			params.put("userId", user.getUserId()+"");
 		}
 		Map<String, Object> result = tissueRecordService.tissueCount(params);
