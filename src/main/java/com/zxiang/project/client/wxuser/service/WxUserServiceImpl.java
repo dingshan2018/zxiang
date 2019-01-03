@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.zxiang.common.constant.Const;
 import com.zxiang.common.support.Convert;
-import com.zxiang.project.business.device.mapper.DeviceMapper;
-import com.zxiang.project.business.tissueRecord.mapper.TissueRecordMapper;
+import com.zxiang.project.business.device.service.IDeviceService;
+import com.zxiang.project.business.tissueRecord.service.ITissueRecordService;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
 import com.zxiang.project.client.agent.mapper.AgentMapper;
 import com.zxiang.project.client.wxuser.domain.WxUser;
@@ -29,13 +29,13 @@ public class WxUserServiceImpl implements IWxUserService
 	@Autowired
 	private WxUserMapper wxUserMapper;
 	@Autowired
-	private DeviceMapper deviceMapper;
+	private IDeviceService deviceService;
 	@Autowired
 	private AgentMapper agentMapper;
 	@Autowired
 	private AdvertiseMapper advertiseMapper;
 	@Autowired
-	private TissueRecordMapper tissueRecordMapper;
+	private ITissueRecordService tissueRecordService;
 
 	/**
      * 查询微信粉丝信息
@@ -100,9 +100,9 @@ public class WxUserServiceImpl implements IWxUserService
 	@Override
 	public Map<String, Object> systemIndicators() {
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("tissueTotal", tissueRecordMapper.selectTotal(null)); // 累计出纸量
+		map.put("tissueTotal", tissueRecordService.selectTotal(new HashMap<String, Object>())); // 累计出纸量
 		map.put("fansTotal", wxUserMapper.queryFansTotalBySex(null, null)); // 累计粉丝量
-		map.put("deviceTotal", deviceMapper.selectTotal()); // 设备总量
+		map.put("deviceTotal", deviceService.selectTotal(new HashMap<String, Object>())); // 设备总量
 		map.put("agentTotal", agentMapper.selectTotal()); // 代理商总数
 		map.put("fansManTotal", wxUserMapper.queryFansTotalBySex(Const.SEX_MAN, null)); // 累计男粉丝总量
 		map.put("fansWomanTotal", wxUserMapper.queryFansTotalBySex(Const.SEX_WOMAN, null)); // 累计女粉丝总量
@@ -116,9 +116,11 @@ public class WxUserServiceImpl implements IWxUserService
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>> ();
 		Map<String, Object> data = null;
+		Map<String, Object> param = new HashMap<String, Object>();
 		for (String selDate : dates) {
 			data = new HashMap<String, Object>();
-			data.put("tissueTotal", tissueRecordMapper.selectTotal(selDate)); // 单日出纸总量
+			param.put("selDate", selDate);
+			data.put("tissueTotal", tissueRecordService.selectTotal(param)); // 单日出纸总量
 			data.put("fansManTotal", wxUserMapper.queryFansTotalBySex(Const.SEX_MAN, selDate)); // 单日累计男粉丝总量
 			data.put("fansWomanTotal", wxUserMapper.queryFansTotalBySex(Const.SEX_WOMAN, selDate)); // 单日累计女粉丝总量
 			data.put("fansNotSexTotal", wxUserMapper.queryFansTotalBySex(Const.SEX_NOT, selDate)); // 单日未知性别

@@ -1,13 +1,13 @@
 package com.zxiang.project.business.tissueRecord.service;
 
-import com.zxiang.project.business.tissueRecord.domain.TissueRecord;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.zxiang.project.business.tissueRecord.domain.TissueRecord;
 
 /**
  * 出纸记录 服务层
@@ -65,5 +65,7 @@ public interface ITissueRecordService
 	 * @return
 	 */
 	public Map<String, Object> tissueCount(HashMap<String, String> params);
+	
+	public int selectTotal(Map<String,Object> map);
 	
 }

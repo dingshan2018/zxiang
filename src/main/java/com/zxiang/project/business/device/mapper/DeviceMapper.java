@@ -1,6 +1,7 @@
 package com.zxiang.project.business.device.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -121,7 +122,7 @@ public interface DeviceMapper
 	 */
 	public int outStock(@Param("array")String[] ids, @Param("ownerId")Integer ownerId);
 
-	public int selectTotal();
+	public int selectTotal(Map<String, Object> param);
 
 	
 }

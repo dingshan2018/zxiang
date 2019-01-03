@@ -12,8 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.excel.EXCELObject;
+import com.zxiang.common.utils.security.ShiroUtils;
+import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.project.business.tissueRecord.domain.TissueRecord;
 import com.zxiang.project.business.tissueRecord.mapper.TissueRecordMapper;
 
@@ -143,6 +146,15 @@ public class TissueRecordServiceImpl implements ITissueRecordService
 		}
 		
 		return result;
+	}
+	@DataFilter(placeAlias="tr.place_id")
+	@Override
+	public int selectTotal(Map<String,Object> map) {
+		String userType = ShiroUtils.getUser().getUserType();
+		if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+			map.put("userId", ShiroUtils.getUser().getUserId());
+		}
+		return tissueRecordMapper.selectTotal(map);
 	}
 	
 }

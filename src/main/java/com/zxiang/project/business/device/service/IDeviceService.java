@@ -1,6 +1,7 @@
 package com.zxiang.project.business.device.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.record.tradeOrder.domain.TradeOrder;
@@ -140,4 +141,6 @@ public interface IDeviceService
 	 */
 	public int outStockByTradeId(String ids,TradeOrder tradeOrder,String operatorUser, Integer promotionerId) throws Exception;
 	
+	/** 查询设备总量 **/
+	public int selectTotal(Map<String,Object> param);
 }

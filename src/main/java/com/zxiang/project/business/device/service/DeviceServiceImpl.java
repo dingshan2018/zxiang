@@ -12,9 +12,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.StringUtils;
+import com.zxiang.common.utils.security.ShiroUtils;
+import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.project.advertise.utils.Tools;
 import com.zxiang.project.advertise.utils.constant.AdConstant;
 import com.zxiang.project.business.changeTerminal.domain.ChangeTerminal;
@@ -551,6 +554,15 @@ public class DeviceServiceImpl implements IDeviceService
 		}
 		
 		return updateDeviceNum;
+	}
+	@DataFilter(placeAlias="d.place_id")
+	@Override
+	public int selectTotal(Map<String, Object> param) {
+		String userType = ShiroUtils.getUser().getUserType();
+		if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+			param.put("userId", ShiroUtils.getUser().getUserId());
+		}
+		return deviceMapper.selectTotal(param);
 	}
 
 }
