@@ -38,20 +38,6 @@
                     <input id="volumn" name="volumn" th:field="*{volumn}" class="form-control" type="text">
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">终端状态：</label>
-                <div class="col-sm-8">
-                    <select
-                      id="status"
-                      name="status"
-                      data-live-search="true"
-                      class="form-control block-plugin__select-picker selectpicker"
-                      data-style="btn-white btn-sm">
-                        <option value="1" th:selected="${terminal.status=='1'}">生效</option>
-                        <option value="2" th:selected="${terminal.status=='2'}">禁用</option>
-					</select>
-                </div>
-            </div>
 
             <div class="form-group">
                 <label class="col-sm-3 control-label">经度：</label>
