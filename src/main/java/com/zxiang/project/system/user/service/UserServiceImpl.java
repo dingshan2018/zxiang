@@ -208,7 +208,7 @@ public class UserServiceImpl implements IUserService
 			rows = userMapper.insertUser(user);
 			if(user.getRoleIds() == null || user.getRoleIds().length == 0) {
 				// 设置默认角色
-				iroleService.setDefaultRole(user, UserConstants.clientMap.get(user.getUserType()));
+				iroleService.setDefaultRole(user, UserConstants.defaultRoleKey.get(user.getUserType()));
 			}else {
 				// 新增用户与角色管理
 				insertUserRole(user);

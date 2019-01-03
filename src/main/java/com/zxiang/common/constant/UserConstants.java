@@ -131,6 +131,7 @@ public class UserConstants
     public static final String ROLE_NAME_AD_SALESMAN = "广告商业务员";
     
     public static Map<String,String> clientMap = new HashMap<String,String>();
+    public static Map<String,String> defaultRoleKey = new HashMap<String,String>();
     static {
     	clientMap.put(USER_TYPE_JOIN, ROLE_NAME_JOIN);
     	clientMap.put(USER_TYPE_AGENT, ROLE_NAME_AGENT);
@@ -141,6 +142,15 @@ public class UserConstants
     	clientMap.put(USER_TYPE_AGENT_SALESMAN, ROLE_NAME_AGENT_SALESMAN);
     	clientMap.put(USER_TYPE_REPAIR_SALESMAN, ROLE_NAME_REPAIR_SALESMAN);
     	clientMap.put(USER_TYPE_ADVERTISE_SALESMAN, ROLE_NAME_AD_SALESMAN);
+    	// 默认权限
+    	defaultRoleKey.put(USER_TYPE_JOIN, "join");
+    	defaultRoleKey.put(USER_TYPE_AGENT, "agent");
+    	defaultRoleKey.put(USER_TYPE_REPAIR, "repair");
+    	defaultRoleKey.put(USER_TYPE_ADVERTISE, "advertise");
+    	defaultRoleKey.put(USER_TYPE_JOIN_SALESMAN, "joinSalesman");
+    	defaultRoleKey.put(USER_TYPE_AGENT_SALESMAN, "agentSalesman");
+    	defaultRoleKey.put(USER_TYPE_REPAIR_SALESMAN, "repairSalesman");
+    	defaultRoleKey.put(USER_TYPE_ADVERTISE_SALESMAN, "advertiseSalesman");
     	
     }
 }

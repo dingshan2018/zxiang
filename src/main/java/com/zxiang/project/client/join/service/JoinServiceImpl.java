@@ -97,7 +97,7 @@ public class JoinServiceImpl implements IJoinService
 			userMapper.insertUser(user);
 			join.setJoinerId(user.getUserId().intValue());
 			// 设置默认角色
-			iroleService.setDefaultRole(user, UserConstants.ROLE_NAME_JOIN);
+			iroleService.setDefaultRole(user, UserConstants.defaultRoleKey.get(UserConstants.USER_TYPE_JOIN));
 		}
 		join.setCreateTime(new Date());
 		join.setCreateBy(ShiroUtils.getLoginName());
