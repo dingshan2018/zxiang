@@ -151,7 +151,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
-            <if test="offerKey != null  ">offerKey = #{offerKey},</if>
+            <if test="offerKey != null  ">offer_key = #{offerKey},</if>
             <if test="iccId != null  ">iccid = #{iccId},</if>
             <if test="onlineStatus != null  ">online_status = #{onlineStatus},</if>
         </trim>
