@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.project.settle.deviceIncomeDaily.domain.DeviceIncomeDaily;
 import com.zxiang.project.settle.deviceIncomeDaily.service.IDeviceIncomeDailyService;
+import com.zxiang.project.system.user.domain.User;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.framework.web.domain.AjaxResult;
@@ -53,6 +55,11 @@ public class DeviceIncomeDailyController extends BaseController
 	{
 		//deviceIncomeDailyService.statisticaldata();
 		startPage();
+		User user =getUser();
+		String userType = user.getUserType();
+		if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+			deviceIncomeDaily.setUserId(user.getUserId()+"");
+		}
         List<DeviceIncomeDaily> list = deviceIncomeDailyService.selectDeviceIncomeDailyList(deviceIncomeDaily);
 		return getDataTable(list);
 	}

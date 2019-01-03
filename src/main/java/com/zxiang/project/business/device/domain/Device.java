@@ -92,6 +92,8 @@ public class Device extends BaseEntity
 	private String statusName;
 	private String ownerName;
 	
+	private String userId ;
+	
 	public void setDeviceId(Integer deviceId) 
 	{
 		this.deviceId = deviceId;
@@ -427,6 +429,14 @@ public class Device extends BaseEntity
 
 	public void setReleaseStatus(String releaseStatus) {
 		this.releaseStatus = releaseStatus;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String toString() {

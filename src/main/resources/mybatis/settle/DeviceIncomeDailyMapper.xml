@@ -56,10 +56,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDeviceIncomeDailyList" parameterType="DeviceIncomeDaily" resultMap="DeviceIncomeDailyResult">
         <include refid="selectDeviceIncomeDailyVos"/>
         <where>  
-              ${filterSql}
+              <if test="userId == null">  ${filterSql} </if>
               AND a.`device_id`=t.`device_id`
               AND a.`place_id` = p.`place_id`
-            <if test="incomeId != null and incomeId != ''"> and a.income_id = #{incomeId}</if>
+             <if test="userId != null and userId != ''"> and #{userId} = t.owner_id </if>
+             <if test="incomeId != null and incomeId != ''"> and a.income_id = #{incomeId}</if>
              <if test="deviceSn != null and deviceSn != ''"> and t.device_sn = #{deviceSn}</if>
              <if test="terminalId != null and terminalId != ''"> and a.terminal_id = #{terminalId}</if>
              <if test="placeId != null and placeId != ''"> and a.place_id = #{placeId}</if>

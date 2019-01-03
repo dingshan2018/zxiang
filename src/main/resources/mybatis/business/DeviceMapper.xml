@@ -51,7 +51,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDeviceList" parameterType="Device" resultMap="DeviceResult">
         <include refid="selectDeviceVo"/>
         <where> 
-             ${filterSql} 
+            <if test="userId == null">  ${filterSql} </if>
+            <if test="userId != null and userId != ''"> and #{userId} = d.owner_id </if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
              <if test="deviceCode != null and deviceCode != ''"> 
              	and device_code like concat('%', #{deviceCode}, '%')

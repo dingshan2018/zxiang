@@ -50,6 +50,8 @@ public class DeviceIncomeDaily extends BaseEntity
 	private Date updateTime;
 	
 	private String placeName;
+	
+	private String userId;
 
 	public void setIncomeId(Integer incomeId) 
 	{
@@ -211,6 +213,14 @@ public class DeviceIncomeDaily extends BaseEntity
 
 	public void setTerminalCode(String terminalCode) {
 		this.terminalCode = terminalCode;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String toString() {
