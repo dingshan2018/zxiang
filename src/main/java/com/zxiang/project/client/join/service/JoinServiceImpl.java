@@ -14,7 +14,6 @@ import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
 import com.zxiang.project.client.join.domain.Join;
 import com.zxiang.project.client.join.mapper.JoinMapper;
-import com.zxiang.project.client.repair.domain.Repair;
 import com.zxiang.project.system.dept.domain.Dept;
 import com.zxiang.project.system.dept.mapper.DeptMapper;
 import com.zxiang.project.system.role.service.IRoleService;
@@ -22,7 +21,7 @@ import com.zxiang.project.system.user.domain.User;
 import com.zxiang.project.system.user.mapper.UserMapper;
 
 /**
- * 加盟商 服务层实现
+ * 机主 服务层实现
  * 
  * @author ZXiang
  * @date 2018-09-11
@@ -42,10 +41,10 @@ public class JoinServiceImpl implements IJoinService
 	private IRoleService iroleService;
 
 	/**
-     * 查询加盟商信息
+     * 查询机主信息
      * 
-     * @param joinId 加盟商ID
-     * @return 加盟商信息
+     * @param joinId 机主ID
+     * @return 机主信息
      */
     @Override
 	public Join selectJoinById(Integer joinId)
@@ -54,10 +53,10 @@ public class JoinServiceImpl implements IJoinService
 	}
 	
 	/**
-     * 查询加盟商列表
+     * 查询机主列表
      * 
-     * @param join 加盟商信息
-     * @return 加盟商集合
+     * @param join 机主信息
+     * @return 机主集合
      */
 	@Override
 	public List<Join> selectJoinList(Join join)
@@ -66,9 +65,9 @@ public class JoinServiceImpl implements IJoinService
 	}
 	
     /**
-     * 新增加盟商
+     * 新增机主
      * 
-     * @param join 加盟商信息
+     * @param join 机主信息
      * @return 结果
      */
 	@Override
@@ -98,7 +97,7 @@ public class JoinServiceImpl implements IJoinService
 			userMapper.insertUser(user);
 			join.setJoinerId(user.getUserId().intValue());
 			// 设置默认角色
-			iroleService.setDefaultRole(user, UserConstants.ROLE_NAME_JOIN);
+			iroleService.setDefaultRole(user, UserConstants.defaultRoleKey.get(UserConstants.USER_TYPE_JOIN));
 		}
 		join.setCreateTime(new Date());
 		join.setCreateBy(ShiroUtils.getLoginName());
@@ -120,9 +119,9 @@ public class JoinServiceImpl implements IJoinService
 	}
 	
 	/**
-     * 修改加盟商
+     * 修改机主
      * 
-     * @param join 加盟商信息
+     * @param join 机主信息
      * @return 结果
      */
 	@Override
@@ -149,7 +148,7 @@ public class JoinServiceImpl implements IJoinService
 	}
 
 	/**
-     * 删除加盟商对象
+     * 删除机主对象
      * 
      * @param ids 需要删除的数据ID
      * @return 结果

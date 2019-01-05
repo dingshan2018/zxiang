@@ -33,7 +33,8 @@
                 class="block-plugin__select-picker selectpicker"
                 data-style="btn-white btn-sm">
 				<option value="">全部</option>
-				<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+				<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" 
+				th:disabled="${dict.dictValue == '04'}"></option>
 			  </select>
             </li>
             <li class="select-time">

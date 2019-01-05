@@ -41,6 +41,8 @@ public class AdReleaseRecord extends BaseEntity
 	private String scheduleName;
 	private String deviceSn;
 	
+	private String userId;
+	
 	
 	public void setReleaseDeviceId(Integer releaseDeviceId) 
 	{
@@ -156,6 +158,15 @@ public class AdReleaseRecord extends BaseEntity
 
 	public void setScheduleName(String scheduleName) {
 		this.scheduleName = scheduleName;
+	}
+
+	
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String toString() {

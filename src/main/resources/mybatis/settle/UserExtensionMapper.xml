@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zxiang.project.settle.userExtension.mapper.UserExtensionMapper">
-    
+
     <resultMap type="UserExtension" id="UserExtensionResult">
         <result property="incomeId"    column="income_id"    />
         <result property="coperatorId"    column="coperator_id"    />
@@ -22,11 +22,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="puserId"    column="puser_id"    />
         <result property="puserName"    column="puser_name"    />
     </resultMap>
-	
+
 	<sql id="selectUserExtensionVo">
         select income_id, coperator_id, CASE coperator_type WHEN 00 THEN '系统用户'
               WHEN 01 THEN '合作伙伴'
-              WHEN 02 THEN '加盟商'
+              WHEN 02 THEN '机主'
               WHEN 03 THEN '代理商'
               WHEN 04 THEN '服务商'
               WHEN 05 THEN '广告商'
@@ -34,10 +34,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                ELSE '' END
               AS coperator_type,puser_id,puser_name, DATE_FORMAT(sum_date, '%Y-%m-%d') sum_date, prom_direct_income, prom_indirect_income, prom_paper_income, promotion_income, direct_agent_income, create_by, create_time, update_by, update_time, coperator_name from zx_user_extension
     </sql>
-	
+
     <select id="selectUserExtensionList" parameterType="UserExtension" resultMap="UserExtensionResult">
         <include refid="selectUserExtensionVo"/>
-        <where>  
+        <where>
            ${filterSql}
              <if test="coperatorName != null and coperatorName != ''"> and coperator_name like concat('%',#{coperatorName},'%')</if>
              <if test="coperatorType != null and coperatorType != ''"> and coperator_type = #{coperatorType}</if>
@@ -49,12 +49,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 </if>
          </where>
     </select>
-    
+
     <select id="selectUserExtensionById" parameterType="Integer" resultMap="UserExtensionResult">
         <include refid="selectUserExtensionVo"/>
         where income_id = #{incomeId}
     </select>
-        
+
     <insert id="insertUserExtension" parameterType="UserExtension">
         insert into zx_user_extension
 		<trim prefix="(" suffix=")" suffixOverrides=",">
@@ -92,7 +92,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			DATE_SUB(CURDATE(), INTERVAL 1 DAY)
          </trim>
     </insert>
-	 
+
     <update id="updateUserExtension" parameterType="UserExtension">
         update zx_user_extension
         <trim prefix="SET" suffixOverrides=",">
@@ -107,10 +107,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where income_id = #{incomeId}
     </update>
-    
+
      <select id="selectUserExtension" parameterType="UserExtension" resultMap="UserExtensionResult">
         select income_id from zx_user_extension
-        <where>  
+        <where>
              <if test="coperatorId != null and coperatorId != ''"> and coperator_id = #{coperatorId}</if>
              and DATE_FORMAT(sum_date, '%Y-%m-%d') = DATE_FORMAT(
 			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
@@ -118,22 +118,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			  )
          </where>
     </select>
-    
+
 
 	<delete id="deleteUserExtensionById" parameterType="Integer">
         delete from zx_user_extension where income_id = #{incomeId}
     </delete>
-	
+
     <delete id="deleteUserExtensionByIds" parameterType="String">
-        delete from zx_user_extension where income_id in 
+        delete from zx_user_extension where income_id in
         <foreach item="incomeId" collection="array" open="(" separator="," close=")">
             #{incomeId}
         </foreach>
     </delete>
-    
+
     <select id="queryExport" resultType="java.util.HashMap">
         	 <include refid="selectUserExtensionVo"/>
-        <where>  
+        <where>
            ${filterSql}
              <if test="coperatorName != null and coperatorName != ''"> and coperator_name like concat('%',#{coperatorName},'%')</if>
              <if test="coperatorType != null and coperatorType != ''"> and coperator_type = #{coperatorType}</if>
@@ -145,6 +145,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 </if>
          </where>
     </select>
-    
-    
+
+
 </mapper>

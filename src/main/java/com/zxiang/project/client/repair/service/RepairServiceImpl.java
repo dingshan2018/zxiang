@@ -100,7 +100,7 @@ public class RepairServiceImpl implements IRepairService
 			userMapper.insertUser(user);
 			repair.setManagerId(user.getUserId().intValue());
 			// 设置默认角色
-			iroleService.setDefaultRole(user, UserConstants.ROLE_NAME_REPAIR);
+			iroleService.setDefaultRole(user, UserConstants.defaultRoleKey.get(UserConstants.USER_TYPE_REPAIR));
 		}
 		repair.setCreateTime(new Date());
 		repair.setCreateBy(ShiroUtils.getLoginName());

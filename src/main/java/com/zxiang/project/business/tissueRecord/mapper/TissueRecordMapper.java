@@ -2,8 +2,7 @@ package com.zxiang.project.business.tissueRecord.mapper;
 
 import java.util.HashMap;
 import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
+import java.util.Map;
 
 import com.zxiang.project.business.tissueRecord.domain.TissueRecord;	
 
@@ -63,7 +62,7 @@ public interface TissueRecordMapper
      */
 	public int deleteTissueRecordByIds(String[] tissueRecordIds);
 
-	public int selectTotal(@Param("selDate")String selDate);
+	public int selectTotal(Map<String,Object> map);
 
 	public List queryExport(HashMap<String, String> params);
 

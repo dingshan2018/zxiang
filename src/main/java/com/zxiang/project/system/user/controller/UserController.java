@@ -229,7 +229,8 @@ public class UserController extends BaseController
     @ResponseBody
     public TableDataInfo selectUserByCity(@RequestBody Map<String, Object> params) {
 		String city = (String) params.get("city");
-		List<User> list  = userService.selectUserByCity(Long.parseLong(city));
+		String county = (String) params.get("county");
+		List<User> list  = userService.selectUserByCity(Long.parseLong(city),Long.parseLong(county));
 		return getDataTable(list);
     }
 }

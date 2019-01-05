@@ -14,7 +14,6 @@ import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
 import com.zxiang.project.client.agent.domain.Agent;
 import com.zxiang.project.client.agent.mapper.AgentMapper;
-import com.zxiang.project.client.join.domain.Join;
 import com.zxiang.project.system.dept.domain.Dept;
 import com.zxiang.project.system.dept.mapper.DeptMapper;
 import com.zxiang.project.system.role.service.IRoleService;
@@ -103,7 +102,7 @@ public class AgentServiceImpl implements IAgentService
 			userMapper.insertUser(user);
 			agent.setManagerId(user.getUserId().intValue());
 			// 设置默认角色
-			iroleService.setDefaultRole(user, UserConstants.ROLE_NAME_AGENT);
+			iroleService.setDefaultRole(user, UserConstants.defaultRoleKey.get(UserConstants.USER_TYPE_AGENT));
 		}
 		agent.setCreateTime(new Date());
 		agent.setCreateBy(ShiroUtils.getLoginName());

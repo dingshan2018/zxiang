@@ -80,7 +80,7 @@ $.ajaxSetup({
         	})
         }
     }
-}); 
+});
 
 
 /**设备下拉框选择*/
@@ -186,14 +186,14 @@ function selectUserList(){
 }
 
 /**场所选择服务商员工下拉框选择*/
-function selectUserBycounty(city){
+function selectUserBycounty(city,county){
 	var userList = [];
 	$.ajax({
     	type: "post",
     	contentType:"application/json",
         dataType: "json",
         url: ctx + "system/user/selectUserByCity",
-        data: JSON.stringify({ "city": city}),
+        data: JSON.stringify({ "city": city,"county":county}),
         async: false,
         success: function (data) {
         	userList = data.rows;
@@ -259,7 +259,7 @@ function selectAgentList(){
     return agentList;
 }
 
-/**加盟商下拉框选择*/
+/**机主下拉框选择*/
 function selectJoinList(){
 	var joinList = [];
 	$.ajax({
@@ -272,7 +272,7 @@ function selectJoinList(){
         	joinList = data.rows;
         },
         error: function (data) {
-            alert("查询加盟商下拉列表失败");
+            alert("查询机主下拉列表失败");
         }
     })
     return joinList;

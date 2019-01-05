@@ -1,5 +1,6 @@
 package com.zxiang.project.system.user.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.zxiang.framework.web.domain.AjaxResult;
@@ -169,7 +170,7 @@ public interface IUserService
 	public User selectUserByOpenId(String openId);
 
 	/**
-	 * 查找加盟商业务员（机主）
+	 * 查找机主业务员（机主）
 	 * @return
 	 */
 	public List<User> selectBuyer();
@@ -183,10 +184,14 @@ public interface IUserService
 	public AjaxResult wxLoginSelectRoles(String openId);
 
 	/**
-	 * 根据城市查询服务商员工信息
+	 * 根据区县查询服务商员工信息,区县没有数据时根据城市来查
 	 * @param parseLong
 	 * @return
 	 */
-	public List<User> selectUserByCity(long city);
+	public List<User> selectUserByCity(long city,long countyId);
+	
+    public List<HashMap<String, Object>> selectzxagent(String agentId);
+	
+	public List<HashMap<String, Object>> selectzxrepairarea(String repairId);
 	
 }

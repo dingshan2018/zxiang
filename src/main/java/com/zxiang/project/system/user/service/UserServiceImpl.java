@@ -1,6 +1,7 @@
 package com.zxiang.project.system.user.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -207,7 +208,7 @@ public class UserServiceImpl implements IUserService
 			rows = userMapper.insertUser(user);
 			if(user.getRoleIds() == null || user.getRoleIds().length == 0) {
 				// 设置默认角色
-				iroleService.setDefaultRole(user, UserConstants.clientMap.get(user.getUserType()));
+				iroleService.setDefaultRole(user, UserConstants.defaultRoleKey.get(user.getUserType()));
 			}else {
 				// 新增用户与角色管理
 				insertUserRole(user);
@@ -452,7 +453,7 @@ public class UserServiceImpl implements IUserService
 	}
 
 	/**
-	 * 查找加盟商业务员（机主）
+	 * 查找机主业务员（机主）
 	 */
 	@Override
 	public List<User> selectBuyer() {
@@ -497,10 +498,25 @@ public class UserServiceImpl implements IUserService
 	}
 
 	/**
-	 * 根据城市查询服务商员工信息
+	 * 根据区域ID查询服务商员工信息,若所属区县没有服务网点，则选择所属城市服务网点的员工
+	 * 
 	 */
 	@Override
-	public List<User> selectUserByCity(long city) {
-		return userMapper.selectUserByCity(city);
+	public List<User> selectUserByCity(long city,long countyId) {
+		List<User> repairList = userMapper.selectUserByCounty(countyId);
+		if(repairList == null || repairList.size() <= 0){
+			repairList = userMapper.selectUserByCity(city);
+		}
+		return repairList;
+	}
+
+	@Override
+	public List<HashMap<String, Object>> selectzxagent(String agentId) {
+		return userMapper.selectzxagent(agentId);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> selectzxrepairarea(String repairId) {
+		return userMapper.selectzxrepairarea(repairId);
 	}
 }

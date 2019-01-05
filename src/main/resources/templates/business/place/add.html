@@ -165,7 +165,16 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label">出纸长度：</label>
 				<div class="col-sm-8">
-					<input id="tissueLen" name="tissueLen" class="form-control" type="text">
+					<select
+		                id="tissueLen"
+		                name="tissueLen"
+		                th:with="type=${@dict.getType('tissue_len')}"
+		                data-live-search="true"
+		                class="form-control block-plugin__select-picker selectpicker"
+		                data-style="btn-white btn-sm">
+		                <option value="">---请选择---</option>
+		                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+	              	</select>
 				</div>
 			</div>
 			<div class="form-group">
@@ -360,10 +369,13 @@
 
 	        $("#city").change(function () {
 	        	countyBind();
-	        	//根据城市区域缩小维修人员选择范围
-	        	getRepairUserList();
 	        })
 
+	        $("#county").change(function () {
+	        	//根据区域缩小维修人员选择范围
+	        	getRepairUserList();
+	        })
+	        
 	        var placeList = selectPlaceList();
 	    	$.each(placeList, function (i) {
             	$('#parentPlaceId').append("<option value=" + placeList[i].placeId + ">" + placeList[i].name + "</option>");
@@ -417,9 +429,10 @@
 
 	    //通过选择的区域获取维修员及送纸员
 	    function getRepairUserList() {
-	        var city = $("#city option:selected").val();
-	        //判断市这个下拉框选中的值是否为空
-	        if (city == "") {
+	    	var city = $("#city option:selected").val();
+	        var county = $("#county option:selected").val();
+	        //判断区县这个下拉框选中的值是否为空
+	        if (county == "") {
 	            return;
 	        }
 	        $("#repairId").html("");
@@ -427,7 +440,7 @@
 	        $("#supplyId").html("");
 	        var supplyStr = "<option value=''>---请选择---</option>";
 
-	        var repairUserList = selectUserBycounty(city);
+	        var repairUserList = selectUserBycounty(city,county);
 	        $.each(repairUserList, function (i, item) {
 	        	repairStr += "<option value=" + item.userId + ">" + item.userName + "</option>";
 	        	supplyStr += "<option value=" + item.userId + ">" + item.userName + "</option>";

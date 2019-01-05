@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.project.advertise.adReleaseRecord.domain.AdReleaseRecord;
 import com.zxiang.project.advertise.adReleaseRecord.service.IAdReleaseRecordService;
+import com.zxiang.project.system.user.domain.User;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.framework.web.domain.AjaxResult;
@@ -58,6 +60,11 @@ public class AdReleaseRecordController extends BaseController
 	public TableDataInfo list(AdReleaseRecord adReleaseRecord)
 	{
 		startPage();
+		User user =getUser();
+		String userType = user.getUserType();
+		if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+			adReleaseRecord.setUserId(user.getUserId()+"");
+		}
         List<AdReleaseRecord> list = adReleaseRecordService.selectAdReleaseRecordList(adReleaseRecord);
 		return getDataTable(list);
 	}

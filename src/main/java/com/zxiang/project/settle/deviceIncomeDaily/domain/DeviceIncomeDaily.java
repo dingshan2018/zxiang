@@ -21,6 +21,8 @@ public class DeviceIncomeDaily extends BaseEntity
 	private Integer deviceId;
 	/** 终端ID（板卡ID） */
 	private Integer terminalId;
+	private String deviceSn;
+	private String terminalCode;
 	/** 场所Id */
 	private Integer placeId;
 	/** 销售收入 */
@@ -48,6 +50,8 @@ public class DeviceIncomeDaily extends BaseEntity
 	private Date updateTime;
 	
 	private String placeName;
+	
+	private String userId;
 
 	public void setIncomeId(Integer incomeId) 
 	{
@@ -192,6 +196,31 @@ public class DeviceIncomeDaily extends BaseEntity
 
 	public void setPlaceName(String placeName) {
 		this.placeName = placeName;
+	}
+
+	
+	public String getDeviceSn() {
+		return deviceSn;
+	}
+
+	public void setDeviceSn(String deviceSn) {
+		this.deviceSn = deviceSn;
+	}
+
+	public String getTerminalCode() {
+		return terminalCode;
+	}
+
+	public void setTerminalCode(String terminalCode) {
+		this.terminalCode = terminalCode;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String toString() {

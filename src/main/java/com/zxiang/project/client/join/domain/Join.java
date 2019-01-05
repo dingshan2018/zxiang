@@ -6,7 +6,7 @@ import java.util.Date;
 import com.zxiang.framework.web.domain.BaseEntity;
 
 /**
- * 加盟商表 zx_join
+ * 机主表 zx_join
  * 
  * @author ZXiang
  * @date 2018-09-11
@@ -15,11 +15,11 @@ public class Join extends BaseEntity
 {
 	private static final long serialVersionUID = 1L;
 	
-	/** 加盟ID */
+	/** 机主ID */
 	private Integer joinId;
-	/** 加盟商名称 */
+	/** 机主名称 */
 	private String joinerName;
-	/** 加盟机主ID */
+	/** 机主机主ID */
 	private Integer joinerId;
 	/** 管理者姓名 */
 	private String managerName;

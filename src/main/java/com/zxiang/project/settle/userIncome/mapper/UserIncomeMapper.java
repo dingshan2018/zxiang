@@ -1,9 +1,9 @@
 package com.zxiang.project.settle.userIncome.mapper;
 
-import com.zxiang.project.settle.userIncome.domain.UserIncome;
-
 import java.util.HashMap;
-import java.util.List;	
+import java.util.List;
+
+import com.zxiang.project.settle.userIncome.domain.UserIncome;	
 
 /**
  * 客户收入日统计 数据层
@@ -86,7 +86,7 @@ public interface UserIncomeMapper
 	 * */
 	public List<HashMap<String, Object>> selectzxagent(HashMap<String, Object> map);
 	/**
-	 * 加盟商
+	 * 机主
 	 * */
 	public List<HashMap<String, Object>> selectzxjoinlist(HashMap<String, Object> map);
 	/**

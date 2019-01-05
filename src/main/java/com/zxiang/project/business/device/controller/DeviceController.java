@@ -72,6 +72,11 @@ public class DeviceController extends BaseController
 	public TableDataInfo list(Device device)
 	{
 		startPage();
+		User user =getUser();
+		String userType = user.getUserType();
+		if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+			device.setUserId(user.getUserId()+"");
+		}
         List<Device> list = deviceService.selectDeviceList(device);
 		return getDataTable(list);
 	}

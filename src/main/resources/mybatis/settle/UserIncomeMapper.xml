@@ -46,7 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	select income_id, coperator_id, coperator_name,  
 	 CASE coperator_type WHEN 00 THEN '系统用户'
               WHEN 01 THEN '合作伙伴'
-              WHEN 02 THEN '加盟商'
+              WHEN 02 THEN '机主'
               WHEN 03 THEN '代理商'
               WHEN 04 THEN '服务商'
               WHEN 05 THEN '广告商'
@@ -64,7 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	select distinct a.income_id, a.coperator_id, a.coperator_name,  
 	 CASE a.coperator_type WHEN 00 THEN '系统用户'
               WHEN 01 THEN '合作伙伴'
-              WHEN 02 THEN '加盟商'
+              WHEN 02 THEN '机主'
               WHEN 03 THEN '代理商'
               WHEN 04 THEN '服务商'
               WHEN 05 THEN '广告商'
@@ -428,7 +428,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  </if>
     </select>
     
-    <!-- 加盟商（机主） -->
+    <!-- 机主（机主） -->
     <select id="selectzxjoinlist"  resultType="java.util.HashMap">
 	    SELECT
 	     join_id coperatorId,

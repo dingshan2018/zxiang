@@ -261,10 +261,10 @@ public class RoleServiceImpl implements IRoleService
     }
 
 	@Override
-	public void setDefaultRole(User user, String clientName) {
-		Role role = roleMapper.checkRoleNameUnique(clientName);
+	public void setDefaultRole(User user, String roleKey) {
+		Role role = roleMapper.checkRoleKeyUnique(roleKey);
 		if(role == null) {
-			throw new RRException(String.format("[%s]未设置默认权限", clientName));
+			throw new RRException(String.format("[%s]未设置默认权限", roleKey));
 		}
 		UserRole userRole = new UserRole();
 		userRole.setRoleId(role.getRoleId());
@@ -287,7 +287,7 @@ public class RoleServiceImpl implements IRoleService
 				if(UserConstants.USER_TYPE_AGENT.equals(userType)){
 					list.add(UserConstants.ROLE_NAME_AGENT_SALESMAN);//
 				}else if(UserConstants.USER_TYPE_JOIN.equals(userType)) {
-					list.add(UserConstants.ROLE_NAME_AGENT_SALESMAN);
+					list.add(UserConstants.ROLE_NAME_JOIN_SALESMAN);
 				}
 				roles = roleMapper.selectByRoleName(list);
 			}else {

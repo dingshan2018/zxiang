@@ -32,13 +32,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         place_id, 
         (select distinct p.name from zx_place p where p.place_id =tr.`place_id` ) placeName,
         wx_user_id,open_id,status, nick_name, headimgurl, tissue_channel,
-        create_by, create_time,schedule_id, price, tissue_len from zx_tissue_record tr
+        create_by, create_time,schedule_id, price, tissue_len,
+        (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='tissue_len' AND sdd.dict_value=tr.`tissue_len` ) tissueLenName
+        from zx_tissue_record tr
     </sql>
 	
     <select id="selectTissueRecordList" parameterType="TissueRecord" resultMap="TissueRecordResult">
         <include refid="selectTissueRecordVo"/>
         <where>  
-            ${filterSql}
+            <if test="userId == null">  ${filterSql} </if>
+            <if test="userId != null and userId != ''">
+            	and #{userId} = (SELECT DISTINCT zd.owner_id FROM zx_device zd WHERE zd.device_id = tr.device_id)
+            </if>
             <if test="tissueRecordId != null and tissueRecordId != ''"> and tissue_record_id = #{tissueRecordId}</if>
              <if test="qrScheduleId != null and qrScheduleId != ''"> and qr_schedule_id = #{qrScheduleId}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
@@ -70,7 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              		WHERE zp.repair_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
              			WHERE su.user_type='04' AND su.puser_id=#{repairId}  AND su.user_id=p.repair_id))
              </if>
-             <!-- 按照加盟商搜索 通过设备机主关联-->
+             <!-- 按照机主搜索 通过设备机主关联-->
              <if test="joinId != null and joinId != ''">  and tr.device_id in 
              	(SELECT DISTINCT zd.device_id FROM zx_device zd 
              		WHERE zd.owner_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_device d 
@@ -161,8 +166,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     <select id="selectTotal" resultType="int">
-       select count(*) from zx_tissue_record where status = '1'
-       <if test="selDate != null and selDate.trim() != ''">and date_format(create_time,'%Y-%m-%d') = #{selDate}</if>
+       select count(*) from zx_tissue_record tr where status = '1'
+       <if test="selDate != null and selDate.trim() != ''">and date_format(tr.create_time,'%Y-%m-%d') = #{selDate}</if>
+       <if test="userId == null"> ${filterSql} </if>
+       <if test="userId != null and userId != ''">
+       	and #{userId} = (SELECT DISTINCT zd.owner_id FROM zx_device zd WHERE zd.device_id = tr.device_id)
+       </if>
     </select>
     
     <select id="queryExport" resultType="java.util.HashMap">
@@ -200,7 +209,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              		WHERE zp.repair_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
              			WHERE su.user_type='04' AND su.puser_id=#{repairId}  AND su.user_id=p.repair_id))
              </if>
-             <!-- 按照加盟商搜索 通过设备机主关联-->
+             <!-- 按照机主搜索 通过设备机主关联-->
              <if test="joinId != null and joinId != ''">  and tr.device_id in 
              	(SELECT DISTINCT zd.device_id FROM zx_device zd 
              		WHERE zd.owner_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_device d 
@@ -217,8 +226,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="tissueCount" resultType="java.util.HashMap">
 		SELECT COUNT(tissue_len) paperSum ,SUM(price) moneySum FROM `zx_tissue_record` tr
         <where>  
-        ${filterSql}
+           <if test="userId == null">  ${filterSql} </if>
         	<if test="1==1"> and status = 1</if>
+        	<if test="userId != null and userId != ''"> and #{userId} = 
+             (SELECT DISTINCT zd.owner_id FROM zx_device zd WHERE zd.device_id = tr.device_id)</if>
             <if test="tissueRecordId != null and tissueRecordId != ''"> and tissue_record_id = #{tissueRecordId}</if>
             <if test="qrScheduleId != null and qrScheduleId != ''"> and qr_schedule_id = #{qrScheduleId}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
@@ -250,7 +261,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              		WHERE zp.repair_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
              			WHERE su.user_type='04' AND su.puser_id=#{repairId}  AND su.user_id=p.repair_id))
              </if>
-             <!-- 按照加盟商搜索 通过设备机主关联 (查找出纸设备,用户表用户类型为02,且用户表的主体ID与查询条件所选择的的加盟商ID相等的设备)-->
+             <!-- 按照机主搜索 通过设备机主关联 (查找出纸设备,用户表用户类型为02,且用户表的主体ID与查询条件所选择的的机主ID相等的设备)-->
              <if test="joinId != null and joinId != ''">  and tr.device_id in 
              	(SELECT DISTINCT zd.device_id FROM zx_device zd 
              		WHERE zd.owner_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_device d 

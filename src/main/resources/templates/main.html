@@ -139,10 +139,20 @@
       position: absolute;
       top: 42px;
       right: 107px;
-      width: 260px;
+      width: 310px;
     }
 
-    .paper-echarts-wrapper .chart-date--filter .date-time-picker{
+    .paper-echarts-wrapper .chart-date--filter .chart-date__name {
+      float: left;
+      vertical-align: middle;
+      display: inline-block;
+      width: 70px;
+      line-height: 34px;
+      text-align: right;
+    }
+
+    .paper-echarts-wrapper .chart-date--filter .chart-date__time-picker {
+      width: 240px;
       border-radius: 3px;
       background-color: #fff;
     }
@@ -238,7 +248,8 @@
     </div>
     <div class="chart-panel">
       <div class="chart-date--filter">
-        <input type="text" class="form-control date-time-picker" readonly/>
+        <span class="chart-date__name">筛选查询：</span>
+        <input type="text" class="form-control chart-date__time-picker" readonly/>
       </div>
       <div class="pager-echarts"></div>
     </div>
@@ -360,7 +371,7 @@
       tissueStatistical(pushQueryDate(lastWeek, today));
 
       laydate.render({
-        elem: ".date-time-picker",
+        elem: ".chart-date__time-picker",
         range: true,
         value: lastWeek.Format("yyyy-MM-dd") + " - " + today.Format("yyyy-MM-dd"),
         max: today.Format("yyyy-MM-dd"),

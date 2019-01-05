@@ -106,7 +106,7 @@ public class FundLogServiceImpl implements IFundLogService {
 
 	@Override
 	public void showClientInfo(Integer clientId, String clientType, ModelMap mmap) {
-		if(UserConstants.USER_TYPE_JOIN.equals(clientType)) { // 加盟商
+		if(UserConstants.USER_TYPE_JOIN.equals(clientType)) { // 机主
 			Join join = joinMapper.selectJoinById(clientId);
 			mmap.put("balance", join == null || join.getBalance()==null ? 0.00 : join.getBalance());
 			mmap.put("frozenBalance", join == null || join.getFrozenBalance()==null ? 0.00 : join.getFrozenBalance());
@@ -143,7 +143,7 @@ public class FundLogServiceImpl implements IFundLogService {
 		}
 		BigDecimal balance = null;
 		BigDecimal frozenBalance = null;
-		if(UserConstants.USER_TYPE_JOIN.equals(clientType)) { // 加盟商
+		if(UserConstants.USER_TYPE_JOIN.equals(clientType)) { // 机主
 			Join join = joinMapper.selectJoinById(clientId);
 			if(join == null) {
 				throw new RRException("未找到客户，clientId："+clientId+",clientType："+clientType);
@@ -232,7 +232,7 @@ public class FundLogServiceImpl implements IFundLogService {
 		String bankAccount = null;
 		String bankName = null;
 		String bankReceiver = null;
-		if(UserConstants.USER_TYPE_JOIN.equals(clientType)) { // 加盟商
+		if(UserConstants.USER_TYPE_JOIN.equals(clientType)) { // 机主
 			Join join = joinMapper.selectJoinById(clientId);
 			if(join == null) {
 				throw new RRException("未找到客户");
@@ -342,7 +342,7 @@ public class FundLogServiceImpl implements IFundLogService {
 		}
 		String status = Const.WITHDRAW_SUCCESS.equals(drawStatus) ? Const.STATUS_SUCCESS : Const.STATUS_FAIL;
 		fundLogMapper.updateStatus(wd.getFundLogId(), status,remark);
-		if(UserConstants.USER_TYPE_JOIN.equals(wd.getClientType())) { // 加盟商
+		if(UserConstants.USER_TYPE_JOIN.equals(wd.getClientType())) { // 机主
 			Join join = joinMapper.selectJoinById(wd.getClientId());
 			if(join == null) {
 				throw new RRException("未找到客户");

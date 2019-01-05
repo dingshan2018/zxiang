@@ -51,7 +51,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDeviceList" parameterType="Device" resultMap="DeviceResult">
         <include refid="selectDeviceVo"/>
         <where> 
-             ${filterSql} 
+            <if test="userId == null">  ${filterSql} </if>
+            <if test="userId != null and userId != ''"> and #{userId} = d.owner_id </if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
              <if test="deviceCode != null and deviceCode != ''"> 
              	and device_code like concat('%', #{deviceCode}, '%')
@@ -309,6 +310,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </update>
     <select id="selectTotal" resultType="int">
-    	select count(*) from zx_device
+    	select count(*) from zx_device d where 1=1 
+    	<if test="userId == null"> ${filterSql} </if>
+        <if test="userId != null and userId != ''">
+       	  and #{userId} = (SELECT DISTINCT zd.owner_id FROM zx_device zd WHERE zd.device_id = d.device_id)
+         </if>
     </select>
 </mapper>

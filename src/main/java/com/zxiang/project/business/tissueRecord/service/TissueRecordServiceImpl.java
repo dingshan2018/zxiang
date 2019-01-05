@@ -12,8 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.excel.EXCELObject;
+import com.zxiang.common.utils.security.ShiroUtils;
+import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.project.business.tissueRecord.domain.TissueRecord;
 import com.zxiang.project.business.tissueRecord.mapper.TissueRecordMapper;
 
@@ -96,14 +99,14 @@ public class TissueRecordServiceImpl implements ITissueRecordService
   		EXCELObject s = new EXCELObject();
   		s.seteFilePath(realPath);
   		//表头名称
-  		String[] titH = { "ID", "投放设备", "终端","场所名称","用户微信账号",
+  		String[] titH = { "ID", "投放设备", "终端","场所名称","出纸价格","出纸长度","用户微信账号",
   				"微信昵称", "微信头像","出纸类型", "创建者","创建时间"};
   		//数据库字段名称
-  		String[] titN = { "tissue_record_id","deviceSn","terminalCode","placeName","open_id",
+  		String[] titN = { "tissue_record_id","deviceSn","terminalCode","placeName","price","tissueLenName","open_id",
   				"nick_name", "headimgurl","tissue_channel","create_by","create_time"};
   		String[] width= 
-  			   {"15","20","20","20","20",
-  				"20","20","20","20","20"};
+  			   {"15","20","20","20","20","20","20",
+  				"20","50","20","20","20"};
   		s.setWidth(width);
   		s.setFname("出纸记录"); // sheet栏名称
   		s.setTitle("出纸记录"); // Excel内容标题名称
@@ -143,6 +146,15 @@ public class TissueRecordServiceImpl implements ITissueRecordService
 		}
 		
 		return result;
+	}
+	@DataFilter(placeAlias="tr.place_id")
+	@Override
+	public int selectTotal(Map<String,Object> map) {
+		String userType = ShiroUtils.getUser().getUserType();
+		if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+			map.put("userId", ShiroUtils.getUser().getUserId());
+		}
+		return tissueRecordMapper.selectTotal(map);
 	}
 	
 }

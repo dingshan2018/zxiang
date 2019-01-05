@@ -161,11 +161,43 @@ public class UserRealm extends AuthorizingRealm
         	
         }
         personSets.add(user.getUserId()+"");
-        //计算场所权限
-        Place placeParam = new Place();
-        Map<String,Object> paramMap = new HashMap<String,Object>();
-        paramMap.put("person", ","+personSets.toString()+",");
-        List<Place> places = placeService.selectPlaceList(placeParam);
+           //计算场所权限
+           Place placeParam = new Place();
+           List<Place> places = null;
+           if(userType.equals("03")) {
+        	   List<HashMap<String, Object>> zxagentList = userService.selectzxagent(""+puserId);
+        	   String paramplace = "";
+        	   String level = "";
+        	   for(HashMap<String, Object> zxagent : zxagentList) {
+        		   level=zxagent.get("level")+"";
+        		   if(level.equals("1")) {
+        			   paramplace+=zxagent.get("city")+",";
+        		   }else {
+        			   paramplace+=zxagent.get("county")+",";
+        		   }
+        	   }
+        	   paramplace = paramplace.substring(0, paramplace.length() - 1); 
+        	   Map<String,Object> paramMap = new HashMap<String,Object>();
+        	   if(level.equals("1")) {
+        		   paramMap.put("city", ","+paramplace+",");
+    		   }else {
+    			   paramMap.put("county", ","+paramplace+",");
+    		   }
+               placeParam.setParams(paramMap);
+               places = placeService.selectPlaceList(placeParam);
+           }
+           if(userType.equals("04")) {
+        	   List<HashMap<String, Object>> zxrepairareaList = userService.selectzxrepairarea(""+puserId);
+        	   String paramplace = "";
+               for(HashMap<String, Object> zxrepairarea : zxrepairareaList) {
+            	   paramplace+=zxrepairarea.get("county_id")+",";
+        	   }
+               paramplace = paramplace.substring(0, paramplace.length() - 1); 
+        	   Map<String,Object> paramMap = new HashMap<String,Object>();
+               paramMap.put("county", ","+paramplace+",");
+               placeParam.setParams(paramMap);
+               places = placeService.selectPlaceList(placeParam);
+           }
         if(places!=null && places.size()>0) {
         	for(Place p : places) {
         		placeSets.add(p.getPlaceId()+"");

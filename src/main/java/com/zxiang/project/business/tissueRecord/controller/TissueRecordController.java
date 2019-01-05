@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
@@ -29,6 +30,7 @@ import com.zxiang.project.business.place.service.IPlaceService;
 import com.zxiang.project.business.terminal.service.ITerminalService;
 import com.zxiang.project.business.tissueRecord.domain.TissueRecord;
 import com.zxiang.project.business.tissueRecord.service.ITissueRecordService;
+import com.zxiang.project.system.user.domain.User;
 
 /**
  * 出纸记录 信息操作处理
@@ -68,6 +70,11 @@ public class TissueRecordController extends BaseController
 	public TableDataInfo list(TissueRecord tissueRecord)
 	{
 		startPage();
+		User user =getUser();
+		String userType = user.getUserType();
+		if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+			tissueRecord.setUserId(user.getUserId()+"");
+		}
         List<TissueRecord> list = tissueRecordService.selectTissueRecordList(tissueRecord);
 		return getDataTable(list);
 	}
@@ -155,6 +162,11 @@ public class TissueRecordController extends BaseController
 	@RequestMapping("/tissueCount")
 	@ResponseBody
 	public Map<String, Object> tissueCount(@RequestParam HashMap<String, String> params){
+		User user =getUser();
+		String userType = user.getUserType();
+		if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+			params.put("userId", user.getUserId()+"");
+		}
 		Map<String, Object> result = tissueRecordService.tissueCount(params);
 		return result;
 	}
