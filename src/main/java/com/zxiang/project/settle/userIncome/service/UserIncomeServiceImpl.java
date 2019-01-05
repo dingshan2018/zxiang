@@ -149,13 +149,13 @@ public class UserIncomeServiceImpl implements IUserIncomeService
 		//String[] pTit = {"日期","合作客户", "合作类型","广告收益参数","推广收益参数","推广收益","服务收益参数","服务收益"};
 		String[] pTit = {"日期","  合作客户   ", "   合作类型    ","广告收益","推广收益","服务收益"};
 		String[] cols = {"0","0","0","7","11","3"};
-		String[] titH = { "视频广告基数", "视频广告系数", "轮播广告基数", "轮播广告系数", "出纸数量", "二维码广告系数", "广告收益合计",   
+		String[] titH = {  "终端广告基数", "终端广告系数", "出纸数量", "二维码广告系数", "广告收益合计",   
 				          "推广广告基数", "推广广告系数","推广二维码广告基数", "推广二维码广告系数",  "直推机子数量", "直推机子系数","间推机子数量","间推机子系数","直推代理基数","直推代理系数","推广收益合计",
 				          "服务出纸基数",   "服务出纸系数","服务收益合计"	
 		                };
 		
 		String[] titN = {"sum_date","coperator_name","coperator_type",
-				         "ad_income","ad_rate","ad_carousel_income","ad_carousel_rate","paper_income","scan_rate","ad_income_rate",
+				         "ad_carousel_income","ad_carousel_rate","paper_income","scan_rate","ad_income_rate",
 				         "promotion_income","promotion_rate","prom_paper_income","prom_paper_rate","prom_direct_income","prom_direct_rate","prom_indirect_income","prom_indirect_rate","direct_agent_income","direct_agent_rate","promotion_income_rate",
 				         "serve_income","serve_rate","scan_income_rate"
 				         };
