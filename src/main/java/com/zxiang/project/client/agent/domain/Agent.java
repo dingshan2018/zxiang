@@ -39,6 +39,12 @@ public class Agent extends BaseEntity
 	private BigDecimal frozenBalance; 
 	/** 状态 */
 	private String status;
+	/** 购机推荐人**/
+	private Integer buyerId;
+	/** 购机推荐人主体id**/
+	private Integer puserId;
+	/** 购机推荐人类型**/
+	private String userType;	
 	/** 管理者ID */
 	private Integer managerId;
 	/** 管理者姓名 */
@@ -51,7 +57,7 @@ public class Agent extends BaseEntity
 	private String bankAccount;
 	/** 收款人姓名 */
 	private String bankName;
-	/** 直推人 */
+	/** 代理直推人 */
 	private Integer promotorId;
 	/** 视频广告系数 */
 	private Float adRate;
@@ -413,5 +419,29 @@ public class Agent extends BaseEntity
 	}
 	public void setAgencyFee(Float agencyFee) {
 		this.agencyFee = agencyFee;
+	}
+
+	public Integer getBuyerId() {
+		return buyerId;
+	}
+
+	public void setBuyerId(Integer buyerId) {
+		this.buyerId = buyerId;
+	}
+
+	public Integer getPuserId() {
+		return puserId;
+	}
+
+	public void setPuserId(Integer puserId) {
+		this.puserId = puserId;
+	}
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
 	}
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
@@ -20,7 +21,7 @@ import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.client.join.domain.Join;
 import com.zxiang.project.client.join.service.IJoinService;
-import com.zxiang.project.system.role.service.IRoleService;
+import com.zxiang.project.system.user.domain.User;
 import com.zxiang.project.system.user.service.IUserService;
 
 /**
@@ -38,9 +39,7 @@ public class JoinController extends BaseController
 	@Autowired
 	private IJoinService joinService;
 	@Autowired
-    private IRoleService roleService;
-	@Autowired
-	private IUserService iuserService;
+	private IUserService userService;
 	
 	@RequiresPermissions("client:join:view")
 	@GetMapping()
@@ -67,7 +66,10 @@ public class JoinController extends BaseController
 	 * 新增机主
 	 */
 	@GetMapping("/add")
-	public String add() {
+	public String add(ModelMap mmap) {
+		List<User> payUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
+				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+		mmap.put("payUserList", payUserList); // 购机推荐人
 	    return prefix + "/add";
 	}
 	
@@ -90,6 +92,9 @@ public class JoinController extends BaseController
 	{
 		Join join = joinService.selectJoinById(joinId);
 		mmap.put("join", join);
+		List<User> payUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
+				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+		mmap.put("payUserList", payUserList); // 购机推荐人
 	    return prefix + "/edit";
 	}
 	

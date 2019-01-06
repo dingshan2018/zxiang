@@ -73,9 +73,12 @@ public class AgentController extends BaseController
 	 */
 	@GetMapping("/add")
 	public String add(ModelMap mmap) {
-		List<User> userList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
+		List<User> agentUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_AGENT);
+		mmap.put("agentUserList", agentUserList); // 代理直推人
+		
+		List<User> payUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
 				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
-		mmap.put("userList", userList);
+		mmap.put("payUserList", payUserList); // 购机推荐人
 	    return prefix + "/add";
 	}
 	
@@ -111,6 +114,9 @@ public class AgentController extends BaseController
 		List<User> userList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
 				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
 		mmap.put("userList", userList);
+		List<User> payUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
+				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+		mmap.put("payUserList", payUserList); // 购机推荐人
 	    return prefix + "/edit";
 	}
 	

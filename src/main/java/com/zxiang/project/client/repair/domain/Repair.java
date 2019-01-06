@@ -49,6 +49,12 @@ public class Repair extends BaseEntity
 	private Float subsidyRate;
 	/** 状态 */
 	private String status;
+	/** 购机推荐人**/
+	private Integer buyerId;
+	/** 购机推荐人主体id**/
+	private Integer puserId;
+	/** 购机推荐人类型**/
+	private String userType;
 	/** 是否删除 */
 	private String delFlag;
 	/** 余额 **/
@@ -283,5 +289,29 @@ public class Repair extends BaseEntity
 
 	public void setFrozenBalance(BigDecimal frozenBalance) {
 		this.frozenBalance = frozenBalance;
+	}
+
+	public Integer getBuyerId() {
+		return buyerId;
+	}
+
+	public void setBuyerId(Integer buyerId) {
+		this.buyerId = buyerId;
+	}
+
+	public Integer getPuserId() {
+		return puserId;
+	}
+
+	public void setPuserId(Integer puserId) {
+		this.puserId = puserId;
+	}
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
 	}
 }

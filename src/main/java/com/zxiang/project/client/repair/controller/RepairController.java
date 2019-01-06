@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
@@ -22,6 +23,8 @@ import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.client.repair.domain.Repair;
 import com.zxiang.project.client.repair.domain.RepairArea;
 import com.zxiang.project.client.repair.service.IRepairService;
+import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.service.IUserService;
 
 /**
  * 服务商 信息操作处理
@@ -34,7 +37,8 @@ import com.zxiang.project.client.repair.service.IRepairService;
 public class RepairController extends BaseController
 {
     private String prefix = "client/repair";
-	
+    @Autowired
+	private IUserService userService;
 	@Autowired
 	private IRepairService repairService;
 	
@@ -63,8 +67,11 @@ public class RepairController extends BaseController
 	 * 新增服务商
 	 */
 	@GetMapping("/add")
-	public String add()
+	public String add(ModelMap mmap)
 	{
+		List<User> payUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
+				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+		mmap.put("payUserList", payUserList); // 购机推荐人
 	    return prefix + "/add";
 	}
 	
@@ -88,6 +95,9 @@ public class RepairController extends BaseController
 	{
 		Repair repair = repairService.selectRepairById(repairId);
 		mmap.put("repair", repair);
+		List<User> payUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
+				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+		mmap.put("payUserList", payUserList); // 购机推荐人
 	    return prefix + "/edit";
 	}
 	

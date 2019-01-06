@@ -22,6 +22,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="promotionRate"    column="promotion_rate"    />
         <result property="subsidyRate"    column="subsidy_rate"    />
         <result property="status"    column="status"    />
+        <result property="buyerId"    column="buyer_id"/>
+        <result property="puserId"    column="puser_id"/>
+        <result property="userType"    column="user_type"/>
         <result property="delFlag"    column="del_flag"    />
         <result property="deviceNum"    column="device_num"    />
         <result property="createBy"    column="create_by"    />
@@ -34,13 +37,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<sql id="selectRepairVo">
         select repair_id, repair_name, manager_name, manager_id, manager_phone, bank_receiver, bank_account, bank_name, balance,frozen_balance,
-        ad_rate,ad_carousel_rate, scan_rate,prom_direct_rate,prom_indirect_rate,prom_paper_rate,promotion_rate,subsidy_rate,
+        ad_rate,ad_carousel_rate, scan_rate,prom_direct_rate,prom_indirect_rate,prom_paper_rate,promotion_rate,subsidy_rate,buyer_id,puser_id,user_type,
          status, del_flag, device_num, create_by, create_time, update_by, update_time from zx_repair
     </sql>
     	<sql id="selectRepairVos">
         select distinct a.repair_id, a.repair_name, a.manager_name, a.manager_id, a.manager_phone, a.bank_receiver, a.bank_account, a.bank_name, 
-        a.ad_rate,a.ad_carousel_rate, a.scan_rate,a.prom_direct_rate,a.prom_indirect_rate,a.prom_paper_rate,a.promotion_rate,a.subsidy_rate,a.balance,a.frozen_balance,
-         a.status, a.del_flag, a.device_num, a.create_by, a.create_time, a.update_by, a.update_time from zx_repair a LEFT JOIN sys_user b ON b.puser_id = a.repair_id
+        a.ad_rate,a.ad_carousel_rate, a.scan_rate,a.prom_direct_rate,a.prom_indirect_rate,a.prom_paper_rate,a.promotion_rate,a.subsidy_rate,
+        a.balance,a.frozen_balance,a.status, a.buyer_id,a.puser_id,a.user_type,
+         a.del_flag, a.device_num, a.create_by, a.create_time, a.update_by, a.update_time from zx_repair a LEFT JOIN sys_user b ON b.puser_id = a.repair_id
     </sql>
 	
     <select id="selectRepairList" parameterType="Repair" resultMap="RepairResult">
@@ -93,6 +97,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="promotionRate != null">promotion_rate,</if>
 			<if test="subsidyRate != null">subsidy_rate,</if>
 			<if test="status != null and status != '' ">status,</if>
+			<if test="buyerId != null">buyer_id,</if>
+			<if test="puserId != null">puser_id,</if>
+			<if test="userType != null and userType != '' ">user_type,</if>
 			del_flag,
 			<if test="deviceNum != null and deviceNum != '' ">device_num,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
@@ -118,6 +125,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="promotionRate != null">#{promotionRate},</if>
 			<if test="subsidyRate != null">#{subsidyRate},</if>
 			<if test="status != null and status != ''">#{status},</if>
+			<if test="buyerId != null">#{buyerId},</if>
+			<if test="puserId != null">#{puserId},</if>
+			<if test="userType != null and userType != ''">#{userType},</if>
 			'0',
 			<if test="deviceNum != null and deviceNum != ''">#{deviceNum},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
@@ -146,6 +156,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="promotionRate != null">promotion_rate = #{promotionRate},</if>
 			<if test="subsidyRate != null">subsidy_rate = #{subsidyRate},</if>
             <if test="status != null  and status != ''  ">status = #{status},</if>
+            buyer_id = #{buyerId},
+			puser_id = #{puserId},
+			user_type = #{userType},
             <if test="deviceNum != null  ">device_num = #{deviceNum},</if>
             <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
             <if test="createTime != null  ">create_time = #{createTime},</if>

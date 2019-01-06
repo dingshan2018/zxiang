@@ -15,6 +15,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="bankReceiver"    column="bank_receiver"    />
         <result property="bankName"    column="bank_name"    />
         <result property="status"    column="status"    />
+        <result property="buyerId"    column="buyer_id"/>
+        <result property="puserId"    column="puser_id"/>
+        <result property="userType"    column="user_type"/>
         <result property="delFlag"    column="del_flag"    />
         <result property="adRate"    column="ad_rate"    />
         <result property="adCarouselRate"    column="ad_carousel_rate"    />
@@ -33,13 +36,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectJoinVo">
-        select join_id, joiner_name, joiner_id, device_num, bank_account, bank_receiver, bank_name,manager_name, manager_phone,status, del_flag,
+        select join_id, joiner_name, joiner_id, device_num, bank_account, bank_receiver, bank_name,manager_name, manager_phone,status, del_flag,buyer_id,puser_id,user_type,
           ad_rate,ad_carousel_rate, scan_rate,prom_direct_rate,prom_indirect_rate,prom_paper_rate,promotion_rate,serve_rate,balance,frozen_balance,  
           create_by, create_time, update_by, update_time from zx_join
     </sql>
     
     <sql id="selectJoinVos">
-        select distinct a.join_id, a.joiner_name, a.joiner_id, a.device_num, a.bank_account, a.bank_receiver, a.bank_name,a.manager_name, a.manager_phone,a.status, a.del_flag,
+        select distinct a.join_id, a.joiner_name, a.joiner_id, a.device_num, a.bank_account, a.bank_receiver, a.bank_name,a.manager_name, a.manager_phone,
+        a.status,a.buyer_id,a.puser_id,a.user_type, a.del_flag,
           a.ad_rate,a.ad_carousel_rate, a.scan_rate,a.prom_direct_rate,a.prom_indirect_rate,a.prom_paper_rate,a.promotion_rate,a.serve_rate, a.balance,a.frozen_balance, 
           a.create_by, a.create_time, a.update_by, a.update_time from zx_join a LEFT JOIN sys_user b ON b.puser_id = a.join_id
     </sql>
@@ -87,6 +91,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="bankReceiver != null and bankReceiver != '' ">bank_receiver,</if>
 			<if test="bankName != null and bankName != '' ">bank_name,</if>
 			<if test="status != null and status != '' ">status,</if>
+			<if test="buyerId != null">buyer_id,</if>
+			<if test="puserId != null">puser_id,</if>
+			<if test="userType != null and userType != '' ">user_type,</if>
 			del_flag,
 			<if test="adRate != null">ad_rate,</if>
 			<if test="adCarouselRate != null">ad_carousel_rate,</if>
@@ -112,6 +119,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="bankReceiver != null and bankReceiver != ''">#{bankReceiver},</if>
 			<if test="bankName != null and bankName != ''">#{bankName},</if>
 			<if test="status != null and status != ''">#{status},</if>
+			<if test="buyerId != null">#{buyerId},</if>
+			<if test="puserId != null">#{puserId},</if>
+			<if test="userType != null and userType != ''">#{userType},</if>
 			'0',
 			<if test="adRate != null">#{adRate},</if>
 			<if test="adCarouselRate != null">#{adCarouselRate},</if>
@@ -140,6 +150,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="bankReceiver != null  and bankReceiver != ''  ">bank_receiver = #{bankReceiver},</if>
             <if test="bankName != null  and bankName != ''  ">bank_name = #{bankName},</if>
             <if test="status != null  and status != ''  ">status = #{status},</if>
+            buyer_id = #{buyerId},
+			puser_id = #{puserId},
+			user_type = #{userType},
             <if test="adRate != null">ad_rate = #{adRate},</if>
 			<if test="adCarouselRate != null">ad_carousel_rate = #{adCarouselRate},</if>
 			<if test="scanRate != null">scan_rate = #{scanRate},</if>
