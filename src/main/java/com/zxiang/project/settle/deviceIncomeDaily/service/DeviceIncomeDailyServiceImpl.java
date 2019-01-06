@@ -206,7 +206,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 					String type = RateConstants.RATETYPE_PROMDIRECTINCOME;
 					if(isincome.equals("01")){
 						fee = Double.valueOf(user.get("promDirectRate")+"");
-						if(user.get("leader_id") !=null && user.get("leader_id") !="" ){
+						if(promotionerMap.get("leader_id") !=null && promotionerMap.get("leader_id") !="" ){
 							fee = Double.valueOf(user.get("promIndirectRate")+"");
 							type = RateConstants.RATETYPE_PROMINDIRECTINCOME;
 						}
