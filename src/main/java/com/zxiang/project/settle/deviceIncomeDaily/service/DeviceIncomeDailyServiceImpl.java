@@ -206,13 +206,22 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 					String type = RateConstants.RATETYPE_PROMDIRECTINCOME;
 					if(isincome.equals("01")){
 						fee = Double.valueOf(user.get("promDirectRate")+"");
-						if(promotionerMap.get("leader_id") !=null && promotionerMap.get("leader_id") !="" ){
-							fee = Double.valueOf(user.get("promIndirectRate")+"");
-							type = RateConstants.RATETYPE_PROMINDIRECTINCOME;
-						}
-						//插入数据
+						//插入直推数据
 						insertdata(fee,"02",type,0.0,1,user);
 						insertUserextensiondata(type,0.0,1, user);
+						if(promotionerMap.get("leader_id") !=null && promotionerMap.get("leader_id") !="" ){
+							//获取推荐人人员信息
+							 user = getusedata(promotionerMap.get("leader_id")+"","","");
+							if(com.zxiang.common.utils.StringUtils.isNotNull(user)){
+								fee = Double.valueOf(user.get("promIndirectRate")+"");
+								type = RateConstants.RATETYPE_PROMINDIRECTINCOME;
+								//插入间推数据
+								insertdata(fee,"02",type,0.0,1,user);
+								insertUserextensiondata(type,0.0,1, user);
+							}
+						}
+						user = getusedata(seller_id,"","");
+						insertUserextensiondata(RateConstants.BUYING_MACHINE,0.0,1, user);
 					}
 					
 				}
@@ -610,7 +619,6 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			
 	}
 	
-	    //缺少主体
 	    //ratetype ：系数类型     incomeprice：收益基数（小数型）  incomenum ：基数数量     user：客户信息
 	public void insertUserextensiondata(String ratetype,double incomeprice,int incomenum, HashMap<String, Object> user) {
 		    //投放方式01广告收益   02推广收益  03扫码服务收益 04办公补贴
@@ -629,8 +637,10 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				userIncome.setPromPaperIncome(incomenum);//推广二维码广告
 			}else if(ratetype.equals(RateConstants.RATETYPE_PROMOTIONINCOME)){
 				userIncome.setPromotionIncome(incomeprice);//推广广告基数
+			}else if(ratetype.equals(RateConstants.BUYING_MACHINE)){
+				userIncome.setBuyingMachine(incomenum);//购机数量
 			}
-			
+		    
 			if(userlist.size()>0){
 				UserExtension income = userlist.get(0);
 				userIncome.setIncomeId(income.getIncomeId());
