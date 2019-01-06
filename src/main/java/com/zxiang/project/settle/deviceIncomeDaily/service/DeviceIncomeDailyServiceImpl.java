@@ -157,7 +157,6 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			List<HashMap<String, Object>> orderlist =selectzxdeviceorderlist(map);
 			if(orderlist.size()>0){
 				HashMap<String, Object> order = orderlist.get(0);
-				String promotioner_id = order.get("promotioner_id")+""; //推荐人
 				String buyer_id = order.get("buyer_id")+"";//机主
 				String isincome = order.get("isincome")+""; //是否是当天售出
 				
@@ -165,7 +164,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				int tissuenum = tissuenumlist.size();
 				int tissuenumAll = selectzxtissuerecordAll(device.get("device_id")+"");
 				//计算每日设备推广费用
-				deviceorder(isincome,promotioner_id,device,order);
+				deviceorder(isincome,buyer_id,device,order);
 				if(tissuenumAll>0) {
 					String	promotionerh5 ="";
 					if(tissuenum>0) {
@@ -199,21 +198,24 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		double fee = 0.0;
 		double price = 0.0;//设备销售价格
 		if(com.zxiang.common.utils.StringUtils.isNotNull(seller_id)){
-			//获取推荐人人员信息
-			HashMap<String, Object> user = getusedata(seller_id,"","");
-			if(com.zxiang.common.utils.StringUtils.isNotNull(user)){
-				String type = RateConstants.RATETYPE_PROMDIRECTINCOME;
-				if(isincome.equals("01")){
-					fee = Double.valueOf(user.get("promDirectRate")+"");
-					if(user.get("suuser_id") !=null && user.get("suuser_id") !="" ){
-						fee = Double.valueOf(user.get("promIndirectRate")+"");
-						type = RateConstants.RATETYPE_PROMINDIRECTINCOME;
+			HashMap<String, Object> promotionerMap = getpromotionerdata(seller_id);
+			if(com.zxiang.common.utils.StringUtils.isNotNull(promotionerMap)){
+				//获取推荐人人员信息
+				HashMap<String, Object> user = getusedata(promotionerMap.get("promotor_id")+"","","");
+				if(com.zxiang.common.utils.StringUtils.isNotNull(user)){
+					String type = RateConstants.RATETYPE_PROMDIRECTINCOME;
+					if(isincome.equals("01")){
+						fee = Double.valueOf(user.get("promDirectRate")+"");
+						if(user.get("leader_id") !=null && user.get("leader_id") !="" ){
+							fee = Double.valueOf(user.get("promIndirectRate")+"");
+							type = RateConstants.RATETYPE_PROMINDIRECTINCOME;
+						}
+						//插入数据
+						insertdata(fee,"02",type,0.0,1,user);
+						insertUserextensiondata(type,0.0,1, user);
 					}
-					//插入数据
-					insertdata(fee,"02",type,0.0,1,user);
-					insertUserextensiondata(type,0.0,1, user);
+					
 				}
-				
 			}
 		}
 		
@@ -472,6 +474,49 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		
 	}
 	
+	//获取购机推荐人信息
+	public HashMap<String, Object> getpromotionerdata(String buyerid) {
+		HashMap<String, Object> getpromotioner= new HashMap<String, Object>();
+		String puser_id = "";
+		String user_type = "";
+		HashMap<String, Object> promotionerdata = new HashMap<String, Object>();
+		if(com.zxiang.common.utils.StringUtils.isNotNull(buyerid)) {
+		   promotionerdata = iUserIncomeService.selectzxsellerlist(buyerid);
+			puser_id = promotionerdata.get("puser_id")+""; //主体ID
+			user_type = promotionerdata.get("user_type")+""; //用户类型
+		}
+		HashMap<String, Object> puser = new HashMap<String, Object>();
+		puser.put("joinId", puser_id);
+		List<HashMap<String, Object>> user=iUserIncomeService.selectzxjoinlist(puser);
+		if(user.size()>0) {
+			HashMap<String, Object> userdata =  user.get(0);
+			if(com.zxiang.common.utils.StringUtils.isNotNull(userdata.get("leader_id"))) {
+				getpromotioner.put("promotor_id", userdata.get("leader_id"));
+				promotionerdata = iUserIncomeService.selectzxsellerlist(userdata.get("leader_id")+"");
+				puser_id = promotionerdata.get("puser_id")+""; //主体ID
+				user_type = promotionerdata.get("user_type")+""; //用户类型
+				List<HashMap<String, Object>> user1 = new ArrayList<HashMap<String, Object>>();
+				if(user_type.equals(UserConstants.USER_TYPE_JOIN)) {
+					puser.put("joinId", puser_id);
+					user1=iUserIncomeService.selectzxjoinlist(puser);
+				}else if(user_type.equals(UserConstants.USER_TYPE_REPAIR)) {
+					puser.put("repairId", puser_id);
+					user1=iUserIncomeService.selectzxrepairlist(puser);
+				}else if(user_type.equals(UserConstants.USER_TYPE_AGENT)) {
+					puser.put("agentId", puser_id);
+					user1=iUserIncomeService.selectzxagent(puser);
+				}
+				if(user1.size()>0) {
+					HashMap<String, Object> userdata1 =  user1.get(0);
+					if(com.zxiang.common.utils.StringUtils.isNotNull(userdata1.get("leader_id"))) {
+						getpromotioner.put("leader_id", userdata1.get("leader_id"));
+					}
+				}
+			}
+		}
+		return getpromotioner;
+	}
+	
 	
 	//获取用户信息
 	public HashMap<String, Object> getusedata(String buyerid,String puser_id,String user_type) {
@@ -496,7 +541,6 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		if(user.size()>0) {
 			HashMap<String, Object> userdata =  user.get(0);
 			userdata.put("coperatorType", user_type);
-			userdata.put("suuser_id", promotionerdata.get("leader_id"));
 			userdata.put("userId", promotionerdata.get("user_id"));
 			userdata.put("userName", promotionerdata.get("user_name"));
 			return userdata;

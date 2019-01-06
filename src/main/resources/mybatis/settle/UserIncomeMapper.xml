@@ -408,6 +408,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <!-- 代理商 -->
      <select id="selectzxagent"  resultType="java.util.HashMap">
 		 SELECT 
+		  promotor_id    leader_id,
 		 agent_id coperatorId,
          agent_name coperatorName,
 		 ad_rate adRate,
@@ -432,6 +433,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 机主（机主） -->
     <select id="selectzxjoinlist"  resultType="java.util.HashMap">
 	    SELECT
+	     promotor_id    leader_id,
 	     join_id coperatorId,
          joiner_name coperatorName, 
 		 ad_rate adRate,
@@ -457,6 +459,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
      <!-- 服务商 -->
      <select id="selectzxrepairlist"  resultType="java.util.HashMap">
 	   SELECT
+	     promotor_id    leader_id,
 	     repair_id coperatorId,
          repair_name coperatorName, 
 		 ad_rate adRate,
