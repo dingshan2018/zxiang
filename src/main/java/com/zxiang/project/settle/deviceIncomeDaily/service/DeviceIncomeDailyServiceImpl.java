@@ -512,9 +512,10 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 						getpromotioner.put("leader_id", userdata1.get("leader_id"));
 					}
 				}
+				return getpromotioner;
 			}
 		}
-		return getpromotioner;
+		return null;
 	}
 	
 	
