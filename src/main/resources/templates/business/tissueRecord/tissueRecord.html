@@ -225,9 +225,10 @@
     		var joinId = $("#joinId").val();
     		var startTime = $("#startTime").val();
     		var endTime = $("#endTime").val();
+    		var deviceSn = $("#deviceSn").val();
 
 			location.href = ctx + "business/tissueRecord/excelExport?agentId="+agentId+'&repairId='+repairId+'&joinId='+joinId
-					+'&startTime='+startTime+'&endTime='+endTime
+					+'&startTime='+startTime+'&endTime='+endTime+'&deviceSn='+deviceSn
     		//$.modal.alert("导出成功!");
 		});
     }
@@ -239,13 +240,14 @@
 		var joinId = $("#joinId").val();
 		var startTime = $("#startTime").val();
 		var endTime = $("#endTime").val();
+		var deviceSn = $("#deviceSn").val();
 		
 		var paperSum=document.getElementById("paperSum");
 		var moneySum=document.getElementById("moneySum");
 
     	$.ajax({
 	        url: prefix + "/tissueCount?agentId="+agentId+'&repairId='+repairId+'&joinId='+joinId
-				+'&startTime='+startTime+'&endTime='+endTime ,
+				+'&startTime='+startTime+'&endTime='+endTime+'&deviceSn='+deviceSn ,
 	        type: "post",
 	        async:false,
 	        success: function (data) {
