@@ -57,7 +57,7 @@
 						class="form-control block-plugin__select-picker selectpicker"
 						data-style="btn-white btn-sm">
                     	<option value=""> -- 请选择 -- </option>
-	                    <option th:each="c:${payUserList}"  th:value="${c.userId}" th:text="${c.userName}"/>
+	                    <option th:each="c:${payUserList}"  th:value="${c.userId}"  th:title="${c.userType}" th:text="${c.userName}"/>
                     </select>
 				</div>
 			</div>
@@ -86,7 +86,8 @@
 	</div>
     <div th:include="include::footer"></div>
     <script type="text/javascript">
-		var prefix = ctx + "client/repair"
+		var prefix = ctx + "client/repair";
+		var payUserList = "${payUserList}";
 		$("#form-repair-add").validate({
 			rules:{
 				repairName:{
@@ -102,6 +103,17 @@
         		},
 			},
 			submitHandler: function(form) {
+				var buyerId = document.getElementById("buyerId");
+				var options = buyerId.querySelectorAll("option");
+				var puserId = document.getElementById("puserId");
+				var userType = document.getElementById("userType");
+				for(var i=0; i<options.length; i++){
+					if(options[i].value == buyerId.value){
+						puserId.value = buyerId.value
+						userType.value = options[i].title;
+					}
+				}
+				
 				$.operate.save(prefix + "/add", $('#form-repair-add').serialize());
 			}
 		});
