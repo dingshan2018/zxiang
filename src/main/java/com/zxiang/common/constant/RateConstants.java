@@ -63,6 +63,12 @@ public class RateConstants
      * 招商金额
      */
 	 public static final String RATETYPE_SUBSIDYINCOME = "subsidyIncome";
+	 
+	 /**
+	  * 购机数量
+	  * 
+	  * */
+	 public static final String BUYING_MACHINE = "buyingMachine";
 
 		 
 

@@ -164,7 +164,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	        SELECT 
 			  device_id,
 			  terminal_id,
-			  promotioner_id,
 			  price,
 			  cut_off,
 			  seller_id,

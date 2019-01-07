@@ -33,6 +33,8 @@ public class UserExtension extends BaseEntity
 	private Double promotionIncome;
 	/** 直推代理基数 */
 	private Double directAgentIncome;
+	
+	private Integer buyingMachine;
 	/**  */
 	private String createBy;
 	/**  */
@@ -129,6 +131,16 @@ public class UserExtension extends BaseEntity
 	{
 		return directAgentIncome;
 	}
+	
+	
+	public Integer getBuyingMachine() {
+		return buyingMachine;
+	}
+
+	public void setBuyingMachine(Integer buyingMachine) {
+		this.buyingMachine = buyingMachine;
+	}
+
 	public void setCreateBy(String createBy) 
 	{
 		this.createBy = createBy;
