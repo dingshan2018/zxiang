@@ -123,7 +123,7 @@
 						class="form-control block-plugin__select-picker selectpicker"
 						data-style="btn-white btn-sm">
                     	<option value=""> -- 请选择 -- </option>
-	                    <option th:selected="${agent.buyerId eq c.userId}" th:each="c:${payUserList}"  th:value="${c.userId}"  th:title="${c.userType}" th:text="${c.userName}"/>
+	                    <option th:selected="${agent.buyerId eq c.userId}" th:each="c:${payUserList}"  th:value="${c.userId}" th:data-type="${c.userType}" th:text="${c.userName}"/>
                     </select>
 				</div>
 			</div>
@@ -192,7 +192,7 @@
 				for(var i=0; i<options.length; i++){
 					if(options[i].value == buyerId.value){
 						puserId.value = buyerId.value
-						userType.value = options[i].title;
+						userType.value = options[i].dataset.type;
 					}
 				}
 				
