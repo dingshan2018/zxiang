@@ -85,6 +85,13 @@
 					field : 'managerPhone', 
 					title : '负责人电话' 
 				},
+				{field : 'buyerName',title : '购机推荐人',formatter: function(value, row, index) {
+					if(row.userType == '02') {return value+"(机主)"}
+					if(row.userType == '03') {return value+"(代理商)"}
+					if(row.userType == '04') {return value+"(服务商)"}
+					if(row.userType == '05') {return value+"(广告商)"}
+					return "-";
+	            }  },
 				{
 					field : 'bankReceiver', 
 					title : '收款人' 

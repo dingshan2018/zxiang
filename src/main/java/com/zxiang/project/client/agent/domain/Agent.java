@@ -93,6 +93,8 @@ public class Agent extends BaseEntity
 	private String cityName;
 	private String countyName;
 	private String promotorName;
+	/** 直推人 **/
+	private String buyerName;
 
 	public void setAgentId(Integer agentId) 
 	{
@@ -443,5 +445,13 @@ public class Agent extends BaseEntity
 
 	public void setUserType(String userType) {
 		this.userType = userType;
+	}
+
+	public String getBuyerName() {
+		return buyerName;
+	}
+
+	public void setBuyerName(String buyerName) {
+		this.buyerName = buyerName;
 	}
 }

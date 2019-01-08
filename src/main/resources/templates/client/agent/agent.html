@@ -92,7 +92,14 @@
 				{field : 'bankReceiver',title : '收款人'},
 				{field : 'bankAccount',title : '收款账号'},
 				{field : 'bankName',title : '开户行'},
-				{field : 'promotorName',title : '直推人' },
+				{field : 'promotorName',title : '代理直推人' },
+				{field : 'buyerName',title : '购机推荐人',formatter: function(value, row, index) {
+					if(row.userType == '02') {return value+"(机主)"}
+					if(row.userType == '03') {return value+"(代理商)"}
+					if(row.userType == '04') {return value+"(服务商)"}
+					if(row.userType == '05') {return value+"(广告商)"}
+					return "-";
+	            }  },
 				{field : 'adRate',title : '广告收益', visible: false  },
 				{field : 'scanRate', title : '扫码收益', visible: false },
 				{field : 'promotionRate',title : '推广收益', visible: false },
