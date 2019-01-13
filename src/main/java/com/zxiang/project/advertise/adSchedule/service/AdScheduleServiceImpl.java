@@ -59,6 +59,8 @@ import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
 import com.zxiang.project.client.advertise.service.IAdvertiseService;
 import com.zxiang.project.client.fundLog.service.IFundLogService;
+import com.zxiang.project.system.config.domain.Config;
+import com.zxiang.project.system.config.mapper.ConfigMapper;
 
 /**
  * 广告投放 服务层实现
@@ -97,7 +99,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	private IFundLogService fundLogService;
 	@Autowired
 	private IAdvertiseService advertiseService;
-	
+	@Autowired
+	private ConfigMapper configMapper;
 	/**
      * 查询广告投放信息
      * 
@@ -766,8 +769,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		//请求参数封装
 		//paramsMap.put("isLayout", "0");
 		String param = Tools.paramsToString(paramsMap);
-		
-		String result = Tools.doPost(AdConstant.AD_URL_GETTHEMELIST, param);
+		Config config = new Config();
+        config.setConfigKey("AD_SCHEDULE_URL");
+        Config retConfig = configMapper.selectConfig(config);
+        String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue() : "http://mmedia.bp.zcloudtechs.cn";
+		String result = Tools.doPost(rootUrl+AdConstant.AD_URL_GETTHEMELIST, param);
 		return result;
 	}
 	
@@ -779,8 +785,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 	 * @return
 	 */
 	public String addElement(String tId,String eId, MultipartFile multipartFile) throws Exception{
-		
-		PostMethod postMethod = new PostMethod(AdConstant.AD_URL_ADDELEMENT);
+		Config config = new Config();
+        config.setConfigKey("AD_SCHEDULE_URL");
+        Config retConfig = configMapper.selectConfig(config);
+        String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue() : "http://mmedia.bp.zcloudtechs.cn";
+		PostMethod postMethod = new PostMethod(rootUrl+AdConstant.AD_URL_ADDELEMENT);
     	HttpClient client = new HttpClient();
     	File file = null;
         try {
@@ -843,7 +852,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		paramsMap.put("totalTime", totalTime);
 		
 		String param = Tools.paramsToString(paramsMap);
-		String result = Tools.doPostForm(AdConstant.AD_URL_SAVEPLAYBILL, param);
+		Config config = new Config();
+        config.setConfigKey("AD_SCHEDULE_URL");
+        Config retConfig = configMapper.selectConfig(config);
+        String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue() : "http://mmedia.bp.zcloudtechs.cn";
+		String result = Tools.doPostForm(rootUrl+AdConstant.AD_URL_SAVEPLAYBILL, param);
 		
 		return result;
 	}
@@ -869,7 +882,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		paramsMap.put("city", city);
 		
 		String param = Tools.paramsToString(paramsMap);
-		String result = Tools.doPostForm(AdConstant.AD_URL_SAVETERMINAL, param);
+		Config config = new Config();
+        config.setConfigKey("AD_SCHEDULE_URL");
+        Config retConfig = configMapper.selectConfig(config);
+        String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue() : "http://mmedia.bp.zcloudtechs.cn";
+		String result = Tools.doPostForm(rootUrl+AdConstant.AD_URL_SAVETERMINAL, param);
 		
 		return result;
 	}
@@ -886,7 +903,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		paramsMap.put("terminalId", terminalId);
 		
 		String param = Tools.paramsToString(paramsMap);
-		String result = Tools.doPostForm(AdConstant.AD_URL_DELETETERMINAL, param);
+		Config config = new Config();
+        config.setConfigKey("AD_SCHEDULE_URL");
+        Config retConfig = configMapper.selectConfig(config);
+        String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue() : "http://mmedia.bp.zcloudtechs.cn";
+		String result = Tools.doPostForm(rootUrl+AdConstant.AD_URL_DELETETERMINAL, param);
 		
 		return result;
 	}
@@ -909,7 +930,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		paramsMap.put("deadLine", deadLine);
 		
 		String param = Tools.paramsToString(paramsMap);
-		String result = Tools.doPostForm(AdConstant.AD_URL_ADDSCHEDULE, param);
+		Config config = new Config();
+        config.setConfigKey("AD_SCHEDULE_URL");
+        Config retConfig = configMapper.selectConfig(config);
+        String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue() : "http://mmedia.bp.zcloudtechs.cn";
+		String result = Tools.doPostForm(rootUrl+AdConstant.AD_URL_ADDSCHEDULE, param);
 		
 		return result;
 	}
@@ -923,8 +948,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.put("scheduleId", adScheduleId);
 		String param = Tools.paramsToString(paramsMap);
-		
-		String result = Tools.doPostForm(AdConstant.AD_URL_PUBLISHSCHEDULE, param);
+		Config config = new Config();
+        config.setConfigKey("AD_SCHEDULE_URL");
+        Config retConfig = configMapper.selectConfig(config);
+        String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue() : "http://mmedia.bp.zcloudtechs.cn";
+		String result = Tools.doPostForm(rootUrl+AdConstant.AD_URL_PUBLISHSCHEDULE, param);
 		return result;
 	}
 	

@@ -7,6 +7,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="Terminal" id="TerminalResult">
         <result property="terminalId"    column="terminal_id"    />
         <result property="terminalCode"    column="terminal_code"    />
+        <result property="accSysIp"    column="acc_sys_ip"    />
+        <result property="accSysPort"    column="acc_sys_port"    />
         <result property="deviceId"    column="device_id"    />
         <result property="placeId"    column="place_id"    />
         <result property="rssi"    column="rssi"    />

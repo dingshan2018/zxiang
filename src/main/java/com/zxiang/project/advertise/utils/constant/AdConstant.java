@@ -33,19 +33,19 @@ public class AdConstant {
 	/******************** 广告HTTP接口URL常量	*******************/
 	
 	/** 获取模板详细信息列表URL	 */
-	public final static String 	AD_URL_GETTHEMELIST = "http://mmedia.bp.zcloudtechs.cn/mmedia/adpublish/api/getThemeList.action";
+	public final static String 	AD_URL_GETTHEMELIST = "/mmedia/adpublish/api/getThemeList.action";
 	/** 新增推广计划URL	 */
-	public final static String 	AD_URL_SAVEPLAYBILL = "http://mmedia.bp.zcloudtechs.cn/mmedia/adpublish/api/savePlaybill.action";
+	public final static String 	AD_URL_SAVEPLAYBILL = "/mmedia/adpublish/api/savePlaybill.action";
 	/** 上传素材信息URL	 */
-	public final static String 	AD_URL_ADDELEMENT = "http://mmedia.bp.zcloudtechs.cn/mmedia/adpublish/api/addElement.action";
+	public final static String 	AD_URL_ADDELEMENT = "/mmedia/adpublish/api/addElement.action";
 	/** 新增广告终端URL	 */
-	public final static String 	AD_URL_SAVETERMINAL = "http://mmedia.bp.zcloudtechs.cn/mmedia/adpublish/api/saveTerminal.action";
+	public final static String 	AD_URL_SAVETERMINAL = "/mmedia/adpublish/api/saveTerminal.action";
 	/** 删除广告终端URL	 */
-	public final static String 	AD_URL_DELETETERMINAL = "http://mmedia.bp.zcloudtechs.cn/mmedia/adpublish/api/deleteTerminal.action";
+	public final static String 	AD_URL_DELETETERMINAL = "/mmedia/adpublish/api/deleteTerminal.action";
 	/** 生成排期计划URL	 */
-	public final static String 	AD_URL_ADDSCHEDULE = "http://mmedia.bp.zcloudtechs.cn/mmedia/adpublish/api/addSchedule.action";
+	public final static String 	AD_URL_ADDSCHEDULE = "/mmedia/adpublish/api/addSchedule.action";
 	/** 审核通过下发排期计划URL	 */
-	public final static String 	AD_URL_PUBLISHSCHEDULE = "http://mmedia.bp.zcloudtechs.cn/mmedia/adpublish/api/publishSchedule.action";
+	public final static String 	AD_URL_PUBLISHSCHEDULE = "/mmedia/adpublish/api/publishSchedule.action";
 	/******************** 广告HTTP接口返回状态	*******************/
 	
 	/** 接口返回成功码	 */
