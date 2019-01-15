@@ -141,6 +141,20 @@ public interface IDeviceService
 	 */
 	public int outStockByTradeId(String ids,TradeOrder tradeOrder,String operatorUser, Integer promotionerId) throws Exception;
 	
+	/**
+	 * 通过鼎善商城订单号出库
+	 * @param ids
+	 * @param userIdDingShang
+	 * @param tradeOrderIdDingShang
+	 * @param totalCntDingShang
+	 * @param operatorUser 
+	 * @return
+	 */
+	
+	public int outStockByDingShang(String ids, Integer userIdDingShang, String tradeOrderIdDingShang,
+			String totalCntDingShang, String operatorUser);
+	
 	/** 查询设备总量 **/
 	public int selectTotal(Map<String,Object> param);
+
 }

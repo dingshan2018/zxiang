@@ -134,11 +134,12 @@ public class DeviceStockController extends BaseController
 	@GetMapping("/outStockByTradeId")
 	public String outStockByTradeId(ModelMap mmap)
 	{
-		//查询机主
+		//查询平台已有订单机主
 		List<User> userListJoin = userService.selectBuyer();
 		mmap.put("userListJoin", userListJoin);
-		//查询推荐人（目前用所有用户）
-		List<User> userList = userService.selectUserList(new User());
+		//查询鼎善商城机主（目前用除管理员外的用户）
+		List<User> userList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,UserConstants.USER_TYPE_PARTNER,
+				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
 		mmap.put("userList", userList);
 		//查询购机已付款订单
 		//List<TradeOrder> tradeOrderList = tradeOrderService.selectUnSendList(null);
@@ -149,10 +150,10 @@ public class DeviceStockController extends BaseController
 	    return prefix + "/outStock";
 	}
 	/**
-	 * 库存设备出库
+	 * 库存设备出库--平台订单出库方法
 	 */
 	@RequiresPermissions("business:deviceStock:outStock")
-	@Log(title = "库存设备出库", businessType = BusinessType.UPDATE)
+	@Log(title = "库存设备出库-平台订单", businessType = BusinessType.UPDATE)
 	@PostMapping("/outStockByTradeId")
 	@ResponseBody
 	public AjaxResult outStockByTradeId(String ids,Integer tradeOrderId,Integer promotionerId)
@@ -185,4 +186,29 @@ public class DeviceStockController extends BaseController
 		
 	}
 	
+	/**
+	 * 库存设备出库--鼎善商城订单出库方法
+	 */
+	@RequiresPermissions("business:deviceStock:outStock")
+	@Log(title = "库存设备出库-商城订单", businessType = BusinessType.UPDATE)
+	@PostMapping("/outStockByDingShang")
+	@ResponseBody
+	public AjaxResult outStockByDingShang(String ids,Integer userIdDingShang,
+			String tradeOrderIdDingShang,String totalCntDingShang)
+	{
+		logger.info("devices:"+ids+",userIdDingShang:"+userIdDingShang
+				+",tradeOrderIdDingShang:"+tradeOrderIdDingShang+",totalCntDingShang:"+totalCntDingShang);
+		String operatorUser = getUser().getUserName()+"("+getUserId()+")";
+		
+		try {
+			int num = deviceService.outStockByDingShang(ids, userIdDingShang,
+					tradeOrderIdDingShang,totalCntDingShang,operatorUser);
+			return success("成功出库" + num + " 台设备");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error(e.getMessage());
+		}
+		
+	}
 }

@@ -555,6 +555,48 @@ public class DeviceServiceImpl implements IDeviceService
 		
 		return updateDeviceNum;
 	}
+	
+	/**
+	 * 通过鼎善商城订单号出库
+	 */
+	@Override
+	public int outStockByDingShang(String ids, Integer userIdDingShang, String tradeOrderIdDingShang,
+			String totalCntDingShang, String operatorUser) {
+		
+		int updateDeviceNum = deviceMapper.outStock(Convert.toStrArray(ids),userIdDingShang);
+		if(updateDeviceNum !=  Integer.parseInt(totalCntDingShang)){
+			throw new RRException("操作失败,您所选的出库设备与填写订单数量不一致!");
+		}
+		
+		// 订单销售记录表插入记录
+		List<DeviceOrder> deviceOrderList = new ArrayList<>();
+		String[] devices = Convert.toStrArray(ids);
+		if(devices.length > 0){
+			for (String device : devices) {
+				//查询这台设备已有信息
+				Device dev = deviceMapper.selectDeviceById(Integer.parseInt(device));
+				//要插入的设备订单数据
+				DeviceOrder deviceOrder = new DeviceOrder();
+				deviceOrder.setDeviceId(Integer.parseInt(device));
+				//deviceOrder.setTradeOrderId(tradeOrder.getTradeOrderId());
+				deviceOrder.setTerminalCode(dev.getTerminalCode());
+				//deviceOrder.setPrice(tradeOrder.getTotalFee());
+				deviceOrder.setStatus("1");
+				deviceOrder.setBuyerId(userIdDingShang);
+				//deviceOrder.setBuyerOpenId(tradeOrder.getOpenId());
+				deviceOrder.setCreateBy(operatorUser+",商城订单号-"+tradeOrderIdDingShang);
+				deviceOrder.setCreateTime(new Date());
+				
+				deviceOrderList.add(deviceOrder);
+			}
+
+			deviceOrderMapper.batchInsert(deviceOrderList);
+		}
+		System.out.println("商城订单出库操作数量:"+updateDeviceNum);
+		return updateDeviceNum;
+	}
+
+	
 	@DataFilter(placeAlias="d.place_id")
 	@Override
 	public int selectTotal(Map<String, Object> param) {
