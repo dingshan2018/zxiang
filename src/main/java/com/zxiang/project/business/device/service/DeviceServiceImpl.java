@@ -568,6 +568,19 @@ public class DeviceServiceImpl implements IDeviceService
 			throw new RRException("操作失败,您所选的出库设备与填写订单数量不一致!");
 		}
 		
+		// 将鼎善商城订单插入订单记录表
+		TradeOrder tradeOrder = new TradeOrder();
+		tradeOrder.setOutTradeOrder(tradeOrderIdDingShang);
+		tradeOrder.setUserId(userIdDingShang);
+		tradeOrder.setTotalCnt(Integer.parseInt(totalCntDingShang));
+		tradeOrder.setOrderType("1");
+		tradeOrder.setOrderStatus("1");
+		tradeOrder.setSendStatus("1");
+		tradeOrder.setRemark("商城订单");
+		tradeOrder.setCreateBy(operatorUser);
+		tradeOrder.setCreateTime(new Date());
+		tradeOrderMapper.insertTradeOrder(tradeOrder);
+		System.out.println("tradeOrderId:"+tradeOrder.getTradeOrderId());
 		// 订单销售记录表插入记录
 		List<DeviceOrder> deviceOrderList = new ArrayList<>();
 		String[] devices = Convert.toStrArray(ids);
@@ -578,7 +591,7 @@ public class DeviceServiceImpl implements IDeviceService
 				//要插入的设备订单数据
 				DeviceOrder deviceOrder = new DeviceOrder();
 				deviceOrder.setDeviceId(Integer.parseInt(device));
-				//deviceOrder.setTradeOrderId(tradeOrder.getTradeOrderId());
+				deviceOrder.setTradeOrderId(tradeOrder.getTradeOrderId());
 				deviceOrder.setTerminalCode(dev.getTerminalCode());
 				//deviceOrder.setPrice(tradeOrder.getTotalFee());
 				deviceOrder.setStatus("1");
