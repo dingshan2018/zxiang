@@ -47,12 +47,12 @@
                 <span class="select-item-name">手机号码：</span>
                 <input type="text" name="phonenumber"/>
               </li>
-              <!-- <li>
+              <li>
                 <span class="select-item-name">用户类型：</span><select name="userType" th:with="type=${@dict.getType('user_type')}">
                 <option value="">所有</option>
                 <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
               </select>
-              </li> -->
+              </li>
               <li>
                 <span class="select-item-name">用户状态：</span>
                 <select

@@ -23,7 +23,6 @@ import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
-import com.zxiang.project.system.area.domain.Area;
 import com.zxiang.project.system.post.service.IPostService;
 import com.zxiang.project.system.role.service.IRoleService;
 import com.zxiang.project.system.user.domain.User;
@@ -61,7 +60,6 @@ public class UserController extends BaseController
     public TableDataInfo list(User user)
     {
         startPage();
-        user.setUserType("00");
         List<User> list = userService.selectUserList(user);
         return getDataTable(list);
     }
