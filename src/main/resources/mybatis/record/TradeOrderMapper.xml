@@ -144,4 +144,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="userId != null and userId != ''"> and o.user_id = #{userId}</if>
     </select>
     
+    <!-- 根据订单号查询订单 -->
+    <select id="selectByOutTradeOrder" resultMap="TradeOrderResult">
+        SELECT * FROM zx_trade_order WHERE BINARY out_trade_order= #{outTradeOrder}
+    </select>
+    
 </mapper>
