@@ -98,10 +98,10 @@
                           style="font-size: 20px;"
                           data-toggle="tooltip"
                           data-placement="top"
-                          onclick="addressResolution()">
+                          onclick="addressResolutionThrottle(addressResolution, 1000)">
                     <span class="glyphicon glyphicon-map-marker"></span>
                   </button>
-                    <input id="address" name="address" th:field="*{address}" class="form-control" type="text" onblur="addressResolution()">
+                    <input id="address" name="address" th:field="*{address}" class="form-control" type="text" onblur="addressResolutionThrottle(addressResolution, 1000)">
                 </div>
             </div>
             <div class="form-group">
@@ -331,6 +331,18 @@
             $("#repairId").append(repairStr);
 	        $("#supplyId").append(supplyStr);
 	    }
+
+	    // 节流
+	    var addressResolutionThrottleLastTime = null;
+	    function addressResolutionThrottle (fn, time) {
+        return (function () {
+          var nowTime = +new Date();
+          if (nowTime - addressResolutionThrottleLastTime > time) {
+            fn();
+            addressResolutionThrottleLastTime = nowTime;
+          }
+        }())
+      }
 
 	 	// 腾讯地图api获取经纬度
 	    function addressResolution () {

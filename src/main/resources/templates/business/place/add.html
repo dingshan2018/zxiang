@@ -120,10 +120,10 @@
                   style="font-size: 20px;"
                   data-toggle="tooltip"
                   data-placement="top"
-                  onclick="addressResolution()">
+                  onclick="addressResolutionThrottle(addressResolution, 1000)">
             <span class="glyphicon glyphicon-map-marker"></span>
           </button>
-          <textarea id="address" name="address" class="form-control" type="text" placeholder="填写详细地址（需包含省、市、区县）" rows="3"></textarea>
+          <textarea id="address" name="address" class="form-control" type="text" placeholder="填写详细地址（需包含省、市、区县）" rows="3" onblur="addressResolutionThrottle(addressResolution, 1000)"></textarea>
 				</div>
 			</div>
           <div class="form-group">
@@ -295,6 +295,18 @@
 
       $('[data-toggle="tooltip"]').tooltip('show');
 
+      // 节流
+      var addressResolutionThrottleLastTime = null;
+      function addressResolutionThrottle (fn, time) {
+        return (function () {
+          var nowTime = +new Date();
+          if (nowTime - addressResolutionThrottleLastTime > time) {
+            fn();
+            addressResolutionThrottleLastTime = nowTime;
+          }
+        }())
+      }
+
       // 腾讯地图api获取经纬度
       function addressResolution () {
         var province = $("#province ~ button[data-id=\"province\"] .filter-option-inner-inner").html();
@@ -375,7 +387,7 @@
 	        	//根据区域缩小维修人员选择范围
 	        	getRepairUserList();
 	        })
-	        
+
 	        var placeList = selectPlaceList();
 	    	$.each(placeList, function (i) {
             	$('#parentPlaceId').append("<option value=" + placeList[i].placeId + ">" + placeList[i].name + "</option>");
