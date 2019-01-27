@@ -36,6 +36,7 @@ public class SupplyTissue extends BaseEntity
 	private String deviceSn;
 	private String placeName;
 	private String supplierName;
+	private String userId;
 
 	public void setSupplyTissueId(Integer supplyTissueId) 
 	{
@@ -133,15 +134,19 @@ public class SupplyTissue extends BaseEntity
 		this.deviceSn = deviceSn;
 	}
 
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	@Override
 	public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("supplyTissueId", getSupplyTissueId())
-            .append("deviceId", getDeviceId())
-            .append("tissueCount", getTissueCount())
-            .append("placeId", getPlaceId())
-            .append("supplierId", getSupplierId())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .toString();
-    }
+		return "SupplyTissue [supplyTissueId=" + supplyTissueId + ", deviceId=" + deviceId + ", tissueCount="
+				+ tissueCount + ", placeId=" + placeId + ", supplierId=" + supplierId + ", createBy=" + createBy
+				+ ", createTime=" + createTime + ", deviceCode=" + deviceCode + ", deviceSn=" + deviceSn
+				+ ", placeName=" + placeName + ", supplierName=" + supplierName + ", userId=" + userId + "]";
+	}
 }

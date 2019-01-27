@@ -71,6 +71,11 @@ public class SupplyTissueController extends BaseController
 	public TableDataInfo list(SupplyTissue supplyTissue)
 	{
 		startPage();
+		User user =getUser();
+		String userType = user.getUserType();
+		if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+			supplyTissue.setUserId(user.getUserId()+"");
+		}
         List<SupplyTissue> list = supplyTissueService.selectSupplyTissueList(supplyTissue);
 		return getDataTable(list);
 	}
