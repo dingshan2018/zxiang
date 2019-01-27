@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -45,6 +46,7 @@ public class WithdrawDepositController extends BaseController
 	/**
 	 * 查询提现记录列表
 	 */
+	@DataFilter(personAlias="b.user_id")
 	@RequiresPermissions("client:withdrawDeposit:list")
 	@PostMapping("/list")
 	@ResponseBody

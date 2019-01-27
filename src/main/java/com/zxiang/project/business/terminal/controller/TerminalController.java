@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.utils.excel.ExcelServiceUtil;
 import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
@@ -28,6 +29,7 @@ import com.zxiang.project.business.device.service.IDeviceService;
 import com.zxiang.project.business.place.service.IPlaceService;
 import com.zxiang.project.business.terminal.domain.Terminal;
 import com.zxiang.project.business.terminal.service.ITerminalService;
+import com.zxiang.project.system.user.domain.User;
 
 /**
  * 终端管理 信息操作处理
@@ -58,13 +60,18 @@ public class TerminalController extends BaseController
 	/**
 	 * 查询终端管理列表
 	 */
-	@DataFilter(placeAlias="place_id")
+	@DataFilter(placeAlias="t.place_id")
 	@RequiresPermissions("business:terminal:list")
 	@PostMapping("/list")
 	@ResponseBody
 	public TableDataInfo list(Terminal terminal)
 	{
 		startPage();
+		User user =getUser();
+		String userType = user.getUserType();
+		if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+			terminal.setUserId(user.getUserId()+"");
+		}
         List<Terminal> list = terminalService.selectTerminalList(terminal);
 		return getDataTable(list);
 	}

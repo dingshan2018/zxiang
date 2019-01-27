@@ -47,7 +47,7 @@ public class DeviceIncomeDailyController extends BaseController
 	/**
 	 * 查询设备收入日统计列表
 	 */
-	@DataFilter(placeAlias="place_id")
+	@DataFilter(placeAlias="a.place_id")
 	@RequiresPermissions("settle:deviceIncomeDaily:list")
 	@PostMapping("/list")
 	@ResponseBody

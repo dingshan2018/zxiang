@@ -46,8 +46,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
     <select id="selectTerminalList" parameterType="Terminal" resultMap="TerminalResult">
         <include refid="selectTerminalVo"/>
-        <where>  
-           ${filterSql}
+        <where> 
+             <if test="userId == null">  ${filterSql} </if>
+            <if test="userId != null and userId != ''">
+            	and #{userId} = (SELECT DISTINCT zd.owner_id FROM zx_device zd WHERE zd.device_id = t.device_id)
+            </if> 
             <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
              <if test="terminalCode != null and terminalCode != ''">
              	AND t.terminal_code like concat('%', #{terminalCode}, '%')
