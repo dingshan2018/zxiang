@@ -135,6 +135,11 @@ public class AdReleaseRecordController extends BaseController
 			HttpServletResponse response,HttpServletRequest request){
 
 		try {
+			User user =getUser();
+			String userType = user.getUserType();
+			if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+				params.put("userId", user.getUserId()+"");
+			}
 			adReleaseRecordService.queryExport(params, request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
