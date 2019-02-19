@@ -185,6 +185,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			  AND a.`device_id` = b.`device_id` 
 			  AND a.`place_id` = c.place_id 
 			  AND DATE_FORMAT(a.create_time, '%Y-%m-%d') = CURDATE()
+			   <if test="placeId != null and placeId != ''"> a.place_id in(#{placeId})   </if>
+	            <if test="userId != null and userId != ''">
+	            	and #{userId} =  b.owner_id
+	            </if>
 			  order by  a.create_time desc
 			  <if test="offset != null and limit != null">
 			     limit #{offset}, #{limit}
@@ -202,6 +206,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			  AND a.`device_id` = b.`device_id` 
 			  AND a.`place_id` = c.place_id 
 			  AND DATE_FORMAT(a.create_time, '%Y-%m-%d') = CURDATE() 
+			  <if test="placeId != null and placeId != ''"> a.place_id in(#{placeId})   </if>
+	            <if test="userId != null and userId != ''">
+	            	and #{userId} =  b.owner_id
+	            </if>
       </select>
     
     
