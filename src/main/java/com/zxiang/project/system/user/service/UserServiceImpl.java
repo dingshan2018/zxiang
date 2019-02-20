@@ -494,6 +494,11 @@ public class UserServiceImpl implements IUserService
 			return json;
 		}
 		json.put("msg", roles);
+		// 
+		User user = userMapper.selectUserById(wxUser.getUserId().longValue());
+		json.put("userId", wxUser.getUserId());
+		json.put("coperatorId", user.getPuserId());
+		json.put("coperatorType", user.getUserType());
 		return json;
 	}
 
