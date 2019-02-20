@@ -3,6 +3,7 @@ package com.zxiang.project.system.user.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import com.zxiang.common.utils.StringUtils;
 import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
 import com.zxiang.framework.web.domain.AjaxResult;
+import com.zxiang.project.business.place.domain.Place;
+import com.zxiang.project.business.place.service.IPlaceService;
 import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
 import com.zxiang.project.client.agent.domain.Agent;
@@ -76,6 +79,9 @@ public class UserServiceImpl implements IUserService
 
     @Autowired
     private PasswordService passwordService;
+    
+    @Autowired
+    private IPlaceService placeService;
 
     /**
      * 根据条件分页查询用户对象
@@ -499,6 +505,9 @@ public class UserServiceImpl implements IUserService
 		json.put("userId", wxUser.getUserId());
 		json.put("coperatorId", user.getPuserId());
 		json.put("coperatorType", user.getUserType());
+		if("03".equals(user.getUserType()) || "04".equals(user.getUserType())) {
+			json.put("placeId",getPlace(user.getUserType(),user.getPuserId()+""));
+		}
 		return json;
 	}
 
@@ -514,7 +523,55 @@ public class UserServiceImpl implements IUserService
 		}
 		return repairList;
 	}
-
+	
+    public String getPlace(String userType,String puserId) {
+    	//计算场所权限
+        Place placeParam = new Place();
+        List<Place> places = null;
+        if(userType.equals("03")) {
+     	   List<HashMap<String, Object>> zxagentList = selectzxagent(""+puserId);
+     	   String paramplace = "";
+     	   String level = "";
+     	   for(HashMap<String, Object> zxagent : zxagentList) {
+     		   level=zxagent.get("level")+"";
+     		   if(level.equals("1")) {
+     			   paramplace+=zxagent.get("city")+",";
+     		   }else {
+     			   paramplace+=zxagent.get("county")+",";
+     		   }
+     	   }
+     	   paramplace = paramplace.substring(0, paramplace.length() - 1); 
+     	   Map<String,Object> paramMap = new HashMap<String,Object>();
+     	   if(level.equals("1")) {
+     		   paramMap.put("city", ","+paramplace+",");
+    		   }else {
+    			   paramMap.put("county", ","+paramplace+",");
+    		   }
+            placeParam.setParams(paramMap);
+            places = placeService.selectPlaceList(placeParam);
+        }
+        if(userType.equals("04")) {
+     	   List<HashMap<String, Object>> zxrepairareaList = selectzxrepairarea(""+puserId);
+     	   String paramplace = "";
+            for(HashMap<String, Object> zxrepairarea : zxrepairareaList) {
+         	   paramplace+=zxrepairarea.get("county_id")+",";
+     	   }
+            paramplace = paramplace.substring(0, paramplace.length() - 1); 
+     	    Map<String,Object> paramMap = new HashMap<String,Object>();
+            paramMap.put("county", ","+paramplace+",");
+            placeParam.setParams(paramMap);
+            places = placeService.selectPlaceList(placeParam);
+        }
+        String personSet = "";
+	     if(places!=null && places.size()>0) {
+	     	for(Place p : places) {
+	     		personSet = personSet+p.getPlaceId()+",";
+	     	}
+	     	personSet =personSet.substring(0,personSet.length()-1);
+	     }
+    	return personSet;
+	}
+ 
 	@Override
 	public List<HashMap<String, Object>> selectzxagent(String agentId) {
 		return userMapper.selectzxagent(agentId);
