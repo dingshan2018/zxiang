@@ -127,7 +127,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 </if>
 			    <if test="params.county != null"><!-- 结束时间检索 -->
 				AND #{params.county} like CONCAT(',',p.county,',')
-			
 			 </if>
          </where>
          ORDER BY p.place_id DESC 
