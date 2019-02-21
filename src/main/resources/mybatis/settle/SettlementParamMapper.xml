@@ -184,7 +184,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			WHERE a.status = '1' 
 			  AND a.`device_id` = b.`device_id` 
 			  AND a.`place_id` = c.place_id 
-			  AND DATE_FORMAT(a.create_time, '%Y-%m-%d') = CURDATE()
+			 <!--  AND DATE_FORMAT(a.create_time, '%Y-%m-%d') = CURDATE() -->
 			   <if test="placeId != null and placeId != ''"> a.place_id in(#{placeId})   </if>
 	            <if test="userId != null and userId != ''">
 	            	and #{userId} =  b.owner_id
@@ -205,7 +205,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			WHERE a.status = '1' 
 			  AND a.`device_id` = b.`device_id` 
 			  AND a.`place_id` = c.place_id 
-			  AND DATE_FORMAT(a.create_time, '%Y-%m-%d') = CURDATE() 
+			 <!--  AND DATE_FORMAT(a.create_time, '%Y-%m-%d') = CURDATE()  -->
 			  <if test="placeId != null and placeId != ''"> AND CONCAT(',',#{placeId},',') like CONCAT(',',p.place_id,',') </if>
 	            <if test="userId != null and userId != ''">
 	            	and #{userId} =  b.owner_id
