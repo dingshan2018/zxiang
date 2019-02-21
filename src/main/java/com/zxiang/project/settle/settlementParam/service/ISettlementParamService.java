@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.annotations.Param;
-
 /**
  * 结算系数配置 服务层
  * 
@@ -89,4 +87,12 @@ public interface ISettlementParamService
 	public int updateplace(String placeId);
 	
 	public int deviceSave(Map<String, Object> map);
+
+	/**
+	 * 手机端投放设备提交审核方法
+	 * @param params
+	 * @return
+	 */
+	public int releaseDeviceSave(Map<String, Object> params);
+	
 }
