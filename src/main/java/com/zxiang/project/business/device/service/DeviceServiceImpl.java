@@ -37,6 +37,8 @@ import com.zxiang.project.record.deviceOrder.domain.DeviceOrder;
 import com.zxiang.project.record.deviceOrder.mapper.DeviceOrderMapper;
 import com.zxiang.project.record.tradeOrder.domain.TradeOrder;
 import com.zxiang.project.record.tradeOrder.mapper.TradeOrderMapper;
+import com.zxiang.project.system.config.domain.Config;
+import com.zxiang.project.system.config.mapper.ConfigMapper;
 
 /**
  * 共享设备 服务层实现
@@ -66,6 +68,8 @@ public class DeviceServiceImpl implements IDeviceService
 	private IDeviceReleaseAuditService deviceReleaseAuditService;
 	@Autowired
 	private IServerService serverService;
+	@Autowired
+	private ConfigMapper configMapper;
 	
 	/**
      * 查询共享设备信息
@@ -460,7 +464,11 @@ public class DeviceServiceImpl implements IDeviceService
 		paramsMap.put("city", "");
 		String param = Tools.paramsToString(paramsMap);
 		
-		String result = Tools.doPostForm(AdConstant.AD_URL_SAVETERMINAL, param);
+		Config config = new Config();
+        config.setConfigKey("AD_SCHEDULE_URL");
+        Config retConfig = configMapper.selectConfig(config);
+        String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue() : "http://mmedia.bp.zcloudtechs.cn";
+		String result = Tools.doPostForm(rootUrl+AdConstant.AD_URL_SAVETERMINAL, param);
 		return result;
 	}
 	
@@ -474,7 +482,11 @@ public class DeviceServiceImpl implements IDeviceService
 		paramsMap.put("terminalId", deviceId);
 		String param = Tools.paramsToString(paramsMap);
 		
-		String result = Tools.doPostForm(AdConstant.AD_URL_DELETETERMINAL, param);
+		Config config = new Config();
+        config.setConfigKey("AD_SCHEDULE_URL");
+        Config retConfig = configMapper.selectConfig(config);
+        String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue() : "http://mmedia.bp.zcloudtechs.cn";
+		String result = Tools.doPostForm(rootUrl+AdConstant.AD_URL_DELETETERMINAL, param);
 		return result;
 	}
 	
