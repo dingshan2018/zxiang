@@ -230,23 +230,25 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		
 		//---------------------设备昨日销售价格收入---------------------------------
 		if(isincome.equals("01")){
-			price = Double.valueOf(order.get("price")+"");
-			DeviceIncomeDaily deviceIncomeDaily = new DeviceIncomeDaily();
-			deviceIncomeDaily.setDeviceId(deviceId);
-			List<DeviceIncomeDaily> deviceIncomeDailylist = deviceIncomeDailyMapper.selectDeviceIncomeDaily(deviceIncomeDaily);
-			deviceIncomeDaily.setSellIncome(price);//销售价格
-			if(deviceIncomeDailylist.size()>0){
-				DeviceIncomeDaily income = deviceIncomeDailylist.get(0);
-				deviceIncomeDaily.setIncomeId(income.getIncomeId());
-				updateDeviceIncomeDaily(deviceIncomeDaily);
-			}else{
-				if(com.zxiang.common.utils.StringUtils.isNotNull(map.get("terminal_id"))) {
-					deviceIncomeDaily.setTerminalId(Integer.valueOf(map.get("terminal_id")+""));
+			if(com.zxiang.common.utils.StringUtils.isNotNull(order.get("price"))) {
+				price = Double.valueOf(order.get("price")+"");
+				DeviceIncomeDaily deviceIncomeDaily = new DeviceIncomeDaily();
+				deviceIncomeDaily.setDeviceId(deviceId);
+				List<DeviceIncomeDaily> deviceIncomeDailylist = deviceIncomeDailyMapper.selectDeviceIncomeDaily(deviceIncomeDaily);
+				deviceIncomeDaily.setSellIncome(price);//销售价格
+				if(deviceIncomeDailylist.size()>0){
+					DeviceIncomeDaily income = deviceIncomeDailylist.get(0);
+					deviceIncomeDaily.setIncomeId(income.getIncomeId());
+					updateDeviceIncomeDaily(deviceIncomeDaily);
+				}else{
+					if(com.zxiang.common.utils.StringUtils.isNotNull(map.get("terminal_id"))) {
+						deviceIncomeDaily.setTerminalId(Integer.valueOf(map.get("terminal_id")+""));
+					}
+					if(com.zxiang.common.utils.StringUtils.isNotNull(map.get("place_id"))) {
+						deviceIncomeDaily.setPlaceId(Integer.valueOf(map.get("place_id") + ""));
+					}
+					insertDeviceIncomeDaily(deviceIncomeDaily);
 				}
-				if(com.zxiang.common.utils.StringUtils.isNotNull(map.get("place_id"))) {
-					deviceIncomeDaily.setPlaceId(Integer.valueOf(map.get("place_id") + ""));
-				}
-				insertDeviceIncomeDaily(deviceIncomeDaily);
 			}
 		}
 	}
