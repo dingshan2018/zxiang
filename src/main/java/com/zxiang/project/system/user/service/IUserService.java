@@ -190,6 +190,8 @@ public interface IUserService
 	 */
 	public List<User> selectUserByCity(long city,long countyId);
 	
+	public List<HashMap<String, Object>> selectJoinPlace(String userId);
+	
     public List<HashMap<String, Object>> selectzxagent(String agentId);
 	
 	public List<HashMap<String, Object>> selectzxrepairarea(String repairId);

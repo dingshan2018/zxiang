@@ -203,7 +203,12 @@ public class UserRealm extends AuthorizingRealm
         		placeSets.add(p.getPlaceId()+"");
         	}
         }
-        
+        if(userType.equals("02")) {
+     	   List<HashMap<String, Object>> joinPlaceList = userService.selectJoinPlace(user.getUserId()+"");
+     	   for(HashMap<String, Object> joinPlace : joinPlaceList) {
+      		  placeSets.add(joinPlace.get("place_id")+"");
+     	   }
+        }
         //计算部门权限
         if(deptId>0) {
         	Dept dept = deptService.selectDeptById(deptId);

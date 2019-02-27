@@ -581,4 +581,9 @@ public class UserServiceImpl implements IUserService
 	public List<HashMap<String, Object>> selectzxrepairarea(String repairId) {
 		return userMapper.selectzxrepairarea(repairId);
 	}
+
+	@Override
+	public List<HashMap<String, Object>> selectJoinPlace(String userId) {
+		return userMapper.selectJoinPlace(userId);
+	}
 }

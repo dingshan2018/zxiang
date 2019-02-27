@@ -149,6 +149,8 @@ public interface UserMapper
 	 */
 	public List<User> selectUserByCity(long cityId);
 	
+	public List<HashMap<String, Object>> selectJoinPlace(String userId);
+	
 	public List<HashMap<String, Object>> selectzxagent(String agentId);
 	
 	public List<HashMap<String, Object>> selectzxrepairarea(String repairId);
