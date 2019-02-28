@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.zxiang.project.settle.settlementParam.mapper.SettlementParamMapper;
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.mapper.DeviceMapper;
@@ -197,17 +199,18 @@ public class SettlementParamServiceImpl implements ISettlementParamService
 	 * 手机端投放设备提交审核方法
 	 */
 	@Override
+	@Transactional
 	public int releaseDeviceSave(Map<String, Object> params) {
 		//投放流程修改，改为投放选择场所后需要审核，审核通过后才为投放状态
-		Integer deviceId = (Integer) params.get("deviceId");
-		Integer placeId = (Integer) params.get("placeId");
+		String deviceId = (String) params.get("deviceId");
+		String placeId = (String) params.get("placeId");
 		
-		Device deviceInfo = deviceMapper.selectDeviceById(deviceId);
+		Device deviceInfo = deviceMapper.selectDeviceById(Integer.parseInt(deviceId));
 		if(deviceInfo != null){
 			// 插入投放审批表,如果审核表已有设备数据则更新
-			DeviceReleaseAudit hasDevAudit = deviceReleaseAuditService.selectAuditByDeviceId(deviceId);
+			DeviceReleaseAudit hasDevAudit = deviceReleaseAuditService.selectAuditByDeviceId(Integer.parseInt(deviceId));
 			if(hasDevAudit != null){
-				hasDevAudit.setPlaceId(placeId);
+				hasDevAudit.setPlaceId(Integer.parseInt(placeId));
 				hasDevAudit.setApproved("0");
 				hasDevAudit.setApprovedRemark("");
 				hasDevAudit.setApprovedUser("");
@@ -216,8 +219,8 @@ public class SettlementParamServiceImpl implements ISettlementParamService
 				deviceReleaseAuditService.updateDeviceReleaseAudit(hasDevAudit);
 			}else{
 				DeviceReleaseAudit devReleaseAudit = new DeviceReleaseAudit();
-				devReleaseAudit.setDeviceId(deviceId);
-				devReleaseAudit.setPlaceId(placeId);
+				devReleaseAudit.setDeviceId(Integer.parseInt(deviceId));
+				devReleaseAudit.setPlaceId(Integer.parseInt(placeId));
 				devReleaseAudit.setCreateDate(new Date());
 				devReleaseAudit.setApproved("0");//待审核
 				devReleaseAudit.setDelFlag("0");
