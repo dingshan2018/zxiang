@@ -72,14 +72,10 @@ public class PlaceController extends BaseController
 	@GetMapping("/add")
 	public String add(ModelMap mmap)
 	{
-		User queryUser = new User();
-		List<User> userListAll = userService.selectUserList(queryUser);
+		List<User> userListAll = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,UserConstants.USER_TYPE_PARTNER,
+				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
 		mmap.put("userListAll", userListAll);
-		
 		//维修员送纸员根据场所选择了所在城市后进行加载
-		//queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
-		//List<User> userListRepair = userService.selectUserList(queryUser);
-		//mmap.put("userListRepair", userListRepair);
 		
 	    return prefix + "/add";
 	}
@@ -115,13 +111,10 @@ public class PlaceController extends BaseController
 		mmap.put("cityDropBoxList", areaService.selectDropBoxList(place.getProvince()));
 		mmap.put("countyDropBoxList", areaService.selectDropBoxList(place.getCity()));
 		
-		User queryUser = new User();
-		List<User> userListAll = userService.selectUserList(queryUser);
+		List<User> userListAll = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,UserConstants.USER_TYPE_PARTNER,
+				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
 		mmap.put("userListAll", userListAll);
 		
-		//维修员送纸员根据场所选择了所在城市后进行加载
-		//queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
-		//List<User> userListRepair = userService.selectUserList(queryUser);
 		List<User> userListRepair = userService.selectUserByCity(place.getCity(),place.getCounty());
 		mmap.put("userListRepair", userListRepair);
 		
