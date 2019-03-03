@@ -94,6 +94,10 @@ public class Device extends BaseEntity
 	
 	private String userId ;
 	
+	private String servicePointName;//服务网点名称
+	private String agentLevel1;//一级代理
+	private String agentLevel2;//二级代理
+	
 	public void setDeviceId(Integer deviceId) 
 	{
 		this.deviceId = deviceId;
@@ -437,6 +441,30 @@ public class Device extends BaseEntity
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public String getServicePointName() {
+		return servicePointName;
+	}
+
+	public void setServicePointName(String servicePointName) {
+		this.servicePointName = servicePointName;
+	}
+
+	public String getAgentLevel1() {
+		return agentLevel1;
+	}
+
+	public void setAgentLevel1(String agentLevel1) {
+		this.agentLevel1 = agentLevel1;
+	}
+
+	public String getAgentLevel2() {
+		return agentLevel2;
+	}
+
+	public void setAgentLevel2(String agentLevel2) {
+		this.agentLevel2 = agentLevel2;
 	}
 
 	public String toString() {

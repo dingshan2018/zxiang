@@ -45,7 +45,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          status,
          (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='device_status' AND sdd.dict_value=d.`status` ) statusName,
          release_status,del_flag, create_by, create_time, 
-         update_by, update_time from zx_device d
+         update_by, update_time,
+         (SELECT DISTINCT zr.repair_name FROM zx_repair zr WHERE zr.repair_id =
+         (SELECT p.`service_point` FROM `zx_place` p WHERE p.place_id=d.`place_id`)) servicePointName,
+          (SELECT DISTINCT za.agent_name FROM zx_agent za WHERE za.del_flag!=2 AND za.city 
+          =(SELECT p.`city` FROM `zx_place` p WHERE p.place_id=d.`place_id`) AND za.county IS NULL) agentLevel1,
+         (SELECT DISTINCT za.agent_name FROM zx_agent za WHERE za.del_flag!=2 AND za.city =
+         (SELECT p.`city` FROM `zx_place` p WHERE p.place_id=d.`place_id`) AND za.county =
+         (SELECT p.`county` FROM `zx_place` p WHERE p.place_id=d.`place_id`)) agentLevel2    
+          from zx_device d
     </sql>
 	
     <select id="selectDeviceList" parameterType="Device" resultMap="DeviceResult">

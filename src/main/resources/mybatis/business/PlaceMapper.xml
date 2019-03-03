@@ -65,7 +65,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          (select distinct u.user_name from sys_user u where u.user_id =p.`owner_id` ) ownerName,
         device_count, ct_bank,ct_account, ct_receiver, ct_phone, ct_identity, ct_rate, status, del_flag, note, 
         create_by, create_time, update_by, update_time,service_point,
-        (select distinct zr.repair_name from zx_repair zr where zr.repair_id =p.`service_point` ) servicePointName
+        (select distinct zr.repair_name from zx_repair zr where zr.repair_id =p.`service_point` ) servicePointName,
+        (SELECT DISTINCT za.agent_name FROM zx_agent za WHERE za.del_flag!=2 AND za.city =p.`city` AND za.county IS NULL) agentLevel1,
+        (SELECT DISTINCT za.agent_name FROM zx_agent za WHERE za.del_flag!=2 AND za.city =p.`city` AND za.county =p.`county` ) agentLevel2
          from zx_place p
     </sql>
 	

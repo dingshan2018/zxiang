@@ -98,6 +98,8 @@ public class Place extends BaseEntity
 	private String operatorName;
 	private String ownerName;
 	private String sceneName;
+	private String agentLevel1;
+	private String agentLevel2;
 	
 	public void setPlaceId(Integer placeId) 
 	{
@@ -492,6 +494,22 @@ public class Place extends BaseEntity
 
 	public void setServicePointName(String servicePointName) {
 		this.servicePointName = servicePointName;
+	}
+
+	public String getAgentLevel1() {
+		return agentLevel1;
+	}
+
+	public void setAgentLevel1(String agentLevel1) {
+		this.agentLevel1 = agentLevel1;
+	}
+
+	public String getAgentLevel2() {
+		return agentLevel2;
+	}
+
+	public void setAgentLevel2(String agentLevel2) {
+		this.agentLevel2 = agentLevel2;
 	}
 
 	public String toString() {
