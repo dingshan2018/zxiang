@@ -1,7 +1,9 @@
 package com.zxiang.project.business.place.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.business.place.domain.Place;
 import com.zxiang.project.business.place.service.IPlaceService;
+import com.zxiang.project.client.repair.domain.Repair;
+import com.zxiang.project.client.repair.service.IRepairService;
 import com.zxiang.project.system.area.service.IAreaService;
 import com.zxiang.project.system.user.domain.User;
 import com.zxiang.project.system.user.service.IUserService;
@@ -44,6 +48,8 @@ public class PlaceController extends BaseController
 	private IAreaService areaService;
 	@Autowired
 	private IUserService userService;
+	@Autowired
+	private IRepairService repairService;
 	
 	@RequiresPermissions("business:place:view")
 	@GetMapping()
@@ -115,8 +121,15 @@ public class PlaceController extends BaseController
 				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
 		mmap.put("userListAll", userListAll);
 		
-		List<User> userListRepair = userService.selectUserByCity(place.getCity(),place.getCounty());
-		mmap.put("userListRepair", userListRepair);
+		List<Repair> repairList = repairService.selectRepairByCity(place.getCity(),place.getCounty());
+		mmap.put("repairList", repairList);
+		//List<User> userListRepair = userService.selectUserByCity(place.getCity(),place.getCounty());
+		if(place.getServicePoint() != null){
+			Map<String, Object> qryParam = new HashMap<>();
+			qryParam.put("repairId", place.getServicePoint()+"");
+			List<User> userListRepair = userService.selectUserByRepairId(qryParam);
+			mmap.put("userListRepair", userListRepair);
+		}
 		
 	    return prefix + "/edit";
 	}

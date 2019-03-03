@@ -231,4 +231,14 @@ public class UserController extends BaseController
 		List<User> list  = userService.selectUserByCity(Long.parseLong(city),Long.parseLong(county));
 		return getDataTable(list);
     }
+	
+	/**
+	 * 根据服务商ID获取服务商员工
+	 */
+	@RequestMapping("/selectUserByRepairId")
+    @ResponseBody
+    public TableDataInfo selectUserByRepairId(@RequestBody Map<String, Object> params) {
+		List<User> list  = userService.selectUserByRepairId(params);
+		return getDataTable(list);
+    }
 }

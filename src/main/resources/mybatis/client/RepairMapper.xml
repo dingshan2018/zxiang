@@ -192,4 +192,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          select repair_id, repair_name,manager_id,manager_name from zx_repair where del_flag !=2 
     </select>
     
+    <select id="selectRepairByCountyOrCity" resultMap="RepairResult">
+        <include refid="selectRepairVo"/>
+        <where>  
+            <if test="countyId != null and countyId != ''"> and repair_id IN (SELECT repair_id FROM zx_repair_area WHERE county_id=#{countyId}) </if>
+            <if test="city != null and city != ''"> and repair_id IN (SELECT repair_id FROM zx_repair_area WHERE city_id=#{city})</if>
+        </where>
+    </select>
+    
 </mapper>

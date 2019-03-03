@@ -259,5 +259,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		   repair_id= #{repairId} 
     </select>
     
+    <!-- 根据服务商ID获取服务商员工 -->
+    <select id="selectUserByRepairId" parameterType="Long" resultMap="UserResult">
+		SELECT * FROM `sys_user` WHERE del_flag !=2 AND user_type='04' AND puser_id = #{repairId}
+    </select>
     
 </mapper> 

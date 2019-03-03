@@ -2,6 +2,7 @@ package com.zxiang.project.client.repair.mapper;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -75,5 +76,7 @@ public interface RepairMapper
 	 * @return
 	 */
 	public int updateBalance(@Param("repairId")Integer repairId,@Param("balance")BigDecimal balance,@Param("frozenBalance")BigDecimal frozenBalance);
+
+	public List<Repair> selectRepairByCountyOrCity(Map<String, Object> param);
 	
 }

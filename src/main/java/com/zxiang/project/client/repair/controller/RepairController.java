@@ -1,6 +1,7 @@
 package com.zxiang.project.client.repair.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -181,4 +182,16 @@ public class RepairController extends BaseController
 			return AjaxResult.error();
 		}
 	}
+	
+	/**
+	 * 根据城市查询服务网点
+	 */
+	@RequestMapping("/selectRepairByCity")
+    @ResponseBody
+    public TableDataInfo selectRepairByCity(@RequestBody Map<String, Object> params) {
+		String city = (String) params.get("city");
+		String county = (String) params.get("county");
+		List<Repair> list  = repairService.selectRepairByCity(Long.parseLong(city),Long.parseLong(county));
+		return getDataTable(list);
+    }
 }

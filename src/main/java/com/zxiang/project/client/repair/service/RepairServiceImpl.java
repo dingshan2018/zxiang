@@ -1,7 +1,9 @@
 package com.zxiang.project.client.repair.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -194,6 +196,23 @@ public class RepairServiceImpl implements IRepairService
 	@Override
 	public void deleteRepairArea(Integer repairAreaId) {
 		repairAreaMapper.deleteRepairArea(repairAreaId);
+	}
+
+	/**
+	 * 根据城市查询服务网点
+	 * 先根据区县查询，若没有则根据城市查询
+	 */
+	@Override
+	public List<Repair> selectRepairByCity(long city, long countyId) {
+		Map<String, Object> qryParam = new HashMap<>();
+		qryParam.put("countyId", countyId);
+		List<Repair> repairList = repairMapper.selectRepairByCountyOrCity(qryParam);
+		if(repairList == null || repairList.size() <= 0){
+			qryParam.clear();
+			qryParam.put("city", city);
+			repairList = repairMapper.selectRepairByCountyOrCity(qryParam);
+		}
+		return repairList;
 	}
 	
 }

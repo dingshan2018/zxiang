@@ -178,6 +178,19 @@
 				</div>
 			</div>
 			<div class="form-group">
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>服务网点：</label>
+				<div class="col-sm-8">
+					<select
+						id="servicePoint"
+						name="servicePoint"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
+						<option value="">---请选择---</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>维修员：</label>
 				<div class="col-sm-8">
 					<select
@@ -187,7 +200,6 @@
 						class="form-control block-plugin__select-picker selectpicker"
 						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
-						<option th:each="c:${userListRepair}"  th:value="${c.userId}" th:text="${c.userName}"/>
 					</select>
 				</div>
 			</div>
@@ -201,7 +213,6 @@
 						class="form-control block-plugin__select-picker selectpicker"
 						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
-						<option th:each="c:${userListRepair}"  th:value="${c.userId}" th:text="${c.userName}"/>
 					</select>
 				</div>
 			</div>
@@ -384,8 +395,13 @@
 	        })
 
 	        $("#county").change(function () {
-	        	//根据区域缩小维修人员选择范围
-	        	getRepairUserList();
+	        	//获取服务网点
+	        	getServicePointList();
+	        })
+	        
+	        $("#servicePoint").change(function () {
+	        	//根据服务商选择维修人员选择范围
+	        	getRepairUserListByRepairId();
 	        })
 
 	        var placeList = selectPlaceList();
@@ -439,6 +455,45 @@
             $("#county").append(str).selectpicker("refresh");
 	    }
 
+	  	//通过选择的区域获取服务网点，再根据服务网点获取维修员送纸员
+	    function getServicePointList() {
+	    	var city = $("#city option:selected").val();
+	        var county = $("#county option:selected").val();
+	        //判断区县这个下拉框选中的值是否为空
+	        if (county == "") {
+	            return;
+	        }
+	        $("#servicePoint").html("");
+	        var servicePoint = "<option value=''>---请选择---</option>";
+
+	        var servicePointList = selectservicePointBycounty(city,county);
+	        $.each(servicePointList, function (i, item) {
+	        	servicePoint += "<option value=" + item.repairId + ">" + item.repairName + "</option>";
+            })
+            //将数据添加到服务网点这个下拉框里面
+            $("#servicePoint").append(servicePoint).selectpicker("refresh");;
+	    }
+	  	//通过服务商获取维修员及送纸员
+	    function getRepairUserListByRepairId() {
+	    	var servicePoint = $("#servicePoint option:selected").val();
+	        //判断区县这个下拉框选中的值是否为空
+	        if (servicePoint == "") {
+	            return;
+	        }
+	        $("#repairId").html("");
+	        var repairStr = "<option value=''>---请选择---</option>";
+	        $("#supplyId").html("");
+	        var supplyStr = "<option value=''>---请选择---</option>";
+
+	        var repairUserList = selectUserByRepairId(servicePoint);
+	        $.each(repairUserList, function (i, item) {
+	        	repairStr += "<option value=" + item.userId + ">" + item.userName + "</option>";
+	        	supplyStr += "<option value=" + item.userId + ">" + item.userName + "</option>";
+            })
+            //将数据添加到区县这个下拉框里面
+            $("#repairId").append(repairStr).selectpicker("refresh");;
+	        $("#supplyId").append(supplyStr).selectpicker("refresh");;
+	    }
 	    //通过选择的区域获取维修员及送纸员
 	    function getRepairUserList() {
 	    	var city = $("#city option:selected").val();
@@ -461,7 +516,6 @@
             $("#repairId").append(repairStr).selectpicker("refresh");;
 	        $("#supplyId").append(supplyStr).selectpicker("refresh");;
 	    }
-
 
 		var prefix = ctx + "business/place"
 		$("#form-place-add").validate({
@@ -517,6 +571,9 @@
 					digits:true,
 					min:0,
 					max:100000
+				},
+				servicePoint:{
+					required:true,
 				},
 			},
 			messages: {

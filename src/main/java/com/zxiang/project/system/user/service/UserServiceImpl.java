@@ -586,4 +586,13 @@ public class UserServiceImpl implements IUserService
 	public List<HashMap<String, Object>> selectJoinPlace(String userId) {
 		return userMapper.selectJoinPlace(userId);
 	}
+
+	/**
+	 * 根据服务商ID获取服务商员工
+	 */
+	@Override
+	public List<User> selectUserByRepairId(Map<String, Object> params) {
+		String repairId = (String) params.get("repairId");
+		return userMapper.selectUserByRepairId(Long.parseLong(repairId));
+	}
 }

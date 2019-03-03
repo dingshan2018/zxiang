@@ -63,4 +63,7 @@ public interface IRepairService
 	/** 删除服务商网点区域**/
 	public void deleteRepairArea(Integer repairAreaId);
 	
+	/** 根据城市查询服务网点*/
+	public List<Repair> selectRepairByCity(long city, long countyId);
+	
 }

@@ -39,6 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="servicePoint"    column="service_point"    />
     </resultMap>
 	
 	<sql id="selectPlaceVo">
@@ -63,7 +64,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          owner_id,
          (select distinct u.user_name from sys_user u where u.user_id =p.`owner_id` ) ownerName,
         device_count, ct_bank,ct_account, ct_receiver, ct_phone, ct_identity, ct_rate, status, del_flag, note, 
-        create_by, create_time, update_by, update_time from zx_place p
+        create_by, create_time, update_by, update_time,service_point,
+        (select distinct zr.repair_name from zx_repair zr where zr.repair_id =p.`service_point` ) servicePointName
+         from zx_place p
     </sql>
 	
     <select id="selectPlaceList" parameterType="Place" resultMap="PlaceResult">
@@ -88,6 +91,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="packet != null and packet != ''"> and packet = #{packet}</if>
              <if test="tissuePrice != null and tissuePrice != ''"> and tissue_price = #{tissuePrice}</if>
              <if test="tissueLen != null and tissueLen != ''"> and tissue_len = #{tissueLen}</if>
+             <if test="servicePoint != null and servicePoint != ''"> and service_point = #{servicePoint}</if>
              <if test="repairId != null and repairId != ''"> and repair_id = #{repairId}</if>
              <if test="supplyId != null and supplyId != ''"> and supply_id = #{supplyId}</if>
              <if test="operatorId != null and operatorId != ''"> and operator_id = #{operatorId}</if>
@@ -156,6 +160,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="packet != null and packet != '' ">packet,</if>
 			<if test="tissuePrice != null and tissuePrice != '' ">tissue_price,</if>
 			<if test="tissueLen != null and tissueLen != '' ">tissue_len,</if>
+			<if test="servicePoint != null and servicePoint != '' ">service_point,</if>
 			<if test="repairId != null and repairId != '' ">repair_id,</if>
 			<if test="supplyId != null and supplyId != '' ">supply_id,</if>
 			<if test="operatorId != null and operatorId != '' ">operator_id,</if>
@@ -192,6 +197,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="packet != null and packet != ''">#{packet},</if>
 			<if test="tissuePrice != null and tissuePrice != ''">#{tissuePrice},</if>
 			<if test="tissueLen != null and tissueLen != ''">#{tissueLen},</if>
+			<if test="servicePoint != null and servicePoint != ''">#{servicePoint},</if>
 			<if test="repairId != null and repairId != ''">#{repairId},</if>
 			<if test="supplyId != null and supplyId != ''">#{supplyId},</if>
 			<if test="operatorId != null and operatorId != ''">#{operatorId},</if>
@@ -231,6 +237,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="packet != null  ">packet = #{packet},</if>
             <if test="tissuePrice != null  ">tissue_price = #{tissuePrice},</if>
             <if test="tissueLen != null  ">tissue_len = #{tissueLen},</if>
+            <if test="servicePoint != null  ">service_point = #{servicePoint},</if>
             <if test="repairId != null  ">repair_id = #{repairId},</if>
             <if test="supplyId != null  ">supply_id = #{supplyId},</if>
             <if test="operatorId != null  ">operator_id = #{operatorId},</if>

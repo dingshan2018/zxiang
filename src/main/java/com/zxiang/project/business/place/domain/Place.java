@@ -85,7 +85,9 @@ public class Place extends BaseEntity
 	private String updateBy;
 	/**  */
 	private Date updateTime;
-
+	/** 服务网点ID */
+	private Integer servicePoint;
+	private String servicePointName;//服务网点名称
 	
 	private String parentPlaceName;
 	private String provinceName;
@@ -474,6 +476,22 @@ public class Place extends BaseEntity
 
 	public void setSceneName(String sceneName) {
 		this.sceneName = sceneName;
+	}
+
+	public Integer getServicePoint() {
+		return servicePoint;
+	}
+
+	public void setServicePoint(Integer servicePoint) {
+		this.servicePoint = servicePoint;
+	}
+
+	public String getServicePointName() {
+		return servicePointName;
+	}
+
+	public void setServicePointName(String servicePointName) {
+		this.servicePointName = servicePointName;
 	}
 
 	public String toString() {

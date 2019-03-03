@@ -202,6 +202,44 @@ function selectUserBycounty(city,county){
     });
     return userList;
 }
+/** 根据服务商ID获取服务商员工*/
+function selectUserByRepairId(repairId){
+	var userList = [];
+	$.ajax({
+    	type: "post",
+    	contentType:"application/json",
+        dataType: "json",
+        url: ctx + "system/user/selectUserByRepairId",
+        data: JSON.stringify({ "repairId": repairId}),
+        async: false,
+        success: function (data) {
+        	userList = data.rows;
+        },
+        error: function () { alert("获取用户信息失败"); }
+    });
+    return userList;
+}
+
+/**
+ * 场所选择服务网点下拉框选择
+ * selectservicePointBycounty
+ */
+function selectservicePointBycounty(city,county){
+	var repairList = [];
+	$.ajax({
+    	type: "post",
+    	contentType:"application/json",
+        dataType: "json",
+        url: ctx + "client/repair/selectRepairByCity",
+        data: JSON.stringify({ "city": city,"county":county}),
+        async: false,
+        success: function (data) {
+        	repairList = data.rows;
+        },
+        error: function () { alert("获取服务网点信息失败"); }
+    });
+    return repairList;
+}
 
 /**地区下拉框,根据父级地区获取*/
 function selectAreaListByPid(parentAreaId){
