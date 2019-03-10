@@ -101,6 +101,16 @@ body.body-small .navbar-top-links li:last-child {
     width: auto;
     margin: 0;
 }
+.form-control.error ~ label.error{
+	z-index: 2;
+}
+.form-control.error ~ .btn.dropdown-toggle{
+	background-color: #fbe2e2;
+    border: 1px dotted #cc5965;
+    color: #c00;
+}
+
+
 .layui-laydate .layui-laydate-header i{
   height: 30px;
   line-height: 30px;
@@ -548,7 +558,7 @@ body.body-small.fixed-sidebar.mini-navbar .navbar-static-side {
 /*border-radius: 2px;*/
 /*}*/
 
-/*伸缩菜单*/
+/*浼哥缉鑿滃崟*/
 .fixed-sidebar.mini-navbar .nav li:hover>a> span.nav-label {
     top: 0px;
     padding: 10px 10px 10px 10px;
@@ -571,7 +581,7 @@ body.body-small.fixed-sidebar.mini-navbar .navbar-static-side {
     min-width: 140px;
     border-radius: 2px;
 }
-/*伸缩菜单结束*/
+/*浼哥缉鑿滃崟缁撴潫*/
 
 body.fixed-sidebar.mini-navbar .navbar-default .nav>li>.nav-second-level li a {
     font-size: 12px;
@@ -6792,7 +6802,7 @@ body.rtls .top-navigation .footer.fixed, body.rtls.top-navigation .footer.fixed 
 
   /*
    *
-   *   SKIN blue 若依管理系统
+   *   SKIN blue 鑻ヤ緷绠＄悊绯荤粺
    *   NAME - blue/purple
    *
   */
@@ -6935,7 +6945,7 @@ body.skin-blue {
 }
 /*
  *
- *   SKIN Yellow 若依管理系统
+ *   SKIN Yellow 鑻ヤ緷绠＄悊绯荤粺
  *   NAME - Yellow/purple
  *
 */
@@ -7492,7 +7502,7 @@ body.skin-yellow {
     padding:0;
 }
 
-/*编辑器按钮样式冲突*/
+/*缂栬緫鍣ㄦ寜閽牱寮忓啿绐�*/
 .note-editor .btn-default {
     color: #333333!important;
     background-color: #ffffff!important;
