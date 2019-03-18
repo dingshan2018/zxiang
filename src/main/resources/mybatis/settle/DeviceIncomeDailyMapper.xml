@@ -196,7 +196,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
       <select id="selectzxtissuerecordlist"  resultType="java.util.HashMap">
 	        SELECT 
-			  z.open_id,
 			  z.qr_schedule_id schedule_id,
 			   s.promotioner
 			FROM
@@ -207,25 +206,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			   and  z.`qr_schedule_id` = s.`ad_schedule_id`
 			    AND s.promotioner != ''
 			    AND s.promotioner IS NOT NULL
+			    and tissue_channel = '1'
 			AND DATE_FORMAT(z.create_time, '%Y-%m-%d') = DATE_FORMAT(
 			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
 			    '%Y-%m-%d'
-			  ) GROUP BY z.open_id
+			  ) 
     </select>
     
     
      <select id="selectzxtissuerecordAll"  resultType="int">
-	       SELECT COUNT(1)  FROM ( SELECT 
-			  open_id
+	        SELECT 
+			  COUNT(1)
 			FROM
 			  zx_tissue_record 
 			  WHERE 
 			   device_id = #{deviceId}
 			   and status = '1'
+			   and tissue_channel = '1'
 			AND DATE_FORMAT(create_time, '%Y-%m-%d') = DATE_FORMAT(
 			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
 			    '%Y-%m-%d'
-			  ) GROUP BY open_id) t
+			  )
     </select>
     
       
