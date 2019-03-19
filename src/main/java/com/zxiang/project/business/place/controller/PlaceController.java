@@ -200,6 +200,9 @@ public class PlaceController extends BaseController
 		List<User> userListRepair = userService.selectUserList(queryUser);
 		mmap.put("userListRepair", userListRepair);
 		
+		List<Repair> repairList = repairService.selectRepairByCity(place.getCity(),place.getCounty());
+		mmap.put("repairList", repairList);
+		
 	    return prefix + "/placeDetail";
 	}
 }
