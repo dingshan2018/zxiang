@@ -138,7 +138,7 @@
                       data-live-search="true"
                       class="form-control m-b block-plugin__select-picker selectpicker"
                       data-style="btn-white btn-sm">
-	                    <option value="">---请选择---</option>
+	                    <option value="0">---请选择---</option>
 	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{tissueLen}"></option>
 	                </select>
                 </div>
