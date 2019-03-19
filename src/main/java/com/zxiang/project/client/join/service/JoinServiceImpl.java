@@ -102,14 +102,14 @@ public class JoinServiceImpl implements IJoinService
 		join.setCreateTime(new Date());
 		join.setCreateBy(ShiroUtils.getLoginName());
 		// 设置默认参数
-		join.setAdRate(0.4f);
-		join.setAdCarouselRate(0.4f);
+		join.setAdRate(0f);
+		join.setAdCarouselRate(0f);
 		join.setScanRate(0.3f);
-		join.setPromDirectRate(1000f);
-		join.setPromIndirectRate(500f);
-		join.setPromPaperRate(0.7f);
-		join.setPromotionRate(0.15f);
-		join.setServeRate(0.025f);
+		join.setPromDirectRate(0f);
+		join.setPromIndirectRate(0f);
+		join.setPromPaperRate(0f);
+		join.setPromotionRate(0f);
+		join.setServeRate(0.02f);
 	    int i = joinMapper.insertJoin(join);
 	    if(user != null) {
 	    	user.setPuserId(join.getJoinId());
