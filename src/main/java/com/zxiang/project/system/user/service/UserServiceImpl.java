@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.PinyinUtil;
 import com.zxiang.common.utils.StringUtils;
 import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
@@ -200,6 +201,7 @@ public class UserServiceImpl implements IUserService
     public int insertUser(User user)
     {
         user.randomSalt();
+//        String password = PinyinUtil.getPinYinHeadChar(user.getUserName())+user.getPhonenumber();
         user.setPassword(passwordService.encryptPassword(user.getLoginName(), user.getPassword(), user.getSalt()));
         user.setCreateBy(ShiroUtils.getLoginName());
         int rows = 0;

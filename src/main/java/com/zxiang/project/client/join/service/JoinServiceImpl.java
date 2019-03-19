@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.PinyinUtil;
 import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
 import com.zxiang.project.client.join.domain.Join;
@@ -84,7 +85,8 @@ public class JoinServiceImpl implements IJoinService
 			user.setPhonenumber(join.getManagerPhone());
 			user.setLoginName(join.getManagerPhone());
 			user.setUserName(join.getManagerName());
-			user.setPassword(passwordService.encryptPassword(user.getLoginName(), join.getManagerPhone(), user.getSalt()));
+			String password = PinyinUtil.getPinYinHeadChar(join.getManagerName())+join.getManagerPhone();
+			user.setPassword(passwordService.encryptPassword(user.getLoginName(), password, user.getSalt()));
 			user.setCreateBy(ShiroUtils.getLoginName());
 			user.setUserType(UserConstants.USER_TYPE_JOIN);
 			

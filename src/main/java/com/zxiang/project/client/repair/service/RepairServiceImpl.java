@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.PinyinUtil;
 import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
 import com.zxiang.project.client.repair.domain.Repair;
@@ -90,7 +91,8 @@ public class RepairServiceImpl implements IRepairService
 			user.setPhonenumber(repair.getManagerPhone());
 			user.setLoginName(repair.getManagerPhone());
 			user.setUserName(repair.getManagerName());
-			user.setPassword(passwordService.encryptPassword(user.getLoginName(), repair.getManagerPhone(), user.getSalt()));
+			String password = PinyinUtil.getPinYinHeadChar(repair.getManagerName())+repair.getManagerPhone();
+			user.setPassword(passwordService.encryptPassword(user.getLoginName(), password, user.getSalt()));
 			user.setCreateBy(ShiroUtils.getLoginName());
 			user.setUserType(UserConstants.USER_TYPE_REPAIR);
 			Dept dept = new Dept();

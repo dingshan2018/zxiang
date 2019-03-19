@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.PinyinUtil;
 import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
 import com.zxiang.project.client.agent.domain.Agent;
@@ -89,7 +90,8 @@ public class AgentServiceImpl implements IAgentService
 			user.setPhonenumber(agent.getManagerPhone());
 			user.setLoginName(agent.getManagerPhone());
 			user.setUserName(agent.getManagerName());
-			user.setPassword(passwordService.encryptPassword(user.getLoginName(), agent.getManagerPhone(), user.getSalt()));
+			String password = PinyinUtil.getPinYinHeadChar(agent.getManagerName())+agent.getManagerPhone();
+			user.setPassword(passwordService.encryptPassword(user.getLoginName(), password, user.getSalt()));
 			user.setCreateBy(ShiroUtils.getLoginName());
 			user.setUserType(UserConstants.USER_TYPE_AGENT);
 			
