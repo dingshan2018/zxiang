@@ -74,6 +74,12 @@
                 </a>
                 <a class="btn btn-success btn-rounded btn-sm" onclick="materialUpload()" shiro:hasPermission="advertise:adSchedule:add"><i class="fa fa-download"></i>&nbsp;素材上传
                 </a>
+                <a class="btn btn-success btn-rounded btn-sm" onclick="editReleaseTimer()" shiro:hasPermission="advertise:adSchedule:editTimer"><i class="fa fa-download"></i>&nbsp;投放时段
+                </a>
+                <a class="btn btn-success btn-rounded btn-sm" onclick="editReleaseDevice()" shiro:hasPermission="advertise:adSchedule:editTerminal"><i class="fa fa-download"></i>&nbsp;投放终端
+                </a>
+                <a class="btn btn-success btn-rounded btn-sm" onclick="republish()" shiro:hasPermission="advertise:adSchedule:republish"><i class="fa fa-download"></i>&nbsp;发布
+                </a>
                 <!-- <a class="btn btn-success btn-rounded btn-sm" onclick="order()"><i class="fa fa-download"></i>&nbsp;预约
                 </a>
                 <a class="btn btn-success btn-rounded btn-sm" onclick="audit()" shiro:hasPermission="advertise:adSchedule:audit"><i class="fa fa-download"></i>&nbsp;审核
@@ -106,6 +112,7 @@
     var removeFlag = [[${@permission.hasPermi('advertise:adSchedule:remove')}]];
     var auditFlag = [[${@permission.hasPermi('advertise:adSchedule:audit')}]];//审核权限
     var releaseOnlineFlag = [[${@permission.hasPermi('advertise:adSchedule:releaseOnline')}]];//发布权限
+   // var republishFlag = [[${@permission.hasPermi('advertise:adSchedule:republish')}]]; //重新发布权限
     var prefix = ctx + 'advertise/adSchedule';
 
     $(function() {
@@ -183,7 +190,7 @@
 		                 actions.push('<a class="btn btn-info btn-xs '+ auditFlag + '" href="#" onclick="audit(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>审核</a> ');
 	            	 }else if(row.status == toBeReleased){
 		                 actions.push('<a class="btn btn-warning btn-xs '+ releaseOnlineFlag + '" href="#" onclick="releaseOnline(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>发布</a> ');
-	            	 }/* else if(row.status == toPlay){
+	            	 }/*else if(row.status == toPlay){
 	            		 return '待播放';
 	            	 }else if(row.status == "05"){
 	            		 return '已播放';
@@ -294,6 +301,11 @@
                     actions.push(
                         	'<a class="btn btn-info btn-xs" href="#" onclick="adDetail(\'' + row.adScheduleId +
                         	'\')"><i class="fa fa-edit"></i>详情</a> ');
+                    /*if(row.status == toPlay || row.status == hasPlay){
+                    	actions.push(
+                            	'<a class="btn btn-info btn-xs' + republishFlag + ''" href="#" onclick="republish(\'' + row.adScheduleId +
+                            	'\')"><i class="fa fa-edit"></i>更新广告</a> ');
+                    }*/
 					return actions.join('');
 	            }
 	        }]
@@ -321,6 +333,7 @@
     var toAudit= "02";//待审核
     var toBeReleased= "03";//待发布
     var toPlay= "04";//待播放
+  	var hasPlay = "05";//已播放
     var hasPay = "1";//已支付
     //终端广告01,页面H5广告02
     var type_terminal = "01";
@@ -393,7 +406,26 @@
     	var url = ctx + "advertise/adSchedule/materialUpload/" + rows;
     	$.modal.open("素材上传", url);
 	}
-
+  	
+  	//修改投放时间
+  	function editReleaseTimer(){
+  		var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+   		if (rows.length == 0) {
+   			$.modal.alertWarning(selectOneRecord);
+   			return;
+   		}
+   		if (rows.length > 1){
+   			$.modal.alertWarning(onlyOneRecord);
+   			return;
+   		}
+  	    var url = ctx + "advertise/adSchedule/materialUpload/" + rows;
+  	    createMenuItem(url, '广告投放时段');
+  	}
+	//修改投放设备
+  	function editReleaseDevice(){
+  		
+  	}
+  	
   	//预约,未使用，同function order(adScheduleId)
     function order() {
 		var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);

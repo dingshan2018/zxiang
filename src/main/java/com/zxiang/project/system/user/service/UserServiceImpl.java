@@ -429,8 +429,8 @@ public class UserServiceImpl implements IUserService
 	}
 
 	@Override
-	public List<User> getDropBoxUserList() {
-		return userMapper.selectDropBoxList();
+	public List<User> getDropBoxUserList(User user) {
+		return userMapper.selectDropBoxList(user);
 	}
 
 	@Override

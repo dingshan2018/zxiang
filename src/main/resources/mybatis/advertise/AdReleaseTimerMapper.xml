@@ -32,6 +32,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="createTime != null "> and create_time = #{createTime}</if>
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
              <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="params.releaseEndTime != null and params.releaseEndTime != ''"><!-- 有效投放时间检索 -->
+				AND date_format(release_end_time,'%y%m%d') &gt;= date_format(#{params.releaseEndTime},'%y%m%d')
+			 </if>
+			 <if test="params.releaseBeginTime != null and params.releaseBeginTime != ''"><!-- 有效投放时间检索 -->
+				AND date_format(release_begin_time,'%y%m%d') &lt;= date_format(#{params.releaseBeginTime},'%y%m%d')
+			 </if>
          </where>
     </select>
     
@@ -99,5 +105,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{adScheduleId}
         </foreach>
     </delete>
+    
+    <!-- 批量插入AdReleaseTimer表数据  -->
+    <insert id="batchInsert">
+		insert into zx_ad_release_timer(ad_schedule_id, release_begin_time,release_end_time,remark,create_by,create_time) values
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.adScheduleId},#{item.releaseBeginTime},#{item.releaseEndTime},#{item.remark},#{createBy},#{createTime})
+		</foreach>
+	</insert>
     
 </mapper>

@@ -60,6 +60,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         delete from zx_release_device where release_device_id = #{releaseDeviceId}
     </delete>
 	
+	<delete id="deleteReleaseDeviceByScheduleId" parameterType="Integer">
+        delete from zx_release_device where schedule_id = #{scheduleId}
+    </delete>
+	
     <delete id="deleteReleaseDeviceByIds" parameterType="String">
         delete from zx_release_device where release_device_id in 
         <foreach item="releaseDeviceId" collection="array" open="(" separator="," close=")">

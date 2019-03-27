@@ -215,8 +215,8 @@ public class UserController extends BaseController
 	 */
 	@RequestMapping("/getDropBoxUserList")
     @ResponseBody
-    public TableDataInfo getDropBoxUserList() {
-		List<User> list  = userService.getDropBoxUserList();
+    public TableDataInfo getDropBoxUserList(User user) {
+		List<User> list  = userService.getDropBoxUserList(user);
 		return getDataTable(list);
     }
 	

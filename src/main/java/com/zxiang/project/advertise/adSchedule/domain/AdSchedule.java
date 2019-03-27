@@ -68,6 +68,8 @@ public class AdSchedule extends BaseEntity
 	private String totalTime;
 	/**支付状态:0未支付；1已全部支付；2押金已支付  */
 	private String payStatus;
+	/**支付状态:0未发布；1已发布； */
+	private String releaseStatus;
 	/**H5广告URL  */
 	private String qrUrl;
 	
@@ -463,6 +465,14 @@ public class AdSchedule extends BaseEntity
 
 	public void setReleaserName(String releaserName) {
 		this.releaserName = releaserName;
+	}
+
+	public String getReleaseStatus() {
+		return releaseStatus;
+	}
+
+	public void setReleaseStatus(String releaseStatus) {
+		this.releaseStatus = releaseStatus;
 	}
 	
 }

@@ -261,6 +261,24 @@ public class AdScheduleController extends BaseController
 	}
 	
 	/**
+	 * 广告投放预约保存
+	 */
+	@RequiresPermissions("advertise:adSchedule:republish")
+	@Log(title = "广告投放变更", businessType = BusinessType.UPDATE)
+	@PostMapping("/republish")
+	@ResponseBody
+	public AjaxResult republish(AdSchedule adSchedule)
+	{
+		try {
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			return toAjax(adScheduleService.republish(adSchedule,operatorUser));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error();
+		}
+	}
+	
+	/**
 	 * 广告投放审核
 	 */
 	@GetMapping("/audit/{adScheduleId}")

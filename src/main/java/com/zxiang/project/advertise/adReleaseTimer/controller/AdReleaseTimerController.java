@@ -1,5 +1,6 @@
 package com.zxiang.project.advertise.adReleaseTimer.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -19,6 +20,9 @@ import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.advertise.adReleaseTimer.domain.AdReleaseTimer;
 import com.zxiang.project.advertise.adReleaseTimer.service.IAdReleaseTimerService;
+import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
+import com.zxiang.project.advertise.adSchedule.domain.ElementType;
+import com.zxiang.project.advertise.adSchedule.service.IAdScheduleService;
 
 /**
  * 广告投放时段 信息操作处理
@@ -34,6 +38,8 @@ public class AdReleaseTimerController extends BaseController
 	
 	@Autowired
 	private IAdReleaseTimerService adReleaseTimerService;
+	@Autowired
+	private IAdScheduleService adScheduleService;
 	
 	@RequiresPermissions("settle:adReleaseTimer:view")
 	@GetMapping()
@@ -53,6 +59,17 @@ public class AdReleaseTimerController extends BaseController
 		startPage();
         List<AdReleaseTimer> list = adReleaseTimerService.selectAdReleaseTimerList(adReleaseTimer);
 		return getDataTable(list);
+	}
+	
+	/**
+	 * 查询单条广告投放时段列表
+	 */
+	@RequiresPermissions("settle:adReleaseTimer:editTimer")
+	@GetMapping("/editTimer/{adScheduleId}")
+	public String editTimer(@PathVariable("adScheduleId") Integer adScheduleId, ModelMap mmap)
+	{
+
+	    return prefix + "/adReleaseTimer";
 	}
 	
 	/**
