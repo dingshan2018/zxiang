@@ -22,6 +22,14 @@ public class ReleaseDevice extends BaseEntity
 	private String releasePosition;
 	/** 设备ID */
 	private Integer deviceId;
+	
+	private String scheduleName;
+	
+	private String deviceCode;
+	
+	private String terminalCode;
+	
+	private String placeName;
 
 	public void setReleaseDeviceId(Integer releaseDeviceId) 
 	{
@@ -60,7 +68,41 @@ public class ReleaseDevice extends BaseEntity
 		return deviceId;
 	}
 
-    public String toString() {
+	
+	
+    public String getScheduleName() {
+		return scheduleName;
+	}
+
+	public void setScheduleName(String scheduleName) {
+		this.scheduleName = scheduleName;
+	}
+
+	public String getDeviceCode() {
+		return deviceCode;
+	}
+
+	public void setDeviceCode(String deviceCode) {
+		this.deviceCode = deviceCode;
+	}
+
+	public String getTerminalCode() {
+		return terminalCode;
+	}
+
+	public void setTerminalCode(String terminalCode) {
+		this.terminalCode = terminalCode;
+	}
+
+	public String getPlaceName() {
+		return placeName;
+	}
+
+	public void setPlaceName(String placeName) {
+		this.placeName = placeName;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("releaseDeviceId", getReleaseDeviceId())
             .append("scheduleId", getScheduleId())

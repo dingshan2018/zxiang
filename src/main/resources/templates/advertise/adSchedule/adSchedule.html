@@ -74,9 +74,9 @@
                 </a>
                 <a class="btn btn-success btn-rounded btn-sm" onclick="materialUpload()" shiro:hasPermission="advertise:adSchedule:add"><i class="fa fa-download"></i>&nbsp;素材上传
                 </a>
-                <a class="btn btn-success btn-rounded btn-sm" onclick="editReleaseTimer()" shiro:hasPermission="advertise:adSchedule:editTimer"><i class="fa fa-download"></i>&nbsp;投放时段
+                <a class="btn btn-success btn-rounded btn-sm" onclick="editReleaseTimer()" ><i class="fa fa-download"></i>&nbsp;投放时段
                 </a>
-                <a class="btn btn-success btn-rounded btn-sm" onclick="editReleaseDevice()" shiro:hasPermission="advertise:adSchedule:editTerminal"><i class="fa fa-download"></i>&nbsp;投放终端
+                <a class="btn btn-success btn-rounded btn-sm" onclick="editReleaseDevice()"><i class="fa fa-download"></i>&nbsp;投放终端
                 </a>
                 <a class="btn btn-success btn-rounded btn-sm" onclick="republish()" shiro:hasPermission="advertise:adSchedule:republish"><i class="fa fa-download"></i>&nbsp;发布
                 </a>
@@ -350,7 +350,7 @@
 		//$.modal.open("素材预览", url);
 
 		//用直接跳转页面链接的方式预览
-    	var http = "http://mmedia.bp.zcloudtechs.cn/mmedia/pageJump/go_programme_view.action?scheduleId=";
+    	var http = "http://mmedia.dingscm.com/mmedia/pageJump/go_programme_view.action?scheduleId=";
 		var sxScheduleId;
 		$.ajax({
 	        url: ctx + "advertise/adSchedule/selectSxScheduleId/" + adScheduleId,
@@ -418,12 +418,22 @@
    			$.modal.alertWarning(onlyOneRecord);
    			return;
    		}
-  	    var url = ctx + "advertise/adSchedule/materialUpload/" + rows;
+  	    var url = ctx + "advertise/adReleaseTimer/editTimer/" + rows;
   	    createMenuItem(url, '广告投放时段');
   	}
 	//修改投放设备
   	function editReleaseDevice(){
-  		
+  		var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+   		if (rows.length == 0) {
+   			$.modal.alertWarning(selectOneRecord);
+   			return;
+   		}
+   		if (rows.length > 1){
+   			$.modal.alertWarning(onlyOneRecord);
+   			return;
+   		}
+  	    var url = ctx + "advertise/releaseDevice/editDevice/" + rows;
+  	    createMenuItem(url, '广告投放设备');
   	}
   	
   	//预约,未使用，同function order(adScheduleId)

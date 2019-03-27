@@ -6,22 +6,23 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-adReleaseTimer-edit" th:object="${adReleaseTimer}">
             <input id="adReleaseTimerId" name="adReleaseTimerId" th:field="*{adReleaseTimerId}"  type="hidden">
+            <input id="adScheduleId" name="adScheduleId" th:field="*{adScheduleId}" class="form-control" type="hidden">
             <div class="form-group">	
-                <label class="col-sm-3 control-label">广告投放ID：</label>
+                <label class="col-sm-3 control-label">广告投放：</label>
                 <div class="col-sm-8">
-                    <input id="adScheduleId" name="adScheduleId" th:field="*{adScheduleId}" class="form-control" type="text">
+                    <input id="adScheduleName" name="adScheduleName" th:field="*{adScheduleName}" class="form-control" type="text" readonly>
                 </div>
             </div>
             <div class="form-group">	
                 <label class="col-sm-3 control-label">投放开始时间：</label>
                 <div class="col-sm-8">
-                    <input id="releaseBeginTime" name="releaseBeginTime" th:field="*{releaseBeginTime}" class="form-control" type="text">
+					<input type="text" class="time-input form-control date-time-picker" placeholder="开始时间" th:field="*{releaseBeginTime}"  name="releaseBeginTime" readonly/>
                 </div>
             </div>
             <div class="form-group">	
                 <label class="col-sm-3 control-label">投放结束时间：</label>
                 <div class="col-sm-8">
-                    <input id="releaseEndTime" name="releaseEndTime" th:field="*{releaseEndTime}" class="form-control" type="text">
+                    <input type="text" class="time-input form-control date-time-picker" placeholder="结束时间" th:field="*{releaseEndTime}"  name="releaseEndTime" readonly/>
                 </div>
             </div>
             <div class="form-group">	
@@ -30,30 +31,7 @@
                     <input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
                 </div>
             </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">创建者：</label>
-                <div class="col-sm-8">
-                    <input id="createBy" name="createBy" th:field="*{createBy}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">创建时间：</label>
-                <div class="col-sm-8">
-                    <input id="createTime" name="createTime" th:field="*{createTime}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">修改者：</label>
-                <div class="col-sm-8">
-                    <input id="updateBy" name="updateBy" th:field="*{updateBy}" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">	
-                <label class="col-sm-3 control-label">修改时间：</label>
-                <div class="col-sm-8">
-                    <input id="updateTime" name="updateTime" th:field="*{updateTime}" class="form-control" type="text">
-                </div>
-            </div>
+            
 			<div class="form-group">
 				<div class="form-control-static col-sm-offset-9">
 					<button type="submit" class="btn btn-primary">提交</button>
@@ -63,18 +41,76 @@
 		</form>
     </div>
     <div th:include="include::footer"></div>
+    <link th:href="@{/css/bootstrap-datetimepicker.min.css}" rel="stylesheet"/>
+    <script th:src="@{/js/bootstrap-datetimepicker.min.js}"></script>
+  	<script th:src="@{/js/bootstrap-datetimepicker.zh-CN.js}"></script>
     <script type="text/javascript">
-		var prefix = ctx + "settle/adReleaseTimer"
+		var prefix = ctx + "advertise/adReleaseTimer"
 		$("#form-adReleaseTimer-edit").validate({
 			rules:{
-				xxxx:{
+				releaseBeginTime:{
+					required:true,
+				},
+				releaseEndTime:{
 					required:true,
 				},
 			},
 			submitHandler: function(form) {
-				$.operate.save(prefix + "/edit", $('#form-adReleaseTimer-edit').serialize());
+				//$.operate.save(prefix + "/edit", $('#form-adReleaseTimer-edit').serialize());
+				var adScheduleId = $("#adScheduleId").val();
+	        	var beginTime = $("[name=\"releaseBeginTime\"]").val();
+	        	var endTime = $("[name=\"releaseEndTime\"]").val();
+	        	var adReleaseTimerId = $("#adReleaseTimerId").val();
+	        	var remark = $("#remark").val();
+	        	$.ajax({
+	        		cache : true,
+	        		type : "POST",
+	        		url : prefix + "/edit",
+	        		data : {
+	        			"adScheduleId" : adScheduleId,
+	        			"beginTime" : beginTime,
+	        			"endTime" : endTime,
+	        			"adReleaseTimerId": adReleaseTimerId,
+	        			"remark" : remark
+	        		},
+	        		async : false,
+	        		error : function(request) {
+	        			$.modal.alertError("系统错误");
+	        		},
+	        		success : function(data) {
+	        			$.operate.saveSuccess(data);
+	        		}
+	        	});
 			}
 		});
+		// 日期选择器初始化
+	    function initDateTimePicker (select) {
+	      $(select || '.date-time-picker').datetimepicker({
+	        language:  'zh-CN',
+	        //format: 'yyyy-mm-dd hh:ii',
+	        format: 'yyyy-mm-dd',
+	        todayBtn:  1,
+	        autoclose: true,
+	        todayHighlight: 1,
+	        startView: 2,
+	        minView:2,
+	        showMeridian: 1,
+	        minuteStep: 1
+	      }).on('changeDate', function(ev){
+          if (ev.target.name === "beginTime") {
+            var endTime = $("[name=\"endTime\"]").eq(0);
+            if (endTime.val() && new Date(endTime.val()) < ev.date) {
+              endTime.val("");
+            }
+            endTime.datetimepicker('setStartDate',ev.date);
+            
+            $("[name=\"releaseBeginTime\"]").val(ev.date)
+          }else{
+        	$("[name=\"releaseEndTime\"]").val(ev.date) 
+          }
+	      });
+	    }
+	    initDateTimePicker();
 	</script>
 </body>
 </html>

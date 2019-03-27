@@ -9,14 +9,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="scheduleId"    column="schedule_id"    />
         <result property="releasePosition"    column="release_position"    />
         <result property="deviceId"    column="device_id"    />
+        <result property="deviceCode"    column="device_code"    />
+        <result property="placeName"    column="name"    />
+        <result property="scheduleName"    column="schedule_name"    />
+        <result property="terminalCode"    column="terminal_code"    />
     </resultMap>
 	
 	<sql id="selectReleaseDeviceVo">
         select release_device_id, schedule_id, release_position, device_id from zx_release_device
     </sql>
+    <sql id="selectReleaseDeviceExVo">
+        select zrd.release_device_id, zas.schedule_name, zrd.schedule_id, zrd.release_position, zrd.device_id, zd.device_code,zt.terminal_code,zp.name from zx_release_device zrd left join zx_ad_schedule zas on zrd.schedule_id=zas.ad_schedule_id left join zx_device zd on zrd.device_id=zd.device_id left join zx_place zp on zd.place_id=zp.place_id left join zx_terminal zt on zd.terminal_id=zt.terminal_id
+    </sql>
 	
     <select id="selectReleaseDeviceList" parameterType="ReleaseDevice" resultMap="ReleaseDeviceResult">
-        <include refid="selectReleaseDeviceVo"/>
+        <include refid="selectReleaseDeviceExVo"/>
         <where>  
             <if test="releaseDeviceId != null and releaseDeviceId != ''"> and release_device_id = #{releaseDeviceId}</if>
              <if test="scheduleId != null and scheduleId != ''"> and schedule_id = #{scheduleId}</if>

@@ -27,25 +27,32 @@ import com.zxiang.project.advertise.releaseDevice.service.IReleaseDeviceService;
  * @date 2018-11-22
  */
 @Controller
-@RequestMapping("/settle/releaseDevice")
+@RequestMapping("/advertise/releaseDevice")
 public class ReleaseDeviceController extends BaseController
 {
-    private String prefix = "settle/releaseDevice";
+    private String prefix = "advertise/releaseDevice";
 	
 	@Autowired
 	private IReleaseDeviceService releaseDeviceService;
 	
-	@RequiresPermissions("settle:releaseDevice:view")
+	//@RequiresPermissions("advertise:releaseDevice:view")
 	@GetMapping()
 	public String releaseDevice()
 	{
 	    return prefix + "/releaseDevice";
 	}
 	
+	@GetMapping("/editDevice/{adScheduleId}")
+	public String editDevice(@PathVariable("adScheduleId") Integer adScheduleId, ModelMap mmap)
+	{
+		mmap.put("adScheduleId", adScheduleId);
+	    return prefix + "/releaseDevice";
+	}
+	
 	/**
 	 * 查询投放终端配置列表
 	 */
-	@RequiresPermissions("settle:releaseDevice:list")
+	//@RequiresPermissions("advertise:releaseDevice:list")
 	@PostMapping("/list")
 	@ResponseBody
 	public TableDataInfo list(ReleaseDevice releaseDevice)
@@ -67,7 +74,7 @@ public class ReleaseDeviceController extends BaseController
 	/**
 	 * 新增保存投放终端配置
 	 */
-	@RequiresPermissions("settle:releaseDevice:add")
+	//@RequiresPermissions("advertise:releaseDevice:add")
 	@Log(title = "投放终端配置", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
@@ -90,7 +97,7 @@ public class ReleaseDeviceController extends BaseController
 	/**
 	 * 修改保存投放终端配置
 	 */
-	@RequiresPermissions("settle:releaseDevice:edit")
+	//@RequiresPermissions("advertise:releaseDevice:edit")
 	@Log(title = "投放终端配置", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
@@ -102,7 +109,7 @@ public class ReleaseDeviceController extends BaseController
 	/**
 	 * 删除投放终端配置
 	 */
-	@RequiresPermissions("settle:releaseDevice:remove")
+	@RequiresPermissions("advertise:releaseDevice:remove")
 	@Log(title = "投放终端配置", businessType = BusinessType.DELETE)
 	@PostMapping( "/remove")
 	@ResponseBody

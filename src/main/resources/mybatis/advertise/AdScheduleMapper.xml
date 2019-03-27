@@ -90,12 +90,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="selectNeedReleaseSchedule" resultMap="AdScheduleResult">
         <include refid="selectOpSchedules"/>
-        where exists(select 1 from zx_ad_release_timer zarr where zarr.ad_schedule_id=zas.ad_schedule_id and zarr.release_begin_time <= now() and zarr.release_end_time >= now())
+        where exists(select 1 from zx_ad_release_timer zarr where zarr.ad_schedule_id=zas.ad_schedule_id and zarr.release_begin_time &lt;= now() and zarr.release_end_time &gt;= now())
         	and release_status='0'
     </select>
     <select id="selectNeedDeleteSchedule" resultMap="AdScheduleResult">
         <include refid="selectOpSchedules"/>
-        where not exists(select 1 from zx_ad_release_timer zarr where zarr.ad_schedule_id=zas.ad_schedule_id and zarr.release_begin_time <= now() and zarr.release_end_time >= now())
+        where not exists(select 1 from zx_ad_release_timer zarr where zarr.ad_schedule_id=zas.ad_schedule_id and zarr.release_begin_time &lt;= now() and zarr.release_end_time &gt;= now())
         	and release_status='1'
     </select>
 	
