@@ -1,11 +1,15 @@
 package com.zxiang.project.advertise.releaseDevice.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.security.ShiroUtils;
+import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
+import com.zxiang.project.advertise.adSchedule.mapper.AdScheduleMapper;
 import com.zxiang.project.advertise.releaseDevice.domain.ReleaseDevice;
 import com.zxiang.project.advertise.releaseDevice.mapper.ReleaseDeviceMapper;
 
@@ -20,7 +24,8 @@ public class ReleaseDeviceServiceImpl implements IReleaseDeviceService
 {
 	@Autowired
 	private ReleaseDeviceMapper releaseDeviceMapper;
-
+	@Autowired
+	private AdScheduleMapper adScheduleMapper;
 	/**
      * 查询投放终端配置信息
      * 
@@ -78,7 +83,29 @@ public class ReleaseDeviceServiceImpl implements IReleaseDeviceService
 	@Override
 	public int deleteReleaseDeviceByIds(String ids)
 	{
+		ReleaseDevice releaseDevice = releaseDeviceMapper.selectReleaseDeviceById(Integer.parseInt(Convert.toStrArray(ids)[0]));
+		AdSchedule schedule = adScheduleMapper.selectAdScheduleById(releaseDevice.getScheduleId());
+		if("01".equals(schedule.getReleasePosition())) {
+			schedule.setPayStatus("0");
+			schedule.setReleaseStatus("0");
+			schedule.setUpdateBy(ShiroUtils.getLoginName());
+			schedule.setUpdateTime(new Date());
+			adScheduleMapper.updateAdSchedule(schedule);
+		}
 		return releaseDeviceMapper.deleteReleaseDeviceByIds(Convert.toStrArray(ids));
+	}
+
+	@Override
+	public int batchInsert(List<ReleaseDevice> devices) {
+		AdSchedule schedule = adScheduleMapper.selectAdScheduleById(devices.get(0).getScheduleId());
+		if("01".equals(schedule.getReleasePosition())) {
+			schedule.setPayStatus("0");
+			schedule.setReleaseStatus("0");
+			schedule.setUpdateBy(ShiroUtils.getLoginName());
+			schedule.setUpdateTime(new Date());
+			adScheduleMapper.updateAdSchedule(schedule);
+		}
+		return releaseDeviceMapper.batchInsert(devices);
 	}
 	
 }

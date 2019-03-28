@@ -101,6 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="province != null and province != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.province = #{province})</if>
              <if test="city != null and city != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.city = #{city})</if>
              <if test="county != null and county != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.county = #{county})</if>
+         	 <if test="scheduleId != null"> and d.device_id not in(select zrd.device_id from zx_release_device zrd where zrd.schedule_id=#{scheduleId}) </if>
          </where>
          ORDER BY d.device_id DESC 
     </select>

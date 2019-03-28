@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
@@ -94,17 +95,42 @@ public class AdReleaseTimerController extends BaseController
 	@PostMapping("/add")
 	@ResponseBody
 	public AjaxResult addSave(AdReleaseTimer adReleaseTimer)
-	{		
+	{	
+		try {
+			adReleaseTimer.setReleaseBeginTime(
+					new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(adReleaseTimer.getBeginTime() + " 00:00:00"));
+			adReleaseTimer.setReleaseEndTime(
+					new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(adReleaseTimer.getEndTime() + " 23:59:59"));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		AdReleaseTimer timerParam = new AdReleaseTimer();
+		timerParam.setAdScheduleId(adReleaseTimer.getAdScheduleId());
+		List<AdReleaseTimer> releaseTimers = this.adReleaseTimerService.selectAdReleaseTimerList(timerParam);
+		Boolean repeatTime = false;
+		if(releaseTimers!=null && releaseTimers.size()>0) {
+			for(AdReleaseTimer timer : releaseTimers) {
+				if( adReleaseTimer.getReleaseBeginTime().getTime()>=timer.getReleaseBeginTime().getTime() && adReleaseTimer.getReleaseBeginTime().getTime()<=timer.getReleaseEndTime().getTime() ) {
+					repeatTime = true;
+					break;
+				}
+				if( adReleaseTimer.getReleaseEndTime().getTime()>=timer.getReleaseBeginTime().getTime() && adReleaseTimer.getReleaseEndTime().getTime()<=timer.getReleaseEndTime().getTime() ) {
+					repeatTime = true;
+					break;
+				}
+				if( adReleaseTimer.getReleaseBeginTime().getTime()<=timer.getReleaseBeginTime().getTime() && adReleaseTimer.getReleaseEndTime().getTime()>=timer.getReleaseEndTime().getTime() ) {
+					repeatTime = true;
+					break;
+				}
+			}
+		}
 		adReleaseTimer.setCreateBy(ShiroUtils.getLoginName());
 		adReleaseTimer.setCreateTime(new Date());
 		//todo 判断是否重复时段
-				try {
-					adReleaseTimer.setReleaseBeginTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(adReleaseTimer.getBeginTime()+" 00:00:00"));
-					adReleaseTimer.setReleaseEndTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(adReleaseTimer.getEndTime()+" 23:59:59"));
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		if(repeatTime) {
+			return error("存在重复时间日期");
+		}
 		return toAjax(adReleaseTimerService.insertAdReleaseTimer(adReleaseTimer));
 	}
 
@@ -128,9 +154,6 @@ public class AdReleaseTimerController extends BaseController
 	@ResponseBody
 	public AjaxResult editSave(AdReleaseTimer adReleaseTimer)
 	{	
-		adReleaseTimer.setUpdateBy(ShiroUtils.getLoginName());
-		adReleaseTimer.setUpdateTime(new Date());
-		//todo 判断是否重复时段
 		try {
 			adReleaseTimer.setReleaseBeginTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(adReleaseTimer.getBeginTime()+" 00:00:00"));
 			adReleaseTimer.setReleaseEndTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(adReleaseTimer.getEndTime()+" 23:59:59"));
@@ -138,6 +161,45 @@ public class AdReleaseTimerController extends BaseController
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		//todo 判断是否重复时段
+		AdReleaseTimer timerParam = new AdReleaseTimer();
+		timerParam.setAdScheduleId(adReleaseTimer.getAdScheduleId());
+		List<AdReleaseTimer> releaseTimers = this.adReleaseTimerService.selectAdReleaseTimerList(timerParam);
+		Boolean repeatTime = false;
+		if(releaseTimers!=null && releaseTimers.size()>0) {
+			for(AdReleaseTimer timer : releaseTimers) {
+				if(timer.getAdReleaseTimerId() == adReleaseTimer.getAdReleaseTimerId()) {
+					if(timer.getReleaseBeginTime().getTime()<=new Date().getTime()) {
+						adReleaseTimer.setReleaseBeginTime(timer.getReleaseBeginTime());
+					}
+					if(timer.getReleaseEndTime().getTime()<=new Date().getTime()) {
+						adReleaseTimer.setReleaseEndTime(timer.getReleaseEndTime());
+					}
+					if(timer.getReleaseBeginTime().getTime() == adReleaseTimer.getReleaseBeginTime().getTime() && timer.getReleaseEndTime().getTime() == adReleaseTimer.getReleaseEndTime().getTime()) {
+						return success();
+					}
+					continue;
+				}
+				if( adReleaseTimer.getReleaseBeginTime().getTime()>=timer.getReleaseBeginTime().getTime() && adReleaseTimer.getReleaseBeginTime().getTime()<=timer.getReleaseEndTime().getTime() ) {
+					repeatTime = true;
+					break;
+				}
+				if( adReleaseTimer.getReleaseEndTime().getTime()>=timer.getReleaseBeginTime().getTime() && adReleaseTimer.getReleaseEndTime().getTime()<=timer.getReleaseEndTime().getTime() ) {
+					repeatTime = true;
+					break;
+				}
+				if( adReleaseTimer.getReleaseBeginTime().getTime()<=timer.getReleaseBeginTime().getTime() && adReleaseTimer.getReleaseEndTime().getTime()>=timer.getReleaseEndTime().getTime() ) {
+					repeatTime = true;
+					break;
+				}
+			}
+		}
+		if(repeatTime) {
+			return error("存在重复时间日期，请检查");
+		}
+		adReleaseTimer.setUpdateBy(ShiroUtils.getLoginName());
+		adReleaseTimer.setUpdateTime(new Date());
 		return toAjax(adReleaseTimerService.updateAdReleaseTimer(adReleaseTimer));
 	}
 	
@@ -150,6 +212,13 @@ public class AdReleaseTimerController extends BaseController
 	@ResponseBody
 	public AjaxResult remove(String ids)
 	{		
+		String[] idArr = Convert.toStrArray(ids);
+		for(String id : idArr) {
+			AdReleaseTimer releaseTimer = adReleaseTimerService.selectAdReleaseTimerById(Integer.parseInt(id));
+			if(releaseTimer.getReleaseBeginTime().getTime()<=new Date().getTime()) {
+				return error("已经播放的时段，只能修改，禁止删除");
+			}
+		}
 		return toAjax(adReleaseTimerService.deleteAdReleaseTimerByIds(ids));
 	}
 	

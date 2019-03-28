@@ -30,6 +30,16 @@ public class ReleaseDevice extends BaseEntity
 	private String terminalCode;
 	
 	private String placeName;
+	
+	private String placeId;
+	
+	private Integer province;
+	
+	private Integer city;
+	
+	private Integer county;
+	
+	private String deviceIds;
 
 	public void setReleaseDeviceId(Integer releaseDeviceId) 
 	{
@@ -101,6 +111,38 @@ public class ReleaseDevice extends BaseEntity
 	public void setPlaceName(String placeName) {
 		this.placeName = placeName;
 	}
+	
+	public String getPlaceId() {
+		return placeId;
+	}
+
+	public void setPlaceId(String placeId) {
+		this.placeId = placeId;
+	}
+
+	public Integer getProvince() {
+		return province;
+	}
+
+	public void setProvince(Integer province) {
+		this.province = province;
+	}
+
+	public Integer getCity() {
+		return city;
+	}
+
+	public void setCity(Integer city) {
+		this.city = city;
+	}
+
+	public Integer getCounty() {
+		return county;
+	}
+
+	public void setCounty(Integer county) {
+		this.county = county;
+	}
 
 	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -110,4 +152,12 @@ public class ReleaseDevice extends BaseEntity
             .append("deviceId", getDeviceId())
             .toString();
     }
+
+	public String getDeviceIds() {
+		return deviceIds;
+	}
+
+	public void setDeviceIds(String deviceIds) {
+		this.deviceIds = deviceIds;
+	}
 }

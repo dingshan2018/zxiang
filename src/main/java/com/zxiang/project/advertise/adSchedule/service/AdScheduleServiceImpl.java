@@ -1056,12 +1056,70 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 	@Transactional
 	public int adPayByAccount(Integer adScheduleId, String operatorUser) {
 		logger.info("通过广告钱包支付费用,操作者:" + operatorUser + ",adScheduleId:" + adScheduleId);
-
+		
 		AdSchedule adSchedule = selectAdScheduleById(adScheduleId);
 		if (adSchedule != null) {
-			fundLogService.adPublishFrozen(adSchedule.getAdvertiser(),
-					new BigDecimal(Float.toString(adSchedule.getTotalPay())));
+			//区分修改投放元素重支付
+			String status = adSchedule.getStatus();
+			if(status.equals("04") || status.equals("05")) {//重新支付
+				// 计算已经使用金额 ad_release_record sum(price)
+				Map<String, Object> param = new HashMap<String, Object>();
+				param.put("scheduleId", adSchedule.getAdScheduleId());
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				param.put("endTime", df.format(new Date()));
+				Date createDate = new Date();
+				Float hasPay = this.releaseRecordMapper.getAdTotalPay(param);
+				// total_pay - sum(price) 为目前冻结金额
+				AdSchedule oldSchedule = this.adScheduleMapper.selectAdScheduleById(adSchedule.getAdScheduleId());
+				Float perPay = oldSchedule.getTotalPay() / oldSchedule.getReleaseTermNum() / oldSchedule.getReleaseDays();
+				Date deadLineDate = null;
+				int days = 0;
+				AdReleaseTimer timerParam = new AdReleaseTimer();
+				timerParam.setAdScheduleId(adScheduleId);
+				List<AdReleaseTimer> releaseTimers = this.adReleaseTimerMapper.selectAdReleaseTimerList(timerParam);
+				if(releaseTimers!=null && releaseTimers.size()>0) {
+					for(AdReleaseTimer timer:releaseTimers) {
+						if (deadLineDate == null) {
+							deadLineDate = timer.getReleaseEndTime();
+						}
+						// 取最后日期
+						deadLineDate = compareDate(deadLineDate, timer.getReleaseEndTime());
+						// 获取时间段之间的相差天数
+						days += differentDaysByMillisecond(timer.getReleaseBeginTime(), timer.getReleaseBeginTime());
+					}
+				}
+				Integer deviceNum = 0;
+				ReleaseDevice deviceParam = new ReleaseDevice();
+				deviceParam.setScheduleId(adScheduleId);
+				List<ReleaseDevice> releaseDevices = this.releaseDeviceMapper.selectReleaseDeviceList(deviceParam);
+				if(releaseDevices!=null) {
+					deviceNum = releaseDevices.size();
+				}
+				// 计算当前终端（计算当天需要修改）
+				// 投放终端数
+				adSchedule.setReleaseTermNum(deviceNum);
+				float ounpay = adSchedule.getTotalPay() - hasPay;
+				// 计算本次应冻结金额
+				float perpay = adSchedule.getTotalPay() / adSchedule.getReleaseDays() / adSchedule.getReleaseTermNum();
+				// unpay = 本次应冻结-上次已冻结
+				float unpay = perpay * deviceNum * days;
+				Advertise advertise = this.advertiseMapper.selectAdvertiseById(adSchedule.getAdvertiser());
+				if (unpay - ounpay > 0) {
+					// 如果unpay大于0,并且钱包金额足够，那么直接支付
+					float balance = advertise.getBalance().subtract(advertise.getFrozenBalance()).floatValue();
+					if (balance < (unpay - ounpay)) {
+						return 0;
+					} 
+				}
+				fundLogService.adPublishFrozen(adSchedule.getAdvertiser(),
+						new BigDecimal(Float.toString(unpay - ounpay)));
+			}else {//首次发布
+				fundLogService.adPublishFrozen(adSchedule.getAdvertiser(),
+						new BigDecimal(Float.toString(adSchedule.getTotalPay())));
+			}
 			adSchedule.setPayStatus("1");
+			adSchedule.setUpdateBy(operatorUser);
+			adSchedule.setUpdateTime(new Date());
 			return updateAdSchedule(adSchedule);
 		}
 		// 否则抛异常
@@ -1079,10 +1137,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		}
 		return "0";
 	}
-
-	/**
-	 * 变更广告终端
-	 */
+	
+	
 	@Override
 	public int republish(AdSchedule adSchedule, String operatorUser) throws Exception {
 
@@ -1094,182 +1150,53 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		param.put("endTime", df.format(new Date()));
 		Date createDate = new Date();
 		Float hasPay = this.releaseRecordMapper.getAdTotalPay(param);
-		// total_pay - sum(price) 为目前冻结金额
-		AdSchedule oldSchedule = this.adScheduleMapper.selectAdScheduleById(adSchedule.getAdScheduleId());
-		Float totalPay = oldSchedule.getTotalPay();
-		Float perPay = oldSchedule.getTotalPay() / oldSchedule.getReleaseTermNum() / oldSchedule.getReleaseDays();
 		// 计算当前时间（广告是当天就结账）
 		Integer adScheduleId = adSchedule.getAdScheduleId();
 
 		List<String> timeSlots = new ArrayList<>();
 		Date deadLineDate = null;
 		int days = 0;
-		String timeSlotArr = adSchedule.getTimeSlotArr();
+		AdReleaseTimer timerParam = new AdReleaseTimer();
+		timerParam.setAdScheduleId(adScheduleId);
 		// 判断时间段是否已经有播放记录，那么就修正releaseRecord
-		JSONArray timeSlotJsonArray = new JSONArray(timeSlotArr);
 		Boolean todayRelease = false;
-		List<AdReleaseTimer> newTimers = new ArrayList<AdReleaseTimer>();
-		for (int i = 0; i < timeSlotJsonArray.length(); i++) {
-			org.json.JSONObject time = timeSlotJsonArray.getJSONObject(i);
-			String beginTime = time.getString("beginTime");
-			String lastTime = time.getString("endTime");
-
-			AdReleaseTimer adReleaseTimer = new AdReleaseTimer();
-			adReleaseTimer.setAdScheduleId(adScheduleId);
-			adReleaseTimer.setReleaseBeginTime(yyyyMMddSFormat.parse(beginTime));
-			adReleaseTimer.setReleaseEndTime(yyyyMMddSFormat.parse(lastTime));
-			adReleaseTimer.setCreateBy(operatorUser);
-			adReleaseTimer.setCreateTime(new Date());
-			if (yyyyMMddSFormat.parse(beginTime).getTime() <= createDate.getTime()) {
-				todayRelease = true;
-			}
-			newTimers.add(adReleaseTimer);
-			HashMap<String, Object> timeSlot = new HashMap<>();
-			timeSlot.put("startDate", beginTime);
-			timeSlot.put("endDate", lastTime);
-			timeSlot.put("startTime", "00:00");
-			timeSlot.put("endTime", "23:59");
-			// Map转换成JSON
-			String jsonTimeSlot = JSON.toJSONString(timeSlot);
-			timeSlots.add(jsonTimeSlot);
-
-			if (deadLineDate == null) {
-				deadLineDate = yyyyMMddSFormat.parse(lastTime);
-			}
-
-			// 取最后日期
-			deadLineDate = compareDate(deadLineDate, yyyyMMddSFormat.parse(lastTime));
-
-			// 获取时间段之间的相差天数
-			days += differentDaysByMillisecond(yyyyMMddSFormat.parse(beginTime), yyyyMMddSFormat.parse(lastTime));
-		}
 		// 修改当天播放时间
 		AdReleaseTimer paramTimer = new AdReleaseTimer();
 		paramTimer.setAdScheduleId(adScheduleId);
 		Calendar cal = Calendar.getInstance();
 		List<AdReleaseTimer> releaseTimers = this.adReleaseTimerMapper.selectAdReleaseTimerList(paramTimer);
 		if (releaseTimers != null && releaseTimers.size() > 0) {
-			for (AdReleaseTimer oldTimer : releaseTimers) {
-				Date releaseBeginTime = oldTimer.getReleaseBeginTime();
-				Date releaseEndTime = oldTimer.getReleaseEndTime();
-				if (releaseBeginTime.getTime() < createDate.getTime()) {
-					if (releaseEndTime.getTime() >= new Date().getTime()) {
-						cal.setTime(new Date());
-						if (todayRelease) {// 修改时间段包含今天，需要立即发布
-							cal.add(Calendar.DAY_OF_YEAR, -1);
-						}
-						releaseEndTime = yyyyMMddSFormat.parse(df.format(cal.getTime()));
-						oldTimer.setReleaseEndTime(releaseEndTime);
-						this.adReleaseTimerMapper.updateAdReleaseTimer(oldTimer);
-					}
-				} else {// 非已经播放的区间，删除操作
-					this.adReleaseTimerMapper.deleteAdReleaseTimerById(oldTimer.getAdReleaseTimerId());
+			for(AdReleaseTimer releaseTimer:releaseTimers) {
+				
+				HashMap<String, Object> timeSlot = new HashMap<>();
+				timeSlot.put("startDate", yyyyMMddSFormat.format(releaseTimer.getReleaseBeginTime()));
+				timeSlot.put("endDate", yyyyMMddSFormat.format(releaseTimer.getReleaseEndTime()));
+				timeSlot.put("startTime", "00:00");
+				timeSlot.put("endTime", "23:59");
+				//Map转换成JSON
+				String jsonTimeSlot = JSON.toJSONString(timeSlot); 
+				timeSlots.add(jsonTimeSlot);
+				if(deadLineDate == null){
+					deadLineDate = yyyyMMddSFormat.parse(yyyyMMddSFormat.format(releaseTimer.getReleaseEndTime()));
 				}
+				
+				//取最后日期
+				deadLineDate = compareDate(deadLineDate, yyyyMMddSFormat.parse(yyyyMMddSFormat.format(releaseTimer.getReleaseEndTime())));
 			}
+		}else {
+			return 0;
 		}
-		adReleaseTimerMapper.batchInsert(newTimers);
-		// 1.插入广告投放范围表 一对一
-		// 删除旧的投放范围：
-		List<String> scheduleIds = new ArrayList<String>();
-		scheduleIds.add(adScheduleId + "");
-		this.adReleaseRangeMapper.deleteRangeByAdIds((String[]) scheduleIds.toArray());
-		AdReleaseRange adReleaseRange = new AdReleaseRange();
-		adReleaseRange.setAdScheduleId(adScheduleId);
-		String releaseType = adSchedule.getReleaseType();
-		adReleaseRange.setReleaseType(releaseType);
-		adReleaseRange.setCreateBy(operatorUser);
-		adReleaseRange.setCreateTime(new Date());
-		// 根据投放方式判断保存哪些字段:投放类型:0全部；1按地区；2按场所
-		if ("0".equals(releaseType)) {
-
-		} else if ("1".equals(releaseType)) {
-			adReleaseRange.setProvince(adSchedule.getProvince());
-			adReleaseRange.setCity(adSchedule.getCity());
-			adReleaseRange.setCounty(adSchedule.getCounty());
-		} else if ("2".equals(releaseType)) {
-			adReleaseRange.setPlaceGrade(adSchedule.getPlaceGrade());
-		}
-
-		String deviceIds = adSchedule.getDeviceIds();
-		int deviceNum = deviceIds.split(",").length;
-
-		adReleaseRange.setDevices(deviceIds);
-		adReleaseRangeMapper.insertAdReleaseRange(adReleaseRange);
-		// 4.插入zx_release_device表
-		this.releaseDeviceMapper.deleteReleaseDeviceByScheduleId(adScheduleId);
-		List<ReleaseDevice> releaseDeviceList = new ArrayList<ReleaseDevice>();
-		String[] devices = Convert.toStrArray(deviceIds);
-		for (String deviceId : devices) {
-			ReleaseDevice releaseDevice = new ReleaseDevice();
-			releaseDevice.setScheduleId(adScheduleId);
-			releaseDevice.setReleasePosition(adSchedule.getReleasePosition());
-			releaseDevice.setDeviceId(Integer.parseInt(deviceId));
-			releaseDeviceList.add(releaseDevice);
-		}
-		// 批量插入ReleaseDevice表数据
-		releaseDeviceMapper.batchInsert(releaseDeviceList);
-		// 计算当前终端（计算当天需要修改）
-		// 投放终端数
-		adSchedule.setReleaseTermNum(deviceNum);
-		float ounpay = adSchedule.getTotalPay() - hasPay;
-		// 计算本次应冻结金额
-		float perpay = adSchedule.getTotalPay() / adSchedule.getReleaseDays() / adSchedule.getReleaseTermNum();
-		// unpay = 本次应冻结-上次已冻结
-		float unpay = perpay * deviceNum * days;
-		Advertise advertise = this.advertiseMapper.selectAdvertiseById(adSchedule.getAdvertiser());
-		if (unpay - ounpay > 0) {
-			// 如果unpay大于0,并且钱包金额足够，那么直接支付
-			float balance = advertise.getBalance().subtract(advertise.getFrozenBalance()).floatValue();
-			if (balance > (unpay - ounpay)) {
-				// 插入支付金额
-				advertise.setFrozenBalance(advertise.getFrozenBalance().add(new BigDecimal(unpay - ounpay)));
-				advertise.setUpdateBy(operatorUser);
-				advertise.setUpdateTime(new Date());
-				this.advertiseMapper.updateAdvertise(advertise);
-				adSchedule.setPayStatus("1");
-				FundLog fundLog = new FundLog();
-				fundLog.setBalance(new DecimalFormat("#.##")
-						.format(advertise.getBalance().subtract(advertise.getFrozenBalance())));
-				fundLog.setClientId(adSchedule.getAdvertiser());
-				fundLog.setClientType("05");
-				fundLog.setContent("广告发布资金冻结");
-				fundLog.setCreateBy("调整广告投放");
-				fundLog.setCreateTime(new Date());
-				fundLog.setTotalFee(perPay + "");
-				fundLog.setType("5");
-				fundLog.setStatus("1");
-				SimpleDateFormat df1 = new SimpleDateFormat("yyyyMMddHHmmss");
-				fundLog.setSerial("5_" + adSchedule.getAdvertiser() + "_" + df1.format(new Date()));
-				this.fundLogMapper.insertFundLog(fundLog);
-
-			} else {
-
-				adSchedule.setPayStatus("0");
+		ReleaseDevice deviceParam = new ReleaseDevice();
+		deviceParam.setScheduleId(adScheduleId);
+		List<ReleaseDevice> releaseDevices = this.releaseDeviceMapper.selectReleaseDeviceList(deviceParam);
+		String deviceIds = "";
+		if(releaseDevices != null && releaseDevices.size()>0) {
+			for(ReleaseDevice releaseDevice:releaseDevices) {
+				deviceIds += ","+releaseDevice.getDeviceId();
 			}
-		} else if (unpay - ounpay < 0) {
-			// 如果unpay<0,将冻结金额解冻unpay金额
-			advertise.setFrozenBalance(advertise.getFrozenBalance().subtract(new BigDecimal(unpay - ounpay)));
-			advertise.setUpdateBy(operatorUser);
-			advertise.setUpdateTime(new Date());
-			this.advertiseMapper.updateAdvertise(advertise);
-			adSchedule.setPayStatus("1");
-			FundLog fundLog = new FundLog();
-			fundLog.setBalance(
-					new DecimalFormat("#.##").format(advertise.getBalance().subtract(advertise.getFrozenBalance())));
-			fundLog.setClientId(adSchedule.getAdvertiser());
-			fundLog.setClientType("05");
-			fundLog.setContent("广告发布资金解冻");
-			fundLog.setCreateBy("调整广告投放");
-			fundLog.setCreateTime(new Date());
-			fundLog.setTotalFee(perPay + "");
-			fundLog.setType("5");
-			fundLog.setStatus("1");
-			SimpleDateFormat df1 = new SimpleDateFormat("yyyyMMddHHmmss");
-			fundLog.setSerial("5_" + adSchedule.getAdvertiser() + "_" + df1.format(new Date()));
-			this.fundLogMapper.insertFundLog(fundLog);
-			adSchedule.setPayStatus("1");
+			deviceIds = deviceIds.substring(1);
 		}
-
+		
 		// 5.修改广告计划数据
 		if ("1".equals(adSchedule.getPayStatus()) && todayRelease) {
 			String retJson = republishSchedule(adSchedule.getAdScheduleId() + "", deviceIds, timeSlots.toString(),
@@ -1308,6 +1235,235 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 
 		return this.adScheduleMapper.updateAdSchedule(adSchedule);
 	}
+
+	/**
+	 * 变更广告终端
+	 */
+//	@Override
+//	public int republish(AdSchedule adSchedule, String operatorUser) throws Exception {
+//
+//		// 判断钱包金额是否足够
+//		// 计算已经使用金额 ad_release_record sum(price)
+//		Map<String, Object> param = new HashMap<String, Object>();
+//		param.put("scheduleId", adSchedule.getAdScheduleId());
+//		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+//		param.put("endTime", df.format(new Date()));
+//		Date createDate = new Date();
+//		Float hasPay = this.releaseRecordMapper.getAdTotalPay(param);
+//		// total_pay - sum(price) 为目前冻结金额
+//		AdSchedule oldSchedule = this.adScheduleMapper.selectAdScheduleById(adSchedule.getAdScheduleId());
+//		Float totalPay = oldSchedule.getTotalPay();
+//		Float perPay = oldSchedule.getTotalPay() / oldSchedule.getReleaseTermNum() / oldSchedule.getReleaseDays();
+//		// 计算当前时间（广告是当天就结账）
+//		Integer adScheduleId = adSchedule.getAdScheduleId();
+//
+//		List<String> timeSlots = new ArrayList<>();
+//		Date deadLineDate = null;
+//		int days = 0;
+//		String timeSlotArr = adSchedule.getTimeSlotArr();
+//		// 判断时间段是否已经有播放记录，那么就修正releaseRecord
+//		JSONArray timeSlotJsonArray = new JSONArray(timeSlotArr);
+//		Boolean todayRelease = false;
+//		List<AdReleaseTimer> newTimers = new ArrayList<AdReleaseTimer>();
+//		for (int i = 0; i < timeSlotJsonArray.length(); i++) {
+//			org.json.JSONObject time = timeSlotJsonArray.getJSONObject(i);
+//			String beginTime = time.getString("beginTime");
+//			String lastTime = time.getString("endTime");
+//
+//			AdReleaseTimer adReleaseTimer = new AdReleaseTimer();
+//			adReleaseTimer.setAdScheduleId(adScheduleId);
+//			adReleaseTimer.setReleaseBeginTime(yyyyMMddSFormat.parse(beginTime));
+//			adReleaseTimer.setReleaseEndTime(yyyyMMddSFormat.parse(lastTime));
+//			adReleaseTimer.setCreateBy(operatorUser);
+//			adReleaseTimer.setCreateTime(new Date());
+//			if (yyyyMMddSFormat.parse(beginTime).getTime() <= createDate.getTime()) {
+//				todayRelease = true;
+//			}
+//			newTimers.add(adReleaseTimer);
+//			HashMap<String, Object> timeSlot = new HashMap<>();
+//			timeSlot.put("startDate", beginTime);
+//			timeSlot.put("endDate", lastTime);
+//			timeSlot.put("startTime", "00:00");
+//			timeSlot.put("endTime", "23:59");
+//			// Map转换成JSON
+//			String jsonTimeSlot = JSON.toJSONString(timeSlot);
+//			timeSlots.add(jsonTimeSlot);
+//
+//			if (deadLineDate == null) {
+//				deadLineDate = yyyyMMddSFormat.parse(lastTime);
+//			}
+//
+//			// 取最后日期
+//			deadLineDate = compareDate(deadLineDate, yyyyMMddSFormat.parse(lastTime));
+//
+//			// 获取时间段之间的相差天数
+//			days += differentDaysByMillisecond(yyyyMMddSFormat.parse(beginTime), yyyyMMddSFormat.parse(lastTime));
+//		}
+//		// 修改当天播放时间
+//		AdReleaseTimer paramTimer = new AdReleaseTimer();
+//		paramTimer.setAdScheduleId(adScheduleId);
+//		Calendar cal = Calendar.getInstance();
+//		List<AdReleaseTimer> releaseTimers = this.adReleaseTimerMapper.selectAdReleaseTimerList(paramTimer);
+//		if (releaseTimers != null && releaseTimers.size() > 0) {
+//			for (AdReleaseTimer oldTimer : releaseTimers) {
+//				Date releaseBeginTime = oldTimer.getReleaseBeginTime();
+//				Date releaseEndTime = oldTimer.getReleaseEndTime();
+//				if (releaseBeginTime.getTime() < createDate.getTime()) {
+//					if (releaseEndTime.getTime() >= new Date().getTime()) {
+//						cal.setTime(new Date());
+//						if (todayRelease) {// 修改时间段包含今天，需要立即发布
+//							cal.add(Calendar.DAY_OF_YEAR, -1);
+//						}
+//						releaseEndTime = yyyyMMddSFormat.parse(df.format(cal.getTime()));
+//						oldTimer.setReleaseEndTime(releaseEndTime);
+//						this.adReleaseTimerMapper.updateAdReleaseTimer(oldTimer);
+//					}
+//				} else {// 非已经播放的区间，删除操作
+//					this.adReleaseTimerMapper.deleteAdReleaseTimerById(oldTimer.getAdReleaseTimerId());
+//				}
+//			}
+//		}
+//		adReleaseTimerMapper.batchInsert(newTimers);
+//		// 1.插入广告投放范围表 一对一
+//		// 删除旧的投放范围：
+//		List<String> scheduleIds = new ArrayList<String>();
+//		scheduleIds.add(adScheduleId + "");
+//		this.adReleaseRangeMapper.deleteRangeByAdIds((String[]) scheduleIds.toArray());
+//		AdReleaseRange adReleaseRange = new AdReleaseRange();
+//		adReleaseRange.setAdScheduleId(adScheduleId);
+//		String releaseType = adSchedule.getReleaseType();
+//		adReleaseRange.setReleaseType(releaseType);
+//		adReleaseRange.setCreateBy(operatorUser);
+//		adReleaseRange.setCreateTime(new Date());
+//		// 根据投放方式判断保存哪些字段:投放类型:0全部；1按地区；2按场所
+//		if ("0".equals(releaseType)) {
+//
+//		} else if ("1".equals(releaseType)) {
+//			adReleaseRange.setProvince(adSchedule.getProvince());
+//			adReleaseRange.setCity(adSchedule.getCity());
+//			adReleaseRange.setCounty(adSchedule.getCounty());
+//		} else if ("2".equals(releaseType)) {
+//			adReleaseRange.setPlaceGrade(adSchedule.getPlaceGrade());
+//		}
+//
+//		String deviceIds = adSchedule.getDeviceIds();
+//		int deviceNum = deviceIds.split(",").length;
+//
+//		adReleaseRange.setDevices(deviceIds);
+//		adReleaseRangeMapper.insertAdReleaseRange(adReleaseRange);
+//		// 4.插入zx_release_device表
+//		this.releaseDeviceMapper.deleteReleaseDeviceByScheduleId(adScheduleId);
+//		List<ReleaseDevice> releaseDeviceList = new ArrayList<ReleaseDevice>();
+//		String[] devices = Convert.toStrArray(deviceIds);
+//		for (String deviceId : devices) {
+//			ReleaseDevice releaseDevice = new ReleaseDevice();
+//			releaseDevice.setScheduleId(adScheduleId);
+//			releaseDevice.setReleasePosition(adSchedule.getReleasePosition());
+//			releaseDevice.setDeviceId(Integer.parseInt(deviceId));
+//			releaseDeviceList.add(releaseDevice);
+//		}
+//		// 批量插入ReleaseDevice表数据
+//		releaseDeviceMapper.batchInsert(releaseDeviceList);
+//		// 计算当前终端（计算当天需要修改）
+//		// 投放终端数
+//		adSchedule.setReleaseTermNum(deviceNum);
+//		float ounpay = adSchedule.getTotalPay() - hasPay;
+//		// 计算本次应冻结金额
+//		float perpay = adSchedule.getTotalPay() / adSchedule.getReleaseDays() / adSchedule.getReleaseTermNum();
+//		// unpay = 本次应冻结-上次已冻结
+//		float unpay = perpay * deviceNum * days;
+//		Advertise advertise = this.advertiseMapper.selectAdvertiseById(adSchedule.getAdvertiser());
+//		if (unpay - ounpay > 0) {
+//			// 如果unpay大于0,并且钱包金额足够，那么直接支付
+//			float balance = advertise.getBalance().subtract(advertise.getFrozenBalance()).floatValue();
+//			if (balance > (unpay - ounpay)) {
+//				// 插入支付金额
+//				advertise.setFrozenBalance(advertise.getFrozenBalance().add(new BigDecimal(unpay - ounpay)));
+//				advertise.setUpdateBy(operatorUser);
+//				advertise.setUpdateTime(new Date());
+//				this.advertiseMapper.updateAdvertise(advertise);
+//				adSchedule.setPayStatus("1");
+//				FundLog fundLog = new FundLog();
+//				fundLog.setBalance(new DecimalFormat("#.##")
+//						.format(advertise.getBalance().subtract(advertise.getFrozenBalance())));
+//				fundLog.setClientId(adSchedule.getAdvertiser());
+//				fundLog.setClientType("05");
+//				fundLog.setContent("广告发布资金冻结");
+//				fundLog.setCreateBy("调整广告投放");
+//				fundLog.setCreateTime(new Date());
+//				fundLog.setTotalFee(perPay + "");
+//				fundLog.setType("5");
+//				fundLog.setStatus("1");
+//				SimpleDateFormat df1 = new SimpleDateFormat("yyyyMMddHHmmss");
+//				fundLog.setSerial("5_" + adSchedule.getAdvertiser() + "_" + df1.format(new Date()));
+//				this.fundLogMapper.insertFundLog(fundLog);
+//
+//			} else {
+//
+//				adSchedule.setPayStatus("0");
+//			}
+//		} else if (unpay - ounpay < 0) {
+//			// 如果unpay<0,将冻结金额解冻unpay金额
+//			advertise.setFrozenBalance(advertise.getFrozenBalance().subtract(new BigDecimal(unpay - ounpay)));
+//			advertise.setUpdateBy(operatorUser);
+//			advertise.setUpdateTime(new Date());
+//			this.advertiseMapper.updateAdvertise(advertise);
+//			adSchedule.setPayStatus("1");
+//			FundLog fundLog = new FundLog();
+//			fundLog.setBalance(
+//					new DecimalFormat("#.##").format(advertise.getBalance().subtract(advertise.getFrozenBalance())));
+//			fundLog.setClientId(adSchedule.getAdvertiser());
+//			fundLog.setClientType("05");
+//			fundLog.setContent("广告发布资金解冻");
+//			fundLog.setCreateBy("调整广告投放");
+//			fundLog.setCreateTime(new Date());
+//			fundLog.setTotalFee(perPay + "");
+//			fundLog.setType("5");
+//			fundLog.setStatus("1");
+//			SimpleDateFormat df1 = new SimpleDateFormat("yyyyMMddHHmmss");
+//			fundLog.setSerial("5_" + adSchedule.getAdvertiser() + "_" + df1.format(new Date()));
+//			this.fundLogMapper.insertFundLog(fundLog);
+//			adSchedule.setPayStatus("1");
+//		}
+//
+//		// 5.修改广告计划数据
+//		if ("1".equals(adSchedule.getPayStatus()) && todayRelease) {
+//			String retJson = republishSchedule(adSchedule.getAdScheduleId() + "", deviceIds, timeSlots.toString(),
+//					yyyyMMddSFormat.format(deadLineDate), "UPDATE");
+//			AdHttpResult adHttp = Tools.analysisResult(retJson);
+//			if (AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())) {
+//				JSONObject data = (JSONObject) adHttp.get("data");
+//				List<JSONObject> adUrls = (List<JSONObject>) data.get("adUrls");
+//				for (JSONObject jsonObject : adUrls) {
+//					String adUrl = jsonObject.getString("adUrl");
+//					String terminalId = jsonObject.getString("terminalId");
+//					// 2.下发更改广告主题
+//					String[] ndeviceIds = Convert.toStrArray(terminalId);
+//					if (ndeviceIds.length > 0) {
+//						// 保存广告URL链接
+//						int updateNum = deviceMapper.updateAdUrlByTid(adUrl, ndeviceIds);
+//						logger.info("成功更新:" + updateNum + " 条设备adUrl数据");
+//						for (String deviceId : ndeviceIds) {
+//							try {
+//								// 下发广告更新主题命令
+//								adIssued(deviceId, adUrl);
+//							} catch (Exception e) {
+//								e.printStackTrace();
+//							}
+//						}
+//					}
+//				}
+//				adSchedule.setReleaseStatus("1");// 已发布
+//			} else {
+//				logger.error("调用审核通过下发排期计划接口失败!" + adHttp.toString());
+//				throw new RRException("调用排期接口失败!");
+//			}
+//		} else {
+//			adSchedule.setReleaseStatus("0");// 未发布
+//		}
+//
+//		return this.adScheduleMapper.updateAdSchedule(adSchedule);
+//	}
 
 	/**
 	 * 每天定时扫描未投放广告

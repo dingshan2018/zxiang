@@ -98,6 +98,8 @@ public class Device extends BaseEntity
 	private String agentLevel1;//一级代理
 	private String agentLevel2;//二级代理
 	
+	private Integer scheduleId;
+	
 	public void setDeviceId(Integer deviceId) 
 	{
 		this.deviceId = deviceId;
@@ -494,4 +496,12 @@ public class Device extends BaseEntity
             .append("updateTime", getUpdateTime())
             .toString();
     }
+
+	public Integer getScheduleId() {
+		return scheduleId;
+	}
+
+	public void setScheduleId(Integer scheduleId) {
+		this.scheduleId = scheduleId;
+	}
 }

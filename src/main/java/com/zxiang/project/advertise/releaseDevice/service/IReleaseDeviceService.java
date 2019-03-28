@@ -52,4 +52,6 @@ public interface IReleaseDeviceService
      */
 	public int deleteReleaseDeviceByIds(String ids);
 	
+	public int batchInsert(List<ReleaseDevice> devices);
+	
 }

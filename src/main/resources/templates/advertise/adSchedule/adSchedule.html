@@ -72,14 +72,16 @@
               	</a>
                 <a class="btn btn-success btn-rounded btn-sm" onclick="exportModule()"><i class="fa fa-download"></i>&nbsp;导出
                 </a>
-                <a class="btn btn-success btn-rounded btn-sm" onclick="materialUpload()" shiro:hasPermission="advertise:adSchedule:add"><i class="fa fa-download"></i>&nbsp;素材上传
+                <a class="btn btn-warning btn-rounded btn-sm" onclick="materialUpload()" shiro:hasPermission="advertise:adSchedule:add"><i class="fa fa-search"></i>&nbsp;素材上传
                 </a>
-                <a class="btn btn-success btn-rounded btn-sm" onclick="editReleaseTimer()" ><i class="fa fa-download"></i>&nbsp;投放时段
+                <a class="btn btn-info btn-rounded btn-sm" onclick="editReleaseTimer()" ><i class="fa fa-edit"></i>&nbsp;投放时段
                 </a>
-                <a class="btn btn-success btn-rounded btn-sm" onclick="editReleaseDevice()"><i class="fa fa-download"></i>&nbsp;投放终端
+                <a class="btn btn-primary btn-rounded btn-sm" onclick="editReleaseDevice()"><i class="fa fa-edit"></i>&nbsp;投放终端
                 </a>
-                <a class="btn btn-success btn-rounded btn-sm" onclick="republish()" shiro:hasPermission="advertise:adSchedule:republish"><i class="fa fa-download"></i>&nbsp;发布
+                <!--  
+                <a class="btn btn-success btn-rounded btn-sm" onclick="republish()"><i class="fa fa-download"></i>&nbsp;重新发布
                 </a>
+                -->
                 <!-- <a class="btn btn-success btn-rounded btn-sm" onclick="order()"><i class="fa fa-download"></i>&nbsp;预约
                 </a>
                 <a class="btn btn-success btn-rounded btn-sm" onclick="audit()" shiro:hasPermission="advertise:adSchedule:audit"><i class="fa fa-download"></i>&nbsp;审核
@@ -190,7 +192,9 @@
 		                 actions.push('<a class="btn btn-info btn-xs '+ auditFlag + '" href="#" onclick="audit(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>审核</a> ');
 	            	 }else if(row.status == toBeReleased){
 		                 actions.push('<a class="btn btn-warning btn-xs '+ releaseOnlineFlag + '" href="#" onclick="releaseOnline(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>发布</a> ');
-	            	 }/*else if(row.status == toPlay){
+	            	 }
+	            	 
+	            	 /*else if(row.status == toPlay){
 	            		 return '待播放';
 	            	 }else if(row.status == "05"){
 	            		 return '已播放';
@@ -297,10 +301,16 @@
                     actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.adScheduleId + '\')"><i class="fa fa-remove"></i>删除</a>'); */
                     actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="preview(\'' + row.adScheduleId +
                     	'\')"><i class="fa fa-search"></i>素材预览</a> ');
-                    actions.push('<a class="btn btn-warning btn-xs" onclick="adPayByAccount(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>支付</a> ');
+                    
                     actions.push(
                         	'<a class="btn btn-info btn-xs" href="#" onclick="adDetail(\'' + row.adScheduleId +
                         	'\')"><i class="fa fa-edit"></i>详情</a> ');
+                    if(row.payStatus=='0'){
+                    	actions.push('<a class="btn btn-warning btn-xs" onclick="adPayByAccount(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>支付</a> ');
+                    }
+                    if(row.releaseStatus == '0'){
+                    	actions.push('<a class="btn btn-warning btn-xs" onclick="republish(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>发布</a> ');
+                    }
                     /*if(row.status == toPlay || row.status == hasPlay){
                     	actions.push(
                             	'<a class="btn btn-info btn-xs' + republishFlag + ''" href="#" onclick="republish(\'' + row.adScheduleId +
@@ -464,6 +474,38 @@
   	}
   	//行数据预约方法
     function order(adScheduleId) {
+    	var adSchedule = getAdScheduleInfo(adScheduleId);
+    	//终端广告才判断是否有素材，H5广告不判断是否有素材
+      	if(adSchedule.releasePosition == type_terminal){
+      		var batch = getMaxBatch(adScheduleId);
+       		if (batch <= 0) {
+       			$.modal.alertWarning(noMaterial);
+       	        return;
+       		}
+       		//判断还有哪种模板元素没有上传素材
+       		var allType = judgeAllType(adScheduleId);
+       		if(allType != "allHas"){
+       			if(allType == "error"){
+       				$.modal.alertWarning("暂不能预约,请联系管理员!");
+           	        return;
+       			}else{
+       				$.modal.alertWarning("您还有模板元素为 '"+allType+ "' 的素材类型未上传,请先上传!");
+           	        return;
+       			}
+       		}
+       		
+      	}
+
+      	var hasOrder = getOrderNum(adScheduleId);
+   		if (hasOrder > 0) {
+   			$.modal.alertWarning("该广告已预约过!");
+   	        return;
+   		}
+   		var url = ctx + "advertise/adSchedule/order/" + adScheduleId;
+    	$.modal.open("广告投放预约", url);
+  	}
+  	
+    function republish(adScheduleId) {
     	var adSchedule = getAdScheduleInfo(adScheduleId);
     	//终端广告才判断是否有素材，H5广告不判断是否有素材
       	if(adSchedule.releasePosition == type_terminal){

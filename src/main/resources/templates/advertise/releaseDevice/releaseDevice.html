@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <head th:include="include :: header"></head>
 <body class="gray-bg">
-    <div class="container-div">
+    <div class="container-div"> 
     <div class="col-sm-12 select-info">
       <form id="terminal-form">
         <div class="select-list">
@@ -20,28 +20,8 @@
               </select>
             </li>
             <li>
-              <span class="select-item-name">设备资产编号：</span>
-              <input type="text" name="deviceSn" id="deviceSn"/>
-            </li>
-            <li>
-              <span class="select-item-name">设备状态：</span>
-              <select
-                id="status"
-                name="status"
-                th:with="type=${@dict.getType('device_status')}"
-                data-live-search="true"
-                class="block-plugin__select-picker selectpicker"
-                data-style="btn-white btn-sm">
-				<option value="">全部</option>
-				<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" 
-				th:disabled="${dict.dictValue == '04'}"></option>
-			  </select>
-            </li>
-            <li class="select-time">
-              <label class="select-item-name">投放时间： </label>
-              <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
-              <span>-</span>
-              <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+              <span class="select-item-name">设备编号：</span>
+              <input type="text" name="deviceCode" id="deviceCode"/>
             </li>
             <li class="select-cascade">
               <span class="select-item-name">省：</span>
@@ -85,10 +65,10 @@
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 			<input type="text" id="adScheduleId" style="display:none" th:value="${adScheduleId}"/>
 			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" >
-				<i class="fa fa-plus"></i> 新增
+				<i class="fa fa-plus"></i> 增加终端
 			</a>
 			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" >
-				<i class="fa fa-trash-o"></i> 删除
+				<i class="fa fa-trash-o"></i> 批量删除
 			</a>
 		</div>
 			
@@ -101,6 +81,7 @@
         var editFlag = true;//[[${@permission.hasPermi('settle:releaseDevice:edit')}]];
         var removeFlag = true;//[[${@permission.hasPermi('settle:releaseDevice:remove')}]];
         var prefix = ctx + "advertise/releaseDevice"
+        var scheduleId = $('#adScheduleId').val();
       //投放场所下拉框数据
         var placeList = selectPlaceList();
         $.each(placeList, function (i) {
@@ -120,12 +101,13 @@
         });
         $(function() {
             var options = {
-                url: prefix + "/list",
-                createUrl: prefix + "/add",
+                url: prefix + "/list2/"+scheduleId,
+                createUrl: prefix + "/add/"+scheduleId,
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "投放终端配置",
                 queryParams: queryParams,
+                search: false,
                 columns: [{
 		            checkbox: true
 		        },
@@ -179,7 +161,12 @@
         });
         function queryParams(params) {
 			return {
-				scheduleId:  $('#adScheduleId').val()
+				scheduleId:  scheduleId,
+				placeId: $('#placeId').val(),
+				deviceCode: $('#deviceCode').val(),
+				province: $('#province option:selected').val(),
+				city: $('#city option:selected').val(),
+				county: $('#county option:selected').val()
 			};
 		}
         function proviceBind () {

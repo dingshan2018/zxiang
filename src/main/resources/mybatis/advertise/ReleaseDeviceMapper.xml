@@ -25,10 +25,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectReleaseDeviceList" parameterType="ReleaseDevice" resultMap="ReleaseDeviceResult">
         <include refid="selectReleaseDeviceExVo"/>
         <where>  
-            <if test="releaseDeviceId != null and releaseDeviceId != ''"> and release_device_id = #{releaseDeviceId}</if>
-             <if test="scheduleId != null and scheduleId != ''"> and schedule_id = #{scheduleId}</if>
-             <if test="releasePosition != null and releasePosition != ''"> and release_position = #{releasePosition}</if>
-             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+            <if test="releaseDeviceId != null and releaseDeviceId != ''"> and zrd.release_device_id = #{releaseDeviceId}</if>
+             <if test="scheduleId != null and scheduleId != ''"> and zrd.schedule_id = #{scheduleId}</if>
+             <if test="releasePosition != null and releasePosition != ''"> and zrd.release_position = #{releasePosition}</if>
+             <if test="deviceId != null and deviceId != ''"> and zrd.device_id = #{deviceId}</if>
+             <if test="deviceCode != null and deviceCode != ''"> and zd.device_code = #{deviceCode}</if>
+             <if test="placeId != null and placeId != ''"> and zd.place_id = #{placeId}</if>
+             <if test="province != null"> and zp.province = #{province}</if>
+             <if test="city != null"> and zp.city = #{city}</if>
+             <if test="county != null"> and zp.county = #{county}</if>
          </where>
     </select>
     
