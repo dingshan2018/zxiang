@@ -12,6 +12,7 @@ import com.zxiang.project.advertise.adReleaseTimer.domain.AdReleaseTimer;
 import com.zxiang.project.advertise.adReleaseTimer.mapper.AdReleaseTimerMapper;
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
 import com.zxiang.project.advertise.adSchedule.mapper.AdScheduleMapper;
+import com.zxiang.project.advertise.utils.constant.AdConstant;
 
 /**
  * 广告投放时段 服务层实现
@@ -61,8 +62,8 @@ public class AdReleaseTimerServiceImpl implements IAdReleaseTimerService
 	{
 		AdSchedule schedule = adScheduleMapper.selectAdScheduleById(adReleaseTimer.getAdScheduleId());
 		if("01".equals(schedule.getReleasePosition())) {
-			schedule.setPayStatus("0");
-			schedule.setReleaseStatus("0");
+			schedule.setPayStatus(AdConstant.AD_WAIT_PAY);
+			schedule.setReleaseStatus(AdConstant.AD_REPUBLISH);
 			schedule.setUpdateBy(ShiroUtils.getLoginName());
 			schedule.setUpdateTime(new Date());
 			adScheduleMapper.updateAdSchedule(schedule);
@@ -81,8 +82,8 @@ public class AdReleaseTimerServiceImpl implements IAdReleaseTimerService
 	{
 		AdSchedule schedule = adScheduleMapper.selectAdScheduleById(adReleaseTimer.getAdScheduleId());
 		if("01".equals(schedule.getReleasePosition())) {
-			schedule.setPayStatus("0");
-			schedule.setReleaseStatus("0");
+			schedule.setPayStatus(AdConstant.AD_WAIT_PAY);
+			schedule.setReleaseStatus(AdConstant.AD_REPUBLISH);
 			schedule.setUpdateBy(ShiroUtils.getLoginName());
 			schedule.setUpdateTime(new Date());
 			adScheduleMapper.updateAdSchedule(schedule);
@@ -99,7 +100,6 @@ public class AdReleaseTimerServiceImpl implements IAdReleaseTimerService
 	@Override
 	public int deleteAdReleaseTimerByIds(String ids)
 	{
-		
 		return adReleaseTimerMapper.deleteAdReleaseTimerByIds(Convert.toStrArray(ids));
 	}
 	

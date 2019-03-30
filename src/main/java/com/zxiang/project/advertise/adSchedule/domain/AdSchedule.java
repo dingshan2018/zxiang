@@ -92,6 +92,8 @@ public class AdSchedule extends BaseEntity
 	private String promotionerName;
 	private String releaserName;
 	
+	private Date deadLine;
+	
 	public void setAdScheduleId(Integer adScheduleId) 
 	{
 		this.adScheduleId = adScheduleId;
@@ -473,6 +475,14 @@ public class AdSchedule extends BaseEntity
 
 	public void setReleaseStatus(String releaseStatus) {
 		this.releaseStatus = releaseStatus;
+	}
+
+	public Date getDeadLine() {
+		return deadLine;
+	}
+
+	public void setDeadLine(Date deadLine) {
+		this.deadLine = deadLine;
 	}
 	
 }
