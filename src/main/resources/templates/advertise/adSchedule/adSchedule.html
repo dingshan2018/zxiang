@@ -74,9 +74,9 @@
                 </a>
                 <a class="btn btn-warning btn-rounded btn-sm" onclick="materialUpload()" shiro:hasPermission="advertise:adSchedule:add"><i class="fa fa-search"></i>&nbsp;素材上传
                 </a>
-                <a class="btn btn-info btn-rounded btn-sm" onclick="editReleaseTimer()" ><i class="fa fa-edit"></i>&nbsp;投放时段
+                <a class="btn btn-info btn-rounded btn-sm" onclick="editReleaseTimer()" shiro:hasPermission="advertise:adSchedule:editReleaseTimer"><i class="fa fa-edit"></i>&nbsp;投放时段
                 </a>
-                <a class="btn btn-primary btn-rounded btn-sm" onclick="editReleaseDevice()"><i class="fa fa-edit"></i>&nbsp;投放终端
+                <a class="btn btn-primary btn-rounded btn-sm" onclick="editReleaseDevice()" shiro:hasPermission="advertise:adSchedule:editReleaseDevice"><i class="fa fa-edit"></i>&nbsp;投放终端
                 </a>
               </li>
             </ul>
