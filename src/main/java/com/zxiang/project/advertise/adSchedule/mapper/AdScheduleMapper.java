@@ -75,4 +75,16 @@ public interface AdScheduleMapper
 	 */
 	public int checkNameUnique(String scheduleName);
 	
+	/**
+	 * 查询今日需要上架广告
+	 * @return
+	 */
+	public List<AdSchedule> selectNeedReleaseSchedule();
+	
+	/**
+	 * 查询今日需要下架广告
+	 * @return
+	 */
+	public List<AdSchedule> selectNeedDeleteSchedule();
+	
 }

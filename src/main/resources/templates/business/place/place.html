@@ -176,11 +176,11 @@
             },
             {
               field: 'agentLevel1',
-              title: '一级代理'
+              title: '地级市代'
             },
             {
               field: 'agentLevel2',
-              title: '二级代理'
+              title: '区县代理'
             },
             {
               field: 'repairName',
@@ -193,10 +193,6 @@
             {
               field: 'operatorName',
               title: '经办人'
-            },
-            {
-              field: 'ownerName',
-              title: '机主'
             },
             {
               field: 'deviceCount',
@@ -234,6 +230,7 @@
         $('#bootstrap-table').bootstrapTable('hideColumn', 'lon');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'lat');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'packet');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'operatorName');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'parentPlaceName');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'tissuePrice');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'tissueLen');

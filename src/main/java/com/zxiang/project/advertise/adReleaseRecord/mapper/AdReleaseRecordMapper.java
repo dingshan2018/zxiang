@@ -3,7 +3,8 @@ package com.zxiang.project.advertise.adReleaseRecord.mapper;
 import com.zxiang.project.advertise.adReleaseRecord.domain.AdReleaseRecord;
 
 import java.util.HashMap;
-import java.util.List;	
+import java.util.List;
+import java.util.Map;	
 
 /**
  * 广告投放设备 数据层
@@ -67,5 +68,18 @@ public interface AdReleaseRecordMapper
 	 * @return
 	 */
 	public List queryExport(HashMap<String, String> params);
+	
+	/**
+	 * 查询广告已经播放天数
+	 * @param scheduleId
+	 * @return
+	 */
+	public int countAdReleaseDay(Long scheduleId);
+	/**
+	 * 获取对应广告已经播放金额总和
+	 * @param param
+	 * @return
+	 */
+	public Float getAdTotalPay(Map<String, Object> param);
 	
 }

@@ -203,20 +203,37 @@ public class FundLogServiceImpl implements IFundLogService {
 		if(advertise.getBalance() == null || advertise.getBalance().subtract(frozenBalance).compareTo(money) == -1) { // 可用余额 = 账户余额 - 冻结余额
 			throw new RRException("账户余额不足");
 		}
-		BigDecimal balance = advertise.getBalance().setScale(2, BigDecimal.ROUND_HALF_UP);
-		frozenBalance = frozenBalance.add(money).setScale(2, BigDecimal.ROUND_HALF_UP);
-		advertiseMapper.updateBalance(advertiseId, balance, frozenBalance); // 更新账户余额
-		// 生成资金流水记录
-		FundLog fundLog = new FundLog();
-		fundLog.setBalance(balance.subtract(frozenBalance).toString()); // 可用余额
-		fundLog.setTotalFee("-"+money);
-		fundLog.setClientId(advertiseId);
-		fundLog.setClientType(UserConstants.USER_TYPE_ADVERTISE);
-		fundLog.setContent("广告发布资金冻结");
-		fundLog.setType(Const.FUND_FREEZE);
-		fundLog.setStatus(Const.STATUS_SUCCESS);
-		fundLog.setCreateTime(new Date());
-		fundLogMapper.insertFundLog(fundLog);
+		if(frozenBalance.floatValue()<0) {//解冻
+			BigDecimal balance = advertise.getBalance().setScale(2, BigDecimal.ROUND_HALF_UP);
+			frozenBalance = frozenBalance.subtract(money).setScale(2, BigDecimal.ROUND_HALF_UP);
+			advertiseMapper.updateBalance(advertiseId, balance, frozenBalance); // 更新账户余额
+			// 生成资金流水记录
+			FundLog fundLog = new FundLog();
+			fundLog.setBalance(balance.subtract(frozenBalance).toString()); // 可用余额
+			fundLog.setTotalFee(money+"");
+			fundLog.setClientId(advertiseId);
+			fundLog.setClientType(UserConstants.USER_TYPE_ADVERTISE);
+			fundLog.setContent("调整广告发布资金解冻");
+			fundLog.setType(Const.FUND_FREEZE);
+			fundLog.setStatus(Const.STATUS_SUCCESS);
+			fundLog.setCreateTime(new Date());
+			fundLogMapper.insertFundLog(fundLog);
+		}else {//冻结
+			BigDecimal balance = advertise.getBalance().setScale(2, BigDecimal.ROUND_HALF_UP);
+			frozenBalance = frozenBalance.add(money).setScale(2, BigDecimal.ROUND_HALF_UP);
+			advertiseMapper.updateBalance(advertiseId, balance, frozenBalance); // 更新账户余额
+			// 生成资金流水记录
+			FundLog fundLog = new FundLog();
+			fundLog.setBalance(balance.subtract(frozenBalance).toString()); // 可用余额
+			fundLog.setTotalFee("-"+Math.abs(money.floatValue()));
+			fundLog.setClientId(advertiseId);
+			fundLog.setClientType(UserConstants.USER_TYPE_ADVERTISE);
+			fundLog.setContent("广告发布资金冻结");
+			fundLog.setType(Const.FUND_FREEZE);
+			fundLog.setStatus(Const.STATUS_SUCCESS);
+			fundLog.setCreateTime(new Date());
+			fundLogMapper.insertFundLog(fundLog);
+		}
 	}
 
 	@Override

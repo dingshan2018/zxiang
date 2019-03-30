@@ -1,49 +1,314 @@
 <!DOCTYPE HTML>
-<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <meta charset="utf-8">
 <head th:include="include :: header"></head>
-<body class="white-bg">
-    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-releaseDevice-add">
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">排期ID：</label>
-				<div class="col-sm-8">
-					<input id="scheduleId" name="scheduleId" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">投放位置：</label>
-				<div class="col-sm-8">
-					<input id="releasePosition" name="releasePosition" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">设备ID：</label>
-				<div class="col-sm-8">
-					<input id="deviceId" name="deviceId" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="form-control-static col-sm-offset-9">
-					<button type="submit" class="btn btn-primary">提交</button>
-					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
-				</div>
-			</div>
-		</form>
-	</div>
-    <div th:include="include::footer"></div>
-    <script type="text/javascript">
-		var prefix = ctx + "settle/releaseDevice"
-		$("#form-releaseDevice-add").validate({
-			rules:{
-				xxxx:{
-					required:true,
-				},
-			},
-			submitHandler: function(form) {
-				$.operate.save(prefix + "/add", $('#form-releaseDevice-add').serialize());
-			}
-		});
-	</script>
+<body class="gray-bg">
+  <div class="container-div">
+    <div class="col-sm-12 select-info">
+      <form id="terminal-form">
+      	<input type="text" id="adScheduleId" style="display:none" th:value="${adScheduleId}"/>
+        <div class="select-list">
+          <ul>
+            <li>
+              <span class="select-item-name">投放场所：</span>
+              <select
+                id="placeId"
+                name="placeId"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
+                <option value="">全部</option>
+              </select>
+            </li>
+            <li>
+              <span class="select-item-name">设备编号：</span>
+              <input type="text" name="deviceSn" id="deviceSn"/>
+            </li>
+            <li class="select-cascade">
+              <span class="select-item-name">省：</span>
+              <select
+                name="province"
+                id="province"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
+                <option value="">全部</option>
+              </select>
+              <span class="select-item-name">市：</span>
+              <select
+                name="city"
+                id="city"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
+                <option value="">全部</option>
+              </select>
+              <span class="select-item-name">区县：</span>
+              <select
+                name="county"
+                id="county"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
+                <option value="">全部</option>
+              </select>
+            </li>
+            <li class="select-btns">
+              <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
+              </a>
+              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
+              </a>
+              <a class="btn btn-warning btn-rounded btn-sm" onclick="addReleaseDevice()"><i class="fa fa-refresh"></i>&nbsp;加入
+              </a>
+              <!--  
+              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.modal.close()"><i class="fa fa-refresh"></i>&nbsp;关闭
+              </a>
+              -->
+            </li>
+          </ul>
+        </div>
+      </form>
+    </div>
+
+    <div class="col-sm-12 select-table table-striped">
+      <table id="bootstrap-table" data-mobile-responsive="true"></table>
+    </div>
+  </div>
+  <div th:include="include :: footer"></div>
+  <script th:inline="javascript">
+    var prefix = ctx + 'business/device';
+
+    $(function () {
+      //投放场所下拉框数据
+      var placeList = selectPlaceList();
+      var scheduleId = $("#adScheduleId").val();
+      $.each(placeList, function (i) {
+        $('#placeId').append('<option value=' + placeList[i].placeId + '>' + placeList[i].name + '</option>');
+      });
+
+      //投放地区联动搜索
+      //默认绑定省
+      proviceBind();
+      //绑定事件
+      $('#province').change(function () {
+        cityBind();
+      });
+
+      $('#city').change(function () {
+        countyBind();
+      });
+
+      var options = {
+        url       : prefix + '/list2/'+scheduleId,
+        createUrl : prefix + '/add',
+        updateUrl : prefix + '/edit/{id}',
+        removeUrl : prefix + '/remove',
+        modalName : '新增广告设备',
+        search    : false,
+        showExport: false,
+        columns   : [
+          {
+            checkbox: true
+          },
+          {
+            field: 'deviceId',
+            title: '设备ID'
+          },
+          {
+            field: 'deviceCode',
+            title: '设备编号'
+          },
+          {
+              field: 'deviceSn',
+              title: '设备资产编号'
+          },
+          {
+            field: 'placeName',
+            title: '场所'
+          },
+          {
+            field: 'terminalCode',
+            title: '终端编号'
+          },
+          {
+              field: 'deviceType',
+              title: '设备类型'
+          },
+          {
+              field: 'ownerName',
+              title: '机主'
+          },
+          {
+              field: 'status',
+              title: '状态',
+          },
+          {
+            field: 'statusName',
+            title: '设备状态',
+          },
+          {
+            field: 'createBy',
+            title: '创建者'
+          },
+          {
+            field: 'createTime',
+            title: '创建时间'
+          },
+          {
+            field: 'updateBy',
+            title: '修改者'
+          },
+          {
+            field: 'updateTime',
+            title: '修改时间'
+          }]
+      };
+      $.table.init(options);
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'deviceId');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'deviceSn');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'deviceType');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'lon');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'lat');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'delFlag');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'createBy');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'lastHeartTime');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'status');
+    });
+
+    function proviceBind () {
+      //清空下拉数据
+      $('#province').html('');
+      var str = '<option value="">全部</option>';
+
+      var provinceAreaList = selectAreaListByPid('0');
+      $.each(provinceAreaList, function (i, item) {
+        str += '<option value=' + item.id + '>' + item.pname + '</option>';
+      });
+      //将数据添加到省份这个下拉框里面
+      $('#province').append(str).selectpicker("refresh");
+    }
+
+    function cityBind () {
+      var provice = $('#province option:selected').val();
+      //判断省份这个下拉框选中的值是否为空
+      if (provice == '') {
+        return;
+      }
+      $('#city').html('');
+      var str = '<option value="">全部</option>';
+
+      var cityAreaList = selectAreaListByPid(provice);
+      $.each(cityAreaList, function (i, item) {
+        str += '<option value=' + item.id + '>' + item.pname + '</option>';
+      });
+      //将数据添加到市这个下拉框里面
+      $('#city').append(str).selectpicker("refresh");
+    }
+
+    function countyBind () {
+      var provice = $('#city option:selected').val();
+      //判断市这个下拉框选中的值是否为空
+      if (provice == '') {
+        return;
+      }
+      $('#county').html('');
+      var str = '<option value="">全部</option>';
+
+      var countyAreaList = selectAreaListByPid(provice);
+      $.each(countyAreaList, function (i, item) {
+        str += '<option value=' + item.id + '>' + item.pname + '</option>';
+      });
+      //将数据添加到区县这个下拉框里面
+      $('#county').append(str).selectpicker("refresh");
+    }   
+
+    //打开设备换板弹窗
+    function addReleaseDevice () {
+      var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns(
+        $.table._option.id);
+      if (rows.length == 0) {
+        $.modal.alertWarning('请选择一条记录');
+        return;
+      }
+      var deviceIds = '';
+      $.each(rows,function(i){
+    	  if(i == 0){
+    		  deviceIds = rows[i];
+    	  }else{
+    		  deviceIds = deviceIds + ',' + rows[i];
+    	  }
+      });
+      var scheduleId = $("#adScheduleId").val();
+      //alert(deviceIds);
+      //
+      var url = ctx + 'advertise/releaseDevice/batchAdd';
+      $.ajax({
+  		cache : true,
+  		type : "POST",
+  		url : url,
+  		data : {
+  			"scheduleId": scheduleId,
+  			"deviceIds" : deviceIds
+  		},
+  		async : false,
+  		error : function(request) {
+  			$.modal.alertError("系统错误");
+  		},
+  		success : function(data) {
+  			$.operate.saveSuccess(data);
+  		}
+  	  });
+      
+      
+    }
+    
+    function close () {
+    	$.modal.close();
+    }
+
+  	//打开设备补纸弹窗
+    function supplyTissue () {
+      var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns(
+        $.table._option.id);
+      if (rows.length == 0) {
+        $.modal.alertWarning('请选择一条记录');
+        return;
+      }
+      if (rows.length > 1) {
+        $.modal.alertWarning('只能选择一条记录');
+        return;
+      }
+      //
+      var url = ctx + 'business/device/supplyTissueAdd/' + rows;
+      $.modal.open('设备补纸', url);
+    }
+
+  	//批量导入设备资产编号弹窗函数
+    function batchImport () {
+      var url = ctx + 'business/device/batchImport';
+      $.modal.open('批量导入设备资产编号', url);
+    }
+
+  	//获取运营设备数据信息方法
+    function getDeviceInfo(deviceId) {
+    	var device;
+    	$.ajax({
+	        url: ctx + "business/device/selectInfo/" + deviceId,
+	        type: "post",
+	        async:false,
+	        success: function (data) {
+	        	device = data;
+	        },
+	        error: function (data) {
+	        	console.log("selectInfo:",data);
+	            alert("后台查询失败");
+	        }
+		})
+		return device;
+    }
+  </script>
 </body>
 </html>

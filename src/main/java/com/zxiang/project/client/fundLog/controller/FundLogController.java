@@ -64,7 +64,7 @@ public class FundLogController extends BaseController {
 	public AjaxResult buildPayQrCode(@RequestParam String advertiseId,@RequestParam String total_fee ) {
 		try {
 //			String url = AdConstant.AD_PAY_PREFIX;
-			String url = "http://mp.bp.zcloudtechs.cn/wx/wxpay/dingshanIncomeCode";
+			String url = "http://mp.dingscm.com/wx/wxpay/dingshanIncomeCode";
 			Map<String, String> paramsMap = new HashMap<String, String>();
 			paramsMap.put("total_fee", total_fee);
 			paramsMap.put("advertiseId", advertiseId);

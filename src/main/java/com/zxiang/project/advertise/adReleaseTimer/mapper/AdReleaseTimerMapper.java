@@ -67,4 +67,11 @@ public interface AdReleaseTimerMapper
 	 */
 	public int deleteTimerByAdIds(String[] adIds);
 	
+	/**
+	 * 批量插入时间段
+	 * @param releaseTimers
+	 * @return
+	 */
+	public int batchInsert(List<AdReleaseTimer> releaseTimers);
+	
 }

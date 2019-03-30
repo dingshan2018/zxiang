@@ -5,22 +5,24 @@
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-adReleaseTimer-add">
+        	<input id="adScheduleId" name="adScheduleId" class="form-control" type="hidden" th:value="${adSchedule.adScheduleId}" readonly>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">广告投放ID：</label>
+				<label class="col-sm-3 control-label">广告名称：</label>
 				<div class="col-sm-8">
-					<input id="adScheduleId" name="adScheduleId" class="form-control" type="text">
+					<input id="adScheduleName" name="adScheduleName" class="form-control" type="text" th:value="${adSchedule.scheduleName}" readonly>
 				</div>
 			</div>
 			<div class="form-group">	
 				<label class="col-sm-3 control-label">投放开始时间：</label>
 				<div class="col-sm-8">
-					<input id="releaseBeginTime" name="releaseBeginTime" class="form-control" type="text">
+				    <input type="text" class="time-input form-control date-time-picker" placeholder="开始时间" name="releaseBeginTime" readonly/>
 				</div>
 			</div>
 			<div class="form-group">	
 				<label class="col-sm-3 control-label">投放结束时间：</label>
 				<div class="col-sm-8">
-					<input id="releaseEndTime" name="releaseEndTime" class="form-control" type="text">
+					<input type="text" class="time-input form-control date-time-picker" placeholder="结束时间" name="releaseEndTime" readonly/>
+
 				</div>
 			</div>
 			<div class="form-group">	
@@ -29,30 +31,7 @@
 					<input id="remark" name="remark" class="form-control" type="text">
 				</div>
 			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">创建者：</label>
-				<div class="col-sm-8">
-					<input id="createBy" name="createBy" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">创建时间：</label>
-				<div class="col-sm-8">
-					<input id="createTime" name="createTime" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">修改者：</label>
-				<div class="col-sm-8">
-					<input id="updateBy" name="updateBy" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">修改时间：</label>
-				<div class="col-sm-8">
-					<input id="updateTime" name="updateTime" class="form-control" type="text">
-				</div>
-			</div>
+			
 			<div class="form-group">
 				<div class="form-control-static col-sm-offset-9">
 					<button type="submit" class="btn btn-primary">提交</button>
@@ -62,18 +41,71 @@
 		</form>
 	</div>
     <div th:include="include::footer"></div>
+    <link th:href="@{/css/bootstrap-datetimepicker.min.css}" rel="stylesheet"/>
+    <script th:src="@{/js/bootstrap-datetimepicker.min.js}"></script>
+  	<script th:src="@{/js/bootstrap-datetimepicker.zh-CN.js}"></script>
     <script type="text/javascript">
-		var prefix = ctx + "settle/adReleaseTimer"
+		var prefix = ctx + "advertise/adReleaseTimer"
 		$("#form-adReleaseTimer-add").validate({
 			rules:{
-				xxxx:{
+				releaseBeginTime:{
+					required:true,
+				},
+				releaseEndTime:{
 					required:true,
 				},
 			},
 			submitHandler: function(form) {
-				$.operate.save(prefix + "/add", $('#form-adReleaseTimer-add').serialize());
+				//$.operate.save(prefix + "/add", $('#form-adReleaseTimer-add').serialize());
+				var adScheduleId = $("#adScheduleId").val();
+	        	var beginTime = $("[name=\"releaseBeginTime\"]").val();
+	        	var endTime = $("[name=\"releaseEndTime\"]").val();
+	        	var adReleaseTimerId = $("#adReleaseTimerId").val();
+	        	var remark = $("#remark").val();
+	        	$.ajax({
+	        		cache : true,
+	        		type : "POST",
+	        		url : prefix + "/add",
+	        		data : {
+	        			"adScheduleId" : adScheduleId,
+	        			"beginTime" : beginTime,
+	        			"endTime" : endTime,
+	        			"remark" : remark
+	        		},
+	        		async : false,
+	        		error : function(request) {
+	        			$.modal.alertError("系统错误");
+	        		},
+	        		success : function(data) {
+	        			$.operate.saveSuccess(data);
+	        		}
+	        	});
 			}
 		});
+		// 日期选择器初始化
+	    function initDateTimePicker (select) {
+	      $(select || '.date-time-picker').datetimepicker({
+	        language:  'zh-CN',
+	        //format: 'yyyy-mm-dd hh:ii',
+	        format: 'yyyy-mm-dd',
+	        todayBtn:  1,
+	        autoclose: true,
+	        todayHighlight: 1,
+	        startView: 2,
+	        minView:2,
+	        showMeridian: 1,
+	        minuteStep: 1
+	      }).on('changeDate', function(ev){
+          if (ev.target.name === "releaseBeginTime") {
+            var endTime = $("[name=\"releaseEndTime\"]").eq(0);
+            if (endTime.val() && new Date(endTime.val()) < ev.date) {
+              endTime.val("");
+            }
+              endTime.datetimepicker('setStartDate',ev.date);
+          }
+	      });
+	    }
+	    initDateTimePicker();
 	</script>
 </body>
 </html>

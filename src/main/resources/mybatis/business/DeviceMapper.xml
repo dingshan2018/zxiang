@@ -31,6 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="adUrl"    column="ad_url"    />
     </resultMap>
 	
 	<sql id="selectDeviceVo">
@@ -101,6 +102,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="province != null and province != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.province = #{province})</if>
              <if test="city != null and city != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.city = #{city})</if>
              <if test="county != null and county != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.county = #{county})</if>
+         	 <if test="scheduleId != null"> and d.device_id not in(select zrd.device_id from zx_release_device zrd where zrd.schedule_id=#{scheduleId}) </if>
          </where>
          ORDER BY d.device_id DESC 
     </select>
@@ -232,6 +234,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="tissueLen != null  ">tissue_len = #{tissueLen},</if>
             <if test="lon != null  and lon != ''  ">lon = #{lon},</if>
             <if test="lat != null  and lat != ''  ">lat = #{lat},</if>
+             <if test="adUrl != null ">ad_url = #{adUrl},</if>
             <if test="releaseTime != null  ">release_time = #{releaseTime},</if>
             <if test="removeTime != null  ">remove_time = #{removeTime},</if>
             <if test="totalLen != null  ">total_len = #{totalLen},</if>

@@ -3,13 +3,72 @@
 <meta charset="utf-8">
 <head th:include="include :: header"></head>
 <body class="gray-bg">
-    <div class="container-div">
+    <div class="container-div"> 
+    <div class="col-sm-12 select-info">
+      <form id="terminal-form">
+        <div class="select-list">
+          <ul>
+            <li>
+              <span class="select-item-name">投放场所：</span>
+              <select
+                id="placeId"
+                name="placeId"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
+                <option value="">全部</option>
+              </select>
+            </li>
+            <li>
+              <span class="select-item-name">设备编号：</span>
+              <input type="text" name="deviceCode" id="deviceCode"/>
+            </li>
+            <li class="select-cascade">
+              <span class="select-item-name">省：</span>
+              <select
+                name="province"
+                id="province"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
+                <option value="">全部</option>
+              </select>
+              <span class="select-item-name">市：</span>
+              <select
+                name="city"
+                id="city"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
+                <option value="">全部</option>
+              </select>
+              <span class="select-item-name">区县：</span>
+              <select
+                name="county"
+                id="county"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
+                <option value="">全部</option>
+              </select>
+            </li>
+            <li class="select-btns">
+              <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
+              </a>
+              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
+              </a>
+            </li>
+          </ul>
+        </div>
+      </form>
+    </div>
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
-			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="settle:releaseDevice:add">
-				<i class="fa fa-plus"></i> 新增
+			<input type="text" id="adScheduleId" style="display:none" th:value="${adScheduleId}"/>
+			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" >
+				<i class="fa fa-plus"></i> 增加终端
 			</a>
-			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="settle:releaseDevice:remove">
-				<i class="fa fa-trash-o"></i> 删除
+			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" >
+				<i class="fa fa-trash-o"></i> 批量删除
 			</a>
 		</div>
 			
@@ -19,17 +78,36 @@
     </div>
     <div th:include="include :: footer"></div>
     <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('settle:releaseDevice:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('settle:releaseDevice:remove')}]];
-        var prefix = ctx + "settle/releaseDevice"
+        var editFlag = true;//[[${@permission.hasPermi('settle:releaseDevice:edit')}]];
+        var removeFlag = true;//[[${@permission.hasPermi('settle:releaseDevice:remove')}]];
+        var prefix = ctx + "advertise/releaseDevice"
+        var scheduleId = $('#adScheduleId').val();
+      //投放场所下拉框数据
+        var placeList = selectPlaceList();
+        $.each(placeList, function (i) {
+          $('#placeId').append('<option value=' + placeList[i].placeId + '>' + placeList[i].name + '</option>');
+        });
 
+        //投放地区联动搜索
+        //默认绑定省
+        proviceBind();
+        //绑定事件
+        $('#province').change(function () {
+          cityBind();
+        });
+
+        $('#city').change(function () {
+          countyBind();
+        });
         $(function() {
             var options = {
-                url: prefix + "/list",
-                createUrl: prefix + "/add",
+                url: prefix + "/list2/"+scheduleId,
+                createUrl: prefix + "/add/"+scheduleId,
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "投放终端配置",
+                queryParams: queryParams,
+                search: false,
                 columns: [{
 		            checkbox: true
 		        },
@@ -42,6 +120,10 @@
 					title : '排期ID' 
 				},
 				{
+					field : 'scheduleName', 
+					title : '广告名称' 
+				},
+				{
 					field : 'releasePosition', 
 					title : '投放位置' 
 				},
@@ -49,19 +131,90 @@
 					field : 'deviceId', 
 					title : '设备ID' 
 				},
+				{
+					field : 'deviceCode', 
+					title : '设备编码' 
+				},
+				{
+					field : 'terminalCode', 
+					title : '设备编码' 
+				},
+				{
+					field : 'placeName', 
+					title : '投放场所' 
+				},
 		        {
 		            title: '操作',
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	var actions = [];
-		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.releaseDeviceId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.releaseDeviceId + '\')"><i class="fa fa-remove"></i>删除</a>');
 						return actions.join('');
 		            }
 		        }]
             };
             $.table.init(options);
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'releaseDeviceId');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'scheduleId');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'releasePosition');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'deviceId');
         });
+        function queryParams(params) {
+			return {
+				scheduleId:  scheduleId,
+				placeId: $('#placeId').val(),
+				deviceCode: $('#deviceCode').val(),
+				province: $('#province option:selected').val(),
+				city: $('#city option:selected').val(),
+				county: $('#county option:selected').val()
+			};
+		}
+        function proviceBind () {
+            //清空下拉数据
+            $('#province').html('');
+            var str = '<option value="">全部</option>';
+
+            var provinceAreaList = selectAreaListByPid('0');
+            $.each(provinceAreaList, function (i, item) {
+              str += '<option value=' + item.id + '>' + item.pname + '</option>';
+            });
+            //将数据添加到省份这个下拉框里面
+            $('#province').append(str).selectpicker("refresh");
+          }
+
+          function cityBind () {
+            var provice = $('#province option:selected').val();
+            //判断省份这个下拉框选中的值是否为空
+            if (provice == '') {
+              return;
+            }
+            $('#city').html('');
+            var str = '<option value="">全部</option>';
+
+            var cityAreaList = selectAreaListByPid(provice);
+            $.each(cityAreaList, function (i, item) {
+              str += '<option value=' + item.id + '>' + item.pname + '</option>';
+            });
+            //将数据添加到市这个下拉框里面
+            $('#city').append(str).selectpicker("refresh");
+          }
+
+          function countyBind () {
+            var provice = $('#city option:selected').val();
+            //判断市这个下拉框选中的值是否为空
+            if (provice == '') {
+              return;
+            }
+            $('#county').html('');
+            var str = '<option value="">全部</option>';
+
+            var countyAreaList = selectAreaListByPid(provice);
+            $.each(countyAreaList, function (i, item) {
+              str += '<option value=' + item.id + '>' + item.pname + '</option>';
+            });
+            //将数据添加到区县这个下拉框里面
+            $('#county').append(str).selectpicker("refresh");
+          }
     </script>
 </body>
 </html>

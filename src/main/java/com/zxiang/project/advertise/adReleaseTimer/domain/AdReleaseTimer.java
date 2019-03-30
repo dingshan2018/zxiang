@@ -33,6 +33,12 @@ public class AdReleaseTimer extends BaseEntity
 	private String updateBy;
 	/** 修改时间 */
 	private Date updateTime;
+	
+	private String adScheduleName;
+	
+	private String beginTime;
+	
+	private String endTime;
 
 	public void setAdReleaseTimerId(Integer adReleaseTimerId) 
 	{
@@ -115,8 +121,36 @@ public class AdReleaseTimer extends BaseEntity
 	{
 		return updateTime;
 	}
+	
+	
 
-    public String toString() {
+    public String getAdScheduleName() {
+		return adScheduleName;
+	}
+
+	public void setAdScheduleName(String adScheduleName) {
+		this.adScheduleName = adScheduleName;
+	}
+
+	
+	
+	public String getBeginTime() {
+		return beginTime;
+	}
+
+	public void setBeginTime(String beginTime) {
+		this.beginTime = beginTime;
+	}
+
+	public String getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("adReleaseTimerId", getAdReleaseTimerId())
             .append("adScheduleId", getAdScheduleId())

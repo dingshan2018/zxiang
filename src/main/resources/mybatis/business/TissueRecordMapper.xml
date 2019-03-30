@@ -172,6 +172,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
        <if test="userId != null and userId != ''">
        	and #{userId} = (SELECT DISTINCT zd.owner_id FROM zx_device zd WHERE zd.device_id = tr.device_id)
        </if>
+       <if test="tissueChannel != null">  
+       	and tr.tissue_channel = #{tissueChannel}
+       </if>
     </select>
     
     <select id="queryExport" resultType="java.util.HashMap">

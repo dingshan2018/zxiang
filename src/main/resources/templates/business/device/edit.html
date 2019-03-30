@@ -74,13 +74,15 @@
             <div class="form-group">
 				<label class="col-sm-3 control-label">机主：</label>
 				<div class="col-sm-8">
-					<!-- <select id="ownerId" name="ownerId" class="form-control">
+					<select id="ownerId" name="ownerId" class="form-control">
                     	<option value=""></option>
 						<option th:each="user:${userList}" th:value="${user.userId}"
 						 th:text="${user.userName}" th:field="*{ownerId}"></option>
-					</select> -->
+					</select>
+					<!--  
 					<input id="ownerId" name="ownerId" th:field="*{ownerId}" class="form-control" type="hidden" readonly="readonly">
 					<input id="ownerName" name="ownerName" th:field="*{ownerName}" class="form-control" type="text" readonly="readonly">
+					-->
 				</div>
 			</div>
             <div class="form-group">
@@ -144,6 +146,14 @@
     </div>
     <div th:include="include::footer"></div>
     <script type="text/javascript">
+	    $(function(){ 
+	    	var userList = selectUserList();
+	    	$.each(userList, function (i) {
+	    		if(userList[i].userType === '02'){
+		        	$('#ownerId').append("<option value=" + userList[i].userId + ">" + userList[i].userName + "</option>");
+	    		}
+	        }); 
+	 	});	
 		var prefix = ctx + "business/device"
 		$("#form-device-edit").validate({
 			rules:{
@@ -166,9 +176,9 @@
 					number:true,
 					min:0
 				},
-				/* ownerId:{
+				ownerId:{
 					required:true,
-				}, */
+				},
 			},
 			submitHandler: function(form) {
 				$.operate.save(prefix + "/edit", $('#form-device-edit').serialize());

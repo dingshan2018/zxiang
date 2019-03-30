@@ -120,7 +120,7 @@ public interface UserMapper
     /**
 	 * 查询用户下拉框数据列表
 	 */
-	public List<User> selectDropBoxList();
+	public List<User> selectDropBoxList(User user);
 	
 	 /**
      * 通过openId查询用户

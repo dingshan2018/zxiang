@@ -82,6 +82,25 @@ public class DeviceController extends BaseController
 	}
 	
 	/**
+	 * 查询共享设备列表
+	 */
+	@RequiresPermissions("business:device:list")
+	@PostMapping("/list2/{adScheduleId}")
+	@ResponseBody
+	public TableDataInfo list2(@PathVariable("adScheduleId") Integer adScheduleId,Device device)
+	{
+		startPage();
+		User user =getUser();
+		String userType = user.getUserType();
+		if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+			device.setUserId(user.getUserId()+"");
+		}
+		device.setScheduleId(adScheduleId);
+        List<Device> list = deviceService.selectDeviceList(device);
+		return getDataTable(list);
+	}
+	
+	/**
 	 * 新增共享设备
 	 */
 	@GetMapping("/add")

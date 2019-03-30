@@ -101,7 +101,9 @@ public class WxUserServiceImpl implements IWxUserService
 	public Map<String, Object> systemIndicators() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("tissueTotal", tissueRecordService.selectTotal(new HashMap<String, Object>())); // 累计出纸量
-		map.put("fansTotal", wxUserMapper.queryFansTotalBySex(null, null)); // 累计粉丝量
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("tissueChannel", "1");
+		map.put("fansTotal", tissueRecordService.selectTotal(param)); // 累计粉丝量
 		map.put("deviceTotal", deviceService.selectTotal(new HashMap<String, Object>())); // 设备总量
 		map.put("agentTotal", agentMapper.selectTotal()); // 代理商总数
 		map.put("fansManTotal", wxUserMapper.queryFansTotalBySex(Const.SEX_MAN, null)); // 累计男粉丝总量

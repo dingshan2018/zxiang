@@ -32,7 +32,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
         <result property="totalTime"    column="total_time"    />
         <result property="payStatus"    column="pay_status"    />
+        <result property="releaseStatus"    column="release_status"    />
         <result property="qrUrl"    column="qr_url"    />
+        <result property="deadLine"    column="dead_line"    />
     </resultMap>
 	
 	<sql id="selectAdScheduleVo">
@@ -57,7 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         is_del, release_note, create_by, create_time, update_by, update_time,
         advertiser,
         (SELECT DISTINCT za.advertisor_name FROM zx_advertise za WHERE za.advertise_id =zas.`advertiser`) advertiseName,
-        total_time,pay_status,qr_url from zx_ad_schedule zas
+        total_time,pay_status,qr_url,dead_line from zx_ad_schedule zas
     </sql>
     
     <sql id="selectAdScheduleVos">
@@ -80,8 +82,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         zas.is_del, zas.release_note, zas.create_by, zas.create_time, zas.update_by, zas.update_time,
         zas.advertiser,
         (SELECT DISTINCT za.advertisor_name FROM zx_advertise za WHERE za.advertise_id =zas.`advertiser`) advertiseName,
-        total_time,pay_status,zas.qr_url FROM zx_ad_schedule zas  LEFT JOIN zx_ad_release_record a ON a.schedule_id = zas.ad_schedule_id LEFT JOIN zx_device b ON a.device_id=b.device_id
+        total_time,pay_status,zas.release_status,zas.qr_url,zas.dead_line FROM zx_ad_schedule zas  LEFT JOIN zx_ad_release_record a ON a.schedule_id = zas.ad_schedule_id LEFT JOIN zx_device b ON a.device_id=b.device_id
     </sql>
+    
+    <sql id="selectOpSchedules">
+        SELECT * FROM zx_ad_schedule zas 
+    </sql>
+    
+    <select id="selectNeedReleaseSchedule" resultMap="AdScheduleResult">
+        <include refid="selectOpSchedules"/>
+        where exists(select 1 from zx_ad_release_timer zarr where zarr.ad_schedule_id=zas.ad_schedule_id and zarr.release_begin_time &lt;= now() and zarr.release_end_time &gt;= now())
+        	and release_status='0'
+    </select>
+    <select id="selectNeedDeleteSchedule" resultMap="AdScheduleResult">
+        <include refid="selectOpSchedules"/>
+        where not exists(select 1 from zx_ad_release_timer zarr where zarr.ad_schedule_id=zas.ad_schedule_id and zarr.release_begin_time &lt;= now() and zarr.release_end_time &gt;= now())
+        	and release_status='1'
+    </select>
 	
     <select id="selectAdScheduleList" parameterType="AdSchedule" resultMap="AdScheduleResult">
         <include refid="selectAdScheduleVos"/>
@@ -160,6 +177,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateTime != null ">update_time,</if>
 			<if test="totalTime != null ">total_time,</if>
 			<if test="payStatus != null ">pay_status,</if>
+			<if test="releaseStatus != null ">release_status,</if>
 			<if test="qrUrl != null ">qr_url,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -190,6 +208,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateTime != null ">#{updateTime},</if>
 			<if test="totalTime != null ">#{totalTime},</if>
 			<if test="payStatus != null ">#{payStatus},</if>
+			<if test="releaseStatus != null ">#{releaseStatus},</if>
 			<if test="qrUrl != null ">#{qrUrl},</if>
          </trim>
     </insert>
@@ -223,7 +242,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
             <if test="totalTime != null  ">total_time = #{totalTime},</if>
             <if test="payStatus != null  ">pay_status = #{payStatus},</if>
+            <if test="releaseStatus != null  ">release_status = #{releaseStatus},</if>
             <if test="qrUrl != null  ">qr_url = #{qrUrl},</if>
+            <if test="deadLine != null  ">dead_line = #{deadLine},</if>
         </trim>
         where ad_schedule_id = #{adScheduleId}
     </update>
