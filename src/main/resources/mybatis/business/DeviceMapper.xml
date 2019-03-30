@@ -31,6 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="adUrl"    column="ad_url"    />
     </resultMap>
 	
 	<sql id="selectDeviceVo">
@@ -233,6 +234,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="tissueLen != null  ">tissue_len = #{tissueLen},</if>
             <if test="lon != null  and lon != ''  ">lon = #{lon},</if>
             <if test="lat != null  and lat != ''  ">lat = #{lat},</if>
+             <if test="adUrl != null ">ad_url = #{adUrl},</if>
             <if test="releaseTime != null  ">release_time = #{releaseTime},</if>
             <if test="removeTime != null  ">remove_time = #{removeTime},</if>
             <if test="totalLen != null  ">total_len = #{totalLen},</if>

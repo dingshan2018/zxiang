@@ -29,6 +29,13 @@ public class AdConstant {
 	public final static String AD_ADUIT_NO_PASS = "0";
 	
 	
+	/******************** 广告投放审核结果常量	*******************/
+	/** 待播放	*/
+	public final static String AD_WAIT_REPUBLISH = "0"; 
+	/** 播放中	*/
+	public final static String AD_REPUBLISH = "1"; 
+	/** 停播	*/
+	public final static String AD_STOP_REPUBLISH = "2"; 
 	
 	/******************** 广告HTTP接口URL常量	*******************/
 	
@@ -47,7 +54,7 @@ public class AdConstant {
 	/** 审核通过下发排期计划URL	 */
 	public final static String 	AD_URL_PUBLISHSCHEDULE = "/mmedia/adpublish/api/publishSchedule.action";
 	/** 下发更改排期计划URL	 */
-	public final static String 	AD_URL_REPUBLISHSCHEDULE = "/mmedia/adpublish/api/republish.action";
+	public final static String 	AD_URL_REPUBLISHSCHEDULE = "/mmedia/adpublish/api/republishSchedule.action";
 	/******************** 广告HTTP接口返回状态	*******************/
 	
 	/** 接口返回成功码	 */

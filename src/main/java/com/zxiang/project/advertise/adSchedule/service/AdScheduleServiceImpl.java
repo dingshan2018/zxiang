@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,6 +55,7 @@ import com.zxiang.project.advertise.releaseDevice.mapper.ReleaseDeviceMapper;
 import com.zxiang.project.advertise.utils.AdHttpResult;
 import com.zxiang.project.advertise.utils.Tools;
 import com.zxiang.project.advertise.utils.constant.AdConstant;
+import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.mapper.DeviceMapper;
 import com.zxiang.project.business.server.service.IServerService;
 import com.zxiang.project.business.terminal.domain.Terminal;
@@ -164,10 +166,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 	 * @param ids
 	 *            需要删除的数据ID
 	 * @return 结果
+	 * @throws IOException 
 	 */
 	@Override
 	@Transactional
-	public int deleteAdScheduleByIds(String ids) {
+	public int deleteAdScheduleByIds(String ids) throws Exception {
 		String[] adIds = Convert.toStrArray(ids);
 		// 删除关联表数据
 		// 1.删除zx_ad_release_range表关联数据
@@ -177,6 +180,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		// 3.删除zx_ad_material表关联数据
 		int delMaterialNum = adMaterialMapper.deleteMaterialByAdIds(adIds);
 		// 4.最后删除广告表数据
+		
+		
+		
+		
+		int delReleaseDevice = releaseDeviceMapper.deleteReleaseDeviceByAdIds(adIds);
 		return adScheduleMapper.deleteAdScheduleByIds(adIds);
 	}
 
@@ -641,6 +649,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 			return 0;
 		} else {
 			ad.setStatus(AdConstant.AD_WAIT_PLAY);
+			ad.setReleaseStatus(AdConstant.AD_REPUBLISH);
 			return adScheduleMapper.updateAdSchedule(ad);
 		}
 
@@ -1018,6 +1027,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		Config retConfig = configMapper.selectConfig(config);
 		String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue()
 				: "http://mmedia.bp.zcloudtechs.cn";
+		//String rootUrl = "http://127.0.0.1:8080";
 		String result = Tools.doPostForm(rootUrl + AdConstant.AD_URL_REPUBLISHSCHEDULE, param);
 		return result;
 	}
@@ -1061,6 +1071,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		if (adSchedule != null) {
 			//区分修改投放元素重支付
 			String status = adSchedule.getStatus();
+			int days = 0;
+			Integer deviceNum = 0;
 			if(status.equals("04") || status.equals("05")) {//重新支付
 				// 计算已经使用金额 ad_release_record sum(price)
 				Map<String, Object> param = new HashMap<String, Object>();
@@ -1071,24 +1083,36 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				Float hasPay = this.releaseRecordMapper.getAdTotalPay(param);
 				// total_pay - sum(price) 为目前冻结金额
 				AdSchedule oldSchedule = this.adScheduleMapper.selectAdScheduleById(adSchedule.getAdScheduleId());
-				Float perPay = oldSchedule.getTotalPay() / oldSchedule.getReleaseTermNum() / oldSchedule.getReleaseDays();
 				Date deadLineDate = null;
-				int days = 0;
-				AdReleaseTimer timerParam = new AdReleaseTimer();
-				timerParam.setAdScheduleId(adScheduleId);
-				List<AdReleaseTimer> releaseTimers = this.adReleaseTimerMapper.selectAdReleaseTimerList(timerParam);
-				if(releaseTimers!=null && releaseTimers.size()>0) {
-					for(AdReleaseTimer timer:releaseTimers) {
-						if (deadLineDate == null) {
-							deadLineDate = timer.getReleaseEndTime();
+				Date today;
+				try {
+					today = yyyyMMddSFormat.parse(yyyyMMddSFormat.format(new Date()));
+				
+					AdReleaseTimer timerParam = new AdReleaseTimer();
+					timerParam.setAdScheduleId(adScheduleId);
+					List<AdReleaseTimer> releaseTimers = this.adReleaseTimerMapper.selectAdReleaseTimerList(timerParam);
+					if(releaseTimers!=null && releaseTimers.size()>0) {
+						for(AdReleaseTimer timer:releaseTimers) {
+							if (deadLineDate == null) {
+								deadLineDate = timer.getReleaseEndTime();
+							}
+							// 取最后日期
+							deadLineDate = compareDate(deadLineDate, timer.getReleaseEndTime());
+							if(deadLineDate.getTime()<today.getTime()) {
+								continue;
+							}
+							// 获取时间段之间的相差天数
+							Date beginTime = timer.getReleaseBeginTime();
+							if(timer.getReleaseBeginTime().getTime()<today.getTime()) {
+								beginTime = today;
+							}
+							days += differentDaysByMillisecond(beginTime, timer.getReleaseEndTime());
 						}
-						// 取最后日期
-						deadLineDate = compareDate(deadLineDate, timer.getReleaseEndTime());
-						// 获取时间段之间的相差天数
-						days += differentDaysByMillisecond(timer.getReleaseBeginTime(), timer.getReleaseBeginTime());
 					}
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				Integer deviceNum = 0;
 				ReleaseDevice deviceParam = new ReleaseDevice();
 				deviceParam.setScheduleId(adScheduleId);
 				List<ReleaseDevice> releaseDevices = this.releaseDeviceMapper.selectReleaseDeviceList(deviceParam);
@@ -1111,6 +1135,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 						return 0;
 					} 
 				}
+				adSchedule.setTotalPay(adSchedule.getTotalPay()+(unpay-ounpay));
 				fundLogService.adPublishFrozen(adSchedule.getAdvertiser(),
 						new BigDecimal(Float.toString(unpay - ounpay)));
 			}else {//首次发布
@@ -1118,6 +1143,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 						new BigDecimal(Float.toString(adSchedule.getTotalPay())));
 			}
 			adSchedule.setPayStatus("1");
+			adSchedule.setReleaseDays(days);
+			adSchedule.setReleaseTermNum(deviceNum);
+			
 			adSchedule.setUpdateBy(operatorUser);
 			adSchedule.setUpdateTime(new Date());
 			return updateAdSchedule(adSchedule);
@@ -1141,21 +1169,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 	
 	@Override
 	public int republish(AdSchedule adSchedule, String operatorUser) throws Exception {
-
-		// 判断钱包金额是否足够
-		// 计算已经使用金额 ad_release_record sum(price)
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("scheduleId", adSchedule.getAdScheduleId());
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		param.put("endTime", df.format(new Date()));
-		Date createDate = new Date();
-		Float hasPay = this.releaseRecordMapper.getAdTotalPay(param);
 		// 计算当前时间（广告是当天就结账）
 		Integer adScheduleId = adSchedule.getAdScheduleId();
-
+		adSchedule = this.adScheduleMapper.selectAdScheduleById(adScheduleId);
 		List<String> timeSlots = new ArrayList<>();
 		Date deadLineDate = null;
-		int days = 0;
 		AdReleaseTimer timerParam = new AdReleaseTimer();
 		timerParam.setAdScheduleId(adScheduleId);
 		// 判断时间段是否已经有播放记录，那么就修正releaseRecord
@@ -1163,7 +1181,6 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		// 修改当天播放时间
 		AdReleaseTimer paramTimer = new AdReleaseTimer();
 		paramTimer.setAdScheduleId(adScheduleId);
-		Calendar cal = Calendar.getInstance();
 		List<AdReleaseTimer> releaseTimers = this.adReleaseTimerMapper.selectAdReleaseTimerList(paramTimer);
 		if (releaseTimers != null && releaseTimers.size() > 0) {
 			for(AdReleaseTimer releaseTimer:releaseTimers) {
@@ -1182,6 +1199,10 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				
 				//取最后日期
 				deadLineDate = compareDate(deadLineDate, yyyyMMddSFormat.parse(yyyyMMddSFormat.format(releaseTimer.getReleaseEndTime())));
+			
+				if(releaseTimer.getReleaseBeginTime().getTime()<=new Date().getTime() && releaseTimer.getReleaseEndTime().getTime()>=new Date().getTime()) {
+					todayRelease = true;
+				}
 			}
 		}else {
 			return 0;
@@ -1199,7 +1220,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		
 		// 5.修改广告计划数据
 		if ("1".equals(adSchedule.getPayStatus()) && todayRelease) {
-			String retJson = republishSchedule(adSchedule.getAdScheduleId() + "", deviceIds, timeSlots.toString(),
+			String retJson = republishSchedule(adSchedule.getSxScheduleId() + "", deviceIds, timeSlots.toString(),
 					yyyyMMddSFormat.format(deadLineDate), "UPDATE");
 			AdHttpResult adHttp = Tools.analysisResult(retJson);
 			if (AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())) {
@@ -1224,13 +1245,13 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 						}
 					}
 				}
-				adSchedule.setReleaseStatus("1");// 已发布
+				adSchedule.setReleaseStatus(AdConstant.AD_REPUBLISH);// 已发布
 			} else {
 				logger.error("调用审核通过下发排期计划接口失败!" + adHttp.toString());
 				throw new RRException("调用排期接口失败!");
 			}
 		} else {
-			adSchedule.setReleaseStatus("0");// 未发布
+			adSchedule.setReleaseStatus(AdConstant.AD_WAIT_REPUBLISH);// 未发布
 		}
 
 		return this.adScheduleMapper.updateAdSchedule(adSchedule);
@@ -1471,7 +1492,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 	@Override
 	public void releaseSchdule() throws Exception{
 		//如果今天日期在releaseTimer中，那么开始发布
-		AdSchedule scheduleParam = new AdSchedule();
+		//AdSchedule scheduleParam = new AdSchedule();
 		List<AdSchedule> needReleaseSchedules = this.adScheduleMapper.selectNeedReleaseSchedule();
 		for(AdSchedule releaseSchedule : needReleaseSchedules) {
 			//如果广告排期未投放
@@ -1584,6 +1605,78 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				this.adScheduleMapper.updateAdSchedule(releaseSchedule);
 			}
 		}
+	}
+
+	@Override
+	public int removeAd(AdSchedule adSchedule1, String operatorUser) throws Exception {
+		Integer adScheduleId = adSchedule1.getAdScheduleId();
+			ReleaseDevice deviceParam = new ReleaseDevice();
+			deviceParam.setScheduleId(adScheduleId);
+			List<ReleaseDevice> releaseDevices = this.releaseDeviceMapper.selectReleaseDeviceList(deviceParam);
+			String deviceIds = "";
+			if(releaseDevices != null && releaseDevices.size()>0) {
+				for(ReleaseDevice releaseDevice:releaseDevices) {
+					deviceIds += ","+releaseDevice.getDeviceId();
+				}
+				deviceIds = deviceIds.substring(1);
+			}
+			AdSchedule adSchedule = adScheduleMapper.selectAdScheduleById(adScheduleId);
+			String retJson = republishSchedule(adSchedule.getSxScheduleId() + "", deviceIds, null,
+					null, "DELETE");
+			AdHttpResult adHttp = Tools.analysisResult(retJson);
+			if (AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())) {
+				JSONObject data = (JSONObject) adHttp.get("data");
+				List<JSONObject> adUrls = (List<JSONObject>) data.get("adUrls");
+				if(adUrls!=null && adUrls.size()>0) {
+					for (JSONObject jsonObject : adUrls) {
+						String adUrl = jsonObject.getString("adUrl");
+						String terminalId = jsonObject.getString("terminalId");
+						// 2.下发更改广告主题
+						String[] ndeviceIds = Convert.toStrArray(terminalId);
+						if (ndeviceIds.length > 0) {
+							// 保存广告URL链接
+							int updateNum = deviceMapper.updateAdUrlByTid(adUrl, ndeviceIds);
+							logger.info("成功更新:" + updateNum + " 条设备adUrl数据");
+							for (String deviceId : ndeviceIds) {
+								try {
+									// 下发广告更新主题命令
+									adIssued(deviceId, adUrl);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						}
+					}
+				}else {
+					for(ReleaseDevice rDevice : releaseDevices) {
+						Device device = this.deviceMapper.selectDeviceById(rDevice.getDeviceId());
+						device.setAdUrl("");
+						this.deviceMapper.updateDevice(device);
+						try {
+							// 下发广告更新主题命令
+							adIssued(device.getDeviceId()+"", "");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				
+//				adSchedule.setReleaseStatus("1");// 已发布
+				//todo 如果排期未完成，解凍金額
+				Map<String, Object> param = new HashMap<String, Object>();
+				param.put("scheduleId", adSchedule.getAdScheduleId());
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				param.put("endTime", df.format(new Date()));
+				Float hasPay = this.releaseRecordMapper.getAdTotalPay(param);
+				fundLogService.adPublishFrozen(adSchedule.getAdvertiser(),
+						new BigDecimal(Float.toString(hasPay-adSchedule.getTotalPay())));
+				adSchedule.setReleaseStatus(AdConstant.AD_STOP_REPUBLISH);
+				return this.adScheduleMapper.updateAdSchedule(adSchedule);
+			} else {
+				logger.error("调用审核通过下发排期计划接口失败!" + adHttp.toString());
+				throw new RRException("调用排期接口失败!");
+			}
+		
 	}
 
 }

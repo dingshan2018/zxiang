@@ -60,7 +60,7 @@ public interface IAdScheduleService
      * @param ids 需要删除的数据ID
      * @return 结果
      */
-	public int deleteAdScheduleByIds(String ids);
+	public int deleteAdScheduleByIds(String ids)  throws Exception;
 
 	
 	/**
@@ -158,6 +158,14 @@ public interface IAdScheduleService
 	 * 定时删除已发布排期
 	 */
 	public void stopSchdule() throws Exception;
+
+	/**
+	 * 广告下架
+	 * @param adSchedule
+	 * @param operatorUser
+	 * @return
+	 */
+	public int removeAd(AdSchedule adSchedule, String operatorUser) throws Exception;
 
 
 }

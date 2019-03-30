@@ -100,6 +100,8 @@ public class Device extends BaseEntity
 	
 	private Integer scheduleId;
 	
+	private String adUrl;
+	
 	public void setDeviceId(Integer deviceId) 
 	{
 		this.deviceId = deviceId;
@@ -503,5 +505,13 @@ public class Device extends BaseEntity
 
 	public void setScheduleId(Integer scheduleId) {
 		this.scheduleId = scheduleId;
+	}
+
+	public String getAdUrl() {
+		return adUrl;
+	}
+
+	public void setAdUrl(String adUrl) {
+		this.adUrl = adUrl;
 	}
 }

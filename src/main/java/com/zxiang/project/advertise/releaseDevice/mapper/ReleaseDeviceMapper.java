@@ -74,4 +74,6 @@ public interface ReleaseDeviceMapper
 	 */
 	public int deleteReleaseDeviceByScheduleId(Integer scheduleId);
 	
+	public int deleteReleaseDeviceByAdIds(String[] ids);
+	
 }

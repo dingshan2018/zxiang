@@ -91,4 +91,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</foreach>
 	</insert>
 	
+     <!-- 通过广告ID删除数据 -->
+    <delete id="deleteReleaseDeviceByAdIds" parameterType="String">
+        delete from zx_release_device where schedule_id in 
+        <foreach item="adScheduleId" collection="array" open="(" separator="," close=")">
+            #{adScheduleId}
+        </foreach>
+    </delete>
+    
 </mapper>

@@ -225,7 +225,7 @@ public class FundLogServiceImpl implements IFundLogService {
 			// 生成资金流水记录
 			FundLog fundLog = new FundLog();
 			fundLog.setBalance(balance.subtract(frozenBalance).toString()); // 可用余额
-			fundLog.setTotalFee("-"+money);
+			fundLog.setTotalFee("-"+Math.abs(money.floatValue()));
 			fundLog.setClientId(advertiseId);
 			fundLog.setClientType(UserConstants.USER_TYPE_ADVERTISE);
 			fundLog.setContent("广告发布资金冻结");

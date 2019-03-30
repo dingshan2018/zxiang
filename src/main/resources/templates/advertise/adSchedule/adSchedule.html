@@ -78,16 +78,6 @@
                 </a>
                 <a class="btn btn-primary btn-rounded btn-sm" onclick="editReleaseDevice()"><i class="fa fa-edit"></i>&nbsp;投放终端
                 </a>
-                <!--  
-                <a class="btn btn-success btn-rounded btn-sm" onclick="republish()"><i class="fa fa-download"></i>&nbsp;重新发布
-                </a>
-                -->
-                <!-- <a class="btn btn-success btn-rounded btn-sm" onclick="order()"><i class="fa fa-download"></i>&nbsp;预约
-                </a>
-                <a class="btn btn-success btn-rounded btn-sm" onclick="audit()" shiro:hasPermission="advertise:adSchedule:audit"><i class="fa fa-download"></i>&nbsp;审核
-                </a>
-                <a class="btn btn-success btn-rounded btn-sm" onclick="releaseOnline()" shiro:hasPermission="advertise:adSchedule:releaseOnline"><i class="fa fa-download"></i>&nbsp;发布
-                </a> -->
               </li>
             </ul>
           </div>
@@ -114,11 +104,11 @@
     var removeFlag = [[${@permission.hasPermi('advertise:adSchedule:remove')}]];
     var auditFlag = [[${@permission.hasPermi('advertise:adSchedule:audit')}]];//审核权限
     var releaseOnlineFlag = [[${@permission.hasPermi('advertise:adSchedule:releaseOnline')}]];//发布权限
-   // var republishFlag = [[${@permission.hasPermi('advertise:adSchedule:republish')}]]; //重新发布权限
+    var republishFlag = [[${@permission.hasPermi('advertise:adSchedule:republish')}]]; //播放权限
+    var removeAdFlag = [[${@permission.hasPermi('advertise:adSchedule:removeAd')}]]; //停播权限
     var prefix = ctx + 'advertise/adSchedule';
 
     $(function() {
-
     	//投放广告商下拉框数据
         var advertiserList = selectAdvertiseList();
         $.each(advertiserList, function (i) {
@@ -309,13 +299,11 @@
                     	actions.push('<a class="btn btn-warning btn-xs" onclick="adPayByAccount(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>支付</a> ');
                     }
                     if(row.releaseStatus == '0'){
-                    	actions.push('<a class="btn btn-warning btn-xs" onclick="republish(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>发布</a> ');
+                    	actions.push('<a class="btn btn-warning btn-xs' + republishFlag + '" onclick="republish(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>播放</a> ');
                     }
-                    /*if(row.status == toPlay || row.status == hasPlay){
-                    	actions.push(
-                            	'<a class="btn btn-info btn-xs' + republishFlag + ''" href="#" onclick="republish(\'' + row.adScheduleId +
-                            	'\')"><i class="fa fa-edit"></i>更新广告</a> ');
-                    }*/
+                    if(row.releaseStatus == '1'){
+                    	actions.push('<a class="btn btn-danger btn-xs'+ removeAdFlag +'" onclick="removeAd(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>停播</a> ');
+                    }
 					return actions.join('');
 	            }
 	        }]
@@ -527,16 +515,53 @@
        		}
        		
       	}
-
-      	var hasOrder = getOrderNum(adScheduleId);
-   		if (hasOrder > 0) {
-   			$.modal.alertWarning("该广告已预约过!");
+		var status = adSchedule.status;
+   		if(status != '04' && status != '05'){
+   			$.modal.alertWarning("该广告未发布，无法开始播放!");
    	        return;
    		}
-   		var url = ctx + "advertise/adSchedule/order/" + adScheduleId;
-    	$.modal.open("广告投放预约", url);
+   		$.modal.confirm("确定播放该条" + adSchedule.scheduleName + "广告吗？", function() {
+	   		$.ajax({
+	    		cache : true,
+	    		type : "POST",
+	    		url : prefix + "/republish",
+	    		data : {
+	    			"adScheduleId": adScheduleId
+	    		},
+	    		async : false,
+	    		error : function(request) {
+	    			$.modal.alertError("系统错误");
+	    		},
+	    		success : function(data) {
+	    			$.modal.msgSuccess(data.msg);
+	    			$.table.search();
+	    		}
+	    	});
+   		});
   	}
 
+    function removeAd(adScheduleId) {
+    	var adSchedule = getAdScheduleInfo(adScheduleId);
+   		$.modal.confirm("确定停播该条" + adSchedule.scheduleName + "广告吗？", function() {
+	   		$.ajax({
+	    		cache : true,
+	    		type : "POST",
+	    		url : prefix + "/removeAd",
+	    		data : {
+	    			"adScheduleId": adScheduleId
+	    		},
+	    		async : false,
+	    		error : function(request) {
+	    			$.modal.alertError("系统错误");
+	    		},
+	    		success : function(data) {
+	    			$.modal.msgSuccess(data.msg);
+	    			$.table.search();
+	    		}
+	    	});
+   		});
+  	}
+    
   	//审核,未使用,同function audit(adScheduleId) {
     function audit() {
     	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
@@ -811,7 +836,7 @@
        	        $.modal.alertWarning('该广告费用已支付,请勿重复支付!');
        	        return;
           	}
-        	if (adSchedule.status != toBeReleased) {
+        	if (adSchedule.status != toBeReleased && adSchedule.status != '04' && adSchedule.status!='05') {
        	        $.modal.alertWarning('广告审核通过后才能支付!');
        	        return;
           	}

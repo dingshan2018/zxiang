@@ -184,7 +184,13 @@ public class AdScheduleController extends BaseController
 	@ResponseBody
 	public AjaxResult remove(String ids)
 	{		
-		return toAjax(adScheduleService.deleteAdScheduleByIds(ids));
+		try {
+			return toAjax(adScheduleService.deleteAdScheduleByIds(ids));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return error("删除广告失败");
+		}
 	}
 	
 	/**
@@ -261,7 +267,7 @@ public class AdScheduleController extends BaseController
 	}
 	
 	/**
-	 * 广告投放预约保存
+	 * 播放广告
 	 */
 	@RequiresPermissions("advertise:adSchedule:republish")
 	@Log(title = "广告投放变更", businessType = BusinessType.UPDATE)
@@ -272,6 +278,25 @@ public class AdScheduleController extends BaseController
 		try {
 			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
 			return toAjax(adScheduleService.republish(adSchedule,operatorUser));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error();
+		}
+	}
+	/**
+	 * 停播广告
+	 * @param adSchedule
+	 * @return
+	 */
+	@RequiresPermissions("advertise:adSchedule:removeAd")
+	@Log(title = "广告下架", businessType = BusinessType.UPDATE)
+	@PostMapping("/removeAd")
+	@ResponseBody
+	public AjaxResult removeAd(AdSchedule adSchedule)
+	{
+		try {
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			return toAjax(adScheduleService.removeAd(adSchedule,operatorUser));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return error();

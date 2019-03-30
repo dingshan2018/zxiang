@@ -173,7 +173,7 @@ public class AdReleaseTimerController extends BaseController
 					if(timer.getReleaseBeginTime().getTime()<=new Date().getTime()) {
 						adReleaseTimer.setReleaseBeginTime(timer.getReleaseBeginTime());
 					}
-					if(timer.getReleaseEndTime().getTime()<=new Date().getTime()) {
+					if(adReleaseTimer.getReleaseEndTime().getTime()<=new Date().getTime()) {
 						adReleaseTimer.setReleaseEndTime(timer.getReleaseEndTime());
 					}
 					if(timer.getReleaseBeginTime().getTime() == adReleaseTimer.getReleaseBeginTime().getTime() && timer.getReleaseEndTime().getTime() == adReleaseTimer.getReleaseEndTime().getTime()) {
