@@ -13,8 +13,19 @@
               <input type="text" name="terminalCode"/>
             </li>
             <li>
-              <span class="select-item-name">设备资产编号：</span>
+              <span class="select-item-name">设备编号：</span>
               <input type="text" name="deviceSn" id="deviceSn"/>
+            </li>
+            <li>
+              <span class="select-item-name">在线状态：</span>
+              <select
+                name="onlineStatus"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
+                <option value="">全部</option>
+                <option value="1">在线</option>
+                <option value="0">离线</option>
+              </select>
             </li>
             <li class="select-time">
               <label class="select-item-name">创建时间： </label>
@@ -40,15 +51,9 @@
     </div>
 
     <div class="btn-group hidden-xs" id="toolbar" role="group">
-      <!-- <a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:terminal:add">
-        <i class="fa fa-plus"></i> 新增
-      </a> -->
       <a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="business:terminal:remove">
         <i class="fa fa-trash-o"></i> 删除
       </a>
-      <!-- <a class="btn btn-outline btn-success btn-rounded" onclick="batchImport()" shiro:hasPermission="business:terminal:add">
-        <i class="fa fa-plus"></i> 批量导入
-      </a> -->
     </div>
 
     <div class="col-sm-12 select-table table-striped">
@@ -108,7 +113,7 @@
           },
           {
               field    : 'onlineStatusName',
-              title    : '在线标志'           
+              title    : '在线状态'           
           },
           {
             field    : 'statusName',

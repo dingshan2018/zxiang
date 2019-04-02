@@ -138,6 +138,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="totalTime != null and totalTime != ''"> and zas.total_time = #{totalTime}</if>
              <if test="payStatus != null and payStatus != ''"> and zas.pay_status = #{payStatus}</if>
              <if test="qrUrl != null and qrUrl != ''"> and zas.qr_url = #{qrUrl}</if>
+             and zas.is_del='0'
          </where>
          order by zas.ad_schedule_id desc
     </select>
@@ -250,11 +251,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
 	<delete id="deleteAdScheduleById" parameterType="Integer">
-        delete from zx_ad_schedule where ad_schedule_id = #{adScheduleId}
+        update zx_ad_schedule set is_del='1',release_status='2' where ad_schedule_id=#{adScheduleId}
     </delete>
 	
     <delete id="deleteAdScheduleByIds" parameterType="String">
-        delete from zx_ad_schedule where ad_schedule_id in 
+        update zx_ad_schedule set is_del='1',release_status='2' where ad_schedule_id in 
         <foreach item="adScheduleId" collection="array" open="(" separator="," close=")">
             #{adScheduleId}
         </foreach>

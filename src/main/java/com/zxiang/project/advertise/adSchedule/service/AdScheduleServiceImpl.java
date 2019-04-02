@@ -546,7 +546,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		try {
 			if (AdConstant.AD_ADUIT_PASS.equals(adSchedule.getApproved())) {
 				adSchedule.setStatus(AdConstant.AD_WAIT_PUBLISH);
-
+				adSchedule.setStatus(AdConstant.AD_WAIT_PAY);
 			} else if (AdConstant.AD_ADUIT_NO_PASS.equals(adSchedule.getApproved())) {
 				// 审核不通过则不下发排期计划
 				adSchedule.setStatus(AdConstant.AD_ADUIT_FAIL);
@@ -627,21 +627,21 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		} else if (AdConstant.RELEASE_TYPE_H5.equals(releasePosition)) {
 			// 更新H5的二维码URL
 			// 保存qrURL链接,deviceIds通过设备投放范围关联
-			AdReleaseRange range = adReleaseRangeMapper.selectAdRangeByAd(adScheduleId);
-			if (range != null) {
-				String devices = range.getDevices();
-				String[] deviceIds = Convert.toStrArray(devices);
-				int updateQrUrl = deviceMapper.updateQrUrl(qrUrl, deviceIds, adScheduleId);
-				logger.info("成功更新:" + updateQrUrl + " 条设备qrUrl数据");
-				for (String deviceId : deviceIds) {
-					try {
-						// 下发更新终端二维码
-						qrCodeIssued(deviceId, qrUrl, adScheduleId);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
+//			AdReleaseRange range = adReleaseRangeMapper.selectAdRangeByAd(adScheduleId);
+//			if (range != null) {
+//				String devices = range.getDevices();
+//				String[] deviceIds = Convert.toStrArray(devices);
+//				int updateQrUrl = deviceMapper.updateQrUrl(qrUrl, deviceIds, adScheduleId);
+//				logger.info("成功更新:" + updateQrUrl + " 条设备qrUrl数据");
+//				for (String deviceId : deviceIds) {
+//					try {
+//						// 下发更新终端二维码
+//						qrCodeIssued(deviceId, qrUrl, adScheduleId);
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}
 		}
 
 		// 若广告的status已经为04则已经发布过不再更新，若没有发布则进行发布操作
@@ -887,8 +887,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		Config retConfig = configMapper.selectConfig(config);
 		String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue()
 				: "http://mmedia.bp.zcloudtechs.cn";
+		logger.info("新增排期参数："+JSON.toJSONString(param));
 		String result = Tools.doPostForm(rootUrl + AdConstant.AD_URL_SAVEPLAYBILL, param);
-
+		logger.info("新增排期响应："+result);
 		return result;
 	}
 
@@ -924,8 +925,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		Config retConfig = configMapper.selectConfig(config);
 		String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue()
 				: "http://mmedia.bp.zcloudtechs.cn";
+		logger.info("新增广告终端参数："+JSON.toJSONString(param));
 		String result = Tools.doPostForm(rootUrl + AdConstant.AD_URL_SAVETERMINAL, param);
-
+		logger.info("新增广告终端响应："+result);
 		return result;
 	}
 
@@ -948,8 +950,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		Config retConfig = configMapper.selectConfig(config);
 		String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue()
 				: "http://mmedia.bp.zcloudtechs.cn";
+		logger.info("删除终端参数："+JSON.toJSONString(param));
 		String result = Tools.doPostForm(rootUrl + AdConstant.AD_URL_DELETETERMINAL, param);
-
+		logger.info("删除终端响应："+JSON.toJSONString(param));
 		return result;
 	}
 
@@ -981,8 +984,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		Config retConfig = configMapper.selectConfig(config);
 		String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue()
 				: "http://mmedia.bp.zcloudtechs.cn";
+		logger.info("生成排期参数："+JSON.toJSONString(param));
 		String result = Tools.doPostForm(rootUrl + AdConstant.AD_URL_ADDSCHEDULE, param);
-
+		logger.info("生成排期响应："+result);
 		return result;
 	}
 
@@ -1002,7 +1006,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		Config retConfig = configMapper.selectConfig(config);
 		String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue()
 				: "http://mmedia.bp.zcloudtechs.cn";
+		logger.info("发布参数："+JSON.toJSONString(param));
 		String result = Tools.doPostForm(rootUrl + AdConstant.AD_URL_PUBLISHSCHEDULE, param);
+		logger.info("发布响应："+result);
 		return result;
 	}
 
@@ -1028,7 +1034,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue()
 				: "http://mmedia.bp.zcloudtechs.cn";
 		//String rootUrl = "http://127.0.0.1:8080";
+		logger.info("重新发布参数："+JSON.toJSONString(param));
 		String result = Tools.doPostForm(rootUrl + AdConstant.AD_URL_REPUBLISHSCHEDULE, param);
+		logger.info("重新发布响应："+result);
 		return result;
 	}
 
@@ -1143,7 +1151,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 			}
 			adSchedule.setPayStatus(AdConstant.AD_HAS_PAY);
 			adSchedule.setReleaseDays(days);
-			adSchedule.setReleaseTermNum(deviceNum);
+			//adSchedule.setReleaseTermNum(deviceNum);
 			
 			adSchedule.setUpdateBy(operatorUser);
 			adSchedule.setUpdateTime(new Date());
@@ -1410,6 +1418,10 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 	@Override
 	public int removeAd(AdSchedule adSchedule1, String operatorUser) throws Exception {
 		Integer adScheduleId = adSchedule1.getAdScheduleId();
+		AdSchedule adSchedule = adScheduleMapper.selectAdScheduleById(adScheduleId);
+		if(AdConstant.RELEASE_TYPE_H5.equals(adSchedule.getReleasePosition())) {
+			return adScheduleMapper.deleteAdScheduleById(adScheduleId);
+		}else {
 			ReleaseDevice deviceParam = new ReleaseDevice();
 			deviceParam.setScheduleId(adScheduleId);
 			List<ReleaseDevice> releaseDevices = this.releaseDeviceMapper.selectReleaseDeviceList(deviceParam);
@@ -1420,7 +1432,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				}
 				deviceIds = deviceIds.substring(1);
 			}
-			AdSchedule adSchedule = adScheduleMapper.selectAdScheduleById(adScheduleId);
+			
 			String retJson = republishSchedule(adSchedule.getSxScheduleId() + "", deviceIds, null,
 					null, "DELETE");
 			AdHttpResult adHttp = Tools.analysisResult(retJson);
@@ -1476,6 +1488,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				logger.error("调用审核通过下发排期计划接口失败!" + adHttp.toString());
 				throw new RRException("调用排期接口失败!");
 			}
+		}
+			
 		
 	}
 
