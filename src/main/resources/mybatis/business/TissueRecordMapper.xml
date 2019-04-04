@@ -41,6 +41,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectTissueRecordVo"/>
         <where>  
             <if test="userId == null">  ${filterSql} </if>
+            <if test="1==1"> and status = 1</if>
             <if test="userId != null and userId != ''">
             	and #{userId} = (SELECT DISTINCT zd.owner_id FROM zx_device zd WHERE zd.device_id = tr.device_id)
             </if>
