@@ -164,7 +164,7 @@ public class UserRealm extends AuthorizingRealm
            //计算场所权限
            Place placeParam = new Place();
            List<Place> places = null;
-           if(userType.equals("03")) {
+           if(userType.equals("03")) {//代理商
         	   List<HashMap<String, Object>> zxagentList = userService.selectzxagent(""+puserId);
         	   String paramplace = "";
         	   String level = "";
@@ -186,7 +186,7 @@ public class UserRealm extends AuthorizingRealm
                placeParam.setParams(paramMap);
                places = placeService.selectPlaceList(placeParam);
            }
-           if(userType.equals("04")) {
+           if(userType.equals("04")) {//服务商
         	   List<HashMap<String, Object>> zxrepairareaList = userService.selectzxrepairarea(""+puserId);
         	   String paramplace = "";
                for(HashMap<String, Object> zxrepairarea : zxrepairareaList) {

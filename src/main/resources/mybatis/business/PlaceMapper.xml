@@ -119,20 +119,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="updateTime != null "> and update_time = #{updateTime}</if>
              <if test="params.person != null"><!-- 结束时间检索 -->
 				AND (
-				#{params.person} like CONCAT(',',p.repair_id,',')
+				#{params.person} like CONCAT('%',',',p.repair_id,',','%')
 				OR 
-				#{params.person} like CONCAT(',',p.supply_id,',')
+				#{params.person} like CONCAT('%',',',p.supply_id,',','%')
 				OR
-				#{params.person} like CONCAT(',',p.operator_id,',')
+				#{params.person} like CONCAT('%',',',p.operator_id,',','%')
 				OR
-				#{params.person} like CONCAT(',',p.owner_id,',')
+				#{params.person} like CONCAT('%',',',p.owner_id,',','%')
 				)
 			 </if>
 			    <if test="params.city != null"><!-- 结束时间检索 -->
-				AND #{params.city} like CONCAT(',',p.city,',')
+				AND #{params.city} like CONCAT('%',',',p.city,',','%')
 			 </if>
 			    <if test="params.county != null"><!-- 结束时间检索 -->
-				AND #{params.county} like CONCAT(',',p.county,',')
+				AND #{params.county} like CONCAT('%',',',p.county,',','%')
 			 </if>
          </where>
          ORDER BY p.place_id DESC 

@@ -546,7 +546,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		try {
 			if (AdConstant.AD_ADUIT_PASS.equals(adSchedule.getApproved())) {
 				adSchedule.setStatus(AdConstant.AD_WAIT_PUBLISH);
-				adSchedule.setStatus(AdConstant.AD_WAIT_PAY);
+				adSchedule.setPayStatus(AdConstant.AD_WAIT_PAY);
 			} else if (AdConstant.AD_ADUIT_NO_PASS.equals(adSchedule.getApproved())) {
 				// 审核不通过则不下发排期计划
 				adSchedule.setStatus(AdConstant.AD_ADUIT_FAIL);
@@ -1088,6 +1088,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				param.put("endTime", df.format(new Date()));
 				Float hasPay = this.releaseRecordMapper.getAdTotalPay(param);
+				if(hasPay == null) {
+					hasPay = 0.0f;
+				}
 				// total_pay - sum(price) 为目前冻结金额
 				Date deadLineDate = null;
 				Date today;
