@@ -142,6 +142,13 @@ public class DeviceServiceImpl implements IDeviceService
 	@Override
 	public int updateDevice(Device device)
 	{
+		Terminal terminal = this.terminalMapper.selectTerByDeviceId(device.getDeviceId());
+		if(terminal!=null) {
+			terminal.setPlaceId(device.getPlaceId()!=null?Integer.parseInt(device.getPlaceId()):null);
+			terminal.setUpdateBy(device.getUpdateBy());
+			terminal.setUpdateTime(new Date());
+			this.terminalMapper.updateTerminal(terminal);
+		}
 	    return deviceMapper.updateDevice(device);
 	}
 

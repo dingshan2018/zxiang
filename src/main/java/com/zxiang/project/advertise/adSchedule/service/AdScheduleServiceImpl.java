@@ -535,6 +535,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 					&& typeList.contains(AdConstant.MATERIAL_TYPE_VIDEO)) {
 				priceType = AdConstant.AD_TYPE_PHOTO_VIDEO;
 			}
+			
+			if (typeList.contains(AdConstant.MATERIAL_TYPE_PHOTO)
+					&& typeList.contains(AdConstant.MATERIAL_TYPE_VIDEO) && typeList.contains(AdConstant.MATERIAL_TYPE_TXT)) {
+				priceType = AdConstant.AD_TYPE_PHOTO_VIDEO_TXT;
+			}
 		}
 
 		return priceType;
