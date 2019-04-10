@@ -1135,8 +1135,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 					deviceNum = releaseDevices.size();
 				}
 				// 计算当前终端（计算当天需要修改）
-				// 投放终端数
-				adSchedule.setReleaseTermNum(deviceNum);
+				
 				float ounpay = adSchedule.getTotalPay() - hasPay;
 				// 计算本次应冻结金额
 				float perpay = adSchedule.getTotalPay() / adSchedule.getReleaseDays() / adSchedule.getReleaseTermNum();
@@ -1151,6 +1150,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 					} 
 				}
 				adSchedule.setTotalPay(adSchedule.getTotalPay()+(unpay-ounpay));
+				adSchedule.setReleaseDays(days);
+				// 投放终端数
+				adSchedule.setReleaseTermNum(deviceNum);
 				fundLogService.adPublishFrozen(adSchedule.getAdvertiser(),
 						new BigDecimal(Float.toString(unpay - ounpay)));
 			}else {//首次发布
@@ -1158,7 +1160,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 						new BigDecimal(Float.toString(adSchedule.getTotalPay())));
 			}
 			adSchedule.setPayStatus(AdConstant.AD_HAS_PAY);
-			adSchedule.setReleaseDays(days);
+			
 			//adSchedule.setReleaseTermNum(deviceNum);
 			
 			adSchedule.setUpdateBy(operatorUser);
