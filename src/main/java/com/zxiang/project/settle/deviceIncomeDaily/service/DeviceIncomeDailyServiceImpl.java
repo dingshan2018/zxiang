@@ -301,27 +301,19 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				
 			}
 		}*/
-		  //h5广告费用
-		   if(tissuenum>0) {
+		    //出纸二维码广告收益
+			if(tissuenumAll>0) {
 				HashMap<String, Object> promotionagenmap = new HashMap<String, Object>();
 				HashMap<String, Object> repairmap = new HashMap<String, Object>();
 				List<HashMap<String, Object>> promotionagentlist = new ArrayList<HashMap<String, Object>>();
 				List<HashMap<String, Object>> repairlist = new ArrayList<HashMap<String, Object>>();
-				//--------------推广收益-----------------------
-			    user = getusedata(promotionerh5,"","");
-			    double rate = 0.0f;
-			    if(user!=null) {
-			    	rate =  Double.valueOf((user==null||user.get("promPaperRate")==null)?"0.0":user.get("promPaperRate")+"");
-					insertdata(-tissuenum*rate,"02",RateConstants.RATETYPE_PROMPAPERINCOME,0.0,tissuenum,user);
-					insertUserextensiondata(RateConstants.RATETYPE_PROMPAPERINCOME,0.0,tissuenum,user);
-			    }
-			    
+				 double rate = 0.0f;
 				//-----------------------广告收益--------------
 				//插入机主广告数据每次出纸收益0.3元
 				user = getusedata(buyerid,"","");
 				if(user!=null) {
 					rate = Double.valueOf(user.get("scanRate")==null?"0.0":user.get("scanRate")+"");
-					insertdata(rate*tissuenum,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
+					insertdata(rate*tissuenumAll,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenumAll,user);
 				}
 	            if(com.zxiang.common.utils.StringUtils.isNotNull(map.get("place_id"))) {
 	            	HashMap<String, Object> placemap =  selectzxplace(map.get("place_id") + ""); //获取地点
@@ -333,7 +325,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	   					user = getusedata("",agentId,UserConstants.USER_TYPE_AGENT);
 	   					if(user!=null) {
 	   						rate = Double.valueOf(user.get("scanRate")==null?"0.0":user.get("scanRate")+"");
-		   					insertdata(rate*tissuenum,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
+		   					insertdata(rate*tissuenumAll,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenumAll,user);
 	   					}
 	   					
 	   				}
@@ -345,11 +337,24 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	   					   user = getusedata("",repairId,UserConstants.USER_TYPE_REPAIR);
 	   					   if(user!=null) {
 	   						   rate = Double.valueOf(user.get("scanRate")==null?"0.0":user.get("scanRate")+"");
-		   					   insertdata(rate*tissuenum,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenum,user);
+		   					   insertdata(rate*tissuenumAll,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenumAll,user);
 	   					   }
 	   					   
 	   				 }
 				}
+			}
+		
+		
+		  //h5广告费用
+		   if(tissuenum>0) {
+				//--------------推广收益-----------------------
+			    user = getusedata(promotionerh5,"","");
+			    double rate = 0.0f;
+			    if(user!=null) {
+			    	rate =  Double.valueOf((user==null||user.get("promPaperRate")==null)?"0.0":user.get("promPaperRate")+"");
+					insertdata(-tissuenum*rate,"02",RateConstants.RATETYPE_PROMPAPERINCOME,0.0,tissuenum,user);
+					insertUserextensiondata(RateConstants.RATETYPE_PROMPAPERINCOME,0.0,tissuenum,user);
+			    }
 		   }
 		//---------------------设备昨日出纸数量---------------------------------
 		DeviceIncomeDaily deviceIncomeDaily = new DeviceIncomeDaily();
