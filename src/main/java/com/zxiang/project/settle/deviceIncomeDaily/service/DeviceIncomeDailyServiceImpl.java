@@ -262,9 +262,24 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	public void tissuedata(HashMap<String, Object> map,String buyerid,int tissuenumAll,int tissuenum,String promotionerh5) {
 		//获取机主的信息
 		HashMap<String, Object> user = getusedata(buyerid,"","");
-		
 		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
-		double serve_rate = Double.valueOf((user==null||user.get("serveRate")==null)?"0.0":user.get("serveRate")+"");
+		if(user.get("leader_id") !=null && user.get("leader_id") !="" ){ //直推人
+			//获取推荐人人员信息
+			 user = getusedata(user.get("leader_id")+"","","");
+			if(com.zxiang.common.utils.StringUtils.isNotNull(user)){
+				double serve_rate = Double.valueOf((user==null||user.get("serveRate")==null)?"0.0":user.get("serveRate")+"");
+				insertdata(tissuenumAll*serve_rate,"03",RateConstants.SERVE_INCOME,0.0,tissuenumAll,user);
+				if(user.get("leader_id") !=null && user.get("leader_id") !="" ){ //间推人
+					 user = getusedata(user.get("leader_id")+"","","");
+					if(com.zxiang.common.utils.StringUtils.isNotNull(user)){
+						 serve_rate = Double.valueOf((user==null||user.get("serveRate")==null)?"0.0":user.get("serveRate")+"");
+						insertdata(tissuenumAll*serve_rate,"03",RateConstants.SERVE_INCOME,0.0,tissuenumAll,user);
+					}
+				}
+			}
+		}
+		
+/*		double serve_rate = Double.valueOf((user==null||user.get("serveRate")==null)?"0.0":user.get("serveRate")+"");
 		//------------------------客户昨日收入--------------------------------------------------------
 		// 机主 服务收益（0.025元）
 		insertdata(tissuenumAll*serve_rate,"03",RateConstants.SERVE_INCOME,0.0,tissuenumAll,user);
@@ -285,7 +300,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				}
 				
 			}
-		}
+		}*/
 		  //h5广告费用
 		   if(tissuenum>0) {
 				HashMap<String, Object> promotionagenmap = new HashMap<String, Object>();
@@ -576,13 +591,12 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		HashMap<String, Object> promotionerdata = new HashMap<String, Object>();
 		if(com.zxiang.common.utils.StringUtils.isNotNull(buyerid)) {
 			   promotionerdata = iUserIncomeService.selectzxsellerlist(buyerid);
-			   if(promotionerdata!=null) {
-				   puser_id = promotionerdata.get("puser_id")+""; //主体ID
-					user_type = promotionerdata.get("user_type")+""; //用户类型
-			   }
-			   
 		}
-		
+		if(promotionerdata == null || !promotionerdata.containsKey("puser_id")) {
+				return new HashMap<String, Object>();
+		}
+		puser_id = promotionerdata.get("puser_id")+""; //主体ID
+		user_type = promotionerdata.get("user_type")+""; //用户类型
 		HashMap<String, Object> puser = new HashMap<String, Object>();
 		List<HashMap<String, Object>> user = new ArrayList<HashMap<String, Object>>();
 		if(user_type.equals(UserConstants.USER_TYPE_JOIN)) {
