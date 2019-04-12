@@ -138,7 +138,7 @@ public class FundLogServiceImpl implements IFundLogService {
 	@Transactional
 	public void incomeRecord(Integer clientId, String clientType, BigDecimal money) {
 		logger.info("收益统计，clientId："+clientId+",clientType："+clientType+",money："+money);
-		if(money == null || money.compareTo(new BigDecimal(0)) <= 0) {
+		if(money == null || money.compareTo(new BigDecimal(0)) < 0) {
 			throw new RRException("收益余额须大于0，clientId："+clientId+",clientType："+clientType);
 		}
 		BigDecimal balance = null;

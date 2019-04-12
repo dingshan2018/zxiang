@@ -576,12 +576,13 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		HashMap<String, Object> promotionerdata = new HashMap<String, Object>();
 		if(com.zxiang.common.utils.StringUtils.isNotNull(buyerid)) {
 			   promotionerdata = iUserIncomeService.selectzxsellerlist(buyerid);
+			   if(promotionerdata!=null) {
+				   puser_id = promotionerdata.get("puser_id")+""; //主体ID
+					user_type = promotionerdata.get("user_type")+""; //用户类型
+			   }
+			   
 		}
-		if(promotionerdata == null || !promotionerdata.containsKey("puser_id")) {
-				return new HashMap<String, Object>();
-		}
-		puser_id = promotionerdata.get("puser_id")+""; //主体ID
-		user_type = promotionerdata.get("user_type")+""; //用户类型
+		
 		HashMap<String, Object> puser = new HashMap<String, Object>();
 		List<HashMap<String, Object>> user = new ArrayList<HashMap<String, Object>>();
 		if(user_type.equals(UserConstants.USER_TYPE_JOIN)) {
