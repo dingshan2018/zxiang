@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -136,6 +137,9 @@ public class AdScheduleController extends BaseController
 			adSchedule.setCreateBy(operatorUser);
 			adSchedule.setCreateTime(new Date());
 			adSchedule.setIsDel("0");
+			if(StringUtils.isNotBlank(adSchedule.getQrUrl())) {
+				adSchedule.setQrUrl(StringEscapeUtils.unescapeHtml(adSchedule.getQrUrl()));
+			}
 			
 			return toAjax(adScheduleService.saveAdTemplates(adSchedule));
 		} catch (Exception e) {
@@ -171,7 +175,9 @@ public class AdScheduleController extends BaseController
 		String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
 		adSchedule.setUpdateBy(operatorUser);
 		adSchedule.setUpdateTime(new Date());
-		
+		if(StringUtils.isNotBlank(adSchedule.getQrUrl())) {
+			adSchedule.setQrUrl(StringEscapeUtils.unescapeHtml(adSchedule.getQrUrl()));
+		}
 		return toAjax(adScheduleService.updateAdSchedule(adSchedule));
 	}
 	
