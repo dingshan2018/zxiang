@@ -80,6 +80,11 @@ public interface DeviceIncomeDailyMapper
 	public List<HashMap<String, Object>> selectzxdeviceorderlist(HashMap<String, Object> map);
 	
 	/** 
+	 * 历史某天设备销售表查询
+	 * */
+	public List<HashMap<String, Object>> selectCurrentdeviceorderlist(HashMap<String, Object> map);
+	
+	/** 
 	 * 广告推广计划查询
 	 * */
 	public List<HashMap<String, Object>> selecadschedulelist(@Param("scheduleId")Integer scheduleId);
@@ -91,15 +96,50 @@ public interface DeviceIncomeDailyMapper
 	public List<HashMap<String, Object>> selectreleaserecordlist(HashMap<String, Object> map);
 	
 	/** 
+	 * 历史广告播放价钱查询
+	 * 
+	 * */
+	public List<HashMap<String, Object>> selectcurreleaserecordlist(HashMap<String, Object> map);
+	
+	/** 
 	 * h5出纸记录表查询
 	 * */
 	public List<HashMap<String, Object>> selectzxtissuerecordlist(HashMap<String, Object> map);
+	
+	/** 
+	 * h5历史出纸记录表查询
+	 * */
+	public List<HashMap<String, Object>> selectcurrenttissuerecordlist(HashMap<String, Object> map);
 	
 	/** 
 	 * 出纸记录表查询
 	 * */
 	public int selectzxtissuerecordAll(HashMap<String, Object> map);
 	
+	/** 
+	 * 历史出纸记录表查询
+	 * */
+	public int selectcurrenttissuerecordAll(HashMap<String, Object> map);
+	
 	public List<HashMap<String, Object>> selectzxplace(HashMap<String, Object> map);
+	
+	/**
+	 * 删除错误设备日收入统计
+	 * @param deviceIncomeDaily
+	 * @return
+	 */
+	public int deleteWrongDeviceIncome(DeviceIncomeDaily deviceIncomeDaily);
+	
+	/**
+	 * 判断历史是否有数据
+	 * 
+	 * */
+	public List<DeviceIncomeDaily> selectCurDeviceIncomeDaily(DeviceIncomeDaily deviceIncomeDaily);
+
+	/**
+	 * 插入历史某天的设备日统计
+	 * @param deviceIncomeDaily
+	 */
+	public void insertCurDeviceIncomeDaily(DeviceIncomeDaily deviceIncomeDaily);
 	
 }

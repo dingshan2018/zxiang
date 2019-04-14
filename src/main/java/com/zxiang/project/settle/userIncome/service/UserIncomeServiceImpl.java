@@ -96,6 +96,12 @@ public class UserIncomeServiceImpl implements IUserIncomeService
 	}
 
 	@Override
+	public List<UserIncome> selectCurrentUserIncome(UserIncome userIncome) {
+		// TODO Auto-generated method stub
+		return userIncomeMapper.selectCurrentUserIncome(userIncome);
+	}
+	
+	@Override
 	public HashMap<String, Object> selectzxsellerlist(String sellerId) {
 		List<HashMap<String, Object>> list = userIncomeMapper.selectzxsellerlist(sellerId);
 		if(list.size()>0) {

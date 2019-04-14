@@ -1,6 +1,8 @@
 package com.zxiang.project.settle.deviceIncomeDaily.controller;
 
 import java.util.List;
+import java.util.Map;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -118,6 +120,23 @@ public class DeviceIncomeDailyController extends BaseController
 	public AjaxResult remove(String ids)
 	{		
 		return toAjax(deviceIncomeDailyService.deleteDeviceIncomeDailyByIds(ids));
+	}
+	
+	/**
+	 * 设备收入日统计重算
+	 */
+	@RequiresPermissions("settle:deviceIncomeDaily:reCalc")
+	@Log(title = "设备收入日统计重算", businessType = BusinessType.UPDATE)
+	@PostMapping( "/reCalc")
+	@ResponseBody
+	public AjaxResult reCalc(DeviceIncomeDaily deviceIncomeDaily)
+	{	
+		Map<String,Object> retMap = deviceIncomeDailyService.reCalc(deviceIncomeDaily);
+		Integer code = Integer.parseInt(retMap.get("code").toString());
+		if(code.intValue() == 0) {
+			return success("重算成功");
+		}
+		return error(retMap.get("message").toString());
 	}
 	
 }

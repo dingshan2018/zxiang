@@ -31,6 +31,13 @@ public interface FundLogMapper
 	public List<FundLog> selectFundLogList(FundLog fundLog);
 	
 	/**
+	 * 查詢錯誤流水
+	 * @param fundLog
+	 * @return
+	 */
+	public List<FundLog> selectWrongFundLogList(FundLog fundLog);
+	
+	/**
      * 新增资金流水
      * 
      * @param fundLog 资金流水信息
@@ -63,5 +70,26 @@ public interface FundLogMapper
 	public int deleteFundLogByIds(String[] payIds);
 	
 	public int updateStatus(@Param("payId")Integer payId,@Param("status")String status,@Param("remark")String remark);
+	
+	/**
+	 * 删除错误流水
+	 * @param fundLog
+	 * @return
+	 */
+	public int deleteWrongFundLog(FundLog fundLog);
+	
+	/**
+	 * 取出昨天最后一条流水
+	 * @param fundLog
+	 * @return
+	 */
+	public FundLog selectLastFundLog(FundLog fundLog); 
+	
+	/**
+	 * 调整流水
+	 * @param fundLog
+	 * @return
+	 */
+	public int recalcFundLog(FundLog fundLog);
 	
 }

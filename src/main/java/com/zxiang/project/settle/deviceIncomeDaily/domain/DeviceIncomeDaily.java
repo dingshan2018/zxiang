@@ -52,6 +52,10 @@ public class DeviceIncomeDaily extends BaseEntity
 	private String placeName;
 	
 	private String userId;
+	
+	private String beginTime;
+	
+	private String endTime;
 
 	public void setIncomeId(Integer incomeId) 
 	{
@@ -221,6 +225,24 @@ public class DeviceIncomeDaily extends BaseEntity
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	
+	
+	public String getBeginTime() {
+		return beginTime;
+	}
+
+	public void setBeginTime(String beginTime) {
+		this.beginTime = beginTime;
+	}
+
+	public String getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
 	}
 
 	public String toString() {

@@ -36,6 +36,35 @@ public class FundLog extends BaseEntity
 	private Date createTime;
 	/** 备注 */
 	private String remark;
+	
+	/**
+	 * 本期总金额
+	 */
+	private String totalBalance;
+	
+	/**
+	 * 本期冻结金额
+	 */
+	private String freezeBalance;
+	
+//	/**
+//	 * 差异可用余额
+//	 */
+//	private String deltaBalance;
+//	
+//	/**
+//	 * 差异当期金额
+//	 */
+//	private String deltaTotalBalance;
+//	
+//	/**
+//	 * 当期差异的冻结金额
+//	 */
+//	private String deltaFreezeBalance;
+	
+	private Date beginTime;
+	
+	private Date endTime;
 
 	public void setPayId(Integer payId) 
 	{
@@ -133,4 +162,66 @@ public class FundLog extends BaseEntity
 		return remark;
 	}
 
+	public String getTotalBalance() {
+		return totalBalance;
+	}
+
+	public void setTotalBalance(String totalBalance) {
+		this.totalBalance = totalBalance;
+	}
+
+	public String getFreezeBalance() {
+		return freezeBalance;
+	}
+
+	public void setFreezeBanlance(String freezeBalance) {
+		this.freezeBalance = freezeBalance;
+	}
+
+//	public String getDeltaBalance() {
+//		return deltaBalance;
+//	}
+//
+//	public void setDeltaBalance(String deltaBalance) {
+//		this.deltaBalance = deltaBalance;
+//	}
+//
+//	public String getDeltaTotalBalance() {
+//		return deltaTotalBalance;
+//	}
+//
+//	public void setDeltaTotalBalance(String deltaTotalBalance) {
+//		this.deltaTotalBalance = deltaTotalBalance;
+//	}
+//
+//	public String getDeltaFreezeBalance() {
+//		return deltaFreezeBalance;
+//	}
+//
+//	public void setDeltaFreezeBalance(String deltaFreezeBalance) {
+//		this.deltaFreezeBalance = deltaFreezeBalance;
+//	}
+
+	public void setFreezeBalance(String freezeBalance) {
+		this.freezeBalance = freezeBalance;
+	}
+
+	public Date getBeginTime() {
+		return beginTime;
+	}
+
+	public void setBeginTime(Date beginTime) {
+		this.beginTime = beginTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	
+	
 }

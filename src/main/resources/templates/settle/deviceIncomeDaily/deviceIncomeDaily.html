@@ -22,7 +22,7 @@
 								</li>
 								<li>
 									<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
-							    	<!-- <a class="btn btn-success btn-rounded btn-sm" onclick="$.table.exportExcel()"><i class="fa fa-download"></i>&nbsp;导出</a> -->
+							    	<a class="btn btn-success btn-rounded btn-sm" onclick="reCalc()" shiro:hasPermission="settle:deviceIncomeDaily:reCalc"><i class="fa fa-download"></i>&nbsp;重算</a>
 								</li>
 							</ul>
 						</div>
@@ -86,7 +86,28 @@
             };
             $.table.init(options);
         });
-        
+        function reCalc() {
+       	 var startTime = $("#startTime").val();
+       	 var endTime = $("#endTime").val();
+       	 $.ajax({
+	        url: prefix + "/reCalc",
+	        type: "post",
+	        async:false,
+	        data : {
+    			"beginTime": startTime,
+    			"endTime": endTime
+    		},
+	        success: function (data) {
+	        	//paperSum.innerText=data.paperSum;
+	        	//moneySum.innerText=data.moneySum;
+	        	$.table.search();
+	        },
+	        error: function (data) {
+	            alert("重算失败");
+	        }
+		 })
+    	 
+        }
     </script>
 </body>
 </html>

@@ -39,7 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectUserExtensionList" parameterType="UserExtension" resultMap="UserExtensionResult">
         <include refid="selectUserExtensionVo"/>
         <where>
-           ${filterSql}
+           ${filterSql} and del_flag='0'
              <if test="coperatorName != null and coperatorName != ''"> and coperator_name like concat('%',#{coperatorName},'%')</if>
              <if test="coperatorType != null and coperatorType != ''"> and coperator_type = #{coperatorType}</if>
             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
@@ -123,7 +123,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </where>
     </select>
 
-
+	<select id="selectCurUserExtension" parameterType="UserExtension" resultMap="UserExtensionResult">
+        select income_id from zx_user_extension
+        <where>
+             <if test="coperatorId != null and coperatorId != ''"> and coperator_id = #{coperatorId}</if>
+             and DATE_FORMAT(sum_date, '%Y-%m-%d') = DATE_FORMAT(
+			    #{sumDate},
+			    '%Y-%m-%d'
+			  )
+         </where>
+    </select>
+     
 	<delete id="deleteUserExtensionById" parameterType="Integer">
         delete from zx_user_extension where income_id = #{incomeId}
     </delete>
@@ -150,5 +160,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </where>
     </select>
 
+     <update id="deleteWrongExtendIncome" parameterType="UserExtension">
+         update zx_user_extension set del_flag='1' 
+          where sum_date = #{sumDate} and del_flag='0' 
+    </update> 
 
 </mapper>

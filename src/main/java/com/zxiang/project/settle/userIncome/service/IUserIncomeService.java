@@ -90,5 +90,12 @@ public interface IUserIncomeService
     void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
     List<HashMap<String, Object>> selectUsertotalIncome();
+
+    /**
+     * 获取某天收入统计
+     * @param userIncome
+     * @return
+     */
+	List<UserIncome> selectCurrentUserIncome(UserIncome userIncome);
 	
 }

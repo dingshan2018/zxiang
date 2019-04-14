@@ -81,7 +81,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectUserIncomeList" parameterType="UserIncome" resultMap="UserIncomeResult">
         <include refid="selectUserIncomeVos"/>
         <where>  
-            ${filterSql}
+            ${filterSql} and a.del_flag='0'
             <if test="incomeId != null and incomeId != ''"> and a.income_id = #{incomeId}</if>
              <if test="coperatorName != null and coperatorName != ''"> and a.coperator_name like concat('%',#{coperatorName},'%')</if>
              <if test="coperatorType != null and coperatorType != ''"> and a.coperator_type = #{coperatorType}</if>
@@ -292,6 +292,199 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    </trim>
 
     </insert>
+    
+    <insert id="insertCurUserIncome" parameterType="UserIncome">
+        insert into zx_user_income
+          <trim prefix="(" suffix=")" suffixOverrides="," >
+	      <if test="coperatorId != null" >
+	        coperator_id,
+	      </if>
+	       <if test="coperatorName != null" >
+	        coperator_name,
+	      </if>
+	      <if test="coperatorType != null" >
+	        coperator_type,
+	      </if>
+	      <if test="adIncome != null" >
+	        ad_income,
+	      </if>
+	      <if test="adCarouselIncome != null" >
+	        ad_carousel_income,
+	      </if>
+	      <if test="scanIncome != null" >
+	        scan_income,
+	      </if>
+	      <if test="promDirectIncome != null" >
+	        prom_direct_income,
+	      </if>
+	      <if test="promIndirectIncome != null" >
+	        prom_indirect_income,
+	      </if>
+	      <if test="promotionIncome != null" >
+	        promotion_income,
+	      </if>
+	      <if test="paperIncome != null" >
+	        paper_income,
+	      </if>
+	      <if test="promPaperIncome != null" >
+	        prom_paper_income,
+	      </if>
+	      <if test="serveIncome != null" >
+	        serve_income,
+	      </if>
+	      <if test="directAgentIncome != null" >
+	        direct_agent_income,
+	      </if>
+	      <if test="subsidyIncome != null" >
+	        subsidy_income,
+	      </if>
+	      <if test="adIncomeRate != null" >
+	        ad_income_rate,
+	      </if>
+	      <if test="promotionIncomeRate != null" >
+	        promotion_income_rate,
+	      </if>
+	      <if test="scanIncomeRate != null" >
+	        scan_income_rate,
+	      </if>
+	      <if test="subsidyIncomeRate != null" >
+	        subsidy_income_rate,
+	      </if>
+	      <if test="adRate != null" >
+	        ad_rate,
+	      </if>
+	      <if test="adCarouselRate != null" >
+	        ad_carousel_rate,
+	      </if>
+	      <if test="scanRate != null" >
+	        scan_rate,
+	      </if>
+	      <if test="promDirectRate != null" >
+	        prom_direct_rate,
+	      </if>
+	      <if test="promIndirectRate != null" >
+	        prom_indirect_rate,
+	      </if>
+	      <if test="promPaperRate != null" >
+	        prom_paper_rate,
+	      </if>
+	      <if test="promotionRate != null" >
+	        promotion_rate,
+	      </if>
+	      <if test="directAgentRate != null" >
+	        direct_agent_rate,
+	      </if>
+	      <if test="serveRate != null" >
+	        serve_rate,
+	      </if>
+	      <if test="subsidyRate != null" >
+	        subsidy_rate,
+	      </if>
+	      <if test="refundIncome != null" >
+	        refund_income,
+	      </if>
+	      <if test="refundIncomeRate != null" >
+	        refund_income_rate,
+	      </if>
+	         sum_date,
+		     create_time
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+	      <if test="coperatorId != null" >
+	        #{coperatorId,jdbcType=INTEGER},
+	      </if>
+	        <if test="coperatorId != null" >
+	        #{coperatorName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="coperatorType != null" >
+	        #{coperatorType,jdbcType=VARCHAR},
+	      </if>
+	      <if test="adIncome != null" >
+	        #{adIncome,jdbcType=DOUBLE},
+	      </if>
+	      <if test="adCarouselIncome != null" >
+	        #{adCarouselIncome,jdbcType=DOUBLE},
+	      </if>
+	      <if test="scanIncome != null" >
+	        #{scanIncome,jdbcType=DOUBLE},
+	      </if>
+	      <if test="promDirectIncome != null" >
+	        #{promDirectIncome,jdbcType=INTEGER},
+	      </if>
+	      <if test="promIndirectIncome != null" >
+	        #{promIndirectIncome,jdbcType=INTEGER},
+	      </if>
+	      <if test="promotionIncome != null" >
+	        #{promotionIncome,jdbcType=DOUBLE},
+	      </if>
+	      <if test="paperIncome != null" >
+	        #{paperIncome,jdbcType=INTEGER},
+	      </if>
+	     <if test="promPaperIncome != null" >
+	        #{promPaperIncome,jdbcType=INTEGER},
+	      </if>
+	      <if test="serveIncome != null" >
+	        #{serveIncome,jdbcType=INTEGER},
+	      </if>
+	      <if test="directAgentIncome != null" >
+	        #{directAgentIncome,jdbcType=DOUBLE},
+	      </if>
+	      <if test="subsidyIncome != null" >
+	        #{subsidyIncome,jdbcType=DOUBLE},
+	      </if>
+	      <if test="adIncomeRate != null" >
+	        #{adIncomeRate,jdbcType=DOUBLE},
+	      </if>
+	      <if test="promotionIncomeRate != null" >
+	        #{promotionIncomeRate,jdbcType=DOUBLE},
+	      </if>
+	      <if test="scanIncomeRate != null" >
+	        #{scanIncomeRate,jdbcType=DOUBLE},
+	      </if>
+	      <if test="subsidyIncomeRate != null" >
+	        #{subsidyIncomeRate,jdbcType=DOUBLE},
+	      </if>
+	      <if test="adRate != null" >
+	        #{adRate,jdbcType=REAL},
+	      </if>
+	      <if test="adCarouselRate != null" >
+	        #{adCarouselRate,jdbcType=REAL},
+	      </if>
+	      <if test="scanRate != null" >
+	        #{scanRate,jdbcType=REAL},
+	      </if>
+	      <if test="promDirectRate != null" >
+	        #{promDirectRate,jdbcType=REAL},
+	      </if>
+	      <if test="promIndirectRate != null" >
+	        #{promIndirectRate,jdbcType=REAL},
+	      </if>
+	      <if test="promPaperRate != null" >
+	        #{promPaperRate,jdbcType=REAL},
+	      </if>
+	      <if test="promotionRate != null" >
+	        #{promotionRate,jdbcType=REAL},
+	      </if>
+	      <if test="directAgentRate != null" >
+	        #{directAgentRate,jdbcType=REAL},
+	      </if>
+	      <if test="serveRate != null" >
+	        #{serveRate,jdbcType=REAL},
+	      </if>
+	      <if test="subsidyRate != null" >
+	        #{subsidyRate,jdbcType=REAL},
+	      </if>
+	      <if test="refundIncome != null" >
+	        #{refundIncome,jdbcType=DOUBLE},
+	      </if>
+	      <if test="refundIncomeRate != null" >
+	        #{refundIncomeRate,jdbcType=DOUBLE},
+	      </if>
+	         #{sumDate},
+			 #{sumDate}
+	    </trim>
+
+    </insert>
 	 
     <update id="updateUserIncome" parameterType="UserIncome">
         update zx_user_income
@@ -368,6 +561,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			  )
          </where>
     </select>
+    
+    <select id="selectCurrentUserIncome" parameterType="UserIncome" resultMap="UserIncomeResult">
+        select income_id from zx_user_income
+        <where>  
+             <if test="coperatorId != null and coperatorId != ''"> and coperator_id = #{coperatorId}</if>
+              <if test="coperatorType != null and coperatorType != ''"> and coperator_type = #{coperatorType}</if>
+             and DATE_FORMAT(sum_date, '%Y-%m-%d') = DATE_FORMAT(
+			    #{sumDate},
+			    '%Y-%m-%d'
+			  )
+			  and del_flag='0'
+         </where>
+    </select>
     <!-- 用户角色信息数据 -->
     
       <!-- 判断销售人类型 -->
@@ -403,7 +609,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  </if>
     </select>
     
-
+	<!-- 代理商 -->
+     <select id="selectcuragentlist"  resultType="java.util.HashMap">
+		 SELECT 
+		  agent_id,
+		  z.city,
+		  z.county,
+		  z.level,
+		  z.promotor_id,
+		  z.agency_fee,
+		  z.create_time 
+		FROM
+		  zx_agent z 
+		  WHERE 
+	       1=1
+		  <if test="placeId != null and placeId != ''">
+		     AND ((z.level = 1 AND z.city = #{placeId} ) OR (z.level = 2 AND z.county = #{placeId} ))
+		  </if>
+		  <if test="currentTime != null">
+		     AND DATE_FORMAT(z.create_time, '%Y-%m-%d') = DATE_FORMAT(#{currentTime},'%Y-%m-%d')
+		  </if>
+    </select>
 
         <!-- 代理商 -->
      <select id="selectzxagent"  resultType="java.util.HashMap">
@@ -518,7 +744,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
 			    '%Y-%m-%d'
 			  )
+			  and del_flag='0'
     </select>
     
+    <select id="selectCurUsertotalIncome" resultType="java.util.HashMap">
+        select coperator_name puserName,coperator_id puserId,coperator_type puserType, (ad_income_rate+promotion_income_rate+scan_income_rate) totalIncome from zx_user_income where
+              DATE_FORMAT(sum_date, '%Y-%m-%d') = DATE_FORMAT(
+			    #{currentTime},
+			    '%Y-%m-%d'
+			  )
+			  AND del_flag='0'
+    </select>
+    
+    <update id="deleteWrongUserIncome" parameterType="UserIncome">
+         update zx_user_income set del_flag='1' 
+          where sum_date = #{sumDate} and del_flag='0' 
+    </update> 
     
 </mapper>
