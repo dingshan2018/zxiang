@@ -10,10 +10,9 @@ import com.zxiang.framework.web.domain.BaseEntity;
  * @author ZXiang
  * @date 2018-12-05
  */
-public class FundLog extends BaseEntity
-{
+public class FundLog extends BaseEntity {
 	private static final long serialVersionUID = 1L;
-	
+
 	/** ID */
 	private Integer payId;
 	/** 主体id */
@@ -36,45 +35,44 @@ public class FundLog extends BaseEntity
 	private Date createTime;
 	/** 备注 */
 	private String remark;
-	
+
 	/**
 	 * 本期总金额
 	 */
 	private String totalBalance;
-	
+
 	/**
 	 * 本期冻结金额
 	 */
 	private String freezeBalance;
-	
-//	/**
-//	 * 差异可用余额
-//	 */
-//	private String deltaBalance;
-//	
-//	/**
-//	 * 差异当期金额
-//	 */
-//	private String deltaTotalBalance;
-//	
-//	/**
-//	 * 当期差异的冻结金额
-//	 */
-//	private String deltaFreezeBalance;
-	
+
+	// /**
+	// * 差异可用余额
+	// */
+	// private String deltaBalance;
+	//
+	// /**
+	// * 差异当期金额
+	// */
+	// private String deltaTotalBalance;
+	//
+	// /**
+	// * 当期差异的冻结金额
+	// */
+	// private String deltaFreezeBalance;
+
 	private Date beginTime;
-	
+
 	private Date endTime;
 
-	public void setPayId(Integer payId) 
-	{
+	public void setPayId(Integer payId) {
 		this.payId = payId;
 	}
 
-	public Integer getPayId() 
-	{
+	public Integer getPayId() {
 		return payId;
 	}
+
 	public Integer getClientId() {
 		return clientId;
 	}
@@ -91,15 +89,14 @@ public class FundLog extends BaseEntity
 		this.clientType = clientType;
 	}
 
-	public void setSerial(String serial) 
-	{
+	public void setSerial(String serial) {
 		this.serial = serial;
 	}
 
-	public String getSerial() 
-	{
+	public String getSerial() {
 		return serial;
 	}
+
 	public String getTotalFee() {
 		return totalFee;
 	}
@@ -116,49 +113,43 @@ public class FundLog extends BaseEntity
 		this.balance = balance;
 	}
 
-	public void setContent(String content) 
-	{
+	public void setContent(String content) {
 		this.content = content;
 	}
 
-	public String getContent() 
-	{
+	public String getContent() {
 		return content;
 	}
-	public void setType(String type) 
-	{
+
+	public void setType(String type) {
 		this.type = type;
 	}
 
-	public String getType() 
-	{
+	public String getType() {
 		return type;
 	}
-	public void setStatus(String status) 
-	{
+
+	public void setStatus(String status) {
 		this.status = status;
 	}
 
-	public String getStatus() 
-	{
+	public String getStatus() {
 		return status;
 	}
-	public void setCreateTime(Date createTime) 
-	{
+
+	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 
-	public Date getCreateTime() 
-	{
+	public Date getCreateTime() {
 		return createTime;
 	}
-	public void setRemark(String remark) 
-	{
+
+	public void setRemark(String remark) {
 		this.remark = remark;
 	}
 
-	public String getRemark() 
-	{
+	public String getRemark() {
 		return remark;
 	}
 
@@ -178,29 +169,29 @@ public class FundLog extends BaseEntity
 		this.freezeBalance = freezeBalance;
 	}
 
-//	public String getDeltaBalance() {
-//		return deltaBalance;
-//	}
-//
-//	public void setDeltaBalance(String deltaBalance) {
-//		this.deltaBalance = deltaBalance;
-//	}
-//
-//	public String getDeltaTotalBalance() {
-//		return deltaTotalBalance;
-//	}
-//
-//	public void setDeltaTotalBalance(String deltaTotalBalance) {
-//		this.deltaTotalBalance = deltaTotalBalance;
-//	}
-//
-//	public String getDeltaFreezeBalance() {
-//		return deltaFreezeBalance;
-//	}
-//
-//	public void setDeltaFreezeBalance(String deltaFreezeBalance) {
-//		this.deltaFreezeBalance = deltaFreezeBalance;
-//	}
+	// public String getDeltaBalance() {
+	// return deltaBalance;
+	// }
+	//
+	// public void setDeltaBalance(String deltaBalance) {
+	// this.deltaBalance = deltaBalance;
+	// }
+	//
+	// public String getDeltaTotalBalance() {
+	// return deltaTotalBalance;
+	// }
+	//
+	// public void setDeltaTotalBalance(String deltaTotalBalance) {
+	// this.deltaTotalBalance = deltaTotalBalance;
+	// }
+	//
+	// public String getDeltaFreezeBalance() {
+	// return deltaFreezeBalance;
+	// }
+	//
+	// public void setDeltaFreezeBalance(String deltaFreezeBalance) {
+	// this.deltaFreezeBalance = deltaFreezeBalance;
+	// }
 
 	public void setFreezeBalance(String freezeBalance) {
 		this.freezeBalance = freezeBalance;
@@ -222,6 +213,4 @@ public class FundLog extends BaseEntity
 		this.endTime = endTime;
 	}
 
-	
-	
 }

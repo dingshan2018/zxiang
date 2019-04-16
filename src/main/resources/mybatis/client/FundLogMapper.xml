@@ -79,6 +79,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="serial != null and serial != '' ">serial,</if>
 			<if test="totalFee != null and totalFee != '' ">total_fee,</if>
 			<if test="balance != null and balance != '' ">balance,</if>
+			<if test="freezeBalance != null and freezeBalance != '' ">freeze_balance,</if>
+			<if test="totalBalance != null and totalBalance != '' ">total_balance,</if>
 			<if test="content != null and content != '' ">content,</if>
 			<if test="type != null and type != '' ">type,</if>
 			<if test="status != null and status != '' ">status,</if>
@@ -92,6 +94,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="serial != null and serial != ''">#{serial},</if>
 			<if test="totalFee != null and totalFee != ''">#{totalFee},</if>
 			<if test="balance != null and balance != ''">#{balance},</if>
+			<if test="freezeBalance != null and freezeBalance != ''">#{freezeBalance},</if>
+			<if test="totalBalance != null and totalBalance != ''">#{totalBalance},</if>
 			<if test="content != null and content != ''">#{content},</if>
 			<if test="type != null and type != ''">#{type},</if>
 			<if test="status != null and status != ''">#{status},</if>
