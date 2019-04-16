@@ -179,8 +179,8 @@ public class FundLogServiceImpl implements IFundLogService {
 		} else {
 			throw new RRException("客户类型有误，clientType："+clientType);
 		}
-		balance = balance.subtract(frozenBalance).setScale(2, BigDecimal.ROUND_HALF_UP); // 四舍五入 保留两位
-		money = money.setScale(2, BigDecimal.ROUND_HALF_UP); // 四舍五入 保留两位
+		balance = balance.subtract(frozenBalance).setScale(3, BigDecimal.ROUND_HALF_UP); // 四舍五入 保留两位
+		money = money.setScale(3, BigDecimal.ROUND_HALF_UP); // 四舍五入 保留两位
 		FundLog fundLog = new FundLog();
 		fundLog.setBalance(balance.toString()); // 可用余额
 		fundLog.setTotalFee("+"+money);
@@ -206,8 +206,8 @@ public class FundLogServiceImpl implements IFundLogService {
 			throw new RRException("账户余额不足");
 		}
 		if(frozenBalance.floatValue()<0) {//解冻
-			BigDecimal balance = advertise.getBalance().setScale(2, BigDecimal.ROUND_HALF_UP);
-			frozenBalance = frozenBalance.subtract(money).setScale(2, BigDecimal.ROUND_HALF_UP);
+			BigDecimal balance = advertise.getBalance().setScale(3, BigDecimal.ROUND_HALF_UP);
+			frozenBalance = frozenBalance.subtract(money).setScale(3, BigDecimal.ROUND_HALF_UP);
 			advertiseMapper.updateBalance(advertiseId, balance, frozenBalance); // 更新账户余额
 			// 生成资金流水记录
 			FundLog fundLog = new FundLog();
@@ -221,8 +221,8 @@ public class FundLogServiceImpl implements IFundLogService {
 			fundLog.setCreateTime(new Date());
 			fundLogMapper.insertFundLog(fundLog);
 		}else {//冻结
-			BigDecimal balance = advertise.getBalance().setScale(2, BigDecimal.ROUND_HALF_UP);
-			frozenBalance = frozenBalance.add(money).setScale(2, BigDecimal.ROUND_HALF_UP);
+			BigDecimal balance = advertise.getBalance().setScale(3, BigDecimal.ROUND_HALF_UP);
+			frozenBalance = frozenBalance.add(money).setScale(3, BigDecimal.ROUND_HALF_UP);
 			advertiseMapper.updateBalance(advertiseId, balance, frozenBalance); // 更新账户余额
 			// 生成资金流水记录
 			FundLog fundLog = new FundLog();
@@ -323,8 +323,8 @@ public class FundLogServiceImpl implements IFundLogService {
 			logger.error("客户类型有误，clientType："+clientType);
 			throw new RRException("客户类型有误");
 		}
-		balance = balance.setScale(2, BigDecimal.ROUND_HALF_UP); // 四舍五入 保留两位
-		money = money.setScale(2, BigDecimal.ROUND_HALF_UP); // 四舍五入 保留两位
+		balance = balance.setScale(3, BigDecimal.ROUND_HALF_UP); // 四舍五入 保留两位
+		money = money.setScale(3, BigDecimal.ROUND_HALF_UP); // 四舍五入 保留两位
 		// 资金流水
 		FundLog fundLog = new FundLog();
 		fundLog.setBalance(balance.subtract(frozenBalance).toString()); // 可用余额
@@ -421,7 +421,7 @@ public class FundLogServiceImpl implements IFundLogService {
 			balance = balance.add(money);
 			advertiseMapper.updateBalance(advertiseId, balance, null);
 		}
-		balance = balance.setScale(2, BigDecimal.ROUND_HALF_UP); // 四舍五入 保留两位
+		balance = balance.setScale(3, BigDecimal.ROUND_HALF_UP); // 四舍五入 保留两位
 		// 充值记录
 		FundLog fundLog = new FundLog();
 		fundLog.setBalance(balance.subtract(frozenBalance).toString()); // 可用余额
