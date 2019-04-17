@@ -1106,7 +1106,13 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 					timerParam.setAdScheduleId(adScheduleId);
 					List<AdReleaseTimer> releaseTimers = this.adReleaseTimerMapper.selectAdReleaseTimerList(timerParam);
 					if(releaseTimers!=null && releaseTimers.size()>0) {
+						Calendar cal = Calendar.getInstance();
 						for(AdReleaseTimer timer:releaseTimers) {
+							cal.setTime(timer.getReleaseEndTime());
+							cal.set(Calendar.HOUR_OF_DAY, 23);
+							cal.set(Calendar.MINUTE, 59);
+							cal.set(Calendar.SECOND, 59);
+							timer.setReleaseEndTime(cal.getTime());
 							if (deadLineDate == null) {
 								deadLineDate = timer.getReleaseEndTime();
 							}
@@ -1126,6 +1132,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				}
+				if(days == 0) {
+					throw new RRException("广告时段已全部过期");
 				}
 				adSchedule.setDeadLine(deadLineDate);
 				ReleaseDevice deviceParam = new ReleaseDevice();
@@ -1200,8 +1209,13 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		paramTimer.setAdScheduleId(adScheduleId);
 		List<AdReleaseTimer> releaseTimers = this.adReleaseTimerMapper.selectAdReleaseTimerList(paramTimer);
 		if (releaseTimers != null && releaseTimers.size() > 0) {
+			Calendar cal = Calendar.getInstance();
 			for(AdReleaseTimer releaseTimer:releaseTimers) {
-				
+				cal.setTime(releaseTimer.getReleaseEndTime());
+				cal.set(Calendar.HOUR_OF_DAY, 23);
+				cal.set(Calendar.MINUTE, 59);
+				cal.set(Calendar.SECOND, 59);
+				releaseTimer.setReleaseEndTime(cal.getTime());
 				HashMap<String, Object> timeSlot = new HashMap<>();
 				timeSlot.put("startDate", yyyyMMddSFormat.format(releaseTimer.getReleaseBeginTime()));
 				timeSlot.put("endDate", yyyyMMddSFormat.format(releaseTimer.getReleaseEndTime()));
