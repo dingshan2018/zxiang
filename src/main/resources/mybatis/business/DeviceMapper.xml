@@ -103,6 +103,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="city != null and city != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.city = #{city})</if>
              <if test="county != null and county != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.county = #{county})</if>
          	 <if test="scheduleId != null"> and d.device_id not in(select zrd.device_id from zx_release_device zrd where zrd.schedule_id=#{scheduleId}) </if>
+         	  <!-- 按照机主搜索 -->
+             <if test="ownerName != null and ownerName != ''"> and d.owner_id in 
+             	(SELECT user_id FROM `sys_user` su WHERE su.user_name LIKE concat('%', #{ownerName}, '%') AND del_flag='0')
+             </if>
          </where>
          ORDER BY d.device_id DESC 
     </select>
