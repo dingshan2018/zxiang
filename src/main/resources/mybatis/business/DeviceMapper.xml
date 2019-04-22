@@ -38,7 +38,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select device_id, device_code, device_sn, device_type,
          terminal_id,
          (select distinct t.terminal_code from zx_terminal t where t.terminal_id =d.`terminal_id` ) terminalCode,
-         place_id, owner_id,
+         place_id, owner_id,(SELECT DISTINCT wu.nickname FROM `zx_wx_user` wu WHERE d.`owner_id`=wu.user_id 
+         ORDER BY wu.create_time DESC LIMIT 1) wxNickname,     
          (select distinct u.user_name from sys_user u where u.user_id =d.`owner_id` ) ownerName,
          (select distinct p.name from zx_place p where p.place_id =d.`place_id` ) placeName,
          price,tissue_len, lon, lat, release_time, remove_time, total_len, remain_len, last_heart_time, 

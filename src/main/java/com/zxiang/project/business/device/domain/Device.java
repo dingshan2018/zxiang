@@ -102,6 +102,8 @@ public class Device extends BaseEntity
 	
 	private String adUrl;
 	
+	private String wxNickname;//微信昵称
+	
 	public void setDeviceId(Integer deviceId) 
 	{
 		this.deviceId = deviceId;
@@ -496,6 +498,7 @@ public class Device extends BaseEntity
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
+            .append("wxNickname", getWxNickname())
             .toString();
     }
 
@@ -514,4 +517,13 @@ public class Device extends BaseEntity
 	public void setAdUrl(String adUrl) {
 		this.adUrl = adUrl;
 	}
+
+	public String getWxNickname() {
+		return wxNickname;
+	}
+
+	public void setWxNickname(String wxNickname) {
+		this.wxNickname = wxNickname;
+	}
+	
 }
