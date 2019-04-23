@@ -68,10 +68,15 @@
               <input type="text" name="deviceSn" id="deviceSn"/>
             </li>
             <li>
-              <span class="select-item-name">出纸类型：</span><!-- <input type="text" name="joiner"/> -->
+              <span class="select-item-name">创建者：</span>
+              <input type="text" name="createBy" id="createBy"/>
+            </li>
+            <li>
+              <span class="select-item-name">出纸类型：</span>
               <select
                 id="tissueChannel"
                 name="tissueChannel"
+                data-live-search="true"
                 class="block-plugin__select-picker selectpicker"
                 data-style="btn-white btn-sm">
                 <option value="">全部</option>
@@ -257,9 +262,10 @@
     		var startTime = $("#startTime").val();
     		var endTime = $("#endTime").val();
     		var deviceSn = $("#deviceSn").val();
-			var tissueChannle = $("#tissueChannel").val();
+			var tissueChannel = $("#tissueChannel").val();
+			var createBy = $("#createBy").val();
 			location.href = ctx + "business/tissueRecord/excelExport?agentId="+agentId+'&repairId='+repairId+'&joinId='+joinId
-					+'&startTime='+startTime+'&endTime='+endTime+'&deviceSn='+deviceSn+'&tissueChannel='+tissueChannel
+					+'&startTime='+startTime+'&endTime='+endTime+'&deviceSn='+deviceSn+'&tissueChannel='+tissueChannel+'&createBy='+createBy
     		//$.modal.alert("导出成功!");
 		});
     }
@@ -273,6 +279,7 @@
 		var endTime = $("#endTime").val();
 		var deviceSn = $("#deviceSn").val();
 		var tissueChannle = $("#tissueChannel").val();
+		var createBy = $("#createBy").val();
 		//var paperSum=document.getElementById("paperSum");
 		//var moneySum=document.getElementById("moneySum");
 		var validPaperSum=document.getElementById("validPaperSum");
@@ -280,7 +287,7 @@
 		var validMoneySum=document.getElementById("validMoneySum");
     	$.ajax({
 	        url: prefix + "/tissueCount?agentId="+agentId+'&repairId='+repairId+'&joinId='+joinId
-				+'&startTime='+startTime+'&endTime='+endTime+'&deviceSn='+deviceSn+'&tissueChannel='+tissueChannle ,
+				+'&startTime='+startTime+'&endTime='+endTime+'&deviceSn='+deviceSn+'&tissueChannel='+tissueChannle+'&createBy='+createBy ,
 	        type: "post",
 	        async:false,
 	        success: function (data) {
