@@ -981,6 +981,9 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			if(com.zxiang.common.utils.StringUtils.isNotNull(userdata.get("leader_id"))) {
 				getpromotioner.put("promotor_id", userdata.get("leader_id"));
 				promotionerdata = iUserIncomeService.selectzxsellerlist(userdata.get("leader_id")+"");
+				if(com.zxiang.common.utils.StringUtils.isNull(promotionerdata)) {
+					return new HashMap<String, Object>();
+				}
 				puser_id = promotionerdata.get("puser_id")+""; //主体ID
 				user_type = promotionerdata.get("user_type")+""; //用户类型
 				List<HashMap<String, Object>> user1 = new ArrayList<HashMap<String, Object>>();
