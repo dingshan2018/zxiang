@@ -41,7 +41,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          status, del_flag, device_num, create_by, create_time, update_by, update_time from zx_repair
     </sql>
     	<sql id="selectRepairVos">
-        select distinct a.repair_id, a.repair_name, a.manager_name, a.manager_id, a.manager_phone, a.bank_receiver, a.bank_account, a.bank_name, 
+        select distinct a.repair_id, a.repair_name, a.manager_name, a.manager_id,b.phonenumber manager_phone, a.bank_receiver, a.bank_account, a.bank_name, 
         a.ad_rate,a.ad_carousel_rate, a.scan_rate,a.prom_direct_rate,a.prom_indirect_rate,a.prom_paper_rate,a.promotion_rate,a.subsidy_rate,
         a.balance,a.frozen_balance,a.status, a.buyer_id,a.puser_id,a.user_type,
         (select u.user_name from sys_user u where u.user_id = a.puser_id) buyerName,

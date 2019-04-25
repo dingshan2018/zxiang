@@ -32,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select a.advertise_id, a.advertisor_name, a.manager_id, a.manager_name, a.manager_phone,a.bank_account, a.bank_receiver, a.bank_name, a.business, a.release_num, a.last_scheduler, a.status, a.del_flag, a.grade,a.balance,a.frozen_balance, a.cut_off, a.create_by, a.create_time, a.update_by, a.update_time from zx_advertise a
     </sql>
     <sql id="selectAdvertiseVos">
-        select distinct a.advertise_id, a.advertisor_name, a.manager_id, a.manager_name, a.manager_phone,a.bank_account, a.bank_receiver, a.bank_name, a.business, a.release_num, a.last_scheduler, a.status, a.del_flag, a.grade,a.balance,a.frozen_balance, a.cut_off, a.create_by, a.create_time, a.update_by, a.update_time 
+        select distinct a.advertise_id, a.advertisor_name, a.manager_id, a.manager_name,b.phonenumber manager_phone,a.bank_account, a.bank_receiver, a.bank_name, a.business, a.release_num, a.last_scheduler, a.status, a.del_flag, a.grade,a.balance,a.frozen_balance, a.cut_off, a.create_by, a.create_time, a.update_by, a.update_time 
         from zx_advertise a LEFT JOIN sys_user b ON b.puser_id = a.advertise_id
     </sql>
 	

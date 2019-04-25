@@ -60,7 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          a.province,(SELECT DISTINCT a.pname FROM sys_area a WHERE a.id =a.`province` ) provinceName,
          a.city,(SELECT DISTINCT a.pname FROM sys_area a WHERE a.id =a.`city` ) cityName,
          county,(SELECT DISTINCT a.pname FROM sys_area a WHERE a.id =a.`county` ) countyName, 
-         a.level, a.device_num, a.del_flag, a.status, a.manager_id, a.manager_name, a.manager_phone, a.bank_receiver, a.bank_account, a.bank_name,
+         a.level, a.device_num, a.del_flag, a.status, a.manager_id, a.manager_name,b.phonenumber manager_phone, a.bank_receiver, a.bank_account, a.bank_name,
          promotor_id,(select u.user_name from sys_user u where u.user_id = a.promotor_id) promotorName,
          (select u.user_name from sys_user u where u.user_id = a.puser_id) buyerName,
          a.ad_rate,a.ad_carousel_rate, a.scan_rate,a.prom_direct_rate,a.prom_indirect_rate,a.prom_paper_rate,a.promotion_rate,a.direct_agent_rate,a.serve_rate,a.subsidy_rate, 

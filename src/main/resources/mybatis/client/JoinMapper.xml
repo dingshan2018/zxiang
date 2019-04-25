@@ -42,7 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
     
     <sql id="selectJoinVos">
-        select distinct a.join_id, a.joiner_name, a.joiner_id, a.device_num, a.bank_account, a.bank_receiver, a.bank_name,a.manager_name, a.manager_phone,
+        select distinct a.join_id, a.joiner_name, a.joiner_id, a.device_num, a.bank_account, a.bank_receiver, a.bank_name,a.manager_name,b.phonenumber manager_phone,
         a.status,a.buyer_id,a.puser_id,a.user_type, a.del_flag,
         (select u.user_name from sys_user u where u.user_id = a.puser_id) buyerName,
           a.ad_rate,a.ad_carousel_rate, a.scan_rate,a.prom_direct_rate,a.prom_indirect_rate,a.prom_paper_rate,a.promotion_rate,a.serve_rate, a.balance,a.frozen_balance, 
