@@ -1155,7 +1155,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 					// 如果unpay大于0,并且钱包金额足够，那么直接支付
 					float balance = advertise.getBalance().subtract(advertise.getFrozenBalance()).floatValue();
 					if (balance < (unpay - ounpay)) {
-						return 0;
+						throw new RRException("钱包余额不足");
 					} 
 				}
 				adSchedule.setTotalPay(adSchedule.getTotalPay()+(unpay-ounpay));
@@ -1503,7 +1503,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				param.put("scheduleId", adSchedule.getAdScheduleId());
 				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				param.put("endTime", df.format(new Date()));
+				
 				Float hasPay = this.releaseRecordMapper.getAdTotalPay(param);
+				if(hasPay == null) {
+					hasPay = 0.0f;
+				}
 				fundLogService.adPublishFrozen(adSchedule.getAdvertiser(),
 						new BigDecimal(Float.toString(hasPay-adSchedule.getTotalPay())));
 				adSchedule.setReleaseStatus(AdConstant.AD_STOP_REPUBLISH);

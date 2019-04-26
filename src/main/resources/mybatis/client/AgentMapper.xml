@@ -65,7 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          (select u.user_name from sys_user u where u.user_id = a.puser_id) buyerName,
          a.ad_rate,a.ad_carousel_rate, a.scan_rate,a.prom_direct_rate,a.prom_indirect_rate,a.prom_paper_rate,a.promotion_rate,a.direct_agent_rate,a.serve_rate,a.subsidy_rate, 
          a.create_by, a.create_time, a.update_by, a.update_time
-        FROM zx_agent a LEFT JOIN sys_user b ON b.puser_id = a.agent_id
+        FROM zx_agent a LEFT JOIN sys_user b ON b.user_id = a.manager_id
     </sql>
 	
     <select id="selectAgentList" parameterType="Agent" resultMap="AgentResult">
