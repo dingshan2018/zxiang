@@ -152,6 +152,7 @@ public class UserRealm extends AuthorizingRealm
         	userParam.setDelFlag("0");
 //        	userParam.setStatus("0");
         	userParam.setPuserId(puserId);
+        	userParam.setUserType(userType);
         	List<User> users = userService.selectUserList(userParam);
         	if(users!=null && users.size()>0) {
         		for(User person : users) {

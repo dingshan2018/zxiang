@@ -80,9 +80,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<if test="puserId != null and puserId != ''">
 			AND u.puser_id = #{puserId}
 		</if>
-		<if test="puserId != null and puserId != ''">
-			AND u.puser_id = #{puserId}
-		</if>
 	</select>
 	
 	<select id="selectUserByLoginName" parameterType="String" resultMap="UserResult">
