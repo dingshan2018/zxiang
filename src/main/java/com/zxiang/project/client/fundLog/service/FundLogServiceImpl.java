@@ -144,7 +144,7 @@ public class FundLogServiceImpl implements IFundLogService {
 	@Override
 	@Transactional
 	public void incomeRecord(Integer clientId, String clientType, BigDecimal money) {
-		logger.info("收益统计，clientId：" + clientId + ",clientType：" + clientType + ",money：" + money);
+		logger.info("incomeRecord收益统计，clientId：" + clientId + ",clientType：" + clientType + ",money：" + money);
 		if (money == null || money.compareTo(new BigDecimal(0)) < 0) {
 			throw new RRException("收益余额须大于0，clientId：" + clientId + ",clientType：" + clientType);
 		}
@@ -257,6 +257,7 @@ public class FundLogServiceImpl implements IFundLogService {
 	@Override
 	@Transactional
 	public void clientWithdraw(Integer clientId, String clientType, BigDecimal money) {
+		logger.info("clientWithdraw,clientId：" + clientId + ",clientType：" + clientType + ",money：" + money);
 		if (money == null || money.compareTo(new BigDecimal(0)) <= 0) {
 			throw new RRException("提现余额须大于0");
 		}
@@ -272,6 +273,7 @@ public class FundLogServiceImpl implements IFundLogService {
 			if (join == null) {
 				throw new RRException("未找到客户");
 			}
+			logger.info("clientWithdraw_join:" + join.toString());
 			frozenBalance = join.getFrozenBalance() == null ? new BigDecimal(0) : join.getFrozenBalance();
 			if (join.getBalance() == null || join.getBalance().subtract(frozenBalance).compareTo(money) == -1) {
 				throw new RRException("可提现余额不足");
