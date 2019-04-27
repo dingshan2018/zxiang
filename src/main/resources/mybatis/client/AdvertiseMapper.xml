@@ -33,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
     <sql id="selectAdvertiseVos">
         select distinct a.advertise_id, a.advertisor_name, a.manager_id, a.manager_name,b.phonenumber manager_phone,a.bank_account, a.bank_receiver, a.bank_name, a.business, a.release_num, a.last_scheduler, a.status, a.del_flag, a.grade,a.balance,a.frozen_balance, a.cut_off, a.create_by, a.create_time, a.update_by, a.update_time 
-        from zx_advertise a LEFT JOIN sys_user b ON b.user_id = a.manager_id
+        from zx_advertise a LEFT JOIN sys_user b ON b.user_id = a.manager_id and b.`user_type`='05'
     </sql>
 	
     <select id="selectAdvertiseList" parameterType="Advertise" resultMap="AdvertiseResult">
@@ -44,7 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="advertisorName != null and advertisorName != ''"> and a.advertisor_name like concat('%', #{advertisorName}, '%')</if>
              <if test="managerId != null and managerId != ''"> and a.manager_id = #{managerId}</if>
              <if test="managerName != null and managerName != ''"> and a.manager_name = #{managerName}</if>
-             <if test="managerPhone != null and managerPhone != ''"> and a.manager_phone like concat('%', #{managerPhone}, '%')</if>
+             <if test="managerPhone != null and managerPhone != ''"> and b.phonenumber like concat('%', #{managerPhone}, '%')</if>
              <if test="business != null and business != ''"> and a.business = #{business}</if>
              <if test="releaseNum != null and releaseNum != ''"> and a.release_num = #{releaseNum}</if>
              <if test="lastScheduler != null and lastScheduler != ''"> and a.last_scheduler = #{lastScheduler}</if>
