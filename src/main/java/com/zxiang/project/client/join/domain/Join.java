@@ -73,6 +73,7 @@ public class Join extends BaseEntity {
 	private Date updateTime;
 	/** 直推人 **/
 	private String buyerName;
+	private String ids;
 
 	public void setJoinId(Integer joinId) {
 		this.joinId = joinId;
@@ -304,6 +305,14 @@ public class Join extends BaseEntity {
 
 	public void setBuyerName(String buyerName) {
 		this.buyerName = buyerName;
+	}
+
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+
+	public String getIds() {
+		return ids;
 	}
 
 	@Override

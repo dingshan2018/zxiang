@@ -188,6 +188,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{joinId}
         </foreach>
     </update>
+    <update id="batchEditParam" parameterType="Join">
+         update zx_join 
+          <trim prefix="SET" suffixOverrides=",">
+            <if test="adRate != null">ad_rate = #{adRate},</if>
+			<if test="adCarouselRate != null">ad_carousel_rate = #{adCarouselRate},</if>
+			<if test="scanRate != null">scan_rate = #{scanRate},</if>
+			<if test="promDirectRate != null">prom_direct_rate = #{promDirectRate},</if>
+			<if test="promIndirectRate != null">prom_indirect_rate = #{promIndirectRate},</if>
+			<if test="promPaperRate != null">prom_paper_rate = #{promPaperRate},</if>
+			<if test="promotionRate != null">promotion_rate = #{promotionRate},</if>
+			<if test="serveRate != null">serve_rate = #{serveRate},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+         where join_id = #{joinId}
+    </update>
     
     <select id="selectDropBoxList" resultMap="JoinResult">
          select join_id, joiner_name,joiner_id,manager_name from zx_join where del_flag !=2 
