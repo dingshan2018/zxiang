@@ -208,7 +208,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			List<HashMap<String, Object>> orderlist =selectzxdeviceorderlist(map);
 			if(orderlist.size()>0){
 				HashMap<String, Object> order = orderlist.get(0);
-				String buyer_id = order.get("buyer_id")+"";//机主
+				String buyer_id = device.get("owner_id")+"";//机主
 				String isincome = order.get("isincome")+""; //是否是当天售出
 				
 				List<HashMap<String, Object>> tissuenumlist= selectzxtissuerecordlist(device.get("device_id")+"",""); //出纸数量
@@ -1311,7 +1311,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			List<HashMap<String, Object>> orderlist =selectCurrentdeviceorderlist(map);
 			if(orderlist.size()>0){
 				HashMap<String, Object> order = orderlist.get(0);
-				String buyer_id = order.get("buyer_id")+"";//机主
+				String buyer_id = device.get("owner_id")+"";//机主
 				String isincome = order.get("isincome")+""; //是否是当天售出
 				
 				HashMap<String,Object> tissueMap = new HashMap<String,Object>();
