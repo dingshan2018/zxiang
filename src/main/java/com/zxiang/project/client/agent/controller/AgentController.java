@@ -3,6 +3,8 @@ package com.zxiang.project.client.agent.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,39 +37,36 @@ import com.zxiang.project.system.user.service.IUserService;
  */
 @Controller
 @RequestMapping("/client/agent")
-public class AgentController extends BaseController
-{
-    private String prefix = "client/agent";
-	
+public class AgentController extends BaseController {
+	private String prefix = "client/agent";
+
 	@Autowired
 	private IAgentService agentService;
 	@Autowired
 	private IAreaService areaService;
 	@Autowired
 	private IUserService userService;
-	
+
 	@RequiresPermissions("client:agent:view")
 	@GetMapping()
-	public String agent()
-	{
-	    return prefix + "/agent";
+	public String agent() {
+		return prefix + "/agent";
 	}
-	
+
 	/**
 	 * 查询代理商列表
 	 */
-	@DataFilter(personAlias="b.user_id")
+	@DataFilter(personAlias = "b.user_id")
 	@RequiresPermissions("client:agent:list")
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(Agent agent)
-	{
-		//agent.setUserId(getUserId());
+	public TableDataInfo list(Agent agent) {
+		// agent.setUserId(getUserId());
 		startPage();
-        List<Agent> list = agentService.selectAgentList(agent);
+		List<Agent> list = agentService.selectAgentList(agent);
 		return getDataTable(list);
 	}
-	
+
 	/**
 	 * 新增代理商
 	 */
@@ -75,13 +74,13 @@ public class AgentController extends BaseController
 	public String add(ModelMap mmap) {
 		List<User> agentUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_AGENT);
 		mmap.put("agentUserList", agentUserList); // 代理直推人
-		
+
 		List<User> payUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
-				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+				UserConstants.USER_TYPE_AGENT, UserConstants.USER_TYPE_JOIN, UserConstants.USER_TYPE_REPAIR);
 		mmap.put("payUserList", payUserList); // 购机推荐人
-	    return prefix + "/add";
+		return prefix + "/add";
 	}
-	
+
 	/**
 	 * 新增保存代理商
 	 */
@@ -89,7 +88,7 @@ public class AgentController extends BaseController
 	@Log(title = "代理商", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(Agent agent) {		
+	public AjaxResult addSave(Agent agent) {
 		return toAjax(agentService.insertAgent(agent));
 	}
 
@@ -97,29 +96,28 @@ public class AgentController extends BaseController
 	 * 修改代理商
 	 */
 	@GetMapping("/edit/{agentId}")
-	public String edit(@PathVariable("agentId") Integer agentId, ModelMap mmap)
-	{
+	public String edit(@PathVariable("agentId") Integer agentId, ModelMap mmap) {
 		Agent agent = agentService.selectAgentById(agentId);
 		mmap.put("agent", agent);
 		List<Area> provinceList = areaService.selectDropBoxList(0);
 		mmap.put("provinceList", provinceList == null ? new ArrayList<Area>() : provinceList);
-		if(agent.getProvince() != null) {
+		if (agent.getProvince() != null) {
 			List<Area> cityList = areaService.selectDropBoxList(agent.getProvince());
 			mmap.put("cityList", cityList);
 		}
-		if(agent.getCity() != null) {
+		if (agent.getCity() != null) {
 			List<Area> countyList = areaService.selectDropBoxList(agent.getCity());
 			mmap.put("countyList", countyList == null ? new ArrayList<Area>() : countyList);
 		}
 		List<User> userList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
-				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+				UserConstants.USER_TYPE_AGENT, UserConstants.USER_TYPE_JOIN, UserConstants.USER_TYPE_REPAIR);
 		mmap.put("userList", userList);
 		List<User> payUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
-				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+				UserConstants.USER_TYPE_AGENT, UserConstants.USER_TYPE_JOIN, UserConstants.USER_TYPE_REPAIR);
 		mmap.put("payUserList", payUserList); // 购机推荐人
-	    return prefix + "/edit";
+		return prefix + "/edit";
 	}
-	
+
 	/**
 	 * 修改保存代理商
 	 */
@@ -127,40 +125,65 @@ public class AgentController extends BaseController
 	@Log(title = "代理商", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
-	public AjaxResult editSave(Agent agent)
-	{		
+	public AjaxResult editSave(Agent agent) {
 		return toAjax(agentService.updateAgent(agent));
 	}
+
 	/**
 	 * 修改代理商参数配置
 	 */
 	@GetMapping("/editParam/{agentId}")
-	public String editParam(@PathVariable("agentId") Integer agentId, ModelMap mmap)
-	{
+	public String editParam(@PathVariable("agentId") Integer agentId, ModelMap mmap) {
 		Agent agent = agentService.selectAgentById(agentId);
 		mmap.put("agent", agent);
-	    return prefix + "/editParam";
+		return prefix + "/editParam";
 	}
+
 	/**
 	 * 删除代理商
 	 */
 	@RequiresPermissions("client:agent:remove")
 	@Log(title = "代理商", businessType = BusinessType.DELETE)
-	@PostMapping( "/remove")
+	@PostMapping("/remove")
 	@ResponseBody
-	public AjaxResult remove(String ids)
-	{		
+	public AjaxResult remove(String ids) {
 		return toAjax(agentService.deleteAgentByIds(ids));
 	}
-	
+
 	/**
 	 * 查找代理商下拉框数据
 	 */
 	@RequestMapping("/getDropBoxAgentList")
-    @ResponseBody
-    public TableDataInfo getDropBoxAgentList() {
+	@ResponseBody
+	public TableDataInfo getDropBoxAgentList() {
 		List<Agent> list = agentService.selectDropBoxList();
 		return getDataTable(list);
-    }
-	
+	}
+
+	/**
+	 * 批量修改机主参数配置弹框
+	 */
+	@GetMapping("/toBatchEditParam/{userType}")
+	public String toBatchEditParam(@PathVariable("userType") String userType, HttpServletRequest requset,
+			ModelMap mmap) {
+		String ids = requset.getParameter("ids");
+		mmap.put("ids", ids);
+		return prefix + "/batchEditParam";
+	}
+
+	/**
+	 * 批量修改机主参数配置
+	 */
+	@RequiresPermissions("client:agent:batchParamSet")
+	@PostMapping("/batchEditParam")
+	@ResponseBody
+	public AjaxResult batchEditParam(Agent agent) {
+		try {
+			agentService.batchEditParam(agent);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return AjaxResult.error();
+		}
+		return AjaxResult.success();
+	}
 }

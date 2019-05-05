@@ -3,6 +3,8 @@ package com.zxiang.project.client.repair.controller;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,47 +37,43 @@ import com.zxiang.project.system.user.service.IUserService;
  */
 @Controller
 @RequestMapping("/client/repair")
-public class RepairController extends BaseController
-{
-    private String prefix = "client/repair";
-    @Autowired
+public class RepairController extends BaseController {
+	private String prefix = "client/repair";
+	@Autowired
 	private IUserService userService;
 	@Autowired
 	private IRepairService repairService;
-	
+
 	@RequiresPermissions("client:repair:view")
 	@GetMapping()
-	public String repair()
-	{
-	    return prefix + "/repair";
+	public String repair() {
+		return prefix + "/repair";
 	}
-	
+
 	/**
 	 * 查询服务商列表
 	 */
-	@DataFilter(personAlias="b.user_id")
+	@DataFilter(personAlias = "b.user_id")
 	@RequiresPermissions("client:repair:list")
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(Repair repair)
-	{
+	public TableDataInfo list(Repair repair) {
 		startPage();
-        List<Repair> list = repairService.selectRepairList(repair);
+		List<Repair> list = repairService.selectRepairList(repair);
 		return getDataTable(list);
 	}
-	
+
 	/**
 	 * 新增服务商
 	 */
 	@GetMapping("/add")
-	public String add(ModelMap mmap)
-	{
+	public String add(ModelMap mmap) {
 		List<User> payUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
-				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+				UserConstants.USER_TYPE_AGENT, UserConstants.USER_TYPE_JOIN, UserConstants.USER_TYPE_REPAIR);
 		mmap.put("payUserList", payUserList); // 购机推荐人
-	    return prefix + "/add";
+		return prefix + "/add";
 	}
-	
+
 	/**
 	 * 新增保存服务商
 	 */
@@ -83,8 +81,7 @@ public class RepairController extends BaseController
 	@Log(title = "服务商", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(Repair repair)
-	{		
+	public AjaxResult addSave(Repair repair) {
 		return toAjax(repairService.insertRepair(repair));
 	}
 
@@ -92,16 +89,15 @@ public class RepairController extends BaseController
 	 * 修改服务商
 	 */
 	@GetMapping("/edit/{repairId}")
-	public String edit(@PathVariable("repairId") Integer repairId, ModelMap mmap)
-	{
+	public String edit(@PathVariable("repairId") Integer repairId, ModelMap mmap) {
 		Repair repair = repairService.selectRepairById(repairId);
 		mmap.put("repair", repair);
 		List<User> payUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
-				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+				UserConstants.USER_TYPE_AGENT, UserConstants.USER_TYPE_JOIN, UserConstants.USER_TYPE_REPAIR);
 		mmap.put("payUserList", payUserList); // 购机推荐人
-	    return prefix + "/edit";
+		return prefix + "/edit";
 	}
-	
+
 	/**
 	 * 修改保存服务商
 	 */
@@ -109,10 +105,10 @@ public class RepairController extends BaseController
 	@Log(title = "服务商", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
-	public AjaxResult editSave(Repair repair)
-	{		
+	public AjaxResult editSave(Repair repair) {
 		return toAjax(repairService.updateRepair(repair));
 	}
+
 	/**
 	 * 修改服务商参数配置
 	 */
@@ -120,29 +116,30 @@ public class RepairController extends BaseController
 	public String editParam(@PathVariable("repairId") Integer repairId, ModelMap mmap) {
 		Repair repair = repairService.selectRepairById(repairId);
 		mmap.put("repair", repair);
-	    return prefix + "/editParam";
+		return prefix + "/editParam";
 	}
+
 	/**
 	 * 删除服务商
 	 */
 	@RequiresPermissions("client:repair:remove")
 	@Log(title = "服务商", businessType = BusinessType.DELETE)
-	@PostMapping( "/remove")
+	@PostMapping("/remove")
 	@ResponseBody
-	public AjaxResult remove(String ids)
-	{		
+	public AjaxResult remove(String ids) {
 		return toAjax(repairService.deleteRepairByIds(ids));
 	}
-	
+
 	/**
 	 * 查找服务商下拉框数据
 	 */
 	@RequestMapping("/getDropBoxRepairList")
-    @ResponseBody
-    public TableDataInfo getDropBoxRepairList() {
+	@ResponseBody
+	public TableDataInfo getDropBoxRepairList() {
 		List<Repair> list = repairService.selectDropBoxList();
 		return getDataTable(list);
-    }
+	}
+
 	/**
 	 * 修改服务商参数配置
 	 */
@@ -151,12 +148,13 @@ public class RepairController extends BaseController
 		List<RepairArea> repairAreaList = repairService.selectrepairAreasById(repairId);
 		mmap.put("repairAreaList", repairAreaList);
 		mmap.put("repairId", repairId);
-	    return prefix + "/repairArea";
+		return prefix + "/repairArea";
 	}
+
 	/**
 	 * 新增服务商网点区域
 	 */
-	@PostMapping( "/saveRepairArea")
+	@PostMapping("/saveRepairArea")
 	@ResponseBody
 	public AjaxResult saveRepairArea(@RequestBody RepairArea repairArea) {
 		try {
@@ -169,12 +167,13 @@ public class RepairController extends BaseController
 			return AjaxResult.error();
 		}
 	}
+
 	/**
 	 * 删除服务商网点区域
 	 */
-	@PostMapping( "/deleteRepairArea/{repairAreaId}")
+	@PostMapping("/deleteRepairArea/{repairAreaId}")
 	@ResponseBody
-	public AjaxResult deleteRepairArea(@PathVariable("repairAreaId") Integer repairAreaId,ModelMap mmap) {
+	public AjaxResult deleteRepairArea(@PathVariable("repairAreaId") Integer repairAreaId, ModelMap mmap) {
 		try {
 			repairService.deleteRepairArea(repairAreaId);
 			return AjaxResult.success();
@@ -182,16 +181,43 @@ public class RepairController extends BaseController
 			return AjaxResult.error();
 		}
 	}
-	
+
 	/**
 	 * 根据城市查询服务网点
 	 */
 	@RequestMapping("/selectRepairByCity")
-    @ResponseBody
-    public TableDataInfo selectRepairByCity(@RequestBody Map<String, Object> params) {
+	@ResponseBody
+	public TableDataInfo selectRepairByCity(@RequestBody Map<String, Object> params) {
 		String city = (String) params.get("city");
 		String county = (String) params.get("county");
-		List<Repair> list  = repairService.selectRepairByCity(Long.parseLong(city),Long.parseLong(county));
+		List<Repair> list = repairService.selectRepairByCity(Long.parseLong(city), Long.parseLong(county));
 		return getDataTable(list);
-    }
+	}
+
+	/**
+	 * 批量修改机主参数配置弹框
+	 */
+	@GetMapping("/toBatchEditParam/{userType}")
+	public String toBatchEditParam(@PathVariable("userType") String userType, HttpServletRequest requset,
+			ModelMap mmap) {
+		String ids = requset.getParameter("ids");
+		mmap.put("ids", ids);
+		return prefix + "/batchEditParam";
+	}
+
+	/**
+	 * 批量修改机主参数配置
+	 */
+	@RequiresPermissions("client:repair:batchParamSet")
+	@PostMapping("/batchEditParam")
+	@ResponseBody
+	public AjaxResult batchEditParam(Repair repair) {
+		try {
+			repairService.batchEditParam(repair);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return AjaxResult.error();
+		}
+		return AjaxResult.success();
+	}
 }

@@ -32,14 +32,13 @@ import com.zxiang.project.system.user.mapper.UserMapper;
  * @date 2018-09-11
  */
 @Service
-public class RepairServiceImpl implements IRepairService 
-{
+public class RepairServiceImpl implements IRepairService {
 	@Autowired
 	private RepairMapper repairMapper;
 	@Autowired
 	private UserMapper userMapper;
 	@Autowired
-    private PasswordService passwordService;
+	private PasswordService passwordService;
 	@Autowired
 	private DeptMapper deptMapper;
 	@Autowired
@@ -48,42 +47,43 @@ public class RepairServiceImpl implements IRepairService
 	private IRoleService iroleService;
 
 	/**
-     * 查询服务商信息
-     * 
-     * @param repairId 服务商ID
-     * @return 服务商信息
-     */
-    @Override
-	public Repair selectRepairById(Integer repairId)
-	{
-	    return repairMapper.selectRepairById(repairId);
-	}
-	
-	/**
-     * 查询服务商列表
-     * 
-     * @param repair 服务商信息
-     * @return 服务商集合
-     */
+	 * 查询服务商信息
+	 * 
+	 * @param repairId
+	 *            服务商ID
+	 * @return 服务商信息
+	 */
 	@Override
-	public List<Repair> selectRepairList(Repair repair)
-	{
-	    return repairMapper.selectRepairList(repair);
+	public Repair selectRepairById(Integer repairId) {
+		return repairMapper.selectRepairById(repairId);
 	}
-	
-    /**
-     * 新增服务商
-     * 
-     * @param repair 服务商信息
-     * @return 结果
-     */
+
+	/**
+	 * 查询服务商列表
+	 * 
+	 * @param repair
+	 *            服务商信息
+	 * @return 服务商集合
+	 */
+	@Override
+	public List<Repair> selectRepairList(Repair repair) {
+		return repairMapper.selectRepairList(repair);
+	}
+
+	/**
+	 * 新增服务商
+	 * 
+	 * @param repair
+	 *            服务商信息
+	 * @return 结果
+	 */
 	@Override
 	public int insertRepair(Repair repair) {
 		User user = null;
-		if(StringUtils.isNotBlank(repair.getManagerPhone())) {
+		if (StringUtils.isNotBlank(repair.getManagerPhone())) {
 			// 根据管理者新增用户
 			user = userMapper.selectUserByPhoneNumber(repair.getManagerPhone());
-			if(user != null) {
+			if (user != null) {
 				throw new RRException(String.format("该手机号[%s]对应的用户已存在", repair.getManagerPhone()));
 			}
 			user = new User();
@@ -91,14 +91,14 @@ public class RepairServiceImpl implements IRepairService
 			user.setPhonenumber(repair.getManagerPhone());
 			user.setLoginName(repair.getManagerPhone());
 			user.setUserName(repair.getManagerName());
-			String password = PinyinUtil.getPinYinHeadChar(repair.getManagerName())+repair.getManagerPhone();
+			String password = PinyinUtil.getPinYinHeadChar(repair.getManagerName()) + repair.getManagerPhone();
 			user.setPassword(passwordService.encryptPassword(user.getLoginName(), password, user.getSalt()));
 			user.setCreateBy(ShiroUtils.getLoginName());
 			user.setUserType(UserConstants.USER_TYPE_REPAIR);
 			Dept dept = new Dept();
 			dept.setDeptName(UserConstants.DEPT_NAME);
 			List<Dept> depts = deptMapper.selectDeptList(dept);
-			if(depts != null && depts.size() > 0) {
+			if (depts != null && depts.size() > 0) {
 				user.setDeptId(depts.get(0).getDeptId());
 			}
 			userMapper.insertUser(user);
@@ -117,49 +117,49 @@ public class RepairServiceImpl implements IRepairService
 		repair.setPromPaperRate(0f);
 		repair.setPromotionRate(0f);
 		repair.setSubsidyRate(0f);
-		int i =  repairMapper.insertRepair(repair);
-	    if(user != null) {
-	    	user.setPuserId(repair.getRepairId());
-	    	userMapper.updateUser(user);
-	    }
-	    return i;
-	}
-	
-	/**
-     * 修改服务商
-     * 
-     * @param repair 服务商信息
-     * @return 结果
-     */
-	@Override
-	public int updateRepair(Repair repair) {
-		/*if(StringUtils.isNotBlank(repair.getManagerPhone())) {
-			// 根据管理者新增用户
-			User user = userMapper.selectUserByPhoneNumber(repair.getManagerPhone());
-			if(user == null) {
-				user = new User();
-				user.randomSalt();
-				user.setPhonenumber(repair.getManagerPhone());
-				user.setLoginName(repair.getManagerPhone());
-				user.setUserName(repair.getManagerName());
-				user.setPassword(passwordService.encryptPassword(user.getLoginName(), repair.getManagerPhone(), user.getSalt()));
-		        user.setCreateBy(ShiroUtils.getLoginName());
-		        user.setUserType(UserConstants.USER_TYPE_REPAIR);
-		        userMapper.insertUser(user);
-		        repair.setManagerId(user.getUserId().intValue());
-			}
-		}*/
-		repair.setUpdateTime(new Date());
-		repair.setUpdateBy(ShiroUtils.getLoginName());
-	    return repairMapper.updateRepair(repair);
+		int i = repairMapper.insertRepair(repair);
+		if (user != null) {
+			user.setPuserId(repair.getRepairId());
+			userMapper.updateUser(user);
+		}
+		return i;
 	}
 
 	/**
-     * 删除服务商对象
-     * 
-     * @param ids 需要删除的数据ID
-     * @return 结果
-     */
+	 * 修改服务商
+	 * 
+	 * @param repair
+	 *            服务商信息
+	 * @return 结果
+	 */
+	@Override
+	public int updateRepair(Repair repair) {
+		/*
+		 * if(StringUtils.isNotBlank(repair.getManagerPhone())) { // 根据管理者新增用户 User user
+		 * = userMapper.selectUserByPhoneNumber(repair.getManagerPhone()); if(user ==
+		 * null) { user = new User(); user.randomSalt();
+		 * user.setPhonenumber(repair.getManagerPhone());
+		 * user.setLoginName(repair.getManagerPhone());
+		 * user.setUserName(repair.getManagerName());
+		 * user.setPassword(passwordService.encryptPassword(user.getLoginName(),
+		 * repair.getManagerPhone(), user.getSalt()));
+		 * user.setCreateBy(ShiroUtils.getLoginName());
+		 * user.setUserType(UserConstants.USER_TYPE_REPAIR);
+		 * userMapper.insertUser(user);
+		 * repair.setManagerId(user.getUserId().intValue()); } }
+		 */
+		repair.setUpdateTime(new Date());
+		repair.setUpdateBy(ShiroUtils.getLoginName());
+		return repairMapper.updateRepair(repair);
+	}
+
+	/**
+	 * 删除服务商对象
+	 * 
+	 * @param ids
+	 *            需要删除的数据ID
+	 * @return 结果
+	 */
 	@Override
 	public int deleteRepairByIds(String ids) {
 		String[] idList = Convert.toStrArray(ids);
@@ -167,9 +167,9 @@ public class RepairServiceImpl implements IRepairService
 		User user = null;
 		for (String id : idList) {
 			repair = repairMapper.selectRepairById(Integer.valueOf(id));
-			if(repair != null && StringUtils.isNotBlank(repair.getManagerPhone())) {
+			if (repair != null && StringUtils.isNotBlank(repair.getManagerPhone())) {
 				user = userMapper.selectUserByPhoneNumber(repair.getManagerPhone());
-				if(user == null) {
+				if (user == null) {
 					continue;
 				}
 				userMapper.deleteUserById(user.getUserId());
@@ -201,20 +201,28 @@ public class RepairServiceImpl implements IRepairService
 	}
 
 	/**
-	 * 根据城市查询服务网点
-	 * 先根据区县查询，若没有则根据城市查询
+	 * 根据城市查询服务网点 先根据区县查询，若没有则根据城市查询
 	 */
 	@Override
 	public List<Repair> selectRepairByCity(long city, long countyId) {
 		Map<String, Object> qryParam = new HashMap<>();
 		qryParam.put("countyId", countyId);
 		List<Repair> repairList = repairMapper.selectRepairByCountyOrCity(qryParam);
-		if(repairList == null || repairList.size() <= 0){
+		if (repairList == null || repairList.size() <= 0) {
 			qryParam.clear();
 			qryParam.put("city", city);
 			repairList = repairMapper.selectRepairByCountyOrCity(qryParam);
 		}
 		return repairList;
 	}
-	
+
+	@Override
+	public void batchEditParam(Repair repair) {
+		String[] idList = Convert.toStrArray(repair.getIds());
+		for (String id : idList) {
+			repair.setRepairId(Integer.valueOf(id));
+			repairMapper.batchEditParam(repair);
+		}
+	}
+
 }

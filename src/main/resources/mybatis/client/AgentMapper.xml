@@ -221,6 +221,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where agent_id = #{agentId}
     </update>
+    <update id="batchEditParam" parameterType="Agent">
+        update zx_agent
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="adRate != null">ad_rate = #{adRate},</if>
+			<if test="adCarouselRate != null">ad_carousel_rate = #{adCarouselRate},</if>
+			<if test="scanRate != null">scan_rate = #{scanRate},</if>
+			<if test="promDirectRate != null">prom_direct_rate = #{promDirectRate},</if>
+			<if test="promIndirectRate != null">prom_indirect_rate = #{promIndirectRate},</if>
+			<if test="promPaperRate != null">prom_paper_rate = #{promPaperRate},</if>
+			<if test="promotionRate != null">promotion_rate = #{promotionRate},</if>
+			<if test="directAgentRate != null">direct_agent_rate = #{directAgentRate},</if>
+			<if test="serveRate != null">serve_rate = #{serveRate},</if>
+			<if test="agencyFee != null">agency_fee = #{agencyFee},</if>
+			<if test="subsidyRate != null">subsidy_rate = #{subsidyRate},</if>
+        </trim>
+        where agent_id = #{agentId}
+    </update>
 	<update id="updateBalance">
         update zx_agent
         <trim prefix="SET" suffixOverrides=",">

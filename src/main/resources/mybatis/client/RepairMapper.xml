@@ -168,6 +168,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where repair_id = #{repairId}
     </update>
+    <update id="batchEditParam" parameterType="Repair">
+        update zx_repair
+        <trim prefix="SET" suffixOverrides=",">
+           	<if test="adRate != null">ad_rate = #{adRate},</if>
+			<if test="adCarouselRate != null">ad_carousel_rate = #{adCarouselRate},</if>
+			<if test="scanRate != null">scan_rate = #{scanRate},</if>
+			<if test="promDirectRate != null">prom_direct_rate = #{promDirectRate},</if>
+			<if test="promIndirectRate != null">prom_indirect_rate = #{promIndirectRate},</if>
+			<if test="promPaperRate != null">prom_paper_rate = #{promPaperRate},</if>
+			<if test="promotionRate != null">promotion_rate = #{promotionRate},</if>
+			<if test="subsidyRate != null">subsidy_rate = #{subsidyRate},</if>
+        </trim>
+        where repair_id = #{repairId}
+    </update>
 	<update id="updateBalance">
         update zx_repair
         <trim prefix="SET" suffixOverrides=",">

@@ -42,6 +42,9 @@
       <a class="btn btn-outline btn-danger btn-rounded" onclick="fundDetail()" shiro:hasPermission="client:fundLog:list">
         <i class="fa fa-usd"></i> 资金流水
       </a>
+      <a class="btn btn-outline btn-success btn-rounded" onclick="batchParamSet()" shiro:hasPermission="client:repair:batchParamSet">
+        <i class="fa fa-plus"></i> 批量参数设置
+      </a>
     </div>
 
     <div class="col-sm-12 select-table table-striped">
@@ -211,6 +214,15 @@
         		$.modal.alertWarning("请填写开户行"); return;
         	}
         	$.modal.open("提现", ctx +"client/fundLog/getMoney/04/"+clientId, 500, 450);
+        }
+        function batchParamSet(){
+        	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+    		if (rows.length == 0) {
+    			$.modal.alertWarning("请至少选择一条记录");
+    			return;
+    		}
+    		var idds = rows.join(",");
+    		$.modal.open("批量参数设置", ctx +"client/repair/toBatchEditParam/04?ids="+idds,800,550);
         }
     </script>
 </body>
