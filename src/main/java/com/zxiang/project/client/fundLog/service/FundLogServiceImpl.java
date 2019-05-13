@@ -14,6 +14,7 @@ import com.zxiang.common.constant.Const;
 import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
 import com.zxiang.project.client.agent.domain.Agent;
@@ -345,16 +346,18 @@ public class FundLogServiceImpl implements IFundLogService {
 		money = money.setScale(3, BigDecimal.ROUND_HALF_UP); // 四舍五入 保留两位
 		// 资金流水
 		FundLog fundLog = new FundLog();
-		fundLog.setBalance(balance.subtract(frozenBalance).toString()); // 可用余额
+		BigDecimal ablebalance = balance.subtract(frozenBalance);
+		fundLog.setBalance(ablebalance.toString()); // 可用余额
 		fundLog.setTotalFee("-" + money);
 		fundLog.setClientId(clientId);
 		fundLog.setClientType(clientType);
-		fundLog.setContent("提现");
+		fundLog.setContent("提现中");
 		fundLog.setType(Const.FUND_WITHDRAW_DEPOSIT);
-		fundLog.setStatus("1"); // 默认成功，失败冲账
+		fundLog.setStatus("0"); // 默认处理中，失败冲账
 		fundLog.setCreateTime(new Date());
 		fundLog.setFreezeBalance(frozenBalance.toString());
 		fundLog.setTotalBalance(balance.toString());
+		fundLog.setUpdateBy(ShiroUtils.getLoginName());
 		fundLogMapper.insertFundLog(fundLog);
 		// 提现记录
 		WithdrawDeposit wd = new WithdrawDeposit();
@@ -363,7 +366,7 @@ public class FundLogServiceImpl implements IFundLogService {
 		wd.setClientType(clientType);
 		wd.setClientName(clientName);
 		wd.setMoney(money);
-		wd.setBalance(balance.subtract(money));
+		wd.setBalance(ablebalance);
 		wd.setManagerPhone(managerPhone);
 		wd.setBankAccount(bankAccount);
 		wd.setBankName(bankName);
@@ -379,25 +382,11 @@ public class FundLogServiceImpl implements IFundLogService {
 		if (wd == null) {
 			throw new RRException("无提现记录");
 		}
-		// String status = Const.WITHDRAW_SUCCESS.equals(drawStatus) ?
-		// Const.STATUS_SUCCESS : Const.STATUS_FAIL;
-		// fundLogMapper.updateStatus(wd.getFundLogId(), status, remark);
+		String status = Const.WITHDRAW_SUCCESS.equals(drawStatus) ? Const.STATUS_SUCCESS : Const.STATUS_FAIL;
+		String content = Const.WITHDRAW_SUCCESS.equals(drawStatus) ? "提现成功" : "提现失败";
+		fundLogMapper.updateStatus(wd.getFundLogId(), status,content,remark);
 		BigDecimal frozenBalance = null;
 		BigDecimal balance = null;
-		FundLog fundLog = null;
-		if (Const.WITHDRAW_FAIL.equals(drawStatus)) {
-			// 资金流水
-			fundLog = new FundLog();
-			fundLog.setTotalFee("+" + wd.getMoney());
-			fundLog.setClientId(wd.getClientId());
-			fundLog.setClientType(wd.getClientType());
-			fundLog.setContent("提现");
-			fundLog.setType(Const.FUND_BACK);
-			fundLog.setStatus("1"); // 失败回账
-			fundLog.setRemark(remark);
-			fundLog.setCreateTime(new Date());
-		}
-
 		if (UserConstants.USER_TYPE_JOIN.equals(wd.getClientType())) { // 机主
 			Join join = joinMapper.selectJoinById(wd.getClientId());
 			if (join == null) {
@@ -441,7 +430,17 @@ public class FundLogServiceImpl implements IFundLogService {
 		} else {
 			throw new RRException("未找到客户");
 		}
-		if (Const.WITHDRAW_FAIL.equals(drawStatus) && fundLog != null) {
+		if (Const.WITHDRAW_FAIL.equals(drawStatus)) {
+			// 资金流水
+			FundLog fundLog = new FundLog();
+			fundLog.setTotalFee("+" + wd.getMoney());
+			fundLog.setClientId(wd.getClientId());
+			fundLog.setClientType(wd.getClientType());
+			fundLog.setContent("提现失败资金回账");
+			fundLog.setType(Const.FUND_BACK);
+			fundLog.setStatus("1"); // 失败回账
+			fundLog.setRemark(remark);
+			fundLog.setCreateTime(new Date());
 			fundLog.setBalance(balance.add(wd.getMoney()).subtract(frozenBalance).toString()); // 可用余额
 			fundLog.setFreezeBalance(frozenBalance.toString());
 			fundLog.setTotalBalance(balance.add(wd.getMoney()).toString());

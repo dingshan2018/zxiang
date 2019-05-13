@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.project.client.fundLog.domain.WithdrawDeposit;
 import com.zxiang.project.client.fundLog.mapper.WithdrawDepositMapper;
 
@@ -73,6 +74,7 @@ public class WithdrawDepositServiceImpl implements IWithdrawDepositService
 		fundLogService.sureClientWithdraw(withdrawDeposit.getId(),withdrawDeposit.getStatus(),withdrawDeposit.getRemark());
 		withdrawDeposit.setUpdateTime(new Date());
 		withdrawDeposit.setPayTime(new Date());
+		withdrawDeposit.setUpdateBy(ShiroUtils.getLoginName());
 	    return withdrawDepositMapper.updateWithdrawDeposit(withdrawDeposit);
 	}
 

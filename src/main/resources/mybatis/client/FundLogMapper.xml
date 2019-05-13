@@ -134,7 +134,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     <update id="updateStatus">
-        update zx_fund_log set status = #{status},remark =#{remark} where pay_id = #{payId}
+        update zx_fund_log set status = #{status},content =#{content},remark =#{remark} where pay_id = #{payId}
     </update>
     
     <update id="deleteWrongFundLog" parameterType="FundLog">
