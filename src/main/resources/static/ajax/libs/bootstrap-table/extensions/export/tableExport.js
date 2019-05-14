@@ -693,7 +693,9 @@
 
                   if ( typeof tdcss != 'undefined' && tdcss !== '' )
                     tdstyle = 'style="mso-number-format:\'' + tdcss + '\'';
-
+                  if ( typeof tdcss == 'undefined' ){
+                	  tdstyle = 'style="mso-number-format:\'' + '@' + '\'';
+                  }
                   for ( var cssStyle in defaults.excelstyles ) {
                     if ( defaults.excelstyles.hasOwnProperty(cssStyle) ) {
                       tdcss = $(cell).css(defaults.excelstyles[cssStyle]);
