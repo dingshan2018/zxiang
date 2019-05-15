@@ -1085,6 +1085,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 			//区分修改投放元素重支付
 			String status = adSchedule.getStatus();
 			int days = 0;
+			int unPayDays = 0;
 			Integer deviceNum = 0;
 			if(status.equals("04") || status.equals("05")) {//重新支付
 				// 计算已经使用金额 ad_release_record sum(price)
@@ -1123,17 +1124,18 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 							}
 							// 获取时间段之间的相差天数
 							Date beginTime = timer.getReleaseBeginTime();
+							days += differentDaysByMillisecond(beginTime, timer.getReleaseEndTime());
 							if(timer.getReleaseBeginTime().getTime()<today.getTime()) {
 								beginTime = today;
 							}
-							days += differentDaysByMillisecond(beginTime, timer.getReleaseEndTime());
+							unPayDays += differentDaysByMillisecond(beginTime, timer.getReleaseEndTime());
 						}
 					}
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				if(days == 0) {
+				if(unPayDays == 0) {
 					throw new RRException("广告时段已全部过期");
 				}
 				adSchedule.setDeadLine(deadLineDate);
@@ -1145,11 +1147,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				}
 				// 计算当前终端（计算当天需要修改）
 				
-				float ounpay = adSchedule.getTotalPay() - hasPay;
+				float ounpay = adSchedule.getTotalPay();//之前已经支付的金额
 				// 计算本次应冻结金额
 				float perpay = adSchedule.getTotalPay() / adSchedule.getReleaseDays() / adSchedule.getReleaseTermNum();
 				// unpay = 本次应冻结-上次已冻结
-				float unpay = perpay * deviceNum * days;
+				float unpay = perpay * deviceNum * days;//时段和终端修改后，需要支付的金额
 				Advertise advertise = this.advertiseMapper.selectAdvertiseById(adSchedule.getAdvertiser());
 				if (unpay - ounpay > 0) {
 					// 如果unpay大于0,并且钱包金额足够，那么直接支付
