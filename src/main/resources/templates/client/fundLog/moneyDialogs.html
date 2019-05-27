@@ -54,6 +54,10 @@
 					$.modal.alertError("超过可提现金额");
 					return;
 				}
+				if(money < 100){
+					$.modal.alertError("提现金额必须100元以上");
+					return;
+				}
 				$.modal.loading("正在处理中，请稍后...");
             	var config = {
             	        url: ctx +"client/fundLog/moneyHandle",

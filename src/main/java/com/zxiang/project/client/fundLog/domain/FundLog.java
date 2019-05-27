@@ -61,8 +61,10 @@ public class FundLog extends BaseEntity {
 	// */
 	// private String deltaFreezeBalance;
 
-	private Date beginTime;
+	private String beginTime1;
+	private String endTime1;
 
+	private Date beginTime;
 	private Date endTime;
 
 	public void setPayId(Integer payId) {
@@ -211,6 +213,22 @@ public class FundLog extends BaseEntity {
 
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+
+	public String getBeginTime1() {
+		return beginTime1;
+	}
+
+	public void setBeginTime1(String beginTime1) {
+		this.beginTime1 = beginTime1;
+	}
+
+	public String getEndTime1() {
+		return endTime1;
+	}
+
+	public void setEndTime1(String endTime1) {
+		this.endTime1 = endTime1;
 	}
 
 }

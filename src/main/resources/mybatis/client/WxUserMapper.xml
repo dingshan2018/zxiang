@@ -28,34 +28,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectWxUserVo">
-        select wx_user_id, user_id,
-        (select user_name from sys_user u where u.user_id = w.user_id) as user_name,
-         subscribe, open_id, nickname, sex_desc, sex, language, city, province, country, head_img_url, subscribe_time, union_id, remark, create_by, create_time, update_by, update_time 
-         from zx_wx_user w
+        select w.wx_user_id, w.user_id,u.user_name,
+         w.subscribe, w.open_id, w.nickname, w.sex_desc, w.sex, w.language, w.city, w.province, w.country, w.head_img_url,
+          w.subscribe_time, w.union_id, w.remark, w.create_by, w.create_time, w.update_by, w.update_time 
+         from zx_wx_user w left join sys_user u on u.user_id = w.user_id
     </sql>
 	
     <select id="selectWxUserList" parameterType="WxUser" resultMap="WxUserResult">
         <include refid="selectWxUserVo"/>
         <where>  
-            <if test="wxUserId != null and wxUserId != ''"> and wx_user_id = #{wxUserId}</if>
-             <if test="userId != null and userId != ''"> and user_id = #{userId}</if>
-             <if test="subscribe != null and subscribe != ''"> and subscribe = #{subscribe}</if>
-             <if test="openId != null and openId != ''"> and open_id = #{openId}</if>
-             <if test="nickname != null and nickname != ''"> and nickname like concat('%', #{nickname}, '%')</if>
-             <if test="sexDesc != null and sexDesc != ''"> and sex_desc = #{sexDesc}</if>
-             <if test="sex != null and sex != ''"> and sex = #{sex}</if>
-             <if test="language != null and language != ''"> and language = #{language}</if>
-             <if test="city != null and city != ''"> and city = #{city}</if>
-             <if test="province != null and province != ''"> and province = #{province}</if>
-             <if test="country != null and country != ''"> and country = #{country}</if>
-             <if test="headImgUrl != null and headImgUrl != ''"> and head_img_url = #{headImgUrl}</if>
-             <if test="subscribeTime != null and subscribeTime != ''"> and subscribe_time = #{subscribeTime}</if>
-             <if test="unionId != null and unionId != ''"> and union_id = #{unionId}</if>
-             <if test="remark != null and remark != ''"> and remark = #{remark}</if>
-             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
-             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
-             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+            <if test="wxUserId != null and wxUserId != ''"> and w.wx_user_id = #{wxUserId}</if>
+             <if test="userId != null and userId != ''"> and w.user_id = #{userId}</if>
+             <if test="subscribe != null and subscribe != ''"> w.and subscribe = #{subscribe}</if>
+             <if test="openId != null and openId != ''"> and w.open_id = #{openId}</if>
+             <if test="nickname != null and nickname != ''"> and w.nickname like concat('%', #{nickname}, '%')</if>
+             <if test="sexDesc != null and sexDesc != ''"> and w.sex_desc = #{sexDesc}</if>
+             <if test="sex != null and sex != ''"> and w.sex = #{sex}</if>
+             <if test="language != null and language != ''"> and w.language = #{language}</if>
+             <if test="city != null and city != ''"> and w.city = #{city}</if>
+             <if test="province != null and province != ''"> and w.province = #{province}</if>
+             <if test="country != null and country != ''"> and w.country = #{country}</if>
+             <if test="headImgUrl != null and headImgUrl != ''"> and w.head_img_url = #{headImgUrl}</if>
+             <if test="subscribeTime != null and subscribeTime != ''"> and w.subscribe_time = #{subscribeTime}</if>
+             <if test="unionId != null and unionId != ''"> and w.union_id = #{unionId}</if>
+             <if test="remark != null and remark != ''"> and w.remark = #{remark}</if>
+             <if test="createBy != null and createBy != ''"> and w.create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and w.create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and w.update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and w.update_time = #{updateTime}</if>
+             <if test="userName != null and userName.trim() != ''"> and u.user_name like concat('%', #{userName}, '%')</if>
          </where>
     </select>
     
