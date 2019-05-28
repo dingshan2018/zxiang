@@ -15,6 +15,8 @@ import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
 import com.zxiang.project.client.join.domain.Join;
 import com.zxiang.project.client.join.mapper.JoinMapper;
+import com.zxiang.project.settle.coefficient.domain.Coefficient;
+import com.zxiang.project.settle.coefficient.service.ICoefficientService;
 import com.zxiang.project.system.dept.domain.Dept;
 import com.zxiang.project.system.dept.mapper.DeptMapper;
 import com.zxiang.project.system.role.service.IRoleService;
@@ -39,6 +41,9 @@ public class JoinServiceImpl implements IJoinService {
 	private DeptMapper deptMapper;
 	@Autowired
 	private IRoleService iroleService;
+	
+	@Autowired
+	private ICoefficientService coefficientService;
 
 	/**
 	 * 查询机主信息
@@ -104,14 +109,15 @@ public class JoinServiceImpl implements IJoinService {
 		join.setCreateTime(new Date());
 		join.setCreateBy(ShiroUtils.getLoginName());
 		// 设置默认参数
-		join.setAdRate(0f);
-		join.setAdCarouselRate(0f);
-		join.setScanRate(0.3f);
-		join.setPromDirectRate(0f);
-		join.setPromIndirectRate(0f);
-		join.setPromPaperRate(0f);
-		join.setPromotionRate(0f);
-		join.setServeRate(0.02f);
+		Coefficient coefficient = coefficientService.selectCoefficientByType("1");
+		join.setAdRate(coefficient.getAdRate());
+		join.setAdCarouselRate(coefficient.getAdCarouselRate());
+		join.setScanRate(coefficient.getScanRate());
+		join.setPromDirectRate(coefficient.getPromDirectRate());
+		join.setPromIndirectRate(coefficient.getPromIndirectRate());
+		join.setPromPaperRate(coefficient.getPromPaperRate());
+		join.setPromotionRate(coefficient.getPromotionRate());
+		join.setServeRate(coefficient.getServeRate());
 		int i = joinMapper.insertJoin(join);
 		if (user != null) {
 			user.setPuserId(join.getJoinId());

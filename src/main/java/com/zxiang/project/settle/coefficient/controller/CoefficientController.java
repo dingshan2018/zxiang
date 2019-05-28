@@ -59,7 +59,7 @@ public class CoefficientController extends BaseController
 	@GetMapping("/add")
 	public String add()
 	{
-	    return prefix + "/add";
+		return prefix + "/add";
 	}
 	
 	/**

@@ -51,4 +51,10 @@ public interface ICoefficientService
      */
 	public int deleteCoefficientByIds(String ids);
 	
+	
+	public int selectCoefficientTotal(String type);
+	
+	
+	public Coefficient selectCoefficientByType(String type);
+	
 }

@@ -19,6 +19,8 @@ import com.zxiang.project.client.repair.domain.Repair;
 import com.zxiang.project.client.repair.domain.RepairArea;
 import com.zxiang.project.client.repair.mapper.RepairAreaMapper;
 import com.zxiang.project.client.repair.mapper.RepairMapper;
+import com.zxiang.project.settle.coefficient.domain.Coefficient;
+import com.zxiang.project.settle.coefficient.service.ICoefficientService;
 import com.zxiang.project.system.dept.domain.Dept;
 import com.zxiang.project.system.dept.mapper.DeptMapper;
 import com.zxiang.project.system.role.service.IRoleService;
@@ -45,6 +47,9 @@ public class RepairServiceImpl implements IRepairService {
 	private RepairAreaMapper repairAreaMapper;
 	@Autowired
 	private IRoleService iroleService;
+	
+	@Autowired
+	private ICoefficientService coefficientService;
 
 	/**
 	 * 查询服务商信息
@@ -109,14 +114,15 @@ public class RepairServiceImpl implements IRepairService {
 		repair.setCreateTime(new Date());
 		repair.setCreateBy(ShiroUtils.getLoginName());
 		// 设置默认参数
-		repair.setAdRate(0f);
-		repair.setAdCarouselRate(0f);
-		repair.setScanRate(0.05f);
-		repair.setPromDirectRate(0f);
-		repair.setPromIndirectRate(0f);
-		repair.setPromPaperRate(0f);
-		repair.setPromotionRate(0f);
-		repair.setSubsidyRate(0f);
+		Coefficient coefficient = coefficientService.selectCoefficientByType("4");
+		repair.setAdRate(coefficient.getAdRate());
+		repair.setAdCarouselRate(coefficient.getAdCarouselRate());
+		repair.setScanRate(coefficient.getScanRate());
+		repair.setPromDirectRate(coefficient.getPromDirectRate());
+		repair.setPromIndirectRate(coefficient.getPromIndirectRate());
+		repair.setPromPaperRate(coefficient.getPromPaperRate());
+		repair.setPromotionRate(coefficient.getPromotionRate());
+		repair.setSubsidyRate(coefficient.getSubsidyRate());
 		int i = repairMapper.insertRepair(repair);
 		if (user != null) {
 			user.setPuserId(repair.getRepairId());

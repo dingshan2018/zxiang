@@ -56,7 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
     
-     <select id="selectCoefficientTotal"  resultType="int">
+     <select id="selectCoefficientTotal" parameterType="String"  resultType="int">
          select count(*) from zx_coefficient
         where type = #{type}
     </select>
@@ -134,5 +134,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+    
+     <select id="selectCoefficientByType" parameterType="String"  resultMap="CoefficientResult">
+        <include refid="selectCoefficientVo"/>
+        where type = #{type}
+    </select>
+    
+    
     
 </mapper>

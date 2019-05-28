@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.zxiang.project.settle.coefficient.mapper.CoefficientMapper;
 import com.zxiang.project.settle.coefficient.domain.Coefficient;
 import com.zxiang.project.settle.coefficient.service.ICoefficientService;
+import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
 
 /**
@@ -53,6 +54,10 @@ public class CoefficientServiceImpl implements ICoefficientService
 	@Override
 	public int insertCoefficient(Coefficient coefficient)
 	{
+		int t = selectCoefficientTotal(coefficient.getType());
+		if(t>0) {
+			throw new RRException("该类型已存在");
+		}
 	    return coefficientMapper.insertCoefficient(coefficient);
 	}
 	
@@ -78,6 +83,16 @@ public class CoefficientServiceImpl implements ICoefficientService
 	public int deleteCoefficientByIds(String ids)
 	{
 		return coefficientMapper.deleteCoefficientByIds(Convert.toStrArray(ids));
+	}
+
+	@Override
+	public int selectCoefficientTotal(String type) {
+		return  coefficientMapper.selectCoefficientTotal(type);
+	}
+
+	@Override
+	public Coefficient selectCoefficientByType(String type) {
+		return  coefficientMapper.selectCoefficientByType(type);
 	}
 	
 }

@@ -59,4 +59,9 @@ public interface CoefficientMapper
      */
 	public int deleteCoefficientByIds(String[] ids);
 	
+	public int selectCoefficientTotal(String type);
+	
+	
+	public Coefficient selectCoefficientByType(String type);
+	
 }

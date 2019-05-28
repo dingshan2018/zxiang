@@ -15,6 +15,8 @@ import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.shiro.service.PasswordService;
 import com.zxiang.project.client.agent.domain.Agent;
 import com.zxiang.project.client.agent.mapper.AgentMapper;
+import com.zxiang.project.settle.coefficient.domain.Coefficient;
+import com.zxiang.project.settle.coefficient.service.ICoefficientService;
 import com.zxiang.project.system.dept.domain.Dept;
 import com.zxiang.project.system.dept.mapper.DeptMapper;
 import com.zxiang.project.system.role.service.IRoleService;
@@ -39,6 +41,9 @@ public class AgentServiceImpl implements IAgentService {
 	private DeptMapper deptMapper;
 	@Autowired
 	private IRoleService iroleService;
+	
+	@Autowired
+	private ICoefficientService coefficientService;
 
 	/**
 	 * 查询代理商信息
@@ -108,26 +113,35 @@ public class AgentServiceImpl implements IAgentService {
 		}
 		agent.setCreateTime(new Date());
 		agent.setCreateBy(ShiroUtils.getLoginName());
+		Coefficient coefficient = new Coefficient();
 		// 设置默认参数
 		if (agent.getLevel() == 1) {
-			agent.setAdRate(0f);
+			coefficient = coefficientService.selectCoefficientByType("2");
+			/*agent.setAdRate(0f);
 			agent.setAdCarouselRate(0f);
 			agent.setScanRate(0.05f);
 			agent.setSubsidyRate(0f);
-			agent.setServeRate(0.005f);
+			agent.setServeRate(0.005f);*/
 		}
 		if (agent.getLevel() == 2) {
-			agent.setAdRate(0f);
+			coefficient = coefficientService.selectCoefficientByType("3");
+			/*agent.setAdRate(0f);
 			agent.setAdCarouselRate(0f);
 			agent.setScanRate(0.02f);
 			agent.setSubsidyRate(0f);
-			agent.setServeRate(0.002f);
+			agent.setServeRate(0.002f);*/
 		}
-		agent.setPromDirectRate(0f);
-		agent.setPromIndirectRate(0f);
-		agent.setPromPaperRate(0f);
-		agent.setPromotionRate(0f);
-		agent.setDirectAgentRate(0f);
+		agent.setAdRate(coefficient.getAdRate());
+		agent.setAdCarouselRate(coefficient.getAdCarouselRate());
+		agent.setScanRate(coefficient.getScanRate());
+		agent.setSubsidyRate(coefficient.getSubsidyRate());
+		agent.setServeRate(coefficient.getServeRate());
+		
+		agent.setPromDirectRate(coefficient.getPromDirectRate());
+		agent.setPromIndirectRate(coefficient.getPromIndirectRate());
+		agent.setPromPaperRate(coefficient.getPromPaperRate());
+		agent.setPromotionRate(coefficient.getPromotionRate());
+		agent.setDirectAgentRate(coefficient.getDirectAgentRate());
 		int i = agentMapper.insertAgent(agent);
 		if (user != null) {
 			user.setPuserId(agent.getAgentId());
