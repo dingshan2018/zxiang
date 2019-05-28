@@ -28,6 +28,7 @@ import com.zxiang.project.client.repair.domain.Repair;
 import com.zxiang.project.client.repair.service.IRepairService;
 import com.zxiang.project.system.area.service.IAreaService;
 import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.mapper.UserMapper;
 import com.zxiang.project.system.user.service.IUserService;
 
 /**
@@ -48,6 +49,8 @@ public class PlaceController extends BaseController
 	private IAreaService areaService;
 	@Autowired
 	private IUserService userService;
+	@Autowired
+	private UserMapper userMapper;
 	@Autowired
 	private IRepairService repairService;
 	
@@ -193,11 +196,11 @@ public class PlaceController extends BaseController
 		mmap.put("place", place);
 		
 		User queryUser = new User();
-		List<User> userListAll = userService.selectUserList(queryUser);
+		List<User> userListAll = userMapper.selectUserList(queryUser);//userService.selectUserList(queryUser);
 		mmap.put("userListAll", userListAll);
 		
 		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
-		List<User> userListRepair = userService.selectUserList(queryUser);
+		List<User> userListRepair = userMapper.selectUserList(queryUser);//userService.selectUserList(queryUser);
 		mmap.put("userListRepair", userListRepair);
 		
 		List<Repair> repairList = repairService.selectRepairByCity(place.getCity(),place.getCounty());

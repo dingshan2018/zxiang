@@ -32,6 +32,7 @@ import com.zxiang.project.business.device.service.IDeviceService;
 import com.zxiang.project.business.place.service.IPlaceService;
 import com.zxiang.project.business.terminal.service.ITerminalService;
 import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.mapper.UserMapper;
 import com.zxiang.project.system.user.service.IUserService;
 
 /**
@@ -53,7 +54,7 @@ public class DeviceController extends BaseController
 	@Autowired 
 	private IPlaceService placeService;
 	@Autowired
-	private IUserService userService;
+	private UserMapper userMapper;
 	
 	@RequiresPermissions("business:device:view")
 	@GetMapping()
@@ -108,7 +109,7 @@ public class DeviceController extends BaseController
 	{
 		User queryUser = new User();
 		queryUser.setUserType(UserConstants.USER_TYPE_JOIN);
-		List<User> userListJoin = userService.selectUserList(queryUser);
+		List<User> userListJoin = userMapper.selectUserList(queryUser);
 		mmap.put("userList", userListJoin);
 		
 	    return prefix + "/add";
@@ -143,7 +144,7 @@ public class DeviceController extends BaseController
 		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 		User queryUser = new User();
 		queryUser.setUserType(UserConstants.USER_TYPE_JOIN);
-		List<User> userListJoin = userService.selectUserList(queryUser);
+		List<User> userListJoin = userMapper.selectUserList(queryUser);//userService.selectUserList(queryUser);
 		mmap.put("userList", userListJoin);
 		
 	    return prefix + "/edit";
@@ -261,7 +262,7 @@ public class DeviceController extends BaseController
 		
 		User queryUser = new User();
 		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
-		List<User> userList = userService.selectUserList(queryUser);
+		List<User> userList = userMapper.selectUserList(queryUser);
 		mmap.put("userList", userList);
 		
 	    return prefix + "/changeDevice";
@@ -297,7 +298,7 @@ public class DeviceController extends BaseController
 		
 		User queryUser = new User();
 		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
-		List<User> userList = userService.selectUserList(queryUser);
+		List<User> userList = userMapper.selectUserList(queryUser);
 		mmap.put("userList", userList);
 		
 	    return prefix + "/supplyTissueAdd";

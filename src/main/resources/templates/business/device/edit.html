@@ -74,8 +74,11 @@
             <div class="form-group">
 				<label class="col-sm-3 control-label">机主：</label>
 				<div class="col-sm-8">
-					<select id="ownerId" name="ownerId" class="form-control">
-                    	<option value=""></option>
+					<select id="ownerId" name="ownerId" 
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
+                    	<option value="">---请选择---</option>
 						<option th:each="user:${userList}" th:value="${user.userId}"
 						 th:text="${user.userName}" th:field="*{ownerId}"></option>
 					</select>
