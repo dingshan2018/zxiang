@@ -2,6 +2,7 @@ package com.zxiang.project.business.device.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +30,7 @@ import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.service.IDeviceService;
+import com.zxiang.project.business.place.domain.Place;
 import com.zxiang.project.business.place.service.IPlaceService;
 import com.zxiang.project.business.terminal.service.ITerminalService;
 import com.zxiang.project.system.user.domain.User;
@@ -53,6 +55,8 @@ public class DeviceController extends BaseController
 	private ITerminalService terminalService; 
 	@Autowired 
 	private IPlaceService placeService;
+	@Autowired
+	private IUserService userService;
 	@Autowired
 	private UserMapper userMapper;
 	
@@ -294,11 +298,25 @@ public class DeviceController extends BaseController
 	{
 		Device device = deviceService.selectDeviceById(deviceId);
 		mmap.put("device", device);
-		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
+		//mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 		
-		User queryUser = new User();
-		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
-		List<User> userList = userMapper.selectUserList(queryUser);
+		List<User> userList = new ArrayList<>();
+		try {
+			String placeId = device.getPlaceId() == null? "0" : device.getPlaceId();//若设备为空将抛出空指针异常
+			Place place = placeService.selectPlaceById(Integer.parseInt(placeId));
+			if(place != null && place.getServicePoint() != null){
+				Map<String, Object> qryParam = new HashMap<>();
+				qryParam.put("repairId", place.getServicePoint()+"");
+				userList = userService.selectUserByRepairId(qryParam);
+			}else{
+				User queryUser = new User();
+				queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
+				userList = userMapper.selectUserList(queryUser);
+			}
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			//return error("获取补纸人员异常!");
+		}
 		mmap.put("userList", userList);
 		
 	    return prefix + "/supplyTissueAdd";
