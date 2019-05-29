@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -419,4 +422,24 @@ public class DeviceController extends BaseController
     	Device device = deviceService.selectDeviceById(deviceId);
         return device;
     }
+    
+    /**
+	 * 导出Excel
+	 * 注意数据权限要与查询列表一致
+	 */
+	@DataFilter(placeAlias="place_id")
+	@RequestMapping("/excelExport")
+	public void excelExport(@RequestParam HashMap<String, String> params, 
+			HttpServletResponse response,HttpServletRequest request){
+		try {
+			User user =getUser();
+			String userType = user.getUserType();
+			if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+				params.put("userId", user.getUserId()+"");
+			}
+			deviceService.queryExport(params, request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

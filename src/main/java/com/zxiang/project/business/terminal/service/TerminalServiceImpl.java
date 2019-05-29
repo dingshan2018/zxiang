@@ -1,14 +1,20 @@
 package com.zxiang.project.business.terminal.service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.excel.EXCELObject;
 import com.zxiang.project.business.terminal.domain.Terminal;
 import com.zxiang.project.business.terminal.mapper.TerminalMapper;
 import com.zxiang.project.business.terminalParam.mapper.TerminalParamMapper;
@@ -164,6 +170,37 @@ public class TerminalServiceImpl implements ITerminalService
 	public int deleteTerminals(String ids) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		List erportList = terminalMapper.queryExport(params);
+      	String realPath = request.getSession().getServletContext().getRealPath("/file/temp");
+  		EXCELObject s = new EXCELObject();
+  		s.seteFilePath(realPath);
+  		//表头名称
+  		String[] titH = { "ID", "终端编号", "场所名称","设备资产编号","卡号",
+  				"终端信号强度", "心跳时间","登录时间", "在线状态","终端状态",
+  				"终端版本", "终端音量","板卡编号", "经度", "纬度"};
+  		//SQL方法查询出的字段名称
+  		String[] titN = { "terminal_id","terminal_code","placeName","deviceSn","iccId",
+  				"rssi","last_heart_time","last_login_time","onlineStatusName","statusName",
+  				"version","volumn","sn_code","lon","lat"};
+  		String[] width= 
+  			   {"15","20","20","20","20",
+  				"15","20","20","15","15",
+  				"15","15","20","20","20"};
+  		s.setWidth(width);
+  		s.setFname("终端管理"); // sheet栏名称
+  		s.setTitle("终端管理"); // Excel内容标题名称
+  		s.setTitH(titH);
+  		s.setTitN(titN);
+  		s.setDataList(erportList);
+  		File exportFile = null;
+  		exportFile = s.setData();
+  		//Excel文件名称
+  		String excelName = "终端管理" + System.currentTimeMillis() + ".xls";
+  		s.exportExcel("终端管理", excelName, exportFile, request, response);
 	}
 
 }

@@ -1,7 +1,12 @@
 package com.zxiang.project.business.terminal.service;
 
 import com.zxiang.project.business.terminal.domain.Terminal;
+
+import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 终端管理 服务层
@@ -81,6 +86,15 @@ public interface ITerminalService
 	 * @return
 	 */
 	public int saveBatchImport(List<Object> sheetList,String operatorUser);
+
+	/**
+	 * 导出终端管理Excel
+	 * @param params
+	 * @param request
+	 * @param response
+	 * @throws Exception 
+	 */
+	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
 	
 }

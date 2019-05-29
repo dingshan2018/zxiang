@@ -93,6 +93,9 @@
               <a class="btn btn-info btn-rounded btn-sm" onclick="supplyTissue()" shiro:hasPermission="business:device:supplyTissueAdd">
                 <i class="fa fa-edit"></i>&nbsp;补纸
               </a>
+              <a class="btn btn-success btn-rounded btn-sm" onclick="exportExcel()">
+                <i class="fa fa-download"></i>&nbsp;导出
+              </a>
             </li>
           </ul>
         </div>
@@ -449,6 +452,25 @@
 		})
 		return device;
     }
+  	
+    //导出Excel
+    function exportExcel(){
+    	$.modal.confirm("确认导出？", function() {
+	    	var placeId = $("#placeId").val();
+	   		var deviceSn = $("#deviceSn").val();
+	   		var status = $("#status").val();
+	   		var ownerName = $("#ownerName").val();
+	   		var province = $("#province").val();
+			var city = $("#city").val();
+			var county = $("#county").val();
+	   		var startTime = $("#startTime").val();
+	   		var endTime = $("#endTime").val();
+			location.href = prefix + "/excelExport?placeId="+placeId+'&deviceSn='+deviceSn+'&status='+status+'&ownerName='+ownerName
+				+'&province='+province+'&city='+city+'&county='+county+'&startTime='+startTime+'&endTime='+endTime
+    		//$.modal.alert("导出成功!");
+		});
+    }
+  
   </script>
 </body>
 </html>
