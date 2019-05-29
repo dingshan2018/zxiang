@@ -286,4 +286,72 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT place_code FROM zx_place WHERE county=#{county} ORDER BY place_id DESC LIMIT 1
 	</select>
 	
+	<!-- 查询要导出的Excel数据 -->
+	<select id="queryExport" resultType="java.util.HashMap">
+       <include refid="selectPlaceVo"/>
+        <where>  
+            ${filterSql}
+            <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
+             <if test="parentPlaceId != null and parentPlaceId != ''"> and parent_place_id = #{parentPlaceId}</if>
+             <if test="placeCode != null and placeCode != ''"> and place_code = #{placeCode}</if>
+             <if test="placeType != null and placeType != ''"> and place_type = #{placeType}</if>
+             <if test="scene != null and scene != ''"> and scene = #{scene}</if>
+             <if test="name != null and name != ''">
+             	 and name like concat('%', #{name}, '%')
+             </if>
+             <if test="sname != null and sname != ''"> and sname = #{sname}</if>
+             <if test="address != null and address != ''"> and address = #{address}</if>
+             <if test="province != null and province != ''"> and province = #{province}</if>
+             <if test="city != null and city != ''"> and city = #{city}</if>
+             <if test="county != null and county != ''"> and county = #{county}</if>
+             <if test="lon != null and lon != ''"> and lon = #{lon}</if>
+             <if test="lat != null and lat != ''"> and lat = #{lat}</if>
+             <if test="packet != null and packet != ''"> and packet = #{packet}</if>
+             <if test="tissuePrice != null and tissuePrice != ''"> and tissue_price = #{tissuePrice}</if>
+             <if test="tissueLen != null and tissueLen != ''"> and tissue_len = #{tissueLen}</if>
+             <if test="servicePoint != null and servicePoint != ''"> and service_point = #{servicePoint}</if>
+             <if test="repairId != null and repairId != ''"> and repair_id = #{repairId}</if>
+             <if test="supplyId != null and supplyId != ''"> and supply_id = #{supplyId}</if>
+             <if test="operatorId != null and operatorId != ''"> and operator_id = #{operatorId}</if>
+             <if test="ownerId != null and ownerId != ''"> and owner_id = #{ownerId}</if>
+             <if test="deviceCount != null and deviceCount != ''"> and device_count = #{deviceCount}</if>
+             <if test="ctBank != null and ctBank != ''"> and ct_bank = #{ctBank}</if>
+             <if test="ctAccount != null and ctAccount != ''"> and ct_account = #{ctAccount}</if>
+             <if test="ctReceiver != null and ctReceiver != ''"> and ct_receiver = #{ctReceiver}</if>
+             <if test="ctPhone != null and ctPhone != ''"> and ct_phone = #{ctPhone}</if>
+             <if test="ctIdentity != null and ctIdentity != ''"> and ct_identity = #{ctIdentity}</if>
+             <if test="ctRate != null and ctRate != ''"> and ct_rate = #{ctRate}</if>
+             <if test="status != null and status != ''"> and status = #{status}</if>
+             <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
+             <if test="note != null and note != ''"> and note = #{note}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+			 <if test="startTime != null and startTime != ''"><!-- 开始时间检索  导出Excel需要使用startTime-->
+				AND date_format(p.create_time,'%y%m%d') &gt;= date_format(#{startTime},'%y%m%d')
+			 </if>
+			 <if test="endTime != null and endTime != ''"><!-- 结束时间检索 导出Excel需要使用endTime -->
+				AND date_format(p.create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+			 </if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <!-- <if test="params.person != null"> 登录时做的功能权限，导出Excel时没有这些参数
+				AND (
+				#{params.person} like CONCAT('%',',',p.repair_id,',','%')
+				OR 
+				#{params.person} like CONCAT('%',',',p.supply_id,',','%')
+				OR
+				#{params.person} like CONCAT('%',',',p.operator_id,',','%')
+				OR
+				#{params.person} like CONCAT('%',',',p.owner_id,',','%')
+				)
+			 </if>
+			    <if test="params.city != null">
+				AND #{params.city} like CONCAT('%',',',p.city,',','%')
+			 </if>
+			    <if test="params.county != null">
+				AND #{params.county} like CONCAT('%',',',p.county,',','%')
+			 </if> -->
+         </where>
+         ORDER BY p.place_id DESC 
+    </select>
+    
 </mapper>
