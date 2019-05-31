@@ -85,7 +85,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="onlineStatus != null and onlineStatus != ''"> and online_status = #{onlineStatus}</if>
              <if test="logUrl != null and logUrl != ''"> and log_url = #{logUrl}</if>
          </where>
-         ORDER BY t.create_time,t.terminal_id DESC 
+         ORDER BY t.create_time DESC,t.terminal_id DESC 
     </select>
     
     <select id="selectTerminalById" parameterType="Integer" resultMap="TerminalResult">
