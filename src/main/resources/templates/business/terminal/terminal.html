@@ -29,7 +29,7 @@
               </select>
             </li>
             <li class="select-time">
-              <label class="select-item-name">创建时间： </label>
+              <label class="select-item-name">激活时间： </label>
               <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
               <span>-</span>
               <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
@@ -153,6 +153,22 @@
             title: '终端版本'
           },
           {
+            field: 'createBy',
+            title: '创建者'
+          },
+          {
+            field: 'createTime',
+            title: '激活时间'
+          },
+          {
+            field: 'updateBy',
+            title: '修改者'
+          },
+          {
+            field: 'updateTime',
+            title: '修改时间'
+          },
+          {
             field: 'logUrl',
             title: '查看日志',
             formatter: function(value, row, index) {
@@ -164,22 +180,6 @@
              	}
               	return actions.join('');
          	}
-          },
-          {
-            field: 'createBy',
-            title: '创建者'
-          },
-          {
-            field: 'createTime',
-            title: '创建时间'
-          },
-          {
-            field: 'updateBy',
-            title: '修改者'
-          },
-          {
-            field: 'updateTime',
-            title: '修改时间'
           },
           {
             title    : '操作',
@@ -202,7 +202,7 @@
       $('#bootstrap-table').bootstrapTable('hideColumn', 'lat');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'delFlag');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'createBy');
-      $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
+      //$('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
     });

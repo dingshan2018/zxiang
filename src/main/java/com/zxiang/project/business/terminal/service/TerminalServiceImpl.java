@@ -215,9 +215,8 @@ public class TerminalServiceImpl implements ITerminalService
 		if(terminal != null ){
 			JSONObject reqJson = new JSONObject();
 			reqJson.put("termCode",terminal.getTerminalCode());
-			//TODO 等待接口参数 进行封装
-			//reqJson.put("status","02");//
-			//reqJson.put("command","26");//参数下发命令0x1A,转十进制为26	
+			// 接口参数 进行封装
+			reqJson.put("command","35");//参数下发命令0x23,转十进制为35
 			try {
 				serverService.issuedCommand(terminal,reqJson);
 				number++;
