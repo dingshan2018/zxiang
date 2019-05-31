@@ -74,6 +74,7 @@ public class Device extends BaseEntity
 
 	private String terminalCode;
 	private String placeName;
+	private String sceneName;
 	/** 省份 */
 	private Integer province;
 	/** 城市 */
@@ -471,6 +472,14 @@ public class Device extends BaseEntity
 
 	public void setAgentLevel2(String agentLevel2) {
 		this.agentLevel2 = agentLevel2;
+	}
+
+	public String getSceneName() {
+		return sceneName;
+	}
+
+	public void setSceneName(String sceneName) {
+		this.sceneName = sceneName;
 	}
 
 	public String toString() {
