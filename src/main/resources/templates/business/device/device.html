@@ -81,12 +81,12 @@
               </a>
               <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
               </a>
-              <a class="btn btn-info btn-rounded btn-sm" onclick="release()" shiro:hasPermission="business:device:release">
+              <!--  <a class="btn btn-info btn-rounded btn-sm" onclick="release()" shiro:hasPermission="business:device:release">
                 <i class="fa fa-edit"></i>&nbsp;投放
               </a>
               <a class="btn btn-info btn-rounded btn-sm" onclick="removeDevice()" shiro:hasPermission="business:device:removeDevice">
                 <i class="fa fa-edit"></i>&nbsp;撤机
-              </a>
+              </a> -->
               <!-- <a class="btn btn-info btn-rounded btn-sm" onclick="changeDevice()" shiro:hasPermission="business:device:changeDevice">
                 <i class="fa fa-edit"></i>&nbsp;换板
               </a> -->
@@ -193,10 +193,6 @@
               title: '微信昵称'
           },
           {
-            field: 'releaseTime',
-            title: '投放时间'
-          },
-          {
             field: 'servicePointName',
             title: '服务网点'
           },
@@ -234,6 +230,10 @@
             title: '设备状态',
           },
           {
+            field: 'releaseTime',
+            title: '投放时间'
+          },
+          {
               field: 'releaseStatus',
               title: '投放申请',
               formatter: function (value) {
@@ -252,7 +252,7 @@
           },
           {
               field: 'note',
-              title: '备注'
+              title: '投放地址'
           },
           {
             field: 'createBy',
@@ -296,6 +296,9 @@
       $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'status');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'deviceCode');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'removeTime');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'releaseStatus');
+      
     });
 
     function proviceBind () {
