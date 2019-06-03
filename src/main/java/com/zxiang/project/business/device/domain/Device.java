@@ -105,6 +105,8 @@ public class Device extends BaseEntity
 	
 	private String wxNickname;//微信昵称
 	
+	private String releaseDeviceCondition;//广告投放设备查询条件，有值即过滤终端不为空的设备
+	
 	public void setDeviceId(Integer deviceId) 
 	{
 		this.deviceId = deviceId;
@@ -533,6 +535,14 @@ public class Device extends BaseEntity
 
 	public void setWxNickname(String wxNickname) {
 		this.wxNickname = wxNickname;
+	}
+
+	public String getReleaseDeviceCondition() {
+		return releaseDeviceCondition;
+	}
+
+	public void setReleaseDeviceCondition(String releaseDeviceCondition) {
+		this.releaseDeviceCondition = releaseDeviceCondition;
 	}
 	
 }
