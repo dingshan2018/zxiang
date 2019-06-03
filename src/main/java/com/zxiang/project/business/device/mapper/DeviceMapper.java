@@ -1,5 +1,6 @@
 package com.zxiang.project.business.device.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -123,6 +124,13 @@ public interface DeviceMapper
 	public int outStock(@Param("array")String[] ids, @Param("ownerId")Integer ownerId);
 
 	public int selectTotal(Map<String, Object> param);
+
+	/**
+	 * 查询要导出的运营设备数据列表
+	 * @param params
+	 * @return
+	 */
+	public List queryExport(HashMap<String, String> params);
 
 	
 }

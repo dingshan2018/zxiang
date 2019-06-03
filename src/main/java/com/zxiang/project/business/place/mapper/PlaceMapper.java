@@ -1,6 +1,8 @@
 package com.zxiang.project.business.place.mapper;
 
 import com.zxiang.project.business.place.domain.Place;
+
+import java.util.HashMap;
 import java.util.List;	
 
 /**
@@ -73,5 +75,12 @@ public interface PlaceMapper
 	 * 获取场所表当前最大编号
 	 */
 	public String getMaxPlaceCode(Integer county);
+
+	/**
+	 * 查询导出Excel数据列表
+	 * @param params
+	 * @return
+	 */
+	public List queryExport(HashMap<String, String> params);
 	
 }

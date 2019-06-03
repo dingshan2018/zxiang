@@ -15,6 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="lastHeartTime"    column="last_heart_time"    />
         <result property="lastLoginTime"    column="last_login_time"    />
         <result property="volumn"    column="volumn"    />
+        <result property="snCode"    column="sn_code"    />
         <result property="status"    column="status"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="lon"    column="lon"    />
@@ -37,7 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         (select distinct p.name from zx_place p where p.place_id =t.`place_id` ) placeName,
         rssi, last_heart_time, last_login_time, volumn, status,
         CASE status  WHEN '1' THEN '待绑定' WHEN '2' THEN '待激活' WHEN '3' THEN '激活' WHEN '4' THEN '故障' ELSE '-' END statusName,
-        del_flag, lon, lat, version,
+        del_flag, lon, lat, version,sn_code,
         create_by, create_time, update_by, update_time,offer_key,iccid,
         online_status,
         CASE online_status  WHEN '0' THEN '离线' WHEN '1' THEN '在线' ELSE '-' END onlineStatusName
@@ -63,6 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="lastHeartTime != null "> and last_heart_time = #{lastHeartTime}</if>
              <if test="lastLoginTime != null "> and last_login_time = #{lastLoginTime}</if>
              <if test="volumn != null and volumn != ''"> and volumn = #{volumn}</if>
+             <if test="snCode != null and snCode != ''"> and sn_code = #{snCode}</if>
              <if test="status != null and status != ''"> and status = #{status}</if>
              <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
              <if test="lon != null and lon != ''"> and lon = #{lon}</if>
@@ -100,6 +102,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="lastHeartTime != null ">last_heart_time,</if>
 			<if test="lastLoginTime != null ">last_login_time,</if>
 			<if test="volumn != null and volumn != '' ">volumn,</if>
+			<if test="snCode != null and snCode != '' ">sn_code,</if>
 			<if test="status != null and status != '' ">status,</if>
 			<if test="delFlag != null and delFlag != '' ">del_flag,</if>
 			<if test="lon != null and lon != '' ">lon,</if>
@@ -122,6 +125,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="lastHeartTime != null ">#{lastHeartTime},</if>
 			<if test="lastLoginTime != null ">#{lastLoginTime},</if>
 			<if test="volumn != null and volumn != ''">#{volumn},</if>
+			<if test="snCode != null and snCode != ''">#{snCode},</if>
 			<if test="status != null and status != ''">#{status},</if>
 			<if test="delFlag != null and delFlag != ''">#{delFlag},</if>
 			<if test="lon != null and lon != ''">#{lon},</if>
@@ -147,6 +151,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="lastHeartTime != null  ">last_heart_time = #{lastHeartTime},</if>
             <if test="lastLoginTime != null  ">last_login_time = #{lastLoginTime},</if>
             <if test="volumn != null  ">volumn = #{volumn},</if>
+            <if test="snCode != null  ">sn_code = #{snCode},</if>
             <if test="status != null  and status != ''  ">status = #{status},</if>
             <if test="delFlag != null  and delFlag != ''  ">del_flag = #{delFlag},</if>
             <if test="lon != null  and lon != ''  ">lon = #{lon},</if>
@@ -190,6 +195,48 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 通过deviceId查找终端设备 -->
 	<select id="selectTerByDeviceId"  resultMap="TerminalResult">
 		SELECT * FROM `zx_terminal` WHERE terminal_id=(SELECT terminal_id FROM `zx_device` WHERE device_id=#{deviceId})
+    </select>
+    
+    <!-- 查询要导出的Excel数据 -->
+	<select id="queryExport" resultType="java.util.HashMap">
+		<include refid="selectTerminalVo"/>
+        <where> 
+             <if test="userId == null">  ${filterSql} </if>
+            <if test="userId != null and userId != ''">
+            	and #{userId} = (SELECT DISTINCT zd.owner_id FROM zx_device zd WHERE zd.device_id = t.device_id)
+            </if> 
+            <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
+             <if test="terminalCode != null and terminalCode != ''">
+             	AND t.terminal_code like concat('%', #{terminalCode}, '%')
+             </if>
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="deviceSn != null and deviceSn != ''"> and device_id in 
+             (SELECT DISTINCT zd.device_id FROM zx_device zd WHERE zd.device_sn LIKE concat('%', #{deviceSn}, '%'))</if>
+             <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
+             <if test="rssi != null and rssi != ''"> and rssi = #{rssi}</if>
+             <if test="lastHeartTime != null "> and last_heart_time = #{lastHeartTime}</if>
+             <if test="lastLoginTime != null "> and last_login_time = #{lastLoginTime}</if>
+             <if test="volumn != null and volumn != ''"> and volumn = #{volumn}</if>
+             <if test="snCode != null and snCode != ''"> and sn_code = #{snCode}</if>
+             <if test="status != null and status != ''"> and status = #{status}</if>
+             <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
+             <if test="lon != null and lon != ''"> and lon = #{lon}</if>
+             <if test="lat != null and lat != ''"> and lat = #{lat}</if>
+             <if test="version != null and version != ''"> and version = #{version}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="startTime != null and startTime != ''"><!-- 开始时间检索  导出Excel需要使用startTime-->
+				AND date_format(t.create_time,'%y%m%d') &gt;= date_format(#{startTime},'%y%m%d')
+			 </if>
+			 <if test="endTime != null and endTime != ''"><!-- 结束时间检索 导出Excel需要使用endTime -->
+				AND date_format(t.create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+			 </if>
+             <if test="updateBy != null "> and update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="offerKey != null and offerKey != ''"> and offer_key = #{offerKey}</if>
+             <if test="iccId != null and iccId != ''"> and iccid = #{iccId}</if>
+             <if test="onlineStatus != null and onlineStatus != ''"> and online_status = #{onlineStatus}</if>
+         </where>
+         ORDER BY t.terminal_id DESC 
     </select>
     
 </mapper>

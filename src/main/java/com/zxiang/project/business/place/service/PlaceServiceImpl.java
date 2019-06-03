@@ -1,12 +1,17 @@
 package com.zxiang.project.business.place.service;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mchange.lang.StringUtils;
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.excel.EXCELObject;
 import com.zxiang.project.business.place.domain.Place;
 import com.zxiang.project.business.place.mapper.PlaceMapper;
 
@@ -120,6 +125,40 @@ public class PlaceServiceImpl implements IPlaceService
             return "1";
         }
         return "0";
+	}
+
+	@Override
+	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		List erportList = placeMapper.queryExport(params);
+      	String realPath = request.getSession().getServletContext().getRealPath("/file/temp");
+  		EXCELObject s = new EXCELObject();
+  		s.seteFilePath(realPath);
+  		//表头名称
+  		String[] titH = { "ID", "场所名称", "场所编号","场所类型","场景",
+  				"详细地址", "省份","城市", "区县","服务网点",
+  				"地级市代理", "区县代理","维修员", "送纸员","投放数量",
+  				"场所状态","备注"};
+  		//SQL方法查询出的字段名称
+  		String[] titN = { "place_id","name","place_code","place_type","sceneName",
+  				"address","provinceName","cityName","countyName","servicePointName",
+  				"agentLevel1","agentLevel2","repairName","supplyName","device_count",
+  				"status", "note"};
+  		String[] width= 
+  			   {"15","20","20","20","20",
+  				"20","20","20","20","20",
+  				"20","20","20","20","20",
+  				"20","20"};
+  		s.setWidth(width);
+  		s.setFname("场所数据"); // sheet栏名称
+  		s.setTitle("场所数据"); // Excel内容标题名称
+  		s.setTitH(titH);
+  		s.setTitN(titN);
+  		s.setDataList(erportList);
+  		File exportFile = null;
+  		exportFile = s.setData();
+  		//Excel文件名称
+  		String excelName = "场所数据" + System.currentTimeMillis() + ".xls";
+  		s.exportExcel("场所数据", excelName, exportFile, request, response);
 	}
 	
 }
