@@ -138,6 +138,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="totalTime != null and totalTime != ''"> and zas.total_time = #{totalTime}</if>
              <if test="payStatus != null and payStatus != ''"> and zas.pay_status = #{payStatus}</if>
              <if test="qrUrl != null and qrUrl != ''"> and zas.qr_url = #{qrUrl}</if>
+             <if test="deviceCode != null and deviceCode != ''"> and zas.ad_schedule_id in 
+             	(select distinct zrd.schedule_id from zx_release_device zrd where zrd.device_id in
+             	(select distinct zd.device_id from zx_device zd where zd.device_code like concat('%',#{deviceCode},'%'))) 
+             </if>
              and zas.is_del='0'
          </where>
          order by zas.ad_schedule_id desc
@@ -262,7 +266,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
     
     <select id="queryExport" resultType="java.util.HashMap">
-       <include refid="selectAdScheduleVo"/>
+       <!-- <include refid="selectAdScheduleVo"/>
         <where>  
         ${filterSql}
             <if test="adScheduleId != null and adScheduleId != ''"> and ad_schedule_id = #{adScheduleId}</if>
@@ -288,10 +292,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="isDel != null and isDel != ''"> and is_del = #{isDel}</if>
              <if test="releaseNote != null and releaseNote != ''"> and release_note = #{releaseNote}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-            <if test="startTime != null and startTime != ''"><!-- 开始时间检索 -->
+            <if test="startTime != null and startTime != ''">开始时间检索
 				 AND date_format(zas.create_time,'%y%m%d') &gt;= date_format(#{startTime},'%y%m%d')
 			 </if>
-			 <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+			 <if test="endTime != null and endTime != ''">结束时间检索
 				 AND date_format(zas.create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
 			 </if>
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
@@ -299,8 +303,58 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="totalTime != null and totalTime != ''"> and total_time = #{totalTime}</if>
              <if test="payStatus != null and payStatus != ''"> and pay_status = #{payStatus}</if>
              <if test="qrUrl != null and qrUrl != ''"> and qr_url = #{qrUrl}</if>
+             <if test="deviceCode != null and deviceCode != ''"> and zas.ad_schedule_id in 
+             	(select distinct zrd.schedule_id from zx_release_device zrd where zrd.device_id in
+             	(select distinct zd.device_id from zx_device zd where zd.device_code like concat('%',#{deviceCode},'%'))) 
+             </if>
+             and zas.is_del='0'
          </where>
-         order by ad_schedule_id desc
+         order by ad_schedule_id desc -->
+        <!-- 以列表的查询为准 --> 
+        <include refid="selectAdScheduleVos"/>
+        <where>  
+            ${filterSql}
+            <if test="adScheduleId != null and adScheduleId != ''"> and zas.ad_schedule_id = #{adScheduleId}</if>
+             <if test="scheduleName != null and scheduleName != ''">
+              	and zas.schedule_name like concat('%', #{scheduleName}, '%')
+             </if>
+             <if test="releaseType != null and releaseType != ''"> and zas.release_type = #{releaseType}</if>
+             <if test="releasePosition != null and releasePosition != ''"> and zas.release_position = #{releasePosition}</if>
+             <if test="sxScheduleId != null and sxScheduleId != ''"> and zas.sx_schedule_id = #{sxScheduleId}</if>
+             <if test="pId != null and pId != ''"> and zas.pid = #{pId}</if>
+             <if test="tId != null and tId != ''"> and zas.tid = #{tId}</if>
+             <if test="themeTemplateId != null and themeTemplateId != ''"> and zas.theme_template_id = #{themeTemplateId}</if>
+             <if test="status != null and status != ''"> and zas.status = #{status}</if>
+             <if test="totalPay != null and totalPay != ''"> and zas.total_pay = #{totalPay}</if>
+             <if test="prepay != null and prepay != ''"> and zas.prepay = #{prepay}</if>
+             <if test="releaseTermNum != null and releaseTermNum != ''"> and zas.release_term_num = #{releaseTermNum}</if>
+             <if test="advertiser != null and advertiser != ''"> and zas.advertiser = #{advertiser}</if>
+             <if test="promotioner != null and promotioner != ''"> and zas.promotioner = #{promotioner}</if>
+             <if test="releaser != null and releaser != ''"> and zas.releaser = #{releaser}</if>
+             <if test="approved != null and approved != ''"> and zas.approved = #{approved}</if>
+             <if test="approvedRemark != null and approvedRemark != ''"> and zas.approved_remark = #{approvedRemark}</if>
+             <if test="approvedUser != null and approvedUser != ''"> and zas.approved_user = #{approvedUser}</if>
+             <if test="isDel != null and isDel != ''"> and zas.is_del = #{isDel}</if>
+             <if test="releaseNote != null and releaseNote != ''"> and zas.release_note = #{releaseNote}</if>
+             <if test="createBy != null and createBy != ''"> and zas.create_by = #{createBy}</if>
+			 <if test="startTime != null and startTime != ''">开始时间检索
+				 AND date_format(zas.create_time,'%y%m%d') &gt;= date_format(#{startTime},'%y%m%d')
+			 </if>
+			 <if test="endTime != null and endTime != ''">结束时间检索
+				 AND date_format(zas.create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+			 </if>
+             <if test="updateBy != null and updateBy != ''"> and zas.update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and zas.update_time = #{updateTime}</if>
+             <if test="totalTime != null and totalTime != ''"> and zas.total_time = #{totalTime}</if>
+             <if test="payStatus != null and payStatus != ''"> and zas.pay_status = #{payStatus}</if>
+             <if test="qrUrl != null and qrUrl != ''"> and zas.qr_url = #{qrUrl}</if>
+             <if test="deviceCode != null and deviceCode != ''"> and zas.ad_schedule_id in 
+             	(select distinct zrd.schedule_id from zx_release_device zrd where zrd.device_id in
+             	(select distinct zd.device_id from zx_device zd where zd.device_code like concat('%',#{deviceCode},'%'))) 
+             </if>
+             and zas.is_del='0'
+         </where>
+         order by zas.ad_schedule_id desc
     </select>
     
     <!-- 校验广告投放名称是否唯一  -->
