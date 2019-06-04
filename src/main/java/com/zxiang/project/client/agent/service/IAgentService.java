@@ -63,4 +63,6 @@ public interface IAgentService {
 
 	public void batchEditParam(Agent agent);
 
+	public int updateAgentParam(Agent agent);
+
 }

@@ -221,7 +221,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where agent_id = #{agentId}
     </update>
-    <update id="batchEditParam" parameterType="Agent">
+    <update id="updateAgentParam" parameterType="Agent">
         update zx_agent
         <trim prefix="SET" suffixOverrides=",">
             <if test="adRate != null">ad_rate = #{adRate},</if>

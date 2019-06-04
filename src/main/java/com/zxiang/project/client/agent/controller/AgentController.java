@@ -128,6 +128,16 @@ public class AgentController extends BaseController {
 	public AjaxResult editSave(Agent agent) {
 		return toAjax(agentService.updateAgent(agent));
 	}
+	/**
+	 * 修改保存代理商参数
+	 */
+	@RequiresPermissions("client:agent:edit")
+	@Log(title = "代理商", businessType = BusinessType.UPDATE)
+	@PostMapping("/saveEditParam")
+	@ResponseBody
+	public AjaxResult saveEditParam(Agent agent) {
+		return toAjax(agentService.updateAgentParam(agent));
+	}
 
 	/**
 	 * 修改代理商参数配置
