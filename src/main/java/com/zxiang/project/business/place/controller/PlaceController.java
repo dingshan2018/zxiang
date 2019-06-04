@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zxiang.common.constant.UserConstants;
@@ -28,6 +32,7 @@ import com.zxiang.project.client.repair.domain.Repair;
 import com.zxiang.project.client.repair.service.IRepairService;
 import com.zxiang.project.system.area.service.IAreaService;
 import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.mapper.UserMapper;
 import com.zxiang.project.system.user.service.IUserService;
 
 /**
@@ -48,6 +53,8 @@ public class PlaceController extends BaseController
 	private IAreaService areaService;
 	@Autowired
 	private IUserService userService;
+	@Autowired
+	private UserMapper userMapper;
 	@Autowired
 	private IRepairService repairService;
 	
@@ -193,16 +200,31 @@ public class PlaceController extends BaseController
 		mmap.put("place", place);
 		
 		User queryUser = new User();
-		List<User> userListAll = userService.selectUserList(queryUser);
+		List<User> userListAll = userMapper.selectUserList(queryUser);//userService.selectUserList(queryUser);
 		mmap.put("userListAll", userListAll);
 		
 		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
-		List<User> userListRepair = userService.selectUserList(queryUser);
+		List<User> userListRepair = userMapper.selectUserList(queryUser);//userService.selectUserList(queryUser);
 		mmap.put("userListRepair", userListRepair);
 		
 		List<Repair> repairList = repairService.selectRepairByCity(place.getCity(),place.getCounty());
 		mmap.put("repairList", repairList);
 		
 	    return prefix + "/placeDetail";
+	}
+	
+	/**
+	 * 导出Excel
+	 * 注意数据权限要与查询列表一致
+	 */
+	@DataFilter(placeAlias="place_id")
+	@RequestMapping("/excelExport")
+	public void excelExport(@RequestParam HashMap<String, String> params, 
+			HttpServletResponse response,HttpServletRequest request){
+		try {
+			placeService.queryExport(params, request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

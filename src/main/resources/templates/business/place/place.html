@@ -53,6 +53,9 @@
               </a>
               <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
               </a>
+              <a class="btn btn-success btn-rounded btn-sm" onclick="exportExcel()">
+                <i class="fa fa-download"></i>&nbsp;导出
+              </a>
             </li>
           </ul>
         </div>
@@ -295,7 +298,24 @@
      function placeDetail(placeId) {
  		var url = prefix + '/placeDetail/' + placeId;
  		$.modal.open("场所信息详情", url);
-   	}
+   	 }
+ 	 
+   	 //导出Excel
+     function exportExcel(){
+     	$.modal.confirm("确认导出？", function() {
+     		var name = $("#name").val();
+    		var province = $("#province").val();
+    		var city = $("#city").val();
+    		var county = $("#county").val();
+    		var startTime = $("#startTime").val();
+    		var endTime = $("#endTime").val();
+    		
+ 			location.href = prefix + "/excelExport?name="+name+'&province='+province+'&city='+city
+ 					+'&county='+county+'&startTime='+startTime+'&endTime='+endTime
+     		//$.modal.alert("导出成功!");
+ 		});
+     }
+   
     </script>
 </body>
 </html>

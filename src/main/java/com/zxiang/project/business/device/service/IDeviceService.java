@@ -1,7 +1,11 @@
 package com.zxiang.project.business.device.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.record.tradeOrder.domain.TradeOrder;
@@ -156,5 +160,14 @@ public interface IDeviceService
 	
 	/** 查询设备总量 **/
 	public int selectTotal(Map<String,Object> param);
+
+	/**
+	 * 运营设备导出Excel数据
+	 * @param params
+	 * @param request
+	 * @param response
+	 * @throws Exception 
+	 */
+	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
 }

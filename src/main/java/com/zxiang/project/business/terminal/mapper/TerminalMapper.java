@@ -1,6 +1,8 @@
 package com.zxiang.project.business.terminal.mapper;
 
 import com.zxiang.project.business.terminal.domain.Terminal;
+
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;	
@@ -82,6 +84,13 @@ public interface TerminalMapper
 	 * @return
 	 */
 	public Terminal selectTerByDeviceId(@Param("deviceId") int deviceId);
+
+	/**
+	 * 查询导出终端管理Excel列表数据
+	 * @param params
+	 * @return
+	 */
+	public List queryExport(HashMap<String, String> params);
 
 	
 }
