@@ -96,5 +96,11 @@ public interface ITerminalService
 	 */
 	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
+	/**
+	 * 通知终端上报日志
+	 * @param terminalId
+	 */
+	public int reportLog(Integer terminalId);
+
 	
 }

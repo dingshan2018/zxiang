@@ -63,6 +63,8 @@ public class Terminal extends BaseEntity
 	private Date updateTime;
 	/**出纸密钥  */
 	private String offerKey;
+	
+	private String logUrl;//终端日志URL
 
 	private String deviceCode;
 	private String deviceSn;
@@ -324,6 +326,14 @@ public class Terminal extends BaseEntity
 		this.userId = userId;
 	}
 
+	public String getLogUrl() {
+		return logUrl;
+	}
+
+	public void setLogUrl(String logUrl) {
+		this.logUrl = logUrl;
+	}
+
 	@Override
 	public String toString() {
 		return "Terminal [terminalId=" + terminalId + ", terminalCode=" + terminalCode + ", deviceId=" + deviceId
@@ -332,8 +342,9 @@ public class Terminal extends BaseEntity
 				+ ", snCode=" + snCode + ", onlineStatus=" + onlineStatus + ", status=" + status + ", volumn=" + volumn
 				+ ", delFlag=" + delFlag + ", lon=" + lon + ", lat=" + lat + ", version=" + version + ", createBy="
 				+ createBy + ", createTime=" + createTime + ", updateBy=" + updateBy + ", updateTime=" + updateTime
-				+ ", offerKey=" + offerKey + ", deviceCode=" + deviceCode + ", deviceSn=" + deviceSn + ", placeName="
-				+ placeName + ", statusName=" + statusName + ", onlineStatusName=" + onlineStatusName + ", userId="
-				+ userId + "]";
+				+ ", offerKey=" + offerKey + ", logUrl=" + logUrl + ", deviceCode=" + deviceCode + ", deviceSn="
+				+ deviceSn + ", placeName=" + placeName + ", statusName=" + statusName + ", onlineStatusName="
+				+ onlineStatusName + ", userId=" + userId + "]";
 	}
+
 }

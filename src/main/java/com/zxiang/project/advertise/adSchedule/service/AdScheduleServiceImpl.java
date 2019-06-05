@@ -302,9 +302,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 						String teid = jsonResult.getString("teid");
 						String tresid = jsonResult.getString("tresid");
 						logger.info("teid:" + teid + ",tresid:" + tresid + ",\tpreview:" + preview);
+						String fileName = multipartFile.getOriginalFilename();
+						long fileSize = multipartFile.getSize();
 						// 业务处理 保存素材文件
 						saveNum += insertMaterial(adSchedule.getAdScheduleId(), teid, tresid, preview, maxBatch,
-								(i + 1), operatorUser, elementName);
+								(i + 1), operatorUser, elementName,fileName,fileSize);
 
 					} else {
 						logger.error("调用上传素材信息接口失败!" + adHttp.toString());
@@ -341,10 +343,12 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 	 *            操作者
 	 * @param elementName
 	 *            素材类型,保存在ad_material表remark字段用来判断价格
+	 * @param filesize 
+	 * @param fileName 
 	 * @return
 	 */
 	private int insertMaterial(Integer adScheduleId, String teid, String tresid, String preview, int batch,
-			int sequence, String operator, String elementName) {
+			int sequence, String operator, String elementName, String fileName, float fileSize) {
 		AdMaterial adMaterial = new AdMaterial();
 		adMaterial.setAdScheduleId(adScheduleId);
 		adMaterial.setPreview(preview);
@@ -355,6 +359,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		adMaterial.setCreateBy(operator);
 		adMaterial.setCreateTime(new Date());
 		adMaterial.setRemark(elementName);
+		
+		adMaterial.setFileName(fileName);
+		adMaterial.setFileSize(fileSize);
 		return adMaterialMapper.insertAdMaterial(adMaterial);
 	}
 

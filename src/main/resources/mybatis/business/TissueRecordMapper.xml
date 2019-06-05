@@ -65,16 +65,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 <if test="params.endTime != null and params.endTime != '' "><!-- 结束时间检索 -->
 				AND date_format(tr.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
 			 </if>
-			 <!-- 按照代理商搜索  通过场所经办人关联-->
+			 <!-- 按照代理商搜索  通过代理城市的场所进行关联-->
              <if test="agentId != null and agentId != ''"> and tr.place_id in 
-             	( SELECT DISTINCT zp.place_id FROM zx_place zp 
+             	<!-- ( SELECT DISTINCT zp.place_id FROM zx_place zp 
              		WHERE zp.operator_id = (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
-             			WHERE su.user_type='03' AND su.puser_id=#{agentId} AND su.user_id=p.operator_id))</if>
+             			WHERE su.user_type='03' AND su.puser_id=#{agentId} AND su.user_id=p.operator_id)) -->
+             	( SELECT DISTINCT zp.place_id FROM zx_place zp 
+             		WHERE zp.city in (SELECT DISTINCT za.city FROM `zx_agent` za
+             			WHERE za.agent_id=#{agentId} AND za.del_flag='0'))
+             </if>
            	 <!-- 按照服务商搜索  通过场所维修员关联-->
              <if test="repairId != null and repairId != ''">  and tr.place_id in 
-             	(SELECT DISTINCT zp.place_id FROM zx_place zp 
+             	<!-- (SELECT DISTINCT zp.place_id FROM zx_place zp 
              		WHERE zp.repair_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
-             			WHERE su.user_type='04' AND su.puser_id=#{repairId}  AND su.user_id=p.repair_id))
+             			WHERE su.user_type='04' AND su.puser_id=#{repairId}  AND su.user_id=p.repair_id)) -->
+             	(SELECT DISTINCT zp.place_id FROM zx_place zp WHERE zp.service_point=#{repairId})
              </if>
              <!-- 按照机主搜索 通过设备机主关联-->
              <if test="joinId != null and joinId != ''">  and tr.device_id in 
@@ -208,13 +213,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 <!-- 按照代理商搜索  通过场所经办人关联-->
              <if test="agentId != null and agentId != ''"> and tr.place_id in 
              	( SELECT DISTINCT zp.place_id FROM zx_place zp 
-             		WHERE zp.operator_id = (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
-             			WHERE su.user_type='03' AND su.puser_id=#{agentId} AND su.user_id=p.operator_id))</if>
+             		WHERE zp.city in (SELECT DISTINCT za.city FROM `zx_agent` za
+             			WHERE za.agent_id=#{agentId} AND za.del_flag='0'))
+             </if>
            	 <!-- 按照服务商搜索  通过场所维修员关联-->
              <if test="repairId != null and repairId != ''">  and tr.place_id in 
-             	(SELECT DISTINCT zp.place_id FROM zx_place zp 
+             	<!-- (SELECT DISTINCT zp.place_id FROM zx_place zp 
              		WHERE zp.repair_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
-             			WHERE su.user_type='04' AND su.puser_id=#{repairId}  AND su.user_id=p.repair_id))
+             			WHERE su.user_type='04' AND su.puser_id=#{repairId}  AND su.user_id=p.repair_id)) -->
+             	(SELECT DISTINCT zp.place_id FROM zx_place zp WHERE zp.service_point=#{repairId})
              </if>
              <!-- 按照机主搜索 通过设备机主关联-->
              <if test="joinId != null and joinId != ''">  and tr.device_id in 
@@ -257,16 +264,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
 				AND date_format(tr.create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
 			 </if>
-			 <!-- 按照代理商搜索  通过场所经办人关联 (查找出纸场所,用户表用户类型为03,且用户表的主体ID与查询条件所选择的的代理商ID相等的场所)-->
+			 <!-- 按照代理商搜索  通过代理城市的场所进行关联 )-->
              <if test="agentId != null and agentId != ''"> and tr.place_id in 
              	( SELECT DISTINCT zp.place_id FROM zx_place zp 
-             		WHERE zp.operator_id = (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
-             			WHERE su.user_type='03' AND su.puser_id=#{agentId} AND su.user_id=p.operator_id))</if>
+             		WHERE zp.city in (SELECT DISTINCT za.city FROM `zx_agent` za
+             			WHERE za.agent_id=#{agentId} AND za.del_flag='0'))
+             </if>
            	 <!-- 按照服务商搜索  通过场所维修员关联 (查找出纸场所,用户表用户类型为04,且用户表的主体ID与查询条件所选择的的服务商ID相等的场所)-->
              <if test="repairId != null and repairId != ''">  and tr.place_id in 
-             	(SELECT DISTINCT zp.place_id FROM zx_place zp 
+             	<!-- (SELECT DISTINCT zp.place_id FROM zx_place zp 
              		WHERE zp.repair_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
-             			WHERE su.user_type='04' AND su.puser_id=#{repairId}  AND su.user_id=p.repair_id))
+             			WHERE su.user_type='04' AND su.puser_id=#{repairId}  AND su.user_id=p.repair_id)) -->
+             	(SELECT DISTINCT zp.place_id FROM zx_place zp WHERE zp.service_point=#{repairId})
              </if>
              <!-- 按照机主搜索 通过设备机主关联 (查找出纸设备,用户表用户类型为02,且用户表的主体ID与查询条件所选择的的机主ID相等的设备)-->
              <if test="joinId != null and joinId != ''">  and tr.device_id in 

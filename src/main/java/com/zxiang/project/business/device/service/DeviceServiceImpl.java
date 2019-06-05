@@ -148,10 +148,15 @@ public class DeviceServiceImpl implements IDeviceService
 	public int updateDevice(Device device)
 	{
 		Terminal terminal = this.terminalMapper.selectTerByDeviceId(device.getDeviceId());
+		Device oldDevice = deviceMapper.selectDeviceById(device.getDeviceId());
 		if(terminal!=null) {
 			terminal.setPlaceId(device.getPlaceId()!=null?Integer.parseInt(device.getPlaceId()):null);
 			terminal.setUpdateBy(device.getUpdateBy());
 			terminal.setUpdateTime(new Date());
+			//若编辑的机主与原来机主不同则更新终端激活时间
+			if(device.getOwnerId() != null && !device.getOwnerId().equals(oldDevice.getOwnerId())){
+				terminal.setCreateTime(new Date());
+			}
 			this.terminalMapper.updateTerminal(terminal);
 		}
 	    return deviceMapper.updateDevice(device);
