@@ -94,6 +94,6 @@ public interface AgentMapper {
 	public int updateBalance(@Param("agentId") Integer agentId, @Param("balance") BigDecimal balance,
 			@Param("frozenBalance") BigDecimal frozenBalance);
 
-	public int batchEditParam(Agent agent);
+	public int updateAgentParam(Agent agent);
 
 }

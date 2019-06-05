@@ -205,8 +205,13 @@ public class AgentServiceImpl implements IAgentService {
 		String[] idList = Convert.toStrArray(agent.getIds());
 		for (String id : idList) {
 			agent.setAgentId(Integer.valueOf(id));
-			agentMapper.batchEditParam(agent);
+			agentMapper.updateAgentParam(agent);
 		}
+	}
+
+	@Override
+	public int updateAgentParam(Agent agent) {
+		return agentMapper.updateAgentParam(agent);
 	}
 
 }
