@@ -15,11 +15,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark"    column="remark"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
+        <result property="fileName"    column="filename"    />
+        <result property="fileSize"    column="filesize"    />
+        
     </resultMap>
 	
 	<sql id="selectAdMaterialVo">
-        select ad_material_id, ad_schedule_id, preview,teid,tresid, batch, sequence, 
-        remark, create_by, create_time from zx_ad_material
+        <!-- select ad_material_id, ad_schedule_id, preview,teid,tresid, batch, sequence, 
+        remark, create_by, create_time,filename,filesize from zx_ad_material -->
+        SELECT ad_material_id, ad_schedule_id,(SELECT DISTINCT schedule_name FROM zx_ad_schedule za 
+        WHERE zam.ad_schedule_id=za.ad_schedule_id ) scheduleName, preview,teid,tresid, batch, sequence, 
+        remark, create_by, create_time,filename,filesize FROM zx_ad_material zam
     </sql>
 	
     <select id="selectAdMaterialList" parameterType="AdMaterial" resultMap="AdMaterialResult">
@@ -35,6 +41,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="remark != null and remark != ''"> and remark = #{remark}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
              <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="fileName != null "> and filename = #{fileName}</if>
          </where>
     </select>
     
@@ -71,7 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
 			<if test="createTime != null ">#{createTime},</if>
 			<if test="fileName != null ">#{fileName},</if>
-			<if test="fileSize != null ">#{createTime},</if>
+			<if test="fileSize != null ">#{fileSize},</if>
          </trim>
     </insert>
 	 
@@ -87,6 +94,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
             <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
             <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="fileName != null  ">filename = #{fileName},</if>
+            <if test="fileSize != null  ">filesize = #{fileSize},</if>
         </trim>
         where ad_material_id = #{adMaterialId}
     </update>

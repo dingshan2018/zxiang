@@ -297,7 +297,7 @@
 	            	var actions = [];
 	            	/* actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                     actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.adScheduleId + '\')"><i class="fa fa-remove"></i>删除</a>'); */
-                    actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="preview(\'' + row.adScheduleId +
+                    actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="previewFileName(\'' + row.adScheduleId +
                     	'\')"><i class="fa fa-search"></i>素材预览</a> ');
                     
                     actions.push(
@@ -384,6 +384,12 @@
 		})
   	}
 
+  	//素材预览仅展示文件名称及缩略图
+  	function previewFileName(adScheduleId){
+  	    var url = ctx + "settle/adMaterial/previewFileNameByAdSchId/" + adScheduleId;
+  	    createMenuItem(url, '广告素材');
+  	}
+  
   	//素材上传弹窗函数
     function materialUpload() {
     	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);

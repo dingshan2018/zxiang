@@ -13,6 +13,9 @@
 			</a>
 		</div>
 			
+		<div class="btn-group hidden-xs" id="toolbar" role="group">
+			<input type="text" id="adScheduleId" style="display:none" th:value="${adScheduleId}"/>
+		</div>
 		<div class="col-sm-12 select-table table-striped">
 			<table id="bootstrap-table" data-mobile-responsive="true"></table>
 		</div>
@@ -22,24 +25,37 @@
         var editFlag = [[${@permission.hasPermi('settle:adMaterial:edit')}]];
         var removeFlag = [[${@permission.hasPermi('settle:adMaterial:remove')}]];
         var prefix = ctx + "settle/adMaterial"
-
+        var scheduleId = $('#adScheduleId').val();
+        
         $(function() {
             var options = {
-                url: prefix + "/list",
+                //url: prefix + "/list",
+                url: prefix + "/list2/"+scheduleId,
                 createUrl: prefix + "/add",
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "广告投放素材",
+                queryParams: queryParams,
+                search: false,
+                showExport: false,
                 columns: [{
 		            checkbox: true
 		        },
 				{
 					field : 'adMaterialId', 
-					title : '' 
+					title : 'ID' 
 				},
 				{
 					field : 'adScheduleId', 
 					title : '广告投放ID' 
+				},
+				{
+					field : 'scheduleName', 
+					title : '广告名称' 
+				},
+				{
+					field : 'fileName', 
+					title : '文件名称' 
 				},
 				{
 					field : 'preview', 
@@ -50,8 +66,12 @@
 					title : '第几次上传' 
 				},
 				{
-					field : 'order', 
+					field : 'sequence', 
 					title : '上传顺序' 
+				},
+				{
+					field : 'fileSize', 
+					title : '文件大小' 
 				},
 				{
 					field : 'remark', 
@@ -77,7 +97,19 @@
 		        }]
             };
             $.table.init(options);
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'adMaterialId');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'adScheduleId');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'preview');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'createBy');
+            
+            
         });
+        
+        function queryParams(params) {
+			return {
+				scheduleId:  scheduleId
+			};
+		}
     </script>
 </body>
 </html>
