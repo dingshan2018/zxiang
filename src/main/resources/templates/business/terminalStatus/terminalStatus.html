@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+    <div class="col-sm-12 select-info">
+      <form id="status-form">
+        <div class="select-list">
+          <ul>
+            <li class="select-time">
+              <label class="select-item-name">时间范围： </label>
+              <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+              <span>-</span>
+              <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+            </li>
+            <li class="select-btns">
+              <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
+              </a>
+              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
+              </a>
+            </li>
+          </ul>
+        </div>
+      </form>
+    </div>
+		<div class="btn-group hidden-xs" id="toolbar" role="group">
+		<input type="text" id="terminalId" style="display:none" th:value="${terminalId}"/>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+       // var editFlag = [[${@permission.hasPermi('settle:terminalStatus:edit')}]];
+        // var removeFlag = [[${@permission.hasPermi('settle:terminalStatus:remove')}]];
+        var prefix = ctx + "business/terminalStatus"
+        var terminalId = $('#terminalId').val();
+        $(function() {
+            var options = {
+            	url:       prefix + "/list2/"+terminalId,
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "终端状态记录",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'statusId', 
+					title : '状态ID' 
+				},
+				{
+					field : 'terminalId', 
+					title : '终端ID' 
+				},
+				{
+					field : 'version', 
+					title : '终端版本' 
+				},
+				{
+					field : 'rssi', 
+					title : '信号强度' 
+				},
+				{
+					field : 'iccid', 
+					title : '4G卡号' 
+				},
+				{
+					field : 'lon', 
+					title : '经度' 
+				},
+				{
+					field : 'lat', 
+					title : '纬度' 
+				},
+				{
+					field : 'accSysIp', 
+					title : '接入IP' 
+				},
+				{
+					field : 'accSysPort', 
+					title : '接入端口' 
+				},
+				{
+					field : 'createTime', 
+					title : '更新时间' 
+				},
+				{
+					field : 'address', 
+					title : '详细地址' 
+				},
+				{
+					field : 'build', 
+					title : '楼宇名称' 
+				}]
+            };
+            $.table.init(options);
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'statusId');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'terminalId');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'accSysIp');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'accSysPort');
+            $('#bootstrap-table').bootstrapTable('hideColumn', 'iccid');
+        });
+    </script>
+</body>
+</html>

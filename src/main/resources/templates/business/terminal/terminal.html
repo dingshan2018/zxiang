@@ -35,6 +35,7 @@
               <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
             </li>
             <li class="select-btns">
+            	
               <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
               </a>
               <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
@@ -68,6 +69,7 @@
   <script th:inline="javascript">
     var editFlag = [[${@permission.hasPermi('business:terminal:edit')}]];
     var removeFlag = [[${@permission.hasPermi('business:terminal:remove')}]];
+    var showFlag = [[${@permission.hasPermi('business:terminal:show')}]];
     var prefix = ctx + 'business/terminal';
 
     $(function () {
@@ -188,8 +190,10 @@
               var actions = [];
              /*  actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' +
                 row.terminalId + '\')"><i class="fa fa-edit"></i>编辑</a> '); */
-              actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="reportLog(\'' 
-            		  + row.terminalId + '\')"><i class="fa fa-upload"></i>上报日志</a> ');
+                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="reportLog(\'' 
+              		  + row.terminalId + '\')"><i class="fa fa-upload"></i>上报日志</a> ');
+                actions.push('<a class="btn btn-success btn-xs ' + showFlag + '" href="#" onclick="showStatus(\'' 
+              		  + row.terminalId + '\')"><i class="fa fa-upload"></i>状态</a> ');
               actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' +
                 row.terminalId + '\')"><i class="fa fa-remove"></i>删除</a>');
               return actions.join('');
@@ -209,6 +213,12 @@
       $('#bootstrap-table').bootstrapTable('hideColumn', 'iccId');
     });
 
+  //修改投放设备
+  	function showStatus(terminalId){
+  	    var url = ctx + "business/terminalStatus/showStatus/" + terminalId;
+  	    createMenuItem(url, '终端状态');
+  	}
+    
     //添加终端参数弹窗函数
     function addTerminalParam (id) {
       var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns(
