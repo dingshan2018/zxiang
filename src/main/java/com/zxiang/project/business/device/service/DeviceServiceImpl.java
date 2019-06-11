@@ -1,11 +1,15 @@
 package com.zxiang.project.business.device.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,7 @@ import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.StringUtils;
+import com.zxiang.common.utils.excel.EXCELObject;
 import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.project.advertise.utils.Tools;
@@ -143,10 +148,15 @@ public class DeviceServiceImpl implements IDeviceService
 	public int updateDevice(Device device)
 	{
 		Terminal terminal = this.terminalMapper.selectTerByDeviceId(device.getDeviceId());
+		Device oldDevice = deviceMapper.selectDeviceById(device.getDeviceId());
 		if(terminal!=null) {
 			terminal.setPlaceId(device.getPlaceId()!=null?Integer.parseInt(device.getPlaceId()):null);
 			terminal.setUpdateBy(device.getUpdateBy());
 			terminal.setUpdateTime(new Date());
+			//若编辑的机主与原来机主不同则更新终端激活时间
+			if(device.getOwnerId() != null && !device.getOwnerId().equals(oldDevice.getOwnerId())){
+				terminal.setCreateTime(new Date());
+			}
 			this.terminalMapper.updateTerminal(terminal);
 		}
 	    return deviceMapper.updateDevice(device);
@@ -652,6 +662,37 @@ public class DeviceServiceImpl implements IDeviceService
 			param.put("userId", ShiroUtils.getUser().getUserId());
 		}
 		return deviceMapper.selectTotal(param);
+	}
+
+	@Override
+	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		List erportList = deviceMapper.queryExport(params);
+      	String realPath = request.getSession().getServletContext().getRealPath("/file/temp");
+  		EXCELObject s = new EXCELObject();
+  		s.seteFilePath(realPath);
+  		//表头名称
+  		String[] titH = { "ID", "设备资产编号", "场所名称","终端编号","机主",
+  				"微信昵称", "投放时间","服务网点", "地级市代理","区县代理",
+  				"剩余出纸", "最近扫码","设备状态", "投放地址"};
+  		//SQL方法查询出的字段名称
+  		String[] titN = { "device_id","device_code","placeName","terminalCode","ownerName",
+  				"wxNickname","release_time","servicePointName","agentLevel1","agentLevel2",
+  				"remain_len","last_scan_time","statusName","note"};
+  		String[] width= 
+  			   {"15","20","20","20","20",
+  				"20","20","20","20","20",
+  				"20","20","20","20"};
+  		s.setWidth(width);
+  		s.setFname("运营设备"); // sheet栏名称
+  		s.setTitle("运营设备"); // Excel内容标题名称
+  		s.setTitH(titH);
+  		s.setTitN(titN);
+  		s.setDataList(erportList);
+  		File exportFile = null;
+  		exportFile = s.setData();
+  		//Excel文件名称
+  		String excelName = "运营设备" + System.currentTimeMillis() + ".xls";
+  		s.exportExcel("运营设备", excelName, exportFile, request, response);
 	}
 
 }

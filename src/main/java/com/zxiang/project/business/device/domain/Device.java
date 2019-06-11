@@ -74,6 +74,7 @@ public class Device extends BaseEntity
 
 	private String terminalCode;
 	private String placeName;
+	private String sceneName;
 	/** 省份 */
 	private Integer province;
 	/** 城市 */
@@ -103,6 +104,8 @@ public class Device extends BaseEntity
 	private String adUrl;
 	
 	private String wxNickname;//微信昵称
+	
+	private String releaseDeviceCondition;//广告投放设备查询条件，有值即过滤终端不为空的设备
 	
 	public void setDeviceId(Integer deviceId) 
 	{
@@ -473,6 +476,14 @@ public class Device extends BaseEntity
 		this.agentLevel2 = agentLevel2;
 	}
 
+	public String getSceneName() {
+		return sceneName;
+	}
+
+	public void setSceneName(String sceneName) {
+		this.sceneName = sceneName;
+	}
+
 	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("deviceId", getDeviceId())
@@ -524,6 +535,14 @@ public class Device extends BaseEntity
 
 	public void setWxNickname(String wxNickname) {
 		this.wxNickname = wxNickname;
+	}
+
+	public String getReleaseDeviceCondition() {
+		return releaseDeviceCondition;
+	}
+
+	public void setReleaseDeviceCondition(String releaseDeviceCondition) {
+		this.releaseDeviceCondition = releaseDeviceCondition;
 	}
 	
 }

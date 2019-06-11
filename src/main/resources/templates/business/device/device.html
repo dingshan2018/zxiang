@@ -81,17 +81,20 @@
               </a>
               <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
               </a>
-              <a class="btn btn-info btn-rounded btn-sm" onclick="release()" shiro:hasPermission="business:device:release">
+              <!--  <a class="btn btn-info btn-rounded btn-sm" onclick="release()" shiro:hasPermission="business:device:release">
                 <i class="fa fa-edit"></i>&nbsp;投放
               </a>
               <a class="btn btn-info btn-rounded btn-sm" onclick="removeDevice()" shiro:hasPermission="business:device:removeDevice">
                 <i class="fa fa-edit"></i>&nbsp;撤机
-              </a>
+              </a> -->
               <!-- <a class="btn btn-info btn-rounded btn-sm" onclick="changeDevice()" shiro:hasPermission="business:device:changeDevice">
                 <i class="fa fa-edit"></i>&nbsp;换板
               </a> -->
               <a class="btn btn-info btn-rounded btn-sm" onclick="supplyTissue()" shiro:hasPermission="business:device:supplyTissueAdd">
                 <i class="fa fa-edit"></i>&nbsp;补纸
+              </a>
+              <a class="btn btn-success btn-rounded btn-sm" onclick="exportExcel()">
+                <i class="fa fa-download"></i>&nbsp;导出
               </a>
             </li>
           </ul>
@@ -170,6 +173,10 @@
             title: '场所'
           },
           {
+            field: 'sceneName',
+            title: '场景'
+          },
+          {
             field: 'terminalCode',
             title: '终端编号'
           },
@@ -184,10 +191,6 @@
           {
               field: 'wxNickname',
               title: '微信昵称'
-          },
-          {
-            field: 'releaseTime',
-            title: '投放时间'
           },
           {
             field: 'servicePointName',
@@ -227,6 +230,10 @@
             title: '设备状态',
           },
           {
+            field: 'releaseTime',
+            title: '投放时间'
+          },
+          {
               field: 'releaseStatus',
               title: '投放申请',
               formatter: function (value) {
@@ -245,7 +252,7 @@
           },
           {
               field: 'note',
-              title: '备注'
+              title: '投放地址'
           },
           {
             field: 'createBy',
@@ -289,6 +296,9 @@
       $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'status');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'deviceCode');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'removeTime');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'releaseStatus');
+      
     });
 
     function proviceBind () {
@@ -449,6 +459,25 @@
 		})
 		return device;
     }
+  	
+    //导出Excel
+    function exportExcel(){
+    	$.modal.confirm("确认导出？", function() {
+	    	var placeId = $("#placeId").val();
+	   		var deviceSn = $("#deviceSn").val();
+	   		var status = $("#status").val();
+	   		var ownerName = $("#ownerName").val();
+	   		var province = $("#province").val();
+			var city = $("#city").val();
+			var county = $("#county").val();
+	   		var startTime = $("#startTime").val();
+	   		var endTime = $("#endTime").val();
+			location.href = prefix + "/excelExport?placeId="+placeId+'&deviceSn='+deviceSn+'&status='+status+'&ownerName='+ownerName
+				+'&province='+province+'&city='+city+'&county='+county+'&startTime='+startTime+'&endTime='+endTime
+    		//$.modal.alert("导出成功!");
+		});
+    }
+  
   </script>
 </body>
 </html>

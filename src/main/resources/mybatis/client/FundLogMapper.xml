@@ -58,7 +58,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="balance != null and balance != ''"> and balance = #{balance}</if>
              <if test="content != null and content != ''"> and content = #{content}</if>
              <if test="type != null and type != ''"> and type = #{type}</if>
-             <if test="status != null and status != ''"> and status = #{status}</if>
              <if test="createTime != null "> and create_time = #{createTime}</if>
              <if test="remark != null and remark != ''"> and remark = #{remark}</if>
              <if test="beginTime != null"> and create_time &gt;= #{beginTime}</if>
@@ -150,7 +149,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="selectLastFundLog" parameterType="FundLog" resultMap="FundLogResult">
         <include refid="selectFundLogVo"/>
-        where del_flag='0' and status !='2' and create_time &lt; #{createTime} and client_id = #{clientId} and client_type = #{clientType}
+        where del_flag='0' and create_time &lt; #{createTime} and client_id = #{clientId} and client_type = #{clientType}
          order by create_time desc
          limit 1
     </select>

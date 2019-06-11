@@ -94,6 +94,8 @@ public class AdSchedule extends BaseEntity
 	
 	private Date deadLine;
 	
+	private String deviceCode;
+	
 	public void setAdScheduleId(Integer adScheduleId) 
 	{
 		this.adScheduleId = adScheduleId;
@@ -484,5 +486,12 @@ public class AdSchedule extends BaseEntity
 	public void setDeadLine(Date deadLine) {
 		this.deadLine = deadLine;
 	}
-	
+
+	public String getDeviceCode() {
+		return deviceCode;
+	}
+
+	public void setDeviceCode(String deviceCode) {
+		this.deviceCode = deviceCode;
+	}
 }

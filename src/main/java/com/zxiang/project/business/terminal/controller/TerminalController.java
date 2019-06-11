@@ -1,8 +1,11 @@
 package com.zxiang.project.business.terminal.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -198,6 +201,7 @@ public class TerminalController extends BaseController
 	/**
      * 批量导入终端保存
      */
+	@Log(title = "批量导入终端保存", businessType = BusinessType.IMPORT)
     @RequestMapping(value = "/batchImport", method = RequestMethod.POST)
     @ResponseBody
     public AjaxResult batchImportSave(@RequestParam("fileUpload") MultipartFile file)
@@ -217,4 +221,48 @@ public class TerminalController extends BaseController
 
         return success("成功导入 "+ saveCount +" 条数据!");
     }
+    
+    /**
+	 * 导出Excel
+	 * 注意数据权限要与查询列表一致
+	 */
+    @Log(title = "终端导出Excel", businessType = BusinessType.EXPORT)
+	@DataFilter(placeAlias="t.place_id")
+	@RequestMapping("/excelExport")
+	public void excelExport(@RequestParam HashMap<String, String> params, 
+			HttpServletResponse response,HttpServletRequest request){
+		try {
+			User user =getUser();
+			String userType = user.getUserType();
+			if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+				params.put("userId", user.getUserId()+"");
+			}
+			terminalService.queryExport(params, request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 终端上报日志
+	 */
+	@Log(title = "终端上报日志", businessType = BusinessType.UPDATE)
+	@PostMapping( "/reportLog")
+	@ResponseBody
+	public AjaxResult reportLog(Integer terminalId)
+	{		
+		try {
+			// 调用接口下发命令 调知终端上报日志
+			int number = terminalService.reportLog(terminalId);
+			if(number > 0){
+				return success("操作成功!");
+			}else{
+				return success("操作失败!");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error(e.getMessage()+" ,操作失败!");
+		}
+	}
 }

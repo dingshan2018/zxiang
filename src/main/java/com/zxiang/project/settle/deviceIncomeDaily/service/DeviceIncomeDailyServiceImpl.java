@@ -1479,7 +1479,6 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		cal.setTime(beginTime);
 		cal.add(Calendar.DAY_OF_YEAR, 1);
 		wrongLog.setBeginTime(cal.getTime());
-		wrongLog.setStatus("1");
 		List<FundLog> wrongFundLogs = this.fundLogMapper.selectWrongFundLogList(wrongLog);
 		//    逐笔统计核算，调整余额
 		BigDecimal balance = null;

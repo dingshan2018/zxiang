@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zxiang.common.constant.UserConstants;
@@ -207,5 +211,20 @@ public class PlaceController extends BaseController
 		mmap.put("repairList", repairList);
 		
 	    return prefix + "/placeDetail";
+	}
+	
+	/**
+	 * 导出Excel
+	 * 注意数据权限要与查询列表一致
+	 */
+	@DataFilter(placeAlias="place_id")
+	@RequestMapping("/excelExport")
+	public void excelExport(@RequestParam HashMap<String, String> params, 
+			HttpServletResponse response,HttpServletRequest request){
+		try {
+			placeService.queryExport(params, request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

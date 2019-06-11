@@ -75,6 +75,7 @@
 				<label class="col-sm-3 control-label">机主：</label>
 				<div class="col-sm-8">
 					<select id="ownerId" name="ownerId" 
+						onchange="chooseOwner(this.options[this.options.selectedIndex].value)"
 						data-live-search="true"
 						class="form-control block-plugin__select-picker selectpicker"
 						data-style="btn-white btn-sm">
@@ -188,6 +189,34 @@
 				$.operate.save(prefix + "/edit", $('#form-device-edit').serialize());
 			}
 		});
+		
+		//选择机主如果与旧机主不同时提醒
+		function chooseOwner(value){
+			var deviceId = $("#deviceId").val();
+			var device = getDeviceInfo(deviceId);
+			//var newOwnerId = $.form.selectSelects("ownerId");
+			if(device.ownerId != null && device.ownerId != value){
+				$.modal.alertWarning("您已修改了机主,请确认!");
+			}
+	    }
+		
+		//获取运营设备数据信息方法
+	    function getDeviceInfo(deviceId) {
+	    	var device;
+	    	$.ajax({
+		        url: ctx + "business/device/selectInfo/" + deviceId,
+		        type: "post",
+		        async:false,
+		        success: function (data) {
+		        	device = data;
+		        },
+		        error: function (data) {
+		        	console.log("selectInfo:",data);
+		            alert("后台查询失败");
+		        }
+			})
+			return device;
+	    }
 	</script>
 </body>
 </html>
