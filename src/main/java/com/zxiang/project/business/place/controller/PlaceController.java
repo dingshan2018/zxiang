@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.druid.util.StringUtils;
 import com.zxiang.common.constant.UserConstants;
 import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
@@ -89,7 +90,8 @@ public class PlaceController extends BaseController
 				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
 		mmap.put("userListAll", userListAll);
 		//维修员送纸员根据场所选择了所在城市后进行加载
-		
+		mmap.put("tissueLen", "200");
+		mmap.put("tissuePrice","0.3");
 	    return prefix + "/add";
 	}
 	
@@ -117,7 +119,14 @@ public class PlaceController extends BaseController
 	public String edit(@PathVariable("placeId") Integer placeId, ModelMap mmap)
 	{
 		Place place = placeService.selectPlaceById(placeId);
+		if(StringUtils.isEmpty(place.getTissueLen()+"")) {
+			place.setTissueLen(200);
+		}
+		if(StringUtils.isEmpty(place.getTissuePrice()+"")) {
+			place.setTissuePrice(0.3f);
+		}
 		mmap.put("place", place);
+		
 		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 		
 		mmap.put("provinceDropBoxList", areaService.selectDropBoxList(0L));

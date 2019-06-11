@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zxiang.project.terminal.mapper.TerminalStatusMapper">
+<mapper namespace="com.zxiang.project.business.terminalstatus.mapper.TerminalStatusMapper">
     
     <resultMap type="TerminalStatus" id="TerminalStatusResult">
         <result property="statusId"    column="status_id"    />
@@ -32,8 +32,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectTerminalStatusList" parameterType="TerminalStatus" resultMap="TerminalStatusResult">
         <include refid="selectTerminalStatusVo2"/>
         <where>  
-            <if test="statusId != null and statusId != ''"> and zts.status_id = #{statusId}</if>
-             <if test="terminalId != null and terminalId != ''"> and zts.terminal_id = #{terminalId}</if>
+            <if test="statusId != null "> and zts.status_id = #{statusId}</if>
+             <if test="terminalId != null "> and zts.terminal_id = #{terminalId}</if>
              <if test="version != null and version != ''"> and zts.version = #{version}</if>
              <if test="rssi != null and rssi != ''"> and zts.rssi = #{rssi}</if>
              <if test="iccid != null and iccid != ''"> and zts.iccid = #{iccid}</if>
@@ -42,12 +42,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="accSysIp != null and accSysIp != ''"> and zts.acc_sys_ip = #{accSysIp}</if>
              <if test="accSysPort != null and accSysPort != ''"> and zts.acc_sys_port = #{accSysPort}</if>
              <if test="createTime != null "> and zts.create_time = #{createTime}</if>
-             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+             <if test="params.beginTime != null "><!-- 开始时间检索 -->
 				AND date_format(zts.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
 			 </if>
-			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+			 <if test="params.endTime != null "><!-- 结束时间检索 -->
 				AND date_format(zts.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
 			 </if>
+		</where>
     </select>
     
     <select id="selectTerminalStatusById" parameterType="Integer" resultMap="TerminalStatusResult">

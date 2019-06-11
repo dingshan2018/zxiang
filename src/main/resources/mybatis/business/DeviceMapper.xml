@@ -32,10 +32,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="adUrl"    column="ad_url"    />
+        <result property="totalCnt"    column="total_cnt"    />
+        <result property="validCnt"    column="valid_cnt"    />
+        <result property="invalidCnt"    column="invalid_cnt"    />
     </resultMap>
 	
 	<sql id="selectDeviceVo">
-        select device_id, device_code, device_sn, device_type,
+        select total_cnt,valid_cnt,invalid_cnt,device_id, device_code, device_sn, device_type,
          terminal_id,
          (select distinct t.terminal_code from zx_terminal t where t.terminal_id =d.`terminal_id` ) terminalCode,
          place_id, owner_id,(SELECT DISTINCT wu.nickname FROM `zx_wx_user` wu WHERE d.`owner_id`=wu.user_id 
@@ -270,6 +273,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="totalCnt != null  ">total_cnt = #{totalCnt},</if>
+            <if test="validCnt != null  ">valid_cnt = #{validCnt},</if>
+            <if test="invalidCnt != null  ">invalid_cnt = #{invalidCnt},</if>
         </trim>
         where device_id = #{deviceId}
     </update>

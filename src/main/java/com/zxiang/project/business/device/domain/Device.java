@@ -107,6 +107,10 @@ public class Device extends BaseEntity
 	
 	private String releaseDeviceCondition;//广告投放设备查询条件，有值即过滤终端不为空的设备
 	
+	private Long totalCnt;//累计出纸次数
+	private Long invalidCnt;//无效累计出纸巾
+	private Long validCnt;//有效累计出纸
+	
 	public void setDeviceId(Integer deviceId) 
 	{
 		this.deviceId = deviceId;
@@ -543,6 +547,30 @@ public class Device extends BaseEntity
 
 	public void setReleaseDeviceCondition(String releaseDeviceCondition) {
 		this.releaseDeviceCondition = releaseDeviceCondition;
+	}
+
+	public Long getTotalCnt() {
+		return totalCnt;
+	}
+
+	public void setTotalCnt(Long totalCnt) {
+		this.totalCnt = totalCnt;
+	}
+
+	public Long getInvalidCnt() {
+		return invalidCnt;
+	}
+
+	public void setInvalidCnt(Long invalidCnt) {
+		this.invalidCnt = invalidCnt;
+	}
+
+	public Long getValidCnt() {
+		return validCnt;
+	}
+
+	public void setValidCnt(Long validCnt) {
+		this.validCnt = validCnt;
 	}
 	
 }

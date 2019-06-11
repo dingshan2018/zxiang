@@ -23,6 +23,9 @@ import com.zxiang.common.constant.RateConstants;
 import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
+import com.zxiang.project.business.device.domain.Device;
+import com.zxiang.project.business.device.mapper.DeviceMapper;
+import com.zxiang.project.business.tissueRecord.mapper.TissueRecordMapper;
 import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
 import com.zxiang.project.client.agent.domain.Agent;
@@ -78,6 +81,10 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	private RepairMapper repairMapper;
 	@Autowired
 	private AdvertiseMapper advertiseMapper;
+	@Autowired
+	private TissueRecordMapper tissueRecordMapper;
+	@Autowired
+	private DeviceMapper deviceMapper;
 	/**
      * 查询设备收入日统计信息
      * 
@@ -227,6 +234,27 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				//计算广告费用
 				addata(device,buyer_id,tissuenum);
 			}
+			//增加每日统计出纸次数
+			Device deviceEntity = deviceMapper.selectDeviceById(Integer.parseInt(device.get("device_id")+""));
+			HashMap<String,String> paramMap = new HashMap<String,String>();
+			paramMap.put("deviceId", device.get("device_id")+"");
+			HashMap<String,Object> tissueMap = tissueRecordMapper.tissueCount(paramMap);
+			if(tissueMap.containsKey("paperSum")) {
+				deviceEntity.setTotalCnt(Long.parseLong(tissueMap.get("paperSum")+""));
+			}else {
+				deviceEntity.setTotalCnt(0l);
+			}
+			if(tissueMap.containsKey("validPaperSum")) {
+				deviceEntity.setValidCnt(Long.parseLong(tissueMap.get("validPaperSum")+""));
+			}else {
+				deviceEntity.setValidCnt(0l);
+			}
+			if(tissueMap.containsKey("invalidPaperSum")) {
+				deviceEntity.setInvalidCnt(Long.parseLong(tissueMap.get("invalidPaperSum")+""));
+			}else {
+				deviceEntity.setInvalidCnt(0l);
+			}
+			deviceMapper.updateDevice(deviceEntity);
 		}
 		//需要推广代理人（查询前一天加入代理商）
 		promotionagent();
