@@ -54,6 +54,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="payer != null and payer != ''"> and a.payer = #{payer}</if>
              <if test="payTime != null"> and a.pay_time = #{payTime}</if>
              <if test="remark != null and remark != ''"> and a.remark = #{remark}</if>
+             <if test="beginTime != null"> and date_format(a.create_time,'%Y-%m-%d') &gt; #{beginTime}</if>
+             <if test="endTime != null"> and date_format(a.create_time,'%Y-%m-%d') &lt; #{endTime}</if>
          </where>
          order by a.create_time desc
     </select>
