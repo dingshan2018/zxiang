@@ -28,6 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="offerKey"    column="offer_key"    />
         <result property="iccId"    column="iccid"    />
         <result property="onlineStatus"    column="online_status"    />
+        <result property="logUrl"    column="log_url" />
     </resultMap>
 	
 	<sql id="selectTerminalVo">
@@ -38,7 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         (select distinct p.name from zx_place p where p.place_id =t.`place_id` ) placeName,
         rssi, last_heart_time, last_login_time, volumn, status,
         CASE status  WHEN '1' THEN '待绑定' WHEN '2' THEN '待激活' WHEN '3' THEN '激活' WHEN '4' THEN '故障' ELSE '-' END statusName,
-        del_flag, lon, lat, version,sn_code,
+        del_flag, lon, lat, version,sn_code,log_url,
         create_by, create_time, update_by, update_time,offer_key,iccid,
         online_status,
         CASE online_status  WHEN '0' THEN '离线' WHEN '1' THEN '在线' ELSE '-' END onlineStatusName
@@ -82,8 +83,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="offerKey != null and offerKey != ''"> and offer_key = #{offerKey}</if>
              <if test="iccId != null and iccId != ''"> and iccid = #{iccId}</if>
              <if test="onlineStatus != null and onlineStatus != ''"> and online_status = #{onlineStatus}</if>
+             <if test="logUrl != null and logUrl != ''"> and log_url = #{logUrl}</if>
          </where>
-         ORDER BY t.terminal_id DESC 
+         ORDER BY t.create_time DESC,t.terminal_id DESC 
     </select>
     
     <select id="selectTerminalById" parameterType="Integer" resultMap="TerminalResult">
@@ -115,6 +117,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="offerKey != null ">offer_key,</if>
 			<if test="iccId != null ">iccid,</if>
 			<if test="onlineStatus != null ">online_status,</if>
+			<if test="logUrl != null ">log_url,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
@@ -138,6 +141,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="offerKey != null ">#{offerKey},</if>
 			<if test="iccId != null ">#{iccId},</if>
 			<if test="onlineStatus != null ">#{onlineStatus},</if>
+			<if test="logUrl != null ">#{logUrl},</if>
          </trim>
     </insert>
 	 
@@ -164,6 +168,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="offerKey != null  ">offer_key = #{offerKey},</if>
             <if test="iccId != null  ">iccid = #{iccId},</if>
             <if test="onlineStatus != null  ">online_status = #{onlineStatus},</if>
+            <if test="logUrl != null and logUrl != ''"> log_url = #{logUrl},</if>
         </trim>
         where terminal_id = #{terminalId}
     </update>
@@ -235,6 +240,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="offerKey != null and offerKey != ''"> and offer_key = #{offerKey}</if>
              <if test="iccId != null and iccId != ''"> and iccid = #{iccId}</if>
              <if test="onlineStatus != null and onlineStatus != ''"> and online_status = #{onlineStatus}</if>
+             <if test="logUrl != null and logUrl != ''"> and log_url = #{logUrl}</if>
          </where>
          ORDER BY t.terminal_id DESC 
     </select>

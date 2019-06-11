@@ -1,6 +1,7 @@
 package com.zxiang.project.business.terminal.service;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.excel.EXCELObject;
+import com.zxiang.project.business.server.service.IServerService;
 import com.zxiang.project.business.terminal.domain.Terminal;
 import com.zxiang.project.business.terminal.mapper.TerminalMapper;
 import com.zxiang.project.business.terminalParam.mapper.TerminalParamMapper;
@@ -35,6 +38,8 @@ public class TerminalServiceImpl implements ITerminalService
 	private TerminalParamMapper terminalParamMapper;
 	@Autowired
 	private TerminalTimerMapper terminalTimerMapper;
+	@Autowired
+	private IServerService serverService;
 	
 	/**
      * 查询终端管理信息
@@ -201,6 +206,26 @@ public class TerminalServiceImpl implements ITerminalService
   		//Excel文件名称
   		String excelName = "终端管理" + System.currentTimeMillis() + ".xls";
   		s.exportExcel("终端管理", excelName, exportFile, request, response);
+	}
+
+	@Override
+	public int reportLog(Integer terminalId) {
+		int number = 0;
+		Terminal terminal = terminalMapper.selectTerminalById(terminalId);
+		if(terminal != null ){
+			JSONObject reqJson = new JSONObject();
+			reqJson.put("termCode",terminal.getTerminalCode());
+			// 接口参数 进行封装
+			reqJson.put("command","35");//参数下发命令0x23,转十进制为35
+			try {
+				serverService.issuedCommand(terminal,reqJson);
+				number++;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		number++;
+		return number;
 	}
 
 }

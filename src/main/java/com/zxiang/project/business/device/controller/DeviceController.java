@@ -104,6 +104,7 @@ public class DeviceController extends BaseController
 			device.setUserId(user.getUserId()+"");
 		}
 		device.setScheduleId(adScheduleId);
+		device.setReleaseDeviceCondition("YES");//广告投放设备查询条件，有值即过滤终端不为空的设备
         List<Device> list = deviceService.selectDeviceList(device);
 		return getDataTable(list);
 	}

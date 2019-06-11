@@ -35,6 +35,10 @@ public class AdMaterial extends BaseEntity
 	private String createBy;
 	/** 创建时间 */
 	private Date createTime;
+	
+	private String fileName;
+	private float fileSize;
+	private String scheduleName;
 
 	public void setAdMaterialId(Integer adMaterialId) 
 	{
@@ -123,6 +127,30 @@ public class AdMaterial extends BaseEntity
 
 	public void setTreSid(String treSid) {
 		this.treSid = treSid;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public float getFileSize() {
+		return fileSize;
+	}
+
+	public void setFileSize(float fileSize) {
+		this.fileSize = fileSize;
+	}
+
+	public String getScheduleName() {
+		return scheduleName;
+	}
+
+	public void setScheduleName(String scheduleName) {
+		this.scheduleName = scheduleName;
 	}
 
 	public String toString() {

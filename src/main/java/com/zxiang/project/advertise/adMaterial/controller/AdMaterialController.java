@@ -58,6 +58,27 @@ public class AdMaterialController extends BaseController
 		return getDataTable(list);
 	}
 	
+	@GetMapping("/previewFileNameByAdSchId/{adScheduleId}")
+	public String previewFileNameByAdSchId(@PathVariable("adScheduleId") Integer adScheduleId, ModelMap mmap)
+	{
+		mmap.put("adScheduleId", adScheduleId);
+	    //return prefix + "/adMaterial";//生成代码时路径不对
+	    return "advertise/adMaterial"+ "/adMaterial";
+	}
+	
+	/**
+	 * 查询广告投放素材列表
+	 */
+	@PostMapping("/list2/{adScheduleId}")
+	@ResponseBody
+	public TableDataInfo list2(@PathVariable("adScheduleId") Integer adScheduleId,AdMaterial adMaterial)
+	{
+		startPage();
+		adMaterial.setAdScheduleId(adScheduleId);
+        List<AdMaterial> list = adMaterialService.selectAdMaterialList(adMaterial);
+		return getDataTable(list);
+	}
+	
 	/**
 	 * 新增广告投放素材
 	 */
