@@ -44,6 +44,8 @@ import com.zxiang.project.record.tradeOrder.domain.TradeOrder;
 import com.zxiang.project.record.tradeOrder.mapper.TradeOrderMapper;
 import com.zxiang.project.system.config.domain.Config;
 import com.zxiang.project.system.config.mapper.ConfigMapper;
+import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.mapper.UserMapper;
 
 /**
  * 共享设备 服务层实现
@@ -75,6 +77,8 @@ public class DeviceServiceImpl implements IDeviceService
 	private IServerService serverService;
 	@Autowired
 	private ConfigMapper configMapper;
+	@Autowired
+    private UserMapper userMapper;
 	
 	/**
      * 查询共享设备信息
@@ -154,8 +158,21 @@ public class DeviceServiceImpl implements IDeviceService
 			terminal.setUpdateBy(device.getUpdateBy());
 			terminal.setUpdateTime(new Date());
 			//若编辑的机主与原来机主不同则更新终端激活时间
-			if(device.getOwnerId() != null && !device.getOwnerId().equals(oldDevice.getOwnerId())){
+			Integer ownerId = device.getOwnerId();
+			if(ownerId != null && !ownerId.equals(oldDevice.getOwnerId())){
 				terminal.setCreateTime(new Date());
+				// 通知终端更改机主 	0x25 更改机主  {"termCode":"","ownerId":"","ownerName":""}
+				JSONObject reqJson = new JSONObject();
+				reqJson.put("termCode",terminal.getTerminalCode());
+				reqJson.put("ownerId",ownerId);//
+				User ownerUser = userMapper.selectUserById(ownerId.longValue());
+				reqJson.put("ownerName",ownerUser.getUserName());//
+				reqJson.put("command","37");//参数下发命令0x25,转十进制为37	
+				try {
+					serverService.issuedCommand(terminal,reqJson);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 			this.terminalMapper.updateTerminal(terminal);
 		}
