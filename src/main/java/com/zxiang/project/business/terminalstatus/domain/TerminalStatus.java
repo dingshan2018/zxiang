@@ -38,7 +38,7 @@ public class TerminalStatus extends BaseEntity
 	/** 更新时间 */
 	private Date createTime;
 	
-	private String addredss;
+	private String address;
 	
 	private String build;
 	
@@ -152,14 +152,6 @@ public class TerminalStatus extends BaseEntity
             .toString();
     }
 
-	public String getAddredss() {
-		return addredss;
-	}
-
-	public void setAddredss(String addredss) {
-		this.addredss = addredss;
-	}
-
 	public String getBuild() {
 		return build;
 	}
@@ -182,5 +174,13 @@ public class TerminalStatus extends BaseEntity
 
 	public void setTerminalCode(String terminalCode) {
 		this.terminalCode = terminalCode;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 }
