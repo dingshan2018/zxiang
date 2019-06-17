@@ -305,6 +305,7 @@ public class DeviceController extends BaseController
 		//mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 		
 		List<User> userList = new ArrayList<>();
+		Integer supplierId = null;
 		try {
 			String placeId = device.getPlaceId() == null? "0" : device.getPlaceId();//若设备为空将抛出空指针异常
 			Place place = placeService.selectPlaceById(Integer.parseInt(placeId));
@@ -312,6 +313,7 @@ public class DeviceController extends BaseController
 				Map<String, Object> qryParam = new HashMap<>();
 				qryParam.put("repairId", place.getServicePoint()+"");
 				userList = userService.selectUserByRepairId(qryParam);
+				supplierId = place.getSupplyId();
 			}else{
 				User queryUser = new User();
 				queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
@@ -321,6 +323,7 @@ public class DeviceController extends BaseController
 			e.printStackTrace();
 			//return error("获取补纸人员异常!");
 		}
+		mmap.put("supplierUser", supplierId);//放入默认补纸人员给前端显示
 		mmap.put("userList", userList);
 		
 	    return prefix + "/supplyTissueAdd";
