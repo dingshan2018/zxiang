@@ -126,7 +126,10 @@
   //导出Excel
     function exportExcel(){
     	$.modal.confirm("确认导出？", function() {
-			location.href = ctx + "business/supplyTissue/excelExport";
+    		var deviceSn = $("#deviceSn").val();
+    		var placeId = $("#placeId").val();
+    		
+			location.href = ctx + "business/supplyTissue/excelExport?deviceSn="+deviceSn+'&placeId='+placeId;
     		//$.modal.alert("导出成功!");
 		});
     }
