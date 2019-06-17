@@ -28,6 +28,10 @@ $(function(){
 		    var laydate = layui.laydate;
 		    laydate.render({ elem: '#startTime', theme: 'molv' });
 		    laydate.render({ elem: '#endTime', theme: 'molv' });
+      var dateElems = document.querySelectorAll("[data-laydate]");
+      for (var i = 0; i < dateElems.length; i++) {
+        laydate.render({elem: dateElems[i], theme: "molv"});
+      }
 		});
 	}
 });
