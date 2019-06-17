@@ -35,12 +35,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="totalCnt"    column="total_cnt"    />
         <result property="validCnt"    column="valid_cnt"    />
         <result property="invalidCnt"    column="invalid_cnt"    />
+        <result property="address"    column="address"    />
+        <result property="build"    column="build"    />
     </resultMap>
 	
 	<sql id="selectDeviceVo">
         select total_cnt,valid_cnt,invalid_cnt,device_id, device_code, device_sn, device_type,
          terminal_id,
          (select distinct t.terminal_code from zx_terminal t where t.terminal_id =d.`terminal_id` ) terminalCode,
+         (select t.address from zx_terminal t where t.terminal_id =d.`terminal_id` ) address,
+         (select t.build from zx_terminal t where t.terminal_id =d.`terminal_id` ) build,
          place_id, owner_id,(SELECT DISTINCT wu.nickname FROM `zx_wx_user` wu WHERE d.`owner_id`=wu.user_id 
          ORDER BY wu.create_time DESC LIMIT 1) wxNickname,     
          (select distinct u.user_name from sys_user u where u.user_id =d.`owner_id` ) ownerName,
@@ -61,7 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          (SELECT DISTINCT za.agent_name FROM zx_agent za WHERE za.del_flag!=2 AND za.city =
          (SELECT p.`city` FROM `zx_place` p WHERE p.place_id=d.`place_id`) AND za.county =
          (SELECT p.`county` FROM `zx_place` p WHERE p.place_id=d.`place_id`)) agentLevel2    
-          from zx_device d
+          from zx_device d 
     </sql>
 	
 	<!-- 查询运营设备列表  -->

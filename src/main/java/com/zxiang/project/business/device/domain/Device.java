@@ -111,6 +111,10 @@ public class Device extends BaseEntity
 	private Long invalidCnt;//无效累计出纸巾
 	private Long validCnt;//有效累计出纸
 	
+	private String address;
+	
+	private String build;
+	
 	public void setDeviceId(Integer deviceId) 
 	{
 		this.deviceId = deviceId;
@@ -571,6 +575,22 @@ public class Device extends BaseEntity
 
 	public void setValidCnt(Long validCnt) {
 		this.validCnt = validCnt;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getBuild() {
+		return build;
+	}
+
+	public void setBuild(String build) {
+		this.build = build;
 	}
 	
 }

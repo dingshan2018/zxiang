@@ -49,6 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				AND date_format(zts.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
 			 </if>
 		</where>
+		order by zts.create_time desc
     </select>
     
     <select id="selectTerminalStatusById" parameterType="Integer" resultMap="TerminalStatusResult">
