@@ -54,6 +54,8 @@ public class WithdrawDeposit extends BaseEntity
 	private String remark;
 	private String beginTime;
 	private String endTime;
+	private String startPayTime;
+	private String endPayTime;
 
 	public void setId(Integer id) 
 	{
@@ -213,6 +215,30 @@ public class WithdrawDeposit extends BaseEntity
 
 	public void setEndTime(String endTime) {
 		this.endTime = endTime;
+	}
+
+	public String getStartPayTime() {
+		return startPayTime;
+	}
+
+	public void setStartPayTime(String startPayTime) {
+		this.startPayTime = startPayTime;
+	}
+
+	public String getEndPayTime() {
+		return endPayTime;
+	}
+
+	public void setEndPayTime(String endPayTime) {
+		this.endPayTime = endPayTime;
+	}
+
+	public String getBeginTime() {
+		return beginTime;
+	}
+
+	public String getEndTime() {
+		return endTime;
 	}
 
 	public String toString() {

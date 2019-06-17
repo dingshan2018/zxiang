@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.imageio.ImageIO;
+
 import jxl.Cell;
 import jxl.CellView;
 import jxl.Image;
@@ -454,13 +456,13 @@ public class EXCELTools {
 	 * @throws Exception
 	 */
 	private static int writeData(WritableSheet sheet, String[] titN,
-			List<Map<String, String>> dataList, int row,boolean serial) throws Exception {
+			List<Map<String, Object>> dataList, int row,boolean serial) throws Exception {
 		try {
 			long begin = System.currentTimeMillis();
 			if (dataList != null) {
 				for (int i = 0; i < dataList.size(); i++) {
 					int col = 0;
-					Map<String, String> record = dataList.get(i);
+					Map<String, Object> record = dataList.get(i);
 					if(serial) {
 						// 序号
 						sheet.addCell(new Label(col++, row, (i + 1) + "",
@@ -503,6 +505,7 @@ public class EXCELTools {
 							}
 						}
 						Label label = new Label(col++, row, dv, DTFormat());
+//						sheet.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
 						sheet.addCell(label);
 					}
 					row++;
@@ -530,7 +533,7 @@ public class EXCELTools {
 	 */
 	public static File xlsWrite(String sPath, String fname, String title, String[] pTit,
 			String[] cols, String[] titH, String[] titN,
-			List<Map<String, String>> dataList,String width[],String widthP[]) throws Exception {
+			List<Map<String, Object>> dataList,String width[],String widthP[]) throws Exception {
 		WritableWorkbook workbook = null;
 		try {
 			File existsFile = new File(sPath);
@@ -587,7 +590,7 @@ public class EXCELTools {
 	 */
 	public static File xlsWritebinding(String sPath, String fname, String title, String[] pTit,
 			String[] cols, String[] titH, String[] titN,
-			List<Map<String, String>> dataList,String width[],String widthP[]) throws Exception {
+			List<Map<String, Object>> dataList,String width[],String widthP[]) throws Exception {
 		WritableWorkbook workbook = null;
 		try {
 			File existsFile = new File(sPath);
@@ -636,7 +639,7 @@ public class EXCELTools {
 	 * @throws Exception
 	 */
 	private static int writeDataPage(WritableSheet sheet, String[] titN,
-			List<Map<String, String>> dataList, int row, int page, int pageSize,boolean seria)
+			List<Map<String, Object>> dataList, int row, int page, int pageSize,boolean seria)
 			throws Exception {
 		try {
 			long begin = System.currentTimeMillis();
@@ -646,7 +649,7 @@ public class EXCELTools {
 						break;
 					}
 					int col = 0;
-					Map<String, String> record = dataList.get(i);
+					Map<String, Object> record = dataList.get(i);
 					if(seria) {
 						// 序号
 						sheet.addCell(new Label(col++, row, (i + 1) + "",
@@ -720,7 +723,7 @@ public class EXCELTools {
 	 */
 	public static File xlsWritePage(String sPath, String fname,String title, String[] pTit,
 			String[] cols, String[] titH, String[] titN,
-			List<Map<String, String>> dataList, int pageSize,String width[],String widthP []) throws Exception {
+			List<Map<String, Object>> dataList, int pageSize,String width[],String widthP []) throws Exception {
 		WritableWorkbook workbook = null;
 		try {
 			File file = new File(sPath);
@@ -790,7 +793,7 @@ public class EXCELTools {
 	 */
 	public static File xlsWritePagebinding(String sPath, String fname,String title, String[] pTit,
 			String[] cols, String[] titH, String[] titN,
-			List<Map<String, String>> dataList, int pageSize,String width[],String widthP []) throws Exception {
+			List<Map<String, Object>> dataList, int pageSize,String width[],String widthP []) throws Exception {
 		WritableWorkbook workbook = null;
 		try {
 			File file = new File(sPath);
@@ -851,9 +854,9 @@ public class EXCELTools {
 			String[] titH = {"BBBB1,300","CCCCCCCCCC1","CCCcccccccccccccccccccC2","DDDDDDDDDDDDD1","DDD2","D3"};
 			String[] titN = {"A","B1","imag","imag1","D1","D2","D3"};
 			
-			List<Map<String, String>> dataList = new ArrayList<Map<String,String>>();
+			List<Map<String, Object>> dataList = new ArrayList<Map<String,Object>>();
 			for(int i=0;i<10003;i++) {
-				Map<String, String> tmp = new HashMap<String, String>();
+				Map<String, Object> tmp = new HashMap<String, Object>();
 				tmp.put("B1","B1");
 				tmp.put("image","D://10010-(2S).PNG");
 				tmp.put("imag1","D://0-3.PNG");
