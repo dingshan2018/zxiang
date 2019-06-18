@@ -27,7 +27,7 @@
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 		<input type="text" id="terminalId" style="display:none" th:value="${terminalId}"/>
 		</div>
-			
+
 		<div class="col-sm-12 select-table table-striped">
 			<table id="bootstrap-table" data-mobile-responsive="true"></table>
 		</div>
@@ -49,54 +49,55 @@
 		            checkbox: true
 		        },
 				{
-					field : 'statusId', 
-					title : '状态ID' 
+          field: "statusId",
+          title: "状态ID"
 				},
 				{
-					field : 'terminalId', 
-					title : '终端ID' 
+          field: "terminalId",
+          title: "终端ID"
 				},
 				{
-					field : 'version', 
-					title : '终端版本' 
+          field: "version",
+          title: "终端版本"
 				},
 				{
-					field : 'rssi', 
-					title : '信号强度' 
+          field: "rssi",
+          title: "信号强度"
 				},
 				{
-					field : 'iccid', 
-					title : '4G卡号' 
+          field: "iccid",
+          title: "4G卡号"
 				},
 				{
-					field : 'lon', 
-					title : '经度' 
+          field: "lon",
+          title: "经度"
 				},
 				{
-					field : 'lat', 
-					title : '纬度' 
+          field: "lat",
+          title: "纬度"
 				},
 				{
-					field : 'accSysIp', 
-					title : '接入IP' 
+          field: "accSysIp",
+          title: "接入IP"
 				},
 				{
-					field : 'accSysPort', 
-					title : '接入端口' 
+          field: "accSysPort",
+          title: "接入端口"
 				},
 				{
-					field : 'createTime', 
-					title : '更新时间' 
+          field: "createTime",
+          title: "更新时间"
 				},
 				{
-					field : 'address', 
-					title : '详细地址' 
+          field: "address",
+          title: "详细地址"
 				},
 				{
-					field : 'build', 
-					title : '楼宇名称' 
+          field: "build",
+          title: "楼宇名称"
 				}]
             };
+          $.table.init(options);
             $('#bootstrap-table').bootstrapTable('hideColumn', 'version');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'statusId');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'terminalId');
