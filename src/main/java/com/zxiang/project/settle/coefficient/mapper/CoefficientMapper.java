@@ -1,7 +1,8 @@
 package com.zxiang.project.settle.coefficient.mapper;
 
-import com.zxiang.project.settle.coefficient.domain.Coefficient;
-import java.util.List;	
+import java.util.List;
+
+import com.zxiang.project.settle.coefficient.domain.Coefficient;	
 
 /**
  * 系数配置 数据层
@@ -63,5 +64,7 @@ public interface CoefficientMapper
 	
 	
 	public Coefficient selectCoefficientByType(String type);
+
+	public Long queryLowerCashBy(String type);
 	
 }

@@ -18,6 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="directAgentRate"    column="direct_agent_rate"    />
         <result property="serveRate"    column="serve_rate"    />
         <result property="subsidyRate"    column="subsidy_rate"    />
+        <result property="lowestCash"    column="lowest_cash"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -25,7 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectCoefficientVo">
-        select id, type, del_flag, ad_rate, ad_carousel_rate, scan_rate, prom_direct_rate, prom_indirect_rate, prom_paper_rate, promotion_rate, direct_agent_rate, serve_rate, subsidy_rate, create_by, create_time, update_by, update_time from zx_coefficient
+        select id, type,lowest_cash, del_flag, ad_rate, ad_carousel_rate, scan_rate, prom_direct_rate, prom_indirect_rate, prom_paper_rate, promotion_rate, direct_agent_rate, serve_rate, subsidy_rate, create_by, create_time, update_by, update_time from zx_coefficient
     </sql>
 	
     <select id="selectCoefficientList" parameterType="Coefficient" resultMap="CoefficientResult">
@@ -44,6 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="directAgentRate != null and directAgentRate != ''"> and direct_agent_rate = #{directAgentRate}</if>
              <if test="serveRate != null and serveRate != ''"> and serve_rate = #{serveRate}</if>
              <if test="subsidyRate != null and subsidyRate != ''"> and subsidy_rate = #{subsidyRate}</if>
+             <if test="lowestCash != null and lowestCash != ''"> and lowest_cash = #{lowestCash}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
              <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
@@ -76,6 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="directAgentRate != null and directAgentRate != '' ">direct_agent_rate,</if>
 			<if test="serveRate != null and serveRate != '' ">serve_rate,</if>
 			<if test="subsidyRate != null and subsidyRate != '' ">subsidy_rate,</if>
+			<if test="lowestCash != null and lowestCash != '' ">lowest_cash,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
 			<if test="updateTime != null and updateTime != '' ">update_time,</if>
@@ -95,6 +98,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="directAgentRate != null and directAgentRate != ''">#{directAgentRate},</if>
 			<if test="serveRate != null and serveRate != ''">#{serveRate},</if>
 			<if test="subsidyRate != null and subsidyRate != ''">#{subsidyRate},</if>
+			<if test="lowestCash != null and lowestCash != ''">#{lowestCash},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
 			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
@@ -118,6 +122,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="directAgentRate != null  ">direct_agent_rate = #{directAgentRate},</if>
             <if test="serveRate != null  ">serve_rate = #{serveRate},</if>
             <if test="subsidyRate != null  ">subsidy_rate = #{subsidyRate},</if>
+            <if test="lowestCash != null  ">lowest_cash = #{lowestCash},</if>
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
             update_time = now(),
         </trim>
@@ -140,6 +145,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where type = #{type}
     </select>
     
+    <select id="queryLowerCashBy" resultType="Long">
+    	select lowest_cash from zx_coefficient where type = #{type} limit 1
+    </select>
     
     
 </mapper>

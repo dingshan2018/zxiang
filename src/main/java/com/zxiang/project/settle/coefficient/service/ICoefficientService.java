@@ -1,7 +1,8 @@
 package com.zxiang.project.settle.coefficient.service;
 
-import com.zxiang.project.settle.coefficient.domain.Coefficient;
 import java.util.List;
+
+import com.zxiang.project.settle.coefficient.domain.Coefficient;
 
 /**
  * 系数配置 服务层
@@ -56,5 +57,7 @@ public interface ICoefficientService
 	
 	
 	public Coefficient selectCoefficientByType(String type);
+
+	public Long queryLowerCashBy(String type);
 	
 }

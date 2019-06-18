@@ -1,9 +1,11 @@
 package com.zxiang.project.settle.coefficient.domain;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 import com.zxiang.framework.web.domain.BaseEntity;
-import java.util.Date;
 
 /**
  * 系数配置表 zx_coefficient
@@ -41,6 +43,8 @@ public class Coefficient extends BaseEntity
 	private Float serveRate;
 	/** 办公补贴 */
 	private Float subsidyRate;
+	/** 最低提现金额 */
+	private Float lowestCash;
 	/**  */
 	private String createBy;
 	/**  */
@@ -62,6 +66,14 @@ public class Coefficient extends BaseEntity
 	
 	public String getType() {
 		return type;
+	}
+
+	public Float getLowestCash() {
+		return lowestCash;
+	}
+
+	public void setLowestCash(Float lowestCash) {
+		this.lowestCash = lowestCash;
 	}
 
 	public void setType(String type) {

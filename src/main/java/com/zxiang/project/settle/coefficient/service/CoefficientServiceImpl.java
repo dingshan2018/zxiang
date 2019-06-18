@@ -1,13 +1,14 @@
 package com.zxiang.project.settle.coefficient.service;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.zxiang.project.settle.coefficient.mapper.CoefficientMapper;
-import com.zxiang.project.settle.coefficient.domain.Coefficient;
-import com.zxiang.project.settle.coefficient.service.ICoefficientService;
+
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
+import com.zxiang.project.settle.coefficient.domain.Coefficient;
+import com.zxiang.project.settle.coefficient.mapper.CoefficientMapper;
 
 /**
  * 系数配置 服务层实现
@@ -93,6 +94,11 @@ public class CoefficientServiceImpl implements ICoefficientService
 	@Override
 	public Coefficient selectCoefficientByType(String type) {
 		return  coefficientMapper.selectCoefficientByType(type);
+	}
+
+	@Override
+	public Long queryLowerCashBy(String type) {
+		return coefficientMapper.queryLowerCashBy(type);
 	}
 	
 }
