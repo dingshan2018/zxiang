@@ -42,10 +42,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="accSysIp != null and accSysIp != ''"> and zts.acc_sys_ip = #{accSysIp}</if>
              <if test="accSysPort != null and accSysPort != ''"> and zts.acc_sys_port = #{accSysPort}</if>
              <if test="createTime != null "> and zts.create_time = #{createTime}</if>
-             <if test="params.beginTime != null "><!-- 开始时间检索 -->
+             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
 				AND date_format(zts.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
 			 </if>
-			 <if test="params.endTime != null "><!-- 结束时间检索 -->
+			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
 				AND date_format(zts.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
 			 </if>
 		</where>
