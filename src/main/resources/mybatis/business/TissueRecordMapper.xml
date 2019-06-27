@@ -70,9 +70,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              	<!-- ( SELECT DISTINCT zp.place_id FROM zx_place zp 
              		WHERE zp.operator_id = (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
              			WHERE su.user_type='03' AND su.puser_id=#{agentId} AND su.user_id=p.operator_id)) -->
-             	( SELECT DISTINCT zp.place_id FROM zx_place zp 
+             	<!--  ( SELECT DISTINCT zp.place_id FROM zx_place zp 
              		WHERE zp.city in (SELECT DISTINCT za.city FROM `zx_agent` za
-             			WHERE za.agent_id=#{agentId} AND za.del_flag='0'))
+             			WHERE za.agent_id=#{agentId} AND za.del_flag='0'))-->
+             			
+             	( SELECT DISTINCT zp.place_id FROM zx_place zp 
+             		WHERE (zp.city in (SELECT DISTINCT za.city FROM `zx_agent` za
+             			WHERE za.agent_id=#{agentId} AND za.del_flag='0' and za.level=1)) or (zp.county in (SELECT DISTINCT za.county FROM `zx_agent` za
+             			WHERE za.agent_id=#{agentId} AND za.del_flag='0' and za.level=2)))
              </if>
            	 <!-- 按照服务商搜索  通过场所维修员关联-->
              <if test="repairId != null and repairId != ''">  and tr.place_id in 
@@ -212,9 +217,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 </if>
 			 <!-- 按照代理商搜索  通过场所经办人关联-->
              <if test="agentId != null and agentId != ''"> and tr.place_id in 
+             	<!--  
              	( SELECT DISTINCT zp.place_id FROM zx_place zp 
              		WHERE zp.city in (SELECT DISTINCT za.city FROM `zx_agent` za
-             			WHERE za.agent_id=#{agentId} AND za.del_flag='0'))
+             			WHERE za.agent_id=#{agentId} AND za.del_flag='0'))-->
+             	( SELECT DISTINCT zp.place_id FROM zx_place zp 
+             		WHERE (zp.city in (SELECT DISTINCT za.city FROM `zx_agent` za
+             			WHERE za.agent_id=#{agentId} AND za.del_flag='0' and za.level=1)) or (zp.county in (SELECT DISTINCT za.county FROM `zx_agent` za
+             			WHERE za.agent_id=#{agentId} AND za.del_flag='0' and za.level=2)))
              </if>
            	 <!-- 按照服务商搜索  通过场所维修员关联-->
              <if test="repairId != null and repairId != ''">  and tr.place_id in 
@@ -267,8 +277,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 <!-- 按照代理商搜索  通过代理城市的场所进行关联 )-->
              <if test="agentId != null and agentId != ''"> and tr.place_id in 
              	( SELECT DISTINCT zp.place_id FROM zx_place zp 
-             		WHERE zp.city in (SELECT DISTINCT za.city FROM `zx_agent` za
-             			WHERE za.agent_id=#{agentId} AND za.del_flag='0'))
+             		WHERE (zp.city in (SELECT DISTINCT za.city FROM `zx_agent` za
+             			WHERE za.agent_id=#{agentId} AND za.del_flag='0' and za.level=1)) or (zp.county in (SELECT DISTINCT za.county FROM `zx_agent` za
+             			WHERE za.agent_id=#{agentId} AND za.del_flag='0' and za.level=2)))
              </if>
            	 <!-- 按照服务商搜索  通过场所维修员关联 (查找出纸场所,用户表用户类型为04,且用户表的主体ID与查询条件所选择的的服务商ID相等的场所)-->
              <if test="repairId != null and repairId != ''">  and tr.place_id in 

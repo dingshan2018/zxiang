@@ -169,35 +169,39 @@ public class UserRealm extends AuthorizingRealm
         	   List<HashMap<String, Object>> zxagentList = userService.selectzxagent(""+puserId);
         	   String paramplace = "";
         	   String level = "";
-        	   for(HashMap<String, Object> zxagent : zxagentList) {
-        		   level=zxagent.get("level")+"";
-        		   if(level.equals("1")) {
-        			   paramplace+=zxagent.get("city")+",";
+        	   if(zxagentList!=null && zxagentList.size()>0) {
+        		   for(HashMap<String, Object> zxagent : zxagentList) {
+            		   level=zxagent.get("level")+"";
+            		   if(level.equals("1")) {
+            			   paramplace+=zxagent.get("city")+",";
+            		   }else {
+            			   paramplace+=zxagent.get("county")+",";
+            		   }
+            	   }
+            	   paramplace = paramplace.substring(0, paramplace.length() - 1); 
+            	   Map<String,Object> paramMap = new HashMap<String,Object>();
+            	   if(level.equals("1")) {
+            		   paramMap.put("city", ","+paramplace+",");
         		   }else {
-        			   paramplace+=zxagent.get("county")+",";
+        			   paramMap.put("county", ","+paramplace+",");
         		   }
+                   placeParam.setParams(paramMap);
+                   places = placeService.selectPlaceList(placeParam);
         	   }
-        	   paramplace = paramplace.substring(0, paramplace.length() - 1); 
-        	   Map<String,Object> paramMap = new HashMap<String,Object>();
-        	   if(level.equals("1")) {
-        		   paramMap.put("city", ","+paramplace+",");
-    		   }else {
-    			   paramMap.put("county", ","+paramplace+",");
-    		   }
-               placeParam.setParams(paramMap);
-               places = placeService.selectPlaceList(placeParam);
            }
            if(userType.equals("04")) {//服务商
         	   List<HashMap<String, Object>> zxrepairareaList = userService.selectzxrepairarea(""+puserId);
         	   String paramplace = "";
-               for(HashMap<String, Object> zxrepairarea : zxrepairareaList) {
-            	   paramplace+=zxrepairarea.get("county_id")+",";
+        	   if(zxrepairareaList != null && zxrepairareaList.size()>0) {
+        		   for(HashMap<String, Object> zxrepairarea : zxrepairareaList) {
+                	   paramplace+=zxrepairarea.get("county_id")+",";
+            	   }
+                   paramplace = paramplace.substring(0, paramplace.length() - 1); 
+            	   Map<String,Object> paramMap = new HashMap<String,Object>();
+                   paramMap.put("county", ","+paramplace+",");
+                   placeParam.setParams(paramMap);
+                   places = placeService.selectPlaceList(placeParam);
         	   }
-               paramplace = paramplace.substring(0, paramplace.length() - 1); 
-        	   Map<String,Object> paramMap = new HashMap<String,Object>();
-               paramMap.put("county", ","+paramplace+",");
-               placeParam.setParams(paramMap);
-               places = placeService.selectPlaceList(placeParam);
            }
         if(places!=null && places.size()>0) {
         	for(Place p : places) {
@@ -206,9 +210,12 @@ public class UserRealm extends AuthorizingRealm
         }
         if(userType.equals("02")) {
      	   List<HashMap<String, Object>> joinPlaceList = userService.selectJoinPlace(user.getUserId()+"");
-     	   for(HashMap<String, Object> joinPlace : joinPlaceList) {
-      		  placeSets.add(joinPlace.get("place_id")+"");
+     	   if(joinPlaceList!=null && joinPlaceList.size()>0) {
+     		  for(HashMap<String, Object> joinPlace : joinPlaceList) {
+          		  placeSets.add(joinPlace.get("place_id")+"");
+         	   }
      	   }
+     	   
         }
         //计算部门权限
         if(deptId>0) {
