@@ -465,6 +465,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	            	HashMap<String, Object> placemap =  selectzxplace(map.get("place_id") + ""); //获取地点
 	            	//插入代理商广告数据（地级市代理地区所服务的机子每次出纸收益0.02元，县区、县级市代理地区所服务的机子每次出纸收益0.05元）
 					    promotionagenmap.put("placeId", placemap.get("county"));
+					    promotionagenmap.put("cityId", placemap.get("city"));
 					    promotionagentlist = iUserIncomeService.selectzxagentlist(promotionagenmap);
 	   				for(HashMap<String, Object> promotionagent : promotionagentlist) {
 	   					String agentId = promotionagent.get("agent_id")+"";
@@ -588,6 +589,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	            	HashMap<String, Object> placemap =  selectzxplace(map.get("place_id") + ""); //获取地点
 	            	//插入代理商广告数据（地级市代理地区所服务的机子每次出纸收益0.02元，县区、县级市代理地区所服务的机子每次出纸收益0.05元）
 					    promotionagenmap.put("placeId", placemap.get("county"));
+					    promotionagenmap.put("cityId", placemap.get("city"));
 					    promotionagentlist = iUserIncomeService.selectzxagentlist(promotionagenmap);
 	   				for(HashMap<String, Object> promotionagent : promotionagentlist) {
 	   					String agentId = promotionagent.get("agent_id")+"";
@@ -700,6 +702,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				if(isplace) {
 					//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）
 					 promotionagenmap.put("placeId", placemap.get("county"));
+					 promotionagenmap.put("cityId", placemap.get("city"));
 					 promotionagentlist = iUserIncomeService.selectzxagentlist(promotionagenmap);
 					for(HashMap<String, Object> promotionagent : promotionagentlist) {
 						String agentId = promotionagent.get("agent_id")+"";
@@ -743,6 +746,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
                 if(isplace) {
                 	//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）
 	   				 promotionagenmap.put("placeId", placemap.get("county"));
+	   			     promotionagenmap.put("cityId", placemap.get("city"));
 	   				 promotionagentlist = iUserIncomeService.selectzxagentlist(promotionagenmap);
 	   				for(HashMap<String, Object> promotionagent : promotionagentlist) {
 	   					String agentId = promotionagent.get("agent_id")+"";
@@ -845,6 +849,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 					if(isplace) {
 						//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）
 						 promotionagenmap.put("placeId", placemap.get("county"));
+						 promotionagenmap.put("cityId", placemap.get("city"));
 						 promotionagentlist = iUserIncomeService.selectzxagentlist(promotionagenmap);
 						for(HashMap<String, Object> promotionagent : promotionagentlist) {
 							String agentId = promotionagent.get("agent_id")+"";
@@ -888,6 +893,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	                if(isplace) {
 	                	//插入代理商广告数据（地级市代理地区所属机子视频广告投放金额2%、地区所属机子轮播广告投放金额2%，县区、县级市代理地区所属机子视频广告投放金额3%、地区所属机子轮播广告投放金额3%）
 		   				 promotionagenmap.put("placeId", placemap.get("county"));
+		   			     promotionagenmap.put("cityId", placemap.get("city"));
 		   				 promotionagentlist = iUserIncomeService.selectzxagentlist(promotionagenmap);
 		   				for(HashMap<String, Object> promotionagent : promotionagentlist) {
 		   					String agentId = promotionagent.get("agent_id")+"";

@@ -602,7 +602,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  WHERE 
 	       1=1
 		  <if test="placeId != null and placeId != ''">
-		     AND ((z.level = 1 AND z.city = #{placeId} ) OR (z.level = 2 AND z.county = #{placeId} ))
+		     AND ((z.level = 1 AND z.city = #{cityId} ) OR (z.level = 2 AND z.county = #{placeId} ))
 		  </if>
 		  <if test="promotionagent != null and promotionagent != ''">
 		     AND DATE_FORMAT(z.create_time, '%Y-%m-%d') = DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 DAY),'%Y-%m-%d')
