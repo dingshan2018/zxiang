@@ -694,11 +694,11 @@ public class DeviceServiceImpl implements IDeviceService
   		//SQL方法查询出的字段名称
   		String[] titN = { "device_id","device_code","placeName","terminalCode","ownerName",
   				"wxNickname","release_time","servicePointName","agentLevel1","agentLevel2",
-  				"remain_len","last_scan_time","statusName","note","address","totalCnt","validCnt","invalidCnt"};
+  				"remain_len","last_scan_time","statusName","note","address","total_cnt","valid_cnt","invalid_cnt"};
   		String[] width= 
   			   {"15","20","20","20","20",
   				"20","20","20","20","20",
-  				"20","20","20","20","20","15","15","15"};
+  				"20","20","20","20","20","10","10","10"};
   		s.setWidth(width);
   		s.setFname("运营设备"); // sheet栏名称
   		s.setTitle("运营设备"); // Excel内容标题名称
