@@ -41,8 +41,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="remark != null and remark != ''"> and remark = #{remark}</if>
              <if test="beginTime != null"> and create_time &gt; #{beginTime}</if>
              <if test="endTime != null"> and create_time &lt; #{endTime}</if>
-             <if test="beginTime1 != null"> and date_format(create_time,'%Y-%m-%d') &gt; #{beginTime1}</if>
-             <if test="endTime1 != null"> and date_format(create_time,'%Y-%m-%d') &lt; #{endTime1}</if>
+             <if test="beginTime1 != null and beginTime1.trim()!='' "> and date_format(create_time,'%Y-%m-%d') &gt;= #{beginTime1}</if>
+             <if test="endTime1 != null and endTime1.trim()!='' "> and date_format(create_time,'%Y-%m-%d') &lt;= #{endTime1}</if>
          order by create_time desc
     </select>
     
