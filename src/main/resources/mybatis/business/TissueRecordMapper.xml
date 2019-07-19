@@ -43,7 +43,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userId == null">  ${filterSql} </if>
             <if test="1==1"> and status = 1</if>
             <if test="userId != null and userId != ''">
-            	and #{userId} = (SELECT DISTINCT zd.owner_id FROM zx_device zd WHERE zd.device_id = tr.device_id)
+            	and tr.device_id in (SELECT zd.device_id FROM zx_device zd WHERE zd.device_id = tr.device_id and zd.owner_id=#{userId})
             </if>
             <if test="tissueRecordId != null and tissueRecordId != ''"> and tissue_record_id = #{tissueRecordId}</if>
              <if test="qrScheduleId != null and qrScheduleId != ''"> and qr_schedule_id = #{qrScheduleId}</if>
@@ -181,7 +181,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
        <if test="selDate != null and selDate.trim() != ''">and date_format(tr.create_time,'%Y-%m-%d') = #{selDate}</if>
        <if test="userId == null"> ${filterSql} </if>
        <if test="userId != null and userId != ''">
-       	and #{userId} = (SELECT DISTINCT zd.owner_id FROM zx_device zd WHERE zd.device_id = tr.device_id)
+            and tr.device_id in (SELECT zd.device_id FROM zx_device zd WHERE zd.device_id = tr.device_id and zd.owner_id=#{userId})
        </if>
        <if test="tissueChannel != null">  
        	and tr.tissue_channel = #{tissueChannel}

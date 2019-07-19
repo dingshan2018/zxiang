@@ -176,7 +176,9 @@
             formatter: function(value, row, index) {
            	 	var actions = [];
            	 	if (value != null && value != '') {
-                 	actions.push('<a class="btn btn-success btn-xs" href='+ value +' target="_blank" title="查看日志">日志</a> ');
+           	 		var logNameArr = value.split("/");
+           	 		var logName = logNameArr[logNameArr.length-1];
+                 	actions.push('<a class="btn btn-success btn-xs" href='+ value +' target="_blank" title="查看日志">'+logName+'</a> ');
            	 	}else {
                		return '-';
              	}
