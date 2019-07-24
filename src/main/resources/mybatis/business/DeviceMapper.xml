@@ -37,11 +37,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="invalidCnt"    column="invalid_cnt"    />
         <result property="address"    column="address"    />
         <result property="build"    column="build"    />
+        <result property="province"    column="province"    />
+        <result property="city"    column="city"    />
+        <result property="county"    column="county"    />
     </resultMap>
 	
 	<sql id="selectDeviceVo">
         select total_cnt,valid_cnt,invalid_cnt,device_id, device_code, device_sn, device_type,
          terminal_id,
+         province, 
+        (select distinct a.pname from sys_area a where a.id =d.`province` ) provinceName,
+        city, 
+        (select distinct a.pname from sys_area a where a.id =d.`city` ) cityName,
+        county,
+        (select distinct a.pname from sys_area a where a.id =d.`county` ) countyName,
          (select distinct t.terminal_code from zx_terminal t where t.terminal_id =d.`terminal_id` ) terminalCode,
          (select t.address from zx_terminal t where t.terminal_id =d.`terminal_id` ) address,
          (select t.build from zx_terminal t where t.terminal_id =d.`terminal_id` ) build,
@@ -111,12 +120,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
              <if test="updateTime != null"> and update_time = #{updateTime}</if>
              <!-- 按照省市县下拉框搜索 -->
+             <!--  
              <if test="province != null and province != ''"> and d.place_id in 
              	(select zp.place_id from zx_place zp where zp.province = #{province})</if>
              <if test="city != null and city != ''"> and d.place_id in 
              	(select zp.place_id from zx_place zp where zp.city = #{city})</if>
              <if test="county != null and county != ''"> and d.place_id in 
              	(select zp.place_id from zx_place zp where zp.county = #{county})</if>
+             -->
+             <if test="province != null"> and d.province=#{province}</if>
+             <if test="city != null"> and d.city=#{city}</if>
+             <if test="county != null"> and d.county=#{county}</if>
          	 <if test="scheduleId != null"> and d.device_id not in
          	 	(select zrd.device_id from zx_release_device zrd where zrd.schedule_id=#{scheduleId}) </if>
          	  <!-- 按照机主搜索 -->
@@ -217,6 +231,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createTime != null  ">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
 			<if test="updateTime != null  ">update_time,</if>
+			<if test="province != null ">province,</if>
+			<if test="city != null ">city,</if>
+			<if test="county != null ">county,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="deviceId != null and deviceId != ''">#{deviceId},</if>
@@ -245,6 +262,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createTime != null ">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
 			<if test="updateTime != null ">#{updateTime},</if>
+			<if test="province != null ">#{province},</if>
+			<if test="city != null ">#{city},</if>
+			<if test="county != null ">#{county},</if>
          </trim>
     </insert>
 	 
@@ -280,6 +300,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totalCnt != null  ">total_cnt = #{totalCnt},</if>
             <if test="validCnt != null  ">valid_cnt = #{validCnt},</if>
             <if test="invalidCnt != null  ">invalid_cnt = #{invalidCnt},</if>
+            <if test="province != null ">province=#{province},</if>
+			<if test="city != null ">city=#{city},</if>
+			<if test="county != null ">county=#{county},</if>
         </trim>
         where device_id = #{deviceId}
     </update>
@@ -401,12 +424,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
              <if test="updateTime != null"> and update_time = #{updateTime}</if>
              <!-- 按照省市县下拉框搜索 -->
+             <!--  
              <if test="province != null and province != ''"> and d.place_id in 
              	(select zp.place_id from zx_place zp where zp.province = #{province})</if>
              <if test="city != null and city != ''"> and d.place_id in 
              	(select zp.place_id from zx_place zp where zp.city = #{city})</if>
              <if test="county != null and county != ''"> and d.place_id in 
              	(select zp.place_id from zx_place zp where zp.county = #{county})</if>
+             	-->
+             <if test="province != null"> and d.province=#{province}</if>
+             <if test="city != null"> and d.city=#{city}</if>
+             <if test="county != null"> and d.county=#{county}</if>
          	 <if test="scheduleId != null"> and d.device_id not in
          	 	(select zrd.device_id from zx_release_device zrd where zrd.schedule_id=#{scheduleId}) </if>
          	  <!-- 按照机主搜索 -->

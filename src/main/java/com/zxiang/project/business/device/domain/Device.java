@@ -77,10 +77,14 @@ public class Device extends BaseEntity
 	private String sceneName;
 	/** 省份 */
 	private Integer province;
+	private String provinceName;
 	/** 城市 */
 	private Integer city;
+	private String cityName;
 	/** 地区 */
 	private Integer county;
+
+	private String countyName;
 	//终端换板字段
 	private Integer newTerminalId;//新终端
 	private String oldVolumn;//音量
@@ -114,7 +118,29 @@ public class Device extends BaseEntity
 	private String address;
 	
 	private String build;
-	
+	public String getProvinceName() {
+		return provinceName;
+	}
+
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
+	}
+
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	public String getCountyName() {
+		return countyName;
+	}
+
+	public void setCountyName(String countyName) {
+		this.countyName = countyName;
+	}
 	public void setDeviceId(Integer deviceId) 
 	{
 		this.deviceId = deviceId;

@@ -135,8 +135,47 @@
                 </div>
             </div>
             <div class="form-group">
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>省份：</label>
+				<div class="col-sm-8">
+					<select
+						name="province"
+						id="province"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
+                       	<option value="">---请选择---</option>
+                    </select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>城市：</label>
+				<div class="col-sm-8">
+					<select
+						name="city"
+						id="city"
+            data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
+                        <option value="">---请选择---</option>
+                    </select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>区县：</label>
+				<div class="col-sm-8">
+					<select
+						name="county"
+						id="county"
+            data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
+                        <option value="">---请选择---</option>
+                    </select>
+				</div>
+			</div>
+            <div class="form-group">
                 <!-- <label class="col-sm-3 control-label">备注：</label> -->
-                <label class="col-sm-3 control-label">投放地址：</label>
+                <label class="col-sm-3 control-label">详细地址：</label>
                 <div class="col-sm-8">
                     <input id="note" name="note" th:field="*{note}" class="form-control" type="text" placeholder="投放地址">
                 </div>
@@ -152,6 +191,17 @@
     <div th:include="include::footer"></div>
     <script type="text/javascript">
 	    $(function(){ 
+	    	//默认绑定省
+	        proviceBind();
+	        //绑定事件
+	        $("#province").change( function () {
+	            cityBind();
+	        })
+
+	        $("#city").change(function () {
+	        	countyBind();
+	        })
+	    	
 	    	var userList = selectUserList();
 	    	$.each(userList, function (i) {
 	    		if(userList[i].userType === '02'){
@@ -189,7 +239,50 @@
 				$.operate.save(prefix + "/edit", $('#form-device-edit').serialize());
 			}
 		});
-		
+		function proviceBind() {
+	        //清空下拉数据
+	        $("#province").html("");
+	        var str = "<option value=''>---请选择---</option>";
+
+	        var provinceAreaList = selectAreaListByPid("0");
+	        $.each(provinceAreaList, function (i, item) {
+                str += "<option value=" + item.id + ">" + item.pname + "</option>";
+            })
+            //将数据添加到省份这个下拉框里面
+            $("#province").append(str).selectpicker("refresh");
+	    }
+	    function cityBind() {
+	        var provice = $("#province option:selected").val();
+	        //判断省份这个下拉框选中的值是否为空
+	        if (provice == "") {
+	            return;
+	        }
+	        $("#city").html("");
+	        var str = "<option value=''>---请选择---</option>";
+
+	        var cityAreaList = selectAreaListByPid(provice);
+	        $.each(cityAreaList, function (i, item) {
+                str += "<option value=" + item.id + ">" + item.pname + "</option>";
+            })
+            //将数据添加到市这个下拉框里面
+            $("#city").append(str).selectpicker("refresh");
+	    }
+	    function countyBind() {
+	        var provice = $("#city option:selected").val();
+	        //判断市这个下拉框选中的值是否为空
+	        if (provice == "") {
+	            return;
+	        }
+	        $("#county").html("");
+	        var str = "<option value=''>---请选择---</option>";
+
+	        var countyAreaList = selectAreaListByPid(provice);
+	        $.each(countyAreaList, function (i, item) {
+                str += "<option value=" + item.id + ">" + item.pname + "</option>";
+            })
+            //将数据添加到区县这个下拉框里面
+            $("#county").append(str).selectpicker("refresh");
+	    }
 		//选择机主如果与旧机主不同时提醒
 		function chooseOwner(value){
 			var deviceId = $("#deviceId").val();

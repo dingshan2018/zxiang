@@ -251,8 +251,32 @@
               }
           },
           {
+              field: 'province',
+              title: '省份'
+          },
+          {
+              field: 'city',
+              title: '城市'
+          },
+          {
+              field: 'county',
+              title: '区县'
+          },
+          {
+              field: 'provinceName',
+              title: '归属省份'
+          },
+          {
+              field: 'cityName',
+              title: '归属城市'
+          },
+          {
+              field: 'countyName',
+              title: '归属区县'
+          },
+          {
               field: 'note',
-              title: '投放地址'
+              title: '详细地址'
           },
           {
               field: 'address',
@@ -314,7 +338,9 @@
       $('#bootstrap-table').bootstrapTable('hideColumn', 'deviceCode');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'removeTime');
       $('#bootstrap-table').bootstrapTable('hideColumn', 'releaseStatus');
-      
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'province');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'city');
+      $('#bootstrap-table').bootstrapTable('hideColumn', 'county');
     });
 
     function proviceBind () {
