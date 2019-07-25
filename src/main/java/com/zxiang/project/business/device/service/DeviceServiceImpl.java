@@ -688,17 +688,17 @@ public class DeviceServiceImpl implements IDeviceService
   		EXCELObject s = new EXCELObject();
   		s.seteFilePath(realPath);
   		//表头名称
-  		String[] titH = { "ID", "设备资产编号", "场所名称","终端编号","机主",
+  		String[] titH = { "ID", "设备资产编号", "场所名称","场景","终端编号","机主",
   				"微信昵称", "投放时间","服务网点", "地级市代理","区县代理",
-  				"剩余出纸", "最近扫码","设备状态", "投放地址","当前地址","累计出纸","有效出纸","无效出纸"};
+  				"剩余出纸", "最近扫码","设备状态","归属省份","归属城市","归属区县","投放地址","当前地址","累计出纸","有效出纸","无效出纸"};
   		//SQL方法查询出的字段名称
-  		String[] titN = { "device_id","device_code","placeName","terminalCode","ownerName",
+  		String[] titN = { "device_id","device_code","placeName","sceneName","terminalCode","ownerName",
   				"wxNickname","release_time","servicePointName","agentLevel1","agentLevel2",
-  				"remain_len","last_scan_time","statusName","note","address","total_cnt","valid_cnt","invalid_cnt"};
+  				"remain_len","last_scan_time","statusName","provinceName","cityName","countyName","note","address","total_cnt","valid_cnt","invalid_cnt"};
   		String[] width= 
-  			   {"15","20","20","20","20",
+  			   {"15","20","20","20","20","20",
   				"20","20","20","20","20",
-  				"20","20","20","20","20","10","10","10"};
+  				"20","20","20","20","20","20","20","20","10","10","10"};
   		s.setWidth(width);
   		s.setFname("运营设备"); // sheet栏名称
   		s.setTitle("运营设备"); // Excel内容标题名称

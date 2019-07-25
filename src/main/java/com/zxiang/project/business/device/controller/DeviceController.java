@@ -36,6 +36,8 @@ import com.zxiang.project.business.device.service.IDeviceService;
 import com.zxiang.project.business.place.domain.Place;
 import com.zxiang.project.business.place.service.IPlaceService;
 import com.zxiang.project.business.terminal.service.ITerminalService;
+import com.zxiang.project.system.area.domain.Area;
+import com.zxiang.project.system.area.service.IAreaService;
 import com.zxiang.project.system.user.domain.User;
 import com.zxiang.project.system.user.mapper.UserMapper;
 import com.zxiang.project.system.user.service.IUserService;
@@ -62,6 +64,8 @@ public class DeviceController extends BaseController
 	private IUserService userService;
 	@Autowired
 	private UserMapper userMapper;
+	@Autowired
+	private IAreaService areaService;
 	
 	@RequiresPermissions("business:device:view")
 	@GetMapping()
@@ -150,6 +154,16 @@ public class DeviceController extends BaseController
 		mmap.put("device", device);
 		mmap.put("terminalDropBoxList", terminalService.selectDropBoxList());
 		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
+		List<Area> provinceList = areaService.selectDropBoxList(0);
+		mmap.put("provinceList", provinceList == null ? new ArrayList<Area>() : provinceList);
+		if (device.getProvince() != null) {
+			List<Area> cityList = areaService.selectDropBoxList(device.getProvince());
+			mmap.put("cityList", cityList);
+		}
+		if (device.getCity() != null) {
+			List<Area> countyList = areaService.selectDropBoxList(device.getCity());
+			mmap.put("countyList", countyList == null ? new ArrayList<Area>() : countyList);
+		}
 		User queryUser = new User();
 		queryUser.setUserType(UserConstants.USER_TYPE_JOIN);
 		List<User> userListJoin = userMapper.selectUserList(queryUser);//userService.selectUserList(queryUser);
