@@ -2,6 +2,8 @@ package com.zxiang.project.client.join.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,47 +34,44 @@ import com.zxiang.project.system.user.service.IUserService;
  */
 @Controller
 @RequestMapping("/client/join")
-public class JoinController extends BaseController
-{
-    private String prefix = "client/join";
-	
+public class JoinController extends BaseController {
+	private String prefix = "client/join";
+
 	@Autowired
 	private IJoinService joinService;
 	@Autowired
 	private IUserService userService;
-	
+
 	@RequiresPermissions("client:join:view")
 	@GetMapping()
-	public String join()
-	{
-	    return prefix + "/join";
+	public String join() {
+		return prefix + "/join";
 	}
-	
+
 	/**
 	 * 查询机主列表
 	 */
-	@DataFilter(personAlias="b.user_id")
+	@DataFilter(personAlias = "b.user_id")
 	@RequiresPermissions("client:join:list")
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(Join join)
-	{
+	public TableDataInfo list(Join join) {
 		startPage();
-        List<Join> list = joinService.selectJoinList(join);
+		List<Join> list = joinService.selectJoinList(join);
 		return getDataTable(list);
 	}
-	
+
 	/**
 	 * 新增机主
 	 */
 	@GetMapping("/add")
 	public String add(ModelMap mmap) {
 		List<User> payUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
-				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+				UserConstants.USER_TYPE_AGENT, UserConstants.USER_TYPE_JOIN, UserConstants.USER_TYPE_REPAIR);
 		mmap.put("payUserList", payUserList); // 购机推荐人
-	    return prefix + "/add";
+		return prefix + "/add";
 	}
-	
+
 	/**
 	 * 新增保存机主
 	 */
@@ -80,7 +79,7 @@ public class JoinController extends BaseController
 	@Log(title = "机主", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(Join join) {		
+	public AjaxResult addSave(Join join) {
 		return toAjax(joinService.insertJoin(join));
 	}
 
@@ -88,16 +87,15 @@ public class JoinController extends BaseController
 	 * 修改机主
 	 */
 	@GetMapping("/edit/{joinId}")
-	public String edit(@PathVariable("joinId") Integer joinId, ModelMap mmap)
-	{
+	public String edit(@PathVariable("joinId") Integer joinId, ModelMap mmap) {
 		Join join = joinService.selectJoinById(joinId);
 		mmap.put("join", join);
 		List<User> payUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
-				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+				UserConstants.USER_TYPE_AGENT, UserConstants.USER_TYPE_JOIN, UserConstants.USER_TYPE_REPAIR);
 		mmap.put("payUserList", payUserList); // 购机推荐人
-	    return prefix + "/edit";
+		return prefix + "/edit";
 	}
-	
+
 	/**
 	 * 修改保存机主
 	 */
@@ -105,39 +103,66 @@ public class JoinController extends BaseController
 	@Log(title = "机主", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
-	public AjaxResult editSave(Join join) {		
+	public AjaxResult editSave(Join join) {
 		return toAjax(joinService.updateJoin(join));
 	}
+
 	/**
-	 * 修改机主参数配置
+	 * 修改机主参数配置弹框
 	 */
 	@GetMapping("/editParam/{joinId}")
-	public String editParam(@PathVariable("joinId") Integer joinId, ModelMap mmap)
-	{
+	public String editParam(@PathVariable("joinId") Integer joinId, ModelMap mmap) {
 		Join join = joinService.selectJoinById(joinId);
 		mmap.put("join", join);
 		return prefix + "/editParam";
 	}
-	
+
+	/**
+	 * 批量修改机主参数配置弹框
+	 */
+	@GetMapping("/toBatchEditParam/{userType}")
+	public String toBatchEditParam(@PathVariable("userType") String userType, HttpServletRequest requset,
+			ModelMap mmap) {
+		String ids = requset.getParameter("ids");
+		mmap.put("ids", ids);
+		return prefix + "/batchEditParam";
+	}
+
+	/**
+	 * 批量修改机主参数配置
+	 */
+	@RequiresPermissions("client:join:batchParamSet")
+	@PostMapping("/batchEditParam")
+	@ResponseBody
+	public AjaxResult batchEditParam(Join join) {
+		try {
+			joinService.batchEditParam(join);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return AjaxResult.error();
+		}
+		return AjaxResult.success();
+	}
+
 	/**
 	 * 删除机主
 	 */
 	@RequiresPermissions("client:join:remove")
 	@Log(title = "机主", businessType = BusinessType.DELETE)
-	@PostMapping( "/remove")
+	@PostMapping("/remove")
 	@ResponseBody
-	public AjaxResult remove(String ids) {		
+	public AjaxResult remove(String ids) {
 		return toAjax(joinService.deleteJoinByIds(ids));
 	}
-	
+
 	/**
 	 * 查找机主下拉框数据
 	 */
 	@RequestMapping("/getDropBoxJoinList")
-    @ResponseBody
-    public TableDataInfo getDropBoxJoinList() {
+	@ResponseBody
+	public TableDataInfo getDropBoxJoinList() {
 		List<Join> list = joinService.selectDropBoxList();
 		return getDataTable(list);
-    }
-	
+	}
+
 }

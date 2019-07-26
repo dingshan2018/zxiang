@@ -67,5 +67,12 @@ public interface TradeOrderMapper
 	 * @return
 	 */
 	public List<TradeOrder> selectUnSendList(@Param("userId")Integer userId);
+
+	/**
+	 * 根据商户订单号查询订单
+	 * @param tradeOrderIdDingShang
+	 * @return
+	 */
+	public TradeOrder selectByOutTradeOrder(@Param("outTradeOrder")String tradeOrderIdDingShang);
 	
 }

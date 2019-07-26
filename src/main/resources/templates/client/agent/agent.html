@@ -43,6 +43,9 @@
       <a class="btn btn-outline btn-danger btn-rounded" onclick="fundDetail()" shiro:hasPermission="client:fundLog:list">
         <i class="fa fa-usd"></i> 资金流水
       </a>
+      <a class="btn btn-outline btn-success btn-rounded" onclick="batchParamSet()" shiro:hasPermission="client:agent:batchParamSet">
+        <i class="fa fa-plus"></i> 批量参数设置
+      </a>
     </div>
 
     <div class="col-sm-12 select-table table-striped">
@@ -77,8 +80,8 @@
 				{field : 'cityName',title : '代理城市'},
 				{field : 'countyName',title : '代理地区'},
 				{field : 'level',title : '代理等级',formatter: function(value, row, index) {
-					if(value == 1) {return "一级代理"}
-					if(value == 2) {return "二级代理"}
+					if(value == 1) {return "地级市代"}
+					if(value == 2) {return "区县代理"}
 					return "-";
 	            }},
 				{field : 'deviceNum',title : '设备数量' },
@@ -166,6 +169,15 @@
         		$.modal.alertWarning("请填写开户行"); return;
         	}
         	$.modal.open("提现", ctx +"client/fundLog/getMoney/03/"+clientId, 500, 450);
+        }
+        function batchParamSet(){
+        	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+    		if (rows.length == 0) {
+    			$.modal.alertWarning("请至少选择一条记录");
+    			return;
+    		}
+    		var idds = rows.join(",");
+    		$.modal.open("批量参数设置", ctx +"client/agent/toBatchEditParam/03?ids="+idds,800,550);
         }
     </script>
 </body>

@@ -23,7 +23,6 @@ import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
-import com.zxiang.project.system.area.domain.Area;
 import com.zxiang.project.system.post.service.IPostService;
 import com.zxiang.project.system.role.service.IRoleService;
 import com.zxiang.project.system.user.domain.User;
@@ -61,7 +60,6 @@ public class UserController extends BaseController
     public TableDataInfo list(User user)
     {
         startPage();
-        user.setUserType("00");
         List<User> list = userService.selectUserList(user);
         return getDataTable(list);
     }
@@ -217,8 +215,8 @@ public class UserController extends BaseController
 	 */
 	@RequestMapping("/getDropBoxUserList")
     @ResponseBody
-    public TableDataInfo getDropBoxUserList() {
-		List<User> list  = userService.getDropBoxUserList();
+    public TableDataInfo getDropBoxUserList(User user) {
+		List<User> list  = userService.getDropBoxUserList(user);
 		return getDataTable(list);
     }
 	
@@ -231,6 +229,16 @@ public class UserController extends BaseController
 		String city = (String) params.get("city");
 		String county = (String) params.get("county");
 		List<User> list  = userService.selectUserByCity(Long.parseLong(city),Long.parseLong(county));
+		return getDataTable(list);
+    }
+	
+	/**
+	 * 根据服务商ID获取服务商员工
+	 */
+	@RequestMapping("/selectUserByRepairId")
+    @ResponseBody
+    public TableDataInfo selectUserByRepairId(@RequestBody Map<String, Object> params) {
+		List<User> list  = userService.selectUserByRepairId(params);
 		return getDataTable(list);
     }
 }

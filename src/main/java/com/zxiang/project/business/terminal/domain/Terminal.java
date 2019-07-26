@@ -63,12 +63,16 @@ public class Terminal extends BaseEntity
 	private Date updateTime;
 	/**出纸密钥  */
 	private String offerKey;
+	
+	private String logUrl;//终端日志URL
 
 	private String deviceCode;
 	private String deviceSn;
 	private String placeName;
 	private String statusName;
 	private String onlineStatusName;
+	
+	private String userId;
 	
 	public void setTerminalId(Integer terminalId) 
 	{
@@ -312,26 +316,35 @@ public class Terminal extends BaseEntity
 	public void setDeviceSn(String deviceSn) {
 		this.deviceSn = deviceSn;
 	}
+	
 
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getLogUrl() {
+		return logUrl;
+	}
+
+	public void setLogUrl(String logUrl) {
+		this.logUrl = logUrl;
+	}
+
+	@Override
 	public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("terminalId", getTerminalId())
-            .append("terminalCode", getTerminalCode())
-            .append("deviceId", getDeviceId())
-            .append("placeId", getPlaceId())
-            .append("rssi", getRssi())
-            .append("lastHeartTime", getLastHeartTime())
-            .append("lastLoginTime", getLastLoginTime())
-            .append("volumn", getVolumn())
-            .append("status", getStatus())
-            .append("delFlag", getDelFlag())
-            .append("lon", getLon())
-            .append("lat", getLat())
-            .append("version", getVersion())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
-    }
+		return "Terminal [terminalId=" + terminalId + ", terminalCode=" + terminalCode + ", deviceId=" + deviceId
+				+ ", placeId=" + placeId + ", rssi=" + rssi + ", iccId=" + iccId + ", lastHeartTime=" + lastHeartTime
+				+ ", lastLoginTime=" + lastLoginTime + ", accSysIp=" + accSysIp + ", accSysPort=" + accSysPort
+				+ ", snCode=" + snCode + ", onlineStatus=" + onlineStatus + ", status=" + status + ", volumn=" + volumn
+				+ ", delFlag=" + delFlag + ", lon=" + lon + ", lat=" + lat + ", version=" + version + ", createBy="
+				+ createBy + ", createTime=" + createTime + ", updateBy=" + updateBy + ", updateTime=" + updateTime
+				+ ", offerKey=" + offerKey + ", logUrl=" + logUrl + ", deviceCode=" + deviceCode + ", deviceSn="
+				+ deviceSn + ", placeName=" + placeName + ", statusName=" + statusName + ", onlineStatusName="
+				+ onlineStatusName + ", userId=" + userId + "]";
+	}
+
 }

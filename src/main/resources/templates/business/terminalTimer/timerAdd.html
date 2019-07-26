@@ -13,6 +13,7 @@
 					<input id="terminalCode" name="terminalCode" th:value="${terminalCode}" class="form-control" readonly="readonly">
 				</div>
 			</div>
+			<!-- 
 			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>定时类型：</label>
 				<div class="col-sm-8">
@@ -30,26 +31,19 @@
 					</select>
 				</div>
 			</div>
+			 -->
 			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>开机时间：</label>
 				<div class="col-sm-8">
-					<div id="datetimepicker1" class="input-append date">
-				      	<input type="text" id="powerOnTime" ></input>
-				      	<span class="add-on">
-				      	  <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-				      	</span>
-				    </div>
+					<input type="text" class="time-input form-control date-time-picker" placeholder="开机时间" id="powerOnTime" readonly/>
+
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>关机时间：</label>
 				<div class="col-sm-8">
-					<div id="datetimepicker2" class="input-append date">
-				      	<input type="text" id="powerOffTime"></input>
-				      	<span class="add-on">
-				      	  <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-				      	</span>
-				    </div>
+					<input type="text" class="time-input form-control date-time-picker" placeholder="关机时间" id="powerOffTime" readonly/>
+
 				</div>
 			</div>
 			<div class="form-group">
@@ -77,7 +71,11 @@
     <div th:include="include::footer"></div>
     <!-- <script type="text/javascript" src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script> -->
     <script type="text/javascript" src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js"></script>
+	<link th:href="@{/css/bootstrap-datetimepicker.min.css}" rel="stylesheet"/>
+    <script th:src="@{/js/bootstrap-datetimepicker.min.js}"></script>
+  	<script th:src="@{/js/bootstrap-datetimepicker.zh-CN.js}"></script>
     <script type="text/javascript">
+    	///$(".input-group.date").datepicker({todayBtn: "linked",keyboardNavigation: !1,forceParse: !1,calendarWeeks: !0,autoclose: !0});
 	    $(function(){
 	    	//不用引入语言直接复制中文转换代码
 	    	$.fn.datetimepicker.dates['zh-CN'] = {
@@ -115,13 +113,12 @@
           	});
 	 	});
 
+	    
+	    
 		var prefix = ctx + "business/terminalTimer"
 		$("#form-terminalTimer-add").validate({
 			rules:{
 				terminalId:{
-					required:true,
-				},
-				timerType:{
 					required:true,
 				},
 				powerOnTime:{
@@ -161,7 +158,7 @@
         		url : prefix + "/add",
         		data : {
         			"terminalId": terminalId,
-        			"timerType": timerType,
+        			//"timerType": timerType,
         			"powerOnTime": powerOnTime,
         			"powerOffTime": powerOffTime,
         			"status": status
@@ -175,7 +172,23 @@
         		}
         	});
         }
-
+		// 日期选择器初始化
+	    function initDateTimePicker (select) {
+	      $(select || '.date-time-picker').datetimepicker({
+	        language:  'zh-CN',
+	        //format: 'yyyy-mm-dd hh:ii',
+	        format: 'yyyy-mm-dd hh:ii:ss',
+	        todayBtn:  1,
+	        autoclose: true,
+	        todayHighlight: 1,
+	        startView: 0,
+	        minView:0,
+	        showMeridian: 1,
+	        minuteStep: 1
+	      }).on('changeDate', function(ev){
+	      });
+	    }
+	    initDateTimePicker();
 	</script>
 </body>
 </html>

@@ -94,7 +94,7 @@
 		var num=document.getElementById("num");
 		num.innerText=count;
 		var remain=document.getElementById("remain");
-		remain.innerText=(10-count);
+		remain.innerText=(100-count);
 	});
 	  
     $('#fileUploadContent').initUpload({
@@ -108,7 +108,7 @@
       //"showSummerProgress":false,//总进度条，默认限制
       //"scheduleStandard":true,//模拟进度的方式，设置为true是按总进度，用于控制上传时间，如果设置为false,按照文件数据的总量,默认为false
       "size":122880,//文件大小限制，单位kb,默认不限制
-      "maxFileNumber":10,//文件个数限制，为整数
+      "maxFileNumber":100,//文件个数限制，为整数
       //"filelSavePath":"",//文件上传地址，后台设置的根目录
       "beforeUpload":beforeUploadFun,//在上传前执行的函数
       "onUpload":onUploadFun,//在上传后执行的函数
@@ -169,8 +169,8 @@
 
     	var adMaterialCount = getAdMaterialCount(adScheduleId);
     	//目前限制一个广告计划总数最多上传10个文件
-    	if(uploadNum + adMaterialCount > 10){
-    		$.modal.alertWarning("您最多还可上传 "+ (10-adMaterialCount) +"个文件!");
+    	if(uploadNum + adMaterialCount > 100){
+    		$.modal.alertWarning("您最多还可上传 "+ (100-adMaterialCount) +"个文件!");
 			return;
     	}
 
@@ -252,7 +252,7 @@
     }
   	
     function adView(){
-		var http = "http://mmedia.bp.zcloudtechs.cn/mmedia/pageJump/go_programme_view.action?scheduleId=";
+		var http = "http://mmedia.dingscm.com/mmedia/pageJump/go_programme_view.action?scheduleId=";
 		var sxScheduleId = $("#sxScheduleId").val();
 		if(sxScheduleId != '' && sxScheduleId != null){
 			var url = http + sxScheduleId;

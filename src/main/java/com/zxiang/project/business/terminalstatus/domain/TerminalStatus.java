@@ -37,6 +37,14 @@ public class TerminalStatus extends BaseEntity
 	private String accSysPort;
 	/** 更新时间 */
 	private Date createTime;
+	
+	private String address;
+	
+	private String build;
+	
+	private String terminalCode;
+	
+	private String deviceCode;
 
 	public void setStatusId(Integer statusId) 
 	{
@@ -143,4 +151,36 @@ public class TerminalStatus extends BaseEntity
             .append("createTime", getCreateTime())
             .toString();
     }
+
+	public String getBuild() {
+		return build;
+	}
+
+	public void setBuild(String build) {
+		this.build = build;
+	}
+
+	public String getDeviceCode() {
+		return deviceCode;
+	}
+
+	public void setDeviceCode(String deviceCode) {
+		this.deviceCode = deviceCode;
+	}
+
+	public String getTerminalCode() {
+		return terminalCode;
+	}
+
+	public void setTerminalCode(String terminalCode) {
+		this.terminalCode = terminalCode;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
 }

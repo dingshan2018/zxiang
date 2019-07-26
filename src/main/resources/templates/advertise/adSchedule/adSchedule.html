@@ -14,6 +14,10 @@
                 <input type="text" name="scheduleName" id="scheduleName"/>
               </li>
               <li>
+              	<span class="select-item-name">设备编号：</span>
+              	<input type="text" name="deviceCode" id="deviceCode"/>
+              </li>
+              <li>
                 <span class="select-item-name">投放用户：</span>
                		<select
                     id="releaser"
@@ -72,14 +76,12 @@
               	</a>
                 <a class="btn btn-success btn-rounded btn-sm" onclick="exportModule()"><i class="fa fa-download"></i>&nbsp;导出
                 </a>
-                <a class="btn btn-success btn-rounded btn-sm" onclick="materialUpload()" shiro:hasPermission="advertise:adSchedule:add"><i class="fa fa-download"></i>&nbsp;素材上传
+                <a class="btn btn-warning btn-rounded btn-sm" onclick="materialUpload()" shiro:hasPermission="advertise:adSchedule:add"><i class="fa fa-search"></i>&nbsp;素材上传
                 </a>
-                <!-- <a class="btn btn-success btn-rounded btn-sm" onclick="order()"><i class="fa fa-download"></i>&nbsp;预约
+                <a class="btn btn-info btn-rounded btn-sm" onclick="editReleaseTimer()" shiro:hasPermission="advertise:adSchedule:editReleaseTimer"><i class="fa fa-edit"></i>&nbsp;投放时段
                 </a>
-                <a class="btn btn-success btn-rounded btn-sm" onclick="audit()" shiro:hasPermission="advertise:adSchedule:audit"><i class="fa fa-download"></i>&nbsp;审核
+                <a class="btn btn-primary btn-rounded btn-sm" onclick="editReleaseDevice()" shiro:hasPermission="advertise:adSchedule:editReleaseDevice"><i class="fa fa-edit"></i>&nbsp;投放终端
                 </a>
-                <a class="btn btn-success btn-rounded btn-sm" onclick="releaseOnline()" shiro:hasPermission="advertise:adSchedule:releaseOnline"><i class="fa fa-download"></i>&nbsp;发布
-                </a> -->
               </li>
             </ul>
           </div>
@@ -106,10 +108,11 @@
     var removeFlag = [[${@permission.hasPermi('advertise:adSchedule:remove')}]];
     var auditFlag = [[${@permission.hasPermi('advertise:adSchedule:audit')}]];//审核权限
     var releaseOnlineFlag = [[${@permission.hasPermi('advertise:adSchedule:releaseOnline')}]];//发布权限
+    var republishFlag = [[${@permission.hasPermi('advertise:adSchedule:republish')}]]; //播放权限
+    var removeAdFlag = [[${@permission.hasPermi('advertise:adSchedule:removeAd')}]]; //停播权限
     var prefix = ctx + 'advertise/adSchedule';
 
     $(function() {
-
     	//投放广告商下拉框数据
         var advertiserList = selectAdvertiseList();
         $.each(advertiserList, function (i) {
@@ -133,6 +136,7 @@
             removeUrl: prefix + "/remove",
             modalName: "广告投放",
             search    : false,
+            showExport: false,
             columns: [{
 	            checkbox: true
 	        },
@@ -182,7 +186,9 @@
 		                 actions.push('<a class="btn btn-info btn-xs '+ auditFlag + '" href="#" onclick="audit(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>审核</a> ');
 	            	 }else if(row.status == toBeReleased){
 		                 actions.push('<a class="btn btn-warning btn-xs '+ releaseOnlineFlag + '" href="#" onclick="releaseOnline(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>发布</a> ');
-	            	 }/* else if(row.status == toPlay){
+	            	 }
+	            	 
+	            	 /*else if(row.status == toPlay){
 	            		 return '待播放';
 	            	 }else if(row.status == "05"){
 	            		 return '已播放';
@@ -265,6 +271,10 @@
 				title : '审核人员'
 			},
 			{
+				field : 'deadLine',
+				title : '截止日期'
+			},
+			{
 				field : 'createBy',
 				title : '创建者'
 			},
@@ -287,12 +297,21 @@
 	            	var actions = [];
 	            	/* actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                     actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.adScheduleId + '\')"><i class="fa fa-remove"></i>删除</a>'); */
-                    actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="preview(\'' + row.adScheduleId +
+                    actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="previewFileName(\'' + row.adScheduleId +
                     	'\')"><i class="fa fa-search"></i>素材预览</a> ');
-                    actions.push('<a class="btn btn-warning btn-xs" onclick="adPayByAccount(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>支付</a> ');
+                    
                     actions.push(
                         	'<a class="btn btn-info btn-xs" href="#" onclick="adDetail(\'' + row.adScheduleId +
                         	'\')"><i class="fa fa-edit"></i>详情</a> ');
+                    if(row.payStatus=='0'){
+                    	actions.push('<a class="btn btn-warning btn-xs " onclick="adPayByAccount(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>支付</a> ');
+                    }
+                    if(row.releaseStatus == '0'){
+                    	actions.push('<a class="btn btn-warning btn-xs ' + republishFlag + '" onclick="republish(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>播放</a> ');
+                    }
+                    if(row.releaseStatus == '1'){
+                    	actions.push('<a class="btn btn-danger btn-xs '+ removeAdFlag +'" onclick="removeAd(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>停播</a> ');
+                    }
 					return actions.join('');
 	            }
 	        }]
@@ -320,6 +339,7 @@
     var toAudit= "02";//待审核
     var toBeReleased= "03";//待发布
     var toPlay= "04";//待播放
+  	var hasPlay = "05";//已播放
     var hasPay = "1";//已支付
     //终端广告01,页面H5广告02
     var type_terminal = "01";
@@ -336,7 +356,7 @@
 		//$.modal.open("素材预览", url);
 
 		//用直接跳转页面链接的方式预览
-    	var http = "http://mmedia.bp.zcloudtechs.cn/mmedia/pageJump/go_programme_view.action?scheduleId=";
+    	var http = "http://mmedia.dingscm.com/mmedia/pageJump/go_programme_view.action?scheduleId=";
 		var sxScheduleId;
 		$.ajax({
 	        url: ctx + "advertise/adSchedule/selectSxScheduleId/" + adScheduleId,
@@ -364,6 +384,12 @@
 		})
   	}
 
+  	//素材预览仅展示文件名称及缩略图
+  	function previewFileName(adScheduleId){
+  	    var url = ctx + "settle/adMaterial/previewFileNameByAdSchId/" + adScheduleId;
+  	    createMenuItem(url, '广告素材');
+  	}
+  
   	//素材上传弹窗函数
     function materialUpload() {
     	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
@@ -392,7 +418,36 @@
     	var url = ctx + "advertise/adSchedule/materialUpload/" + rows;
     	$.modal.open("素材上传", url);
 	}
-
+  	
+  	//修改投放时间
+  	function editReleaseTimer(){
+  		var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+   		if (rows.length == 0) {
+   			$.modal.alertWarning(selectOneRecord);
+   			return;
+   		}
+   		if (rows.length > 1){
+   			$.modal.alertWarning(onlyOneRecord);
+   			return;
+   		}
+  	    var url = ctx + "advertise/adReleaseTimer/editTimer/" + rows;
+  	    createMenuItem(url, '广告投放时段');
+  	}
+	//修改投放设备
+  	function editReleaseDevice(){
+  		var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+   		if (rows.length == 0) {
+   			$.modal.alertWarning(selectOneRecord);
+   			return;
+   		}
+   		if (rows.length > 1){
+   			$.modal.alertWarning(onlyOneRecord);
+   			return;
+   		}
+  	    var url = ctx + "advertise/releaseDevice/editDevice/" + rows;
+  	    createMenuItem(url, '广告投放设备');
+  	}
+  	
   	//预约,未使用，同function order(adScheduleId)
     function order() {
 		var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
@@ -451,7 +506,76 @@
    		var url = ctx + "advertise/adSchedule/order/" + adScheduleId;
     	$.modal.open("广告投放预约", url);
   	}
+  	
+    function republish(adScheduleId) {
+    	var adSchedule = getAdScheduleInfo(adScheduleId);
+    	//终端广告才判断是否有素材，H5广告不判断是否有素材
+      	if(adSchedule.releasePosition == type_terminal){
+      		var batch = getMaxBatch(adScheduleId);
+       		if (batch <= 0) {
+       			$.modal.alertWarning(noMaterial);
+       	        return;
+       		}
+       		//判断还有哪种模板元素没有上传素材
+       		var allType = judgeAllType(adScheduleId);
+       		if(allType != "allHas"){
+       			if(allType == "error"){
+       				$.modal.alertWarning("暂不能预约,请联系管理员!");
+           	        return;
+       			}else{
+       				$.modal.alertWarning("您还有模板元素为 '"+allType+ "' 的素材类型未上传,请先上传!");
+           	        return;
+       			}
+       		}
+       		
+      	}
+		var status = adSchedule.status;
+   		if(status != '04' && status != '05'){
+   			$.modal.alertWarning("该广告未发布，无法开始播放!");
+   	        return;
+   		}
+   		$.modal.confirm("确定播放该条" + adSchedule.scheduleName + "广告吗？", function() {
+	   		$.ajax({
+	    		cache : true,
+	    		type : "POST",
+	    		url : prefix + "/republish",
+	    		data : {
+	    			"adScheduleId": adScheduleId
+	    		},
+	    		async : false,
+	    		error : function(request) {
+	    			$.modal.alertError("系统错误");
+	    		},
+	    		success : function(data) {
+	    			$.modal.msgSuccess(data.msg);
+	    			$.table.search();
+	    		}
+	    	});
+   		});
+  	}
 
+    function removeAd(adScheduleId) {
+    	var adSchedule = getAdScheduleInfo(adScheduleId);
+   		$.modal.confirm("确定停播该条" + adSchedule.scheduleName + "广告吗？", function() {
+	   		$.ajax({
+	    		cache : true,
+	    		type : "POST",
+	    		url : prefix + "/removeAd",
+	    		data : {
+	    			"adScheduleId": adScheduleId
+	    		},
+	    		async : false,
+	    		error : function(request) {
+	    			$.modal.alertError("系统错误");
+	    		},
+	    		success : function(data) {
+	    			$.modal.msgSuccess(data.msg);
+	    			$.table.search();
+	    		}
+	    	});
+   		});
+  	}
+    
   	//审核,未使用,同function audit(adScheduleId) {
     function audit() {
     	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
@@ -679,6 +803,7 @@
     	$.modal.confirm("确认导出？", function() {
 			//location.href = ctx + "advertise/adSchedule/excelExport?orgId="+vm.q.orgId+'&jssysDm='+vm.q.jssysDm+'&result='+vm.q.result+'&userRybh='+vm.q.userRybh;
     		var scheduleName = $("#scheduleName").val();
+    		var deviceCode = $("#deviceCode").val();
     		var releaser = $("#releaser").val();
     		var advertiser = $("#advertiser").val();
     		var promotioner = $("#promotioner").val();
@@ -686,7 +811,8 @@
     		var startTime = $("#startTime").val();
     		var endTime = $("#endTime").val();
 
-			location.href = ctx + "advertise/adSchedule/excelExport?scheduleName="+scheduleName+'&releaser='+releaser
+			location.href = ctx + "advertise/adSchedule/excelExport?scheduleName="+scheduleName
+					+'&releaser='+releaser+'&deviceCode='+deviceCode
 					+'&advertiser='+advertiser+'&promotioner='+promotioner+'&status='+status
 					+'&startTime='+startTime+'&endTime='+endTime
     		$.modal.alert("导出成功!");
@@ -726,7 +852,7 @@
        	        $.modal.alertWarning('该广告费用已支付,请勿重复支付!');
        	        return;
           	}
-        	if (adSchedule.status != toBeReleased) {
+        	if (adSchedule.status != toBeReleased && adSchedule.status != '04' && adSchedule.status!='05') {
        	        $.modal.alertWarning('广告审核通过后才能支付!');
        	        return;
           	}

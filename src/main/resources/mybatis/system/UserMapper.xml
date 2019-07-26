@@ -51,7 +51,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 	
 	<select id="selectUserList" parameterType="User" resultMap="UserResult">
-		select u.user_id,u.puser_id,u.leader_id, u.dept_id,u.user_type, u.login_name, u.user_name, u.email, u.phonenumber, u.password, u.sex, u.avatar, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name from sys_user u
+		select u.user_id,u.puser_id,u.leader_id, u.dept_id,u.user_type, u.login_name, u.user_name, u.email, u.phonenumber, u.password, u.sex, u.avatar, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name,
+		(select nickname from zx_wx_user w where w.user_id = u.user_id limit 1)	as nickname	
+		from sys_user u
 		left join sys_dept d on u.dept_id = d.dept_id
 		where u.del_flag = '0' 
 		<if test="loginName != null and loginName != ''">
@@ -74,9 +76,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</if>
 		<if test="deptId != null and deptId != 0">
 			AND (u.dept_id = #{deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE FIND_IN_SET (#{deptId},ancestors) ))
-		</if>
-		<if test="puserId != null and puserId != ''">
-			AND u.puser_id = #{puserId}
 		</if>
 		<if test="puserId != null and puserId != ''">
 			AND u.puser_id = #{puserId}
@@ -205,8 +204,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		)
 	</insert>
 	
-	<select id="selectDropBoxList" resultMap="UserResult">
+	<select id="selectDropBoxList" resultMap="UserResult" parameterType="User">
         select user_id, user_name, login_name from sys_user where status=0 and del_flag=0
+        	<if test="userType != null and userType != ''">
+			AND user_type=#{#userType}
+			</if>
     </select>
     <delete id="deleteUserByPhone" parameterType="String">
  		delete from sys_user where phonenumber = #{phone}
@@ -230,6 +232,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		(SELECT repair_id FROM `zx_repair_area` WHERE city_id = #{cityId})
     </select>
     
+    <select id="selectJoinPlace"  resultType="java.util.HashMap" parameterType="String">
+		 SELECT 
+		  place_id
+		FROM
+		  zx_device  
+		  WHERE 
+	       owner_id = #{userId}
+    </select>
+    
      <select id="selectzxagent"  resultType="java.util.HashMap" parameterType="String">
 		 SELECT 
 		  z.city,
@@ -250,5 +261,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		   repair_id= #{repairId} 
     </select>
     
+    <!-- 根据服务商ID获取服务商员工 -->
+    <select id="selectUserByRepairId" parameterType="Long" resultMap="UserResult">
+		SELECT * FROM `sys_user` WHERE del_flag !=2 AND user_type='04' AND puser_id = #{repairId}
+    </select>
     
 </mapper> 

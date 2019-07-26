@@ -31,23 +31,53 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="adUrl"    column="ad_url"    />
+        <result property="totalCnt"    column="total_cnt"    />
+        <result property="validCnt"    column="valid_cnt"    />
+        <result property="invalidCnt"    column="invalid_cnt"    />
+        <result property="address"    column="address"    />
+        <result property="build"    column="build"    />
+        <result property="province"    column="province"    />
+        <result property="city"    column="city"    />
+        <result property="county"    column="county"    />
     </resultMap>
 	
 	<sql id="selectDeviceVo">
-        select device_id, device_code, device_sn, device_type,
+        select total_cnt,valid_cnt,invalid_cnt,device_id, device_code, device_sn, device_type,
          terminal_id,
+         province, 
+        (select distinct a.pname from sys_area a where a.id =d.`province` ) provinceName,
+        city, 
+        (select distinct a.pname from sys_area a where a.id =d.`city` ) cityName,
+        county,
+        (select distinct a.pname from sys_area a where a.id =d.`county` ) countyName,
          (select distinct t.terminal_code from zx_terminal t where t.terminal_id =d.`terminal_id` ) terminalCode,
-         place_id, owner_id,
+         (select t.address from zx_terminal t where t.terminal_id =d.`terminal_id` ) address,
+         (select t.build from zx_terminal t where t.terminal_id =d.`terminal_id` ) build,
+         place_id, owner_id,(SELECT DISTINCT wu.nickname FROM `zx_wx_user` wu WHERE d.`owner_id`=wu.user_id 
+         ORDER BY wu.create_time DESC LIMIT 1) wxNickname,     
          (select distinct u.user_name from sys_user u where u.user_id =d.`owner_id` ) ownerName,
          (select distinct p.name from zx_place p where p.place_id =d.`place_id` ) placeName,
+         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='place_type' 
+         AND sdd.dict_value=(select p.`scene` from `zx_place` p where p.`place_id`=d.`place_id`) ) sceneName,
          price,tissue_len, lon, lat, release_time, remove_time, total_len, remain_len, last_heart_time, 
          last_login_time, last_scan_time, note, 
          status,
-         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='device_status' AND sdd.dict_value=d.`status` ) statusName,
+         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE 
+         sdd.dict_type ='device_status' AND sdd.dict_value=d.`status` ) statusName,
          release_status,del_flag, create_by, create_time, 
-         update_by, update_time from zx_device d
+         update_by, update_time,
+         (SELECT DISTINCT zr.repair_name FROM zx_repair zr WHERE zr.repair_id =
+         (SELECT p.`service_point` FROM `zx_place` p WHERE p.place_id=d.`place_id`)) servicePointName,
+          (SELECT DISTINCT za.agent_name FROM zx_agent za WHERE za.del_flag!=2 AND za.city 
+          =(SELECT p.`city` FROM `zx_place` p WHERE p.place_id=d.`place_id`) AND za.county IS NULL) agentLevel1,
+         (SELECT DISTINCT za.agent_name FROM zx_agent za WHERE za.del_flag!=2 AND za.city =
+         (SELECT p.`city` FROM `zx_place` p WHERE p.place_id=d.`place_id`) AND za.county =
+         (SELECT p.`county` FROM `zx_place` p WHERE p.place_id=d.`place_id`)) agentLevel2    
+          from zx_device d 
     </sql>
 	
+	<!-- 查询运营设备列表  -->
     <select id="selectDeviceList" parameterType="Device" resultMap="DeviceResult">
         <include refid="selectDeviceVo"/>
         <where> 
@@ -90,9 +120,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
              <if test="updateTime != null"> and update_time = #{updateTime}</if>
              <!-- 按照省市县下拉框搜索 -->
-             <if test="province != null and province != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.province = #{province})</if>
-             <if test="city != null and city != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.city = #{city})</if>
-             <if test="county != null and county != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.county = #{county})</if>
+             <!--  
+             <if test="province != null and province != ''"> and d.place_id in 
+             	(select zp.place_id from zx_place zp where zp.province = #{province})</if>
+             <if test="city != null and city != ''"> and d.place_id in 
+             	(select zp.place_id from zx_place zp where zp.city = #{city})</if>
+             <if test="county != null and county != ''"> and d.place_id in 
+             	(select zp.place_id from zx_place zp where zp.county = #{county})</if>
+             -->
+             <if test="province != null"> and d.province=#{province}</if>
+             <if test="city != null"> and d.city=#{city}</if>
+             <if test="county != null"> and d.county=#{county}</if>
+         	 <if test="scheduleId != null"> and d.device_id not in
+         	 	(select zrd.device_id from zx_release_device zrd where zrd.schedule_id=#{scheduleId}) </if>
+         	  <!-- 按照机主搜索 -->
+             <if test="ownerName != null and ownerName != ''"> and d.owner_id in 
+             	(SELECT user_id FROM `sys_user` su WHERE su.user_name LIKE concat('%', #{ownerName}, '%') 
+             	AND del_flag='0')
+             </if>
+             <if test="releaseDeviceCondition != null and releaseDeviceCondition != ''"> 
+             	and d.terminal_id IS NOT NULL
+             </if>
          </where>
          ORDER BY d.device_id DESC 
     </select>
@@ -139,9 +187,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
              <if test="updateTime != null"> and update_time = #{updateTime}</if>
              <!-- 按照省市县下拉框搜索 -->
-             <if test="province != null and province != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.province = #{province})</if>
-             <if test="city != null and city != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.city = #{city})</if>
-             <if test="county != null and county != ''"> and d.place_id in (select zp.place_id from zx_place zp where zp.county = #{county})</if>
+             <if test="province != null and province != ''"> and d.place_id in 
+             (select zp.place_id from zx_place zp where zp.province = #{province})</if>
+             <if test="city != null and city != ''"> and d.place_id in 
+             (select zp.place_id from zx_place zp where zp.city = #{city})</if>
+             <if test="county != null and county != ''"> and d.place_id in 
+             (select zp.place_id from zx_place zp where zp.county = #{county})</if>
          </where>
          ORDER BY d.device_id DESC 
     </select>
@@ -180,6 +231,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createTime != null  ">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
 			<if test="updateTime != null  ">update_time,</if>
+			<if test="province != null ">province,</if>
+			<if test="city != null ">city,</if>
+			<if test="county != null ">county,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="deviceId != null and deviceId != ''">#{deviceId},</if>
@@ -208,6 +262,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createTime != null ">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
 			<if test="updateTime != null ">#{updateTime},</if>
+			<if test="province != null ">#{province},</if>
+			<if test="city != null ">#{city},</if>
+			<if test="county != null ">#{county},</if>
          </trim>
     </insert>
 	 
@@ -224,6 +281,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="tissueLen != null  ">tissue_len = #{tissueLen},</if>
             <if test="lon != null  and lon != ''  ">lon = #{lon},</if>
             <if test="lat != null  and lat != ''  ">lat = #{lat},</if>
+             <if test="adUrl != null ">ad_url = #{adUrl},</if>
             <if test="releaseTime != null  ">release_time = #{releaseTime},</if>
             <if test="removeTime != null  ">remove_time = #{removeTime},</if>
             <if test="totalLen != null  ">total_len = #{totalLen},</if>
@@ -239,6 +297,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="totalCnt != null  ">total_cnt = #{totalCnt},</if>
+            <if test="validCnt != null  ">valid_cnt = #{validCnt},</if>
+            <if test="invalidCnt != null  ">invalid_cnt = #{invalidCnt},</if>
+            <if test="province != null ">province=#{province},</if>
+			<if test="city != null ">city=#{city},</if>
+			<if test="county != null ">county=#{county},</if>
         </trim>
         where device_id = #{deviceId}
     </update>
@@ -316,4 +380,70 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
        	  and #{userId} = (SELECT DISTINCT zd.owner_id FROM zx_device zd WHERE zd.device_id = d.device_id)
          </if>
     </select>
+    
+    <!-- 查询要导出的Excel数据 -->
+	<select id="queryExport" resultType="java.util.HashMap">
+       <include refid="selectDeviceVo"/>
+       	 <where> 
+             <if test="userId == null">  ${filterSql} </if>
+             <if test="userId != null and userId != ''"> and #{userId} = d.owner_id </if>
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="deviceCode != null and deviceCode != ''"> 
+             	and device_code like concat('%', #{deviceCode}, '%')
+             </if>
+             <if test="deviceSn != null and deviceSn != ''"> 
+             	and device_sn like concat('%', #{deviceSn}, '%')
+             </if>
+             <if test="deviceType != null and deviceType != ''"> and device_type = #{deviceType}</if>
+             <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
+             <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
+             <if test="ownerId != null and ownerId != ''"> and owner_id = #{ownerId}</if>
+             <if test="price != null and price != ''"> and price = #{price}</if>
+             <if test="tissueLen != null and tissueLen != ''"> and tissue_len = #{tissueLen}</if>
+             <if test="lon != null and lon != ''"> and lon = #{lon}</if>
+             <if test="lat != null and lat != ''"> and lat = #{lat}</if>
+             <if test="startTime != null and startTime != ''"><!-- 开始时间检索  导出Excel需要使用startTime-->
+				 AND date_format(d.release_time,'%y%m%d') &gt;= date_format(#{startTime},'%y%m%d')
+			 </if>
+			 <if test="endTime != null and endTime != ''"><!-- 结束时间检索 导出Excel需要使用endTime -->
+				 AND date_format(d.release_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+			 </if>
+             <if test="removeTime != null "> and remove_time = #{removeTime}</if>
+             <if test="totalLen != null and totalLen != ''"> and total_len = #{totalLen}</if>
+             <if test="remainLen != null and remainLen != ''"> and remain_len = #{remainLen}</if>
+             <if test="lastHeartTime != null "> and last_heart_time = #{lastHeartTime}</if>
+             <if test="lastLoginTime != null "> and last_login_time = #{lastLoginTime}</if>
+             <if test="lastScanTime != null "> and last_scan_time = #{lastScanTime}</if>
+             <if test="note != null and note != ''"> and note = #{note}</if>
+             <if test="status != null and status != ''"> and status = #{status}</if>
+             <if test="1==1"> and status != "04"</if>
+             <if test="releaseStatus != null and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
+             <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null"> and update_time = #{updateTime}</if>
+             <!-- 按照省市县下拉框搜索 -->
+             <!--  
+             <if test="province != null and province != ''"> and d.place_id in 
+             	(select zp.place_id from zx_place zp where zp.province = #{province})</if>
+             <if test="city != null and city != ''"> and d.place_id in 
+             	(select zp.place_id from zx_place zp where zp.city = #{city})</if>
+             <if test="county != null and county != ''"> and d.place_id in 
+             	(select zp.place_id from zx_place zp where zp.county = #{county})</if>
+             	-->
+             <if test="province != null and province != ''"> and d.province=#{province}</if>
+             <if test="city != null and city != ''"> and d.city=#{city}</if>
+             <if test="county != null and county != ''"> and d.county=#{county}</if>
+         	 <if test="scheduleId != null"> and d.device_id not in
+         	 	(select zrd.device_id from zx_release_device zrd where zrd.schedule_id=#{scheduleId}) </if>
+         	  <!-- 按照机主搜索 -->
+             <if test="ownerName != null and ownerName != ''"> and d.owner_id in 
+             	(SELECT user_id FROM `sys_user` su WHERE su.user_name LIKE concat('%', #{ownerName}, '%') 
+             	AND del_flag='0')
+             </if>
+         </where>
+         ORDER BY d.device_id DESC 
+    </select>
+    
 </mapper>

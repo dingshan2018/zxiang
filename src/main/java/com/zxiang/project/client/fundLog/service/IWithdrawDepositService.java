@@ -1,6 +1,10 @@
 package com.zxiang.project.client.fundLog.service;
 
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.zxiang.project.client.fundLog.domain.WithdrawDeposit;
 
@@ -51,5 +55,7 @@ public interface IWithdrawDepositService
      * @return 结果
      */
 	public int deleteWithdrawDepositByIds(String ids);
+
+	public void queryExport(Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception;
 	
 }

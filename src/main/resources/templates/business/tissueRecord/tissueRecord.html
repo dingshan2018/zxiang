@@ -53,7 +53,7 @@
               </select>
             </li>
             <li>
-              <span class="select-item-name">机主户：</span><!-- <input type="text" name="joiner"/> -->
+              <span class="select-item-name">机主：</span><!-- <input type="text" name="joiner"/> -->
               <select
                 id="joinId"
                 name="joinId"
@@ -66,6 +66,23 @@
             <li>
               <span class="select-item-name">出纸设备：</span>
               <input type="text" name="deviceSn" id="deviceSn"/>
+            </li>
+            <li>
+              <span class="select-item-name">创建者：</span>
+              <input type="text" name="createBy" id="createBy"/>
+            </li>
+            <li>
+              <span class="select-item-name">出纸类型：</span>
+              <select
+                id="tissueChannel"
+                name="tissueChannel"
+                data-live-search="true"
+                class="block-plugin__select-picker selectpicker"
+                data-style="btn-white btn-sm">
+                <option value="">全部</option>
+                <option value="0">无效出纸</option>
+                <option value="1">有效出纸</option>
+              </select>
             </li>
             <li class="select-time">
               <label>出纸时间： </label>
@@ -87,22 +104,35 @@
       </form>
     </div>
     <div class="btn-group hidden-xs" id="toolbar" role="group">
+    <!--  
       <a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:tissueRecord:add">
         <i class="fa fa-plus"></i> 新增
       </a>
       <a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="business:tissueRecord:remove">
         <i class="fa fa-trash-o"></i> 删除
       </a>
+      -->
     </div>
 
     <div class="col-sm-12 select-table table-striped">
       <div class="bootstrap-table__tool">
         <div class="bootstrap-table__tool-total btn-group" role="group">
+        <!--  
           <a class="btn btn-white btn-outline">
             <i class="glyphicon glyphicon-save-file"></i> 出纸数量： <strong id="paperSum"></strong> 
           </a>
           <a class="btn btn-white btn-outline">
             <i class="glyphicon glyphicon-yen"></i> 出纸金额： <strong id="moneySum"></strong> 元
+          </a>
+          -->
+          <a class="btn btn-white btn-outline">
+            <i class="glyphicon glyphicon-save-file"></i> 有效出纸数量： <strong id="validPaperSum"></strong> 
+          </a>
+          <a class="btn btn-white btn-outline">
+            <i class="glyphicon glyphicon-save-file"></i> 无效出纸数量： <strong id="invalidPaperSum"></strong>
+          </a>
+          <a class="btn btn-white btn-outline">
+            <i class="glyphicon glyphicon-yen"></i> 有效出纸金额： <strong id="validMoneySum"></strong> 元
           </a>
         </div>
       </div>
@@ -188,7 +218,11 @@
           },
           {
             field: 'tissueChannel',
-            title: '出纸类型'
+            title: '出纸类型',
+            formatter: function(value, row, index) {
+				if(value == '1') {return "有效出纸"}
+				else {return "无效出纸"}
+            }
           },
           {
             field: 'createBy',
@@ -197,7 +231,8 @@
           {
             field: 'createTime',
             title: '出纸时间'
-          },
+          }
+          /*,
           {
             title    : '操作',
             align    : 'center',
@@ -210,7 +245,8 @@
               return actions.join('');
             },
 			visible: false
-          }]
+          }*/
+          ]
       };
       $.table.init(options);
       $('#bootstrap-table').bootstrapTable('hideColumn', 'tissueRecordId');
@@ -226,9 +262,10 @@
     		var startTime = $("#startTime").val();
     		var endTime = $("#endTime").val();
     		var deviceSn = $("#deviceSn").val();
-
+			var tissueChannel = $("#tissueChannel").val();
+			var createBy = $("#createBy").val();
 			location.href = ctx + "business/tissueRecord/excelExport?agentId="+agentId+'&repairId='+repairId+'&joinId='+joinId
-					+'&startTime='+startTime+'&endTime='+endTime+'&deviceSn='+deviceSn
+					+'&startTime='+startTime+'&endTime='+endTime+'&deviceSn='+deviceSn+'&tissueChannel='+tissueChannel+'&createBy='+createBy
     		//$.modal.alert("导出成功!");
 		});
     }
@@ -241,23 +278,32 @@
 		var startTime = $("#startTime").val();
 		var endTime = $("#endTime").val();
 		var deviceSn = $("#deviceSn").val();
-		
-		var paperSum=document.getElementById("paperSum");
-		var moneySum=document.getElementById("moneySum");
-
+		var tissueChannle = $("#tissueChannel").val();
+		var createBy = $("#createBy").val();
+		//var paperSum=document.getElementById("paperSum");
+		//var moneySum=document.getElementById("moneySum");
+		var validPaperSum=document.getElementById("validPaperSum");
+		var invalidPaperSum=document.getElementById("invalidPaperSum");
+		var validMoneySum=document.getElementById("validMoneySum");
     	$.ajax({
 	        url: prefix + "/tissueCount?agentId="+agentId+'&repairId='+repairId+'&joinId='+joinId
-				+'&startTime='+startTime+'&endTime='+endTime+'&deviceSn='+deviceSn ,
+				+'&startTime='+startTime+'&endTime='+endTime+'&deviceSn='+deviceSn+'&tissueChannel='+tissueChannle+'&createBy='+createBy ,
 	        type: "post",
 	        async:false,
 	        success: function (data) {
-	        	paperSum.innerText=data.paperSum;
-	        	moneySum.innerText=data.moneySum;
+	        	//paperSum.innerText=data.paperSum;
+	        	//moneySum.innerText=data.moneySum;
+	        	validPaperSum.innerText=data.validPaperSum;
+	        	invalidPaperSum.innerText=data.invalidPaperSum;
+	        	validMoneySum.innerText=data.validMoneySum;
 	        },
 	        error: function (data) {
 	        	console.log("tissueCount:",data);
-	        	paperSum.innerText("查询失败");
-	        	moneySum.innerText("查询失败");
+	        	//paperSum.innerText="0";
+	        	//moneySum.innerText="0";
+	        	validPaperSum.innerText="0";
+	        	invalidPaperSum.innerText="0";
+	        	validMoneySum.innerText="0.0";
 	            //alert("后台查询失败");
 	        }
 		})

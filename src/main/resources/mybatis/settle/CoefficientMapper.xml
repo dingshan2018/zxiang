@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.settle.coefficient.mapper.CoefficientMapper">
+    
+    <resultMap type="Coefficient" id="CoefficientResult">
+        <result property="id"    column="id"    />
+        <result property="type"    column="type"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="adRate"    column="ad_rate"    />
+        <result property="adCarouselRate"    column="ad_carousel_rate"    />
+        <result property="scanRate"    column="scan_rate"    />
+        <result property="promDirectRate"    column="prom_direct_rate"    />
+        <result property="promIndirectRate"    column="prom_indirect_rate"    />
+        <result property="promPaperRate"    column="prom_paper_rate"    />
+        <result property="promotionRate"    column="promotion_rate"    />
+        <result property="directAgentRate"    column="direct_agent_rate"    />
+        <result property="serveRate"    column="serve_rate"    />
+        <result property="subsidyRate"    column="subsidy_rate"    />
+        <result property="lowestCash"    column="lowest_cash"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectCoefficientVo">
+        select id, type,lowest_cash, del_flag, ad_rate, ad_carousel_rate, scan_rate, prom_direct_rate, prom_indirect_rate, prom_paper_rate, promotion_rate, direct_agent_rate, serve_rate, subsidy_rate, create_by, create_time, update_by, update_time from zx_coefficient
+    </sql>
+	
+    <select id="selectCoefficientList" parameterType="Coefficient" resultMap="CoefficientResult">
+        <include refid="selectCoefficientVo"/>
+        <where>  
+            <if test="id != null and id != ''"> and id = #{id}</if>
+             <if test="type != null and type != ''"> and type = #{type}</if>
+             <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
+             <if test="adRate != null and adRate != ''"> and ad_rate = #{adRate}</if>
+             <if test="adCarouselRate != null and adCarouselRate != ''"> and ad_carousel_rate = #{adCarouselRate}</if>
+             <if test="scanRate != null and scanRate != ''"> and scan_rate = #{scanRate}</if>
+             <if test="promDirectRate != null and promDirectRate != ''"> and prom_direct_rate = #{promDirectRate}</if>
+             <if test="promIndirectRate != null and promIndirectRate != ''"> and prom_indirect_rate = #{promIndirectRate}</if>
+             <if test="promPaperRate != null and promPaperRate != ''"> and prom_paper_rate = #{promPaperRate}</if>
+             <if test="promotionRate != null and promotionRate != ''"> and promotion_rate = #{promotionRate}</if>
+             <if test="directAgentRate != null and directAgentRate != ''"> and direct_agent_rate = #{directAgentRate}</if>
+             <if test="serveRate != null and serveRate != ''"> and serve_rate = #{serveRate}</if>
+             <if test="subsidyRate != null and subsidyRate != ''"> and subsidy_rate = #{subsidyRate}</if>
+             <if test="lowestCash != null and lowestCash != ''"> and lowest_cash = #{lowestCash}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectCoefficientById" parameterType="Integer" resultMap="CoefficientResult">
+        <include refid="selectCoefficientVo"/>
+        where id = #{id}
+    </select>
+    
+     <select id="selectCoefficientTotal" parameterType="String"  resultType="int">
+         select count(*) from zx_coefficient
+        where type = #{type}
+    </select>
+        
+    <insert id="insertCoefficient" parameterType="Coefficient">
+        insert into zx_coefficient
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null and id != '' ">id,</if>
+			<if test="type != null and type != '' ">type,</if>
+			<if test="adRate != null and adRate != '' ">ad_rate,</if>
+			<if test="adCarouselRate != null and adCarouselRate != '' ">ad_carousel_rate,</if>
+			<if test="scanRate != null and scanRate != '' ">scan_rate,</if>
+			<if test="promDirectRate != null and promDirectRate != '' ">prom_direct_rate,</if>
+			<if test="promIndirectRate != null and promIndirectRate != '' ">prom_indirect_rate,</if>
+			<if test="promPaperRate != null and promPaperRate != '' ">prom_paper_rate,</if>
+			<if test="promotionRate != null and promotionRate != '' ">promotion_rate,</if>
+			<if test="directAgentRate != null and directAgentRate != '' ">direct_agent_rate,</if>
+			<if test="serveRate != null and serveRate != '' ">serve_rate,</if>
+			<if test="subsidyRate != null and subsidyRate != '' ">subsidy_rate,</if>
+			<if test="lowestCash != null and lowestCash != '' ">lowest_cash,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="updateBy != null and updateBy != '' ">update_by,</if>
+			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+			create_time,
+			del_flag,
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null and id != ''">#{id},</if>
+			<if test="type != null and type != ''">#{type},</if>
+			<if test="adRate != null and adRate != ''">#{adRate},</if>
+			<if test="adCarouselRate != null and adCarouselRate != ''">#{adCarouselRate},</if>
+			<if test="scanRate != null and scanRate != ''">#{scanRate},</if>
+			<if test="promDirectRate != null and promDirectRate != ''">#{promDirectRate},</if>
+			<if test="promIndirectRate != null and promIndirectRate != ''">#{promIndirectRate},</if>
+			<if test="promPaperRate != null and promPaperRate != ''">#{promPaperRate},</if>
+			<if test="promotionRate != null and promotionRate != ''">#{promotionRate},</if>
+			<if test="directAgentRate != null and directAgentRate != ''">#{directAgentRate},</if>
+			<if test="serveRate != null and serveRate != ''">#{serveRate},</if>
+			<if test="subsidyRate != null and subsidyRate != ''">#{subsidyRate},</if>
+			<if test="lowestCash != null and lowestCash != ''">#{lowestCash},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+			now(),
+			'0',
+         </trim>
+    </insert>
+	 
+    <update id="updateCoefficient" parameterType="Coefficient">
+        update zx_coefficient
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null  and type != ''  ">type = #{type},</if>
+            <if test="delFlag != null  and delFlag != ''  ">del_flag = #{delFlag},</if>
+            <if test="adRate != null  ">ad_rate = #{adRate},</if>
+            <if test="adCarouselRate != null  ">ad_carousel_rate = #{adCarouselRate},</if>
+            <if test="scanRate != null  ">scan_rate = #{scanRate},</if>
+            <if test="promDirectRate != null  ">prom_direct_rate = #{promDirectRate},</if>
+            <if test="promIndirectRate != null  ">prom_indirect_rate = #{promIndirectRate},</if>
+            <if test="promPaperRate != null  ">prom_paper_rate = #{promPaperRate},</if>
+            <if test="promotionRate != null  ">promotion_rate = #{promotionRate},</if>
+            <if test="directAgentRate != null  ">direct_agent_rate = #{directAgentRate},</if>
+            <if test="serveRate != null  ">serve_rate = #{serveRate},</if>
+            <if test="subsidyRate != null  ">subsidy_rate = #{subsidyRate},</if>
+            <if test="lowestCash != null  ">lowest_cash = #{lowestCash},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            update_time = now(),
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteCoefficientById" parameterType="Integer">
+        delete from zx_coefficient where id = #{id}
+    </delete>
+	
+    <delete id="deleteCoefficientByIds" parameterType="String">
+        delete from zx_coefficient where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+     <select id="selectCoefficientByType" parameterType="String"  resultMap="CoefficientResult">
+        <include refid="selectCoefficientVo"/>
+        where type = #{type}
+    </select>
+    
+    <select id="queryLowerCashBy" resultType="Long">
+    	select lowest_cash from zx_coefficient where type = #{type} limit 1
+    </select>
+    
+    
+</mapper>

@@ -39,6 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="servicePoint"    column="service_point"    />
     </resultMap>
 	
 	<sql id="selectPlaceVo">
@@ -62,8 +63,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         (select distinct u.user_name from sys_user u where u.user_id =p.`operator_id` ) operatorName,
          owner_id,
          (select distinct u.user_name from sys_user u where u.user_id =p.`owner_id` ) ownerName,
-        device_count, ct_bank,ct_account, ct_receiver, ct_phone, ct_identity, ct_rate, status, del_flag, note, 
-        create_by, create_time, update_by, update_time from zx_place p
+        (select count(1) from zx_device zd where zd.place_id =p.`place_id` and zd.status='02'  ) as device_count, 
+        ct_bank,ct_account, ct_receiver, ct_phone, ct_identity, ct_rate, status, del_flag, note, 
+        create_by, create_time, update_by, update_time,service_point,
+        (select distinct zr.repair_name from zx_repair zr where zr.repair_id =p.`service_point` ) servicePointName,
+        (SELECT DISTINCT za.agent_name FROM zx_agent za WHERE za.del_flag!=2 AND za.city =p.`city` AND za.county IS NULL) agentLevel1,
+        (SELECT DISTINCT za.agent_name FROM zx_agent za WHERE za.del_flag!=2 AND za.city =p.`city` AND za.county =p.`county` ) agentLevel2
+         from zx_place p
     </sql>
 	
     <select id="selectPlaceList" parameterType="Place" resultMap="PlaceResult">
@@ -88,6 +94,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="packet != null and packet != ''"> and packet = #{packet}</if>
              <if test="tissuePrice != null and tissuePrice != ''"> and tissue_price = #{tissuePrice}</if>
              <if test="tissueLen != null and tissueLen != ''"> and tissue_len = #{tissueLen}</if>
+             <if test="servicePoint != null and servicePoint != ''"> and service_point = #{servicePoint}</if>
              <if test="repairId != null and repairId != ''"> and repair_id = #{repairId}</if>
              <if test="supplyId != null and supplyId != ''"> and supply_id = #{supplyId}</if>
              <if test="operatorId != null and operatorId != ''"> and operator_id = #{operatorId}</if>
@@ -113,21 +120,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="updateTime != null "> and update_time = #{updateTime}</if>
              <if test="params.person != null"><!-- 结束时间检索 -->
 				AND (
-				#{params.person} like CONCAT(',',p.repair_id,',')
+				#{params.person} like CONCAT('%',',',p.repair_id,',','%')
 				OR 
-				#{params.person} like CONCAT(',',p.supply_id,',')
+				#{params.person} like CONCAT('%',',',p.supply_id,',','%')
 				OR
-				#{params.person} like CONCAT(',',p.operator_id,',')
+				#{params.person} like CONCAT('%',',',p.operator_id,',','%')
 				OR
-				#{params.person} like CONCAT(',',p.owner_id,',')
+				#{params.person} like CONCAT('%',',',p.owner_id,',','%')
 				)
 			 </if>
 			    <if test="params.city != null"><!-- 结束时间检索 -->
-				AND #{params.city} like CONCAT(',',p.city,',')
+				AND #{params.city} like CONCAT('%',',',p.city,',','%')
 			 </if>
 			    <if test="params.county != null"><!-- 结束时间检索 -->
-				AND #{params.county} like CONCAT(',',p.county,',')
-			
+				AND #{params.county} like CONCAT('%',',',p.county,',','%')
 			 </if>
          </where>
          ORDER BY p.place_id DESC 
@@ -157,6 +163,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="packet != null and packet != '' ">packet,</if>
 			<if test="tissuePrice != null and tissuePrice != '' ">tissue_price,</if>
 			<if test="tissueLen != null and tissueLen != '' ">tissue_len,</if>
+			<if test="servicePoint != null and servicePoint != '' ">service_point,</if>
 			<if test="repairId != null and repairId != '' ">repair_id,</if>
 			<if test="supplyId != null and supplyId != '' ">supply_id,</if>
 			<if test="operatorId != null and operatorId != '' ">operator_id,</if>
@@ -193,6 +200,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="packet != null and packet != ''">#{packet},</if>
 			<if test="tissuePrice != null and tissuePrice != ''">#{tissuePrice},</if>
 			<if test="tissueLen != null and tissueLen != ''">#{tissueLen},</if>
+			<if test="servicePoint != null and servicePoint != ''">#{servicePoint},</if>
 			<if test="repairId != null and repairId != ''">#{repairId},</if>
 			<if test="supplyId != null and supplyId != ''">#{supplyId},</if>
 			<if test="operatorId != null and operatorId != ''">#{operatorId},</if>
@@ -232,6 +240,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="packet != null  ">packet = #{packet},</if>
             <if test="tissuePrice != null  ">tissue_price = #{tissuePrice},</if>
             <if test="tissueLen != null  ">tissue_len = #{tissueLen},</if>
+            <if test="servicePoint != null  ">service_point = #{servicePoint},</if>
             <if test="repairId != null  ">repair_id = #{repairId},</if>
             <if test="supplyId != null  ">supply_id = #{supplyId},</if>
             <if test="operatorId != null  ">operator_id = #{operatorId},</if>
@@ -245,7 +254,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="ctRate != null  ">ct_rate = #{ctRate},</if>
             <if test="status != null  and status != ''  ">status = #{status},</if>
             <if test="delFlag != null  and delFlag != ''  ">del_flag = #{delFlag},</if>
-            <if test="note != null  and note != ''  ">note = #{note},</if>
+            <if test="note != null ">note = #{note},</if>
             <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
             <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
@@ -277,4 +286,72 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT place_code FROM zx_place WHERE county=#{county} ORDER BY place_id DESC LIMIT 1
 	</select>
 	
+	<!-- 查询要导出的Excel数据 -->
+	<select id="queryExport" resultType="java.util.HashMap">
+       <include refid="selectPlaceVo"/>
+        <where>  
+            ${filterSql}
+            <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
+             <if test="parentPlaceId != null and parentPlaceId != ''"> and parent_place_id = #{parentPlaceId}</if>
+             <if test="placeCode != null and placeCode != ''"> and place_code = #{placeCode}</if>
+             <if test="placeType != null and placeType != ''"> and place_type = #{placeType}</if>
+             <if test="scene != null and scene != ''"> and scene = #{scene}</if>
+             <if test="name != null and name != ''">
+             	 and name like concat('%', #{name}, '%')
+             </if>
+             <if test="sname != null and sname != ''"> and sname = #{sname}</if>
+             <if test="address != null and address != ''"> and address = #{address}</if>
+             <if test="province != null and province != ''"> and province = #{province}</if>
+             <if test="city != null and city != ''"> and city = #{city}</if>
+             <if test="county != null and county != ''"> and county = #{county}</if>
+             <if test="lon != null and lon != ''"> and lon = #{lon}</if>
+             <if test="lat != null and lat != ''"> and lat = #{lat}</if>
+             <if test="packet != null and packet != ''"> and packet = #{packet}</if>
+             <if test="tissuePrice != null and tissuePrice != ''"> and tissue_price = #{tissuePrice}</if>
+             <if test="tissueLen != null and tissueLen != ''"> and tissue_len = #{tissueLen}</if>
+             <if test="servicePoint != null and servicePoint != ''"> and service_point = #{servicePoint}</if>
+             <if test="repairId != null and repairId != ''"> and repair_id = #{repairId}</if>
+             <if test="supplyId != null and supplyId != ''"> and supply_id = #{supplyId}</if>
+             <if test="operatorId != null and operatorId != ''"> and operator_id = #{operatorId}</if>
+             <if test="ownerId != null and ownerId != ''"> and owner_id = #{ownerId}</if>
+             <if test="deviceCount != null and deviceCount != ''"> and device_count = #{deviceCount}</if>
+             <if test="ctBank != null and ctBank != ''"> and ct_bank = #{ctBank}</if>
+             <if test="ctAccount != null and ctAccount != ''"> and ct_account = #{ctAccount}</if>
+             <if test="ctReceiver != null and ctReceiver != ''"> and ct_receiver = #{ctReceiver}</if>
+             <if test="ctPhone != null and ctPhone != ''"> and ct_phone = #{ctPhone}</if>
+             <if test="ctIdentity != null and ctIdentity != ''"> and ct_identity = #{ctIdentity}</if>
+             <if test="ctRate != null and ctRate != ''"> and ct_rate = #{ctRate}</if>
+             <if test="status != null and status != ''"> and status = #{status}</if>
+             <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag}</if>
+             <if test="note != null and note != ''"> and note = #{note}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+			 <if test="startTime != null and startTime != ''"><!-- 开始时间检索  导出Excel需要使用startTime-->
+				AND date_format(p.create_time,'%y%m%d') &gt;= date_format(#{startTime},'%y%m%d')
+			 </if>
+			 <if test="endTime != null and endTime != ''"><!-- 结束时间检索 导出Excel需要使用endTime -->
+				AND date_format(p.create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+			 </if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <!-- <if test="params.person != null"> 登录时做的功能权限，导出Excel时没有这些参数
+				AND (
+				#{params.person} like CONCAT('%',',',p.repair_id,',','%')
+				OR 
+				#{params.person} like CONCAT('%',',',p.supply_id,',','%')
+				OR
+				#{params.person} like CONCAT('%',',',p.operator_id,',','%')
+				OR
+				#{params.person} like CONCAT('%',',',p.owner_id,',','%')
+				)
+			 </if>
+			    <if test="params.city != null">
+				AND #{params.city} like CONCAT('%',',',p.city,',','%')
+			 </if>
+			    <if test="params.county != null">
+				AND #{params.county} like CONCAT('%',',',p.county,',','%')
+			 </if> -->
+         </where>
+         ORDER BY p.place_id DESC 
+    </select>
+    
 </mapper>

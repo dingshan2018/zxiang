@@ -52,6 +52,10 @@ public class WithdrawDeposit extends BaseEntity
 	private Date payTime;
 	/** 备注 */
 	private String remark;
+	private String beginTime;
+	private String endTime;
+	private String startPayTime;
+	private String endPayTime;
 
 	public void setId(Integer id) 
 	{
@@ -205,7 +209,39 @@ public class WithdrawDeposit extends BaseEntity
 		return remark;
 	}
 
-    public String toString() {
+    public void setBeginTime(String beginTime) {
+		this.beginTime = beginTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+
+	public String getStartPayTime() {
+		return startPayTime;
+	}
+
+	public void setStartPayTime(String startPayTime) {
+		this.startPayTime = startPayTime;
+	}
+
+	public String getEndPayTime() {
+		return endPayTime;
+	}
+
+	public void setEndPayTime(String endPayTime) {
+		this.endPayTime = endPayTime;
+	}
+
+	public String getBeginTime() {
+		return beginTime;
+	}
+
+	public String getEndTime() {
+		return endTime;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("fundLogId", getFundLogId())

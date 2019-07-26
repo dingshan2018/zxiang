@@ -34,7 +34,7 @@
 					<input id="sname" name="sname" class="form-control" type="text">
 				</div>
 			</div>
-      <div class="form-group">
+      <!-- <div class="form-group">
             <label class="col-sm-3 control-label">场所类型：</label>
             <div class="col-sm-8">
               <select
@@ -47,8 +47,8 @@
                 <option value="1">代理</option>
                 <option value="2">自购</option>
               </select>
-            </div>
-          </div>
+           </div>
+       </div> -->
       <div class="form-group">
             <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>场景：</label>
             <div class="col-sm-8">
@@ -120,10 +120,10 @@
                   style="font-size: 20px;"
                   data-toggle="tooltip"
                   data-placement="top"
-                  onclick="addressResolution()">
+                  onclick="addressResolutionThrottle(addressResolution, 1000)">
             <span class="glyphicon glyphicon-map-marker"></span>
           </button>
-          <textarea id="address" name="address" class="form-control" type="text" placeholder="填写详细地址（需包含省、市、区县）" rows="3"></textarea>
+          <textarea id="address" name="address" class="form-control" type="text" placeholder="填写详细地址（需包含省、市、区县）" rows="3" onblur="addressResolutionThrottle(addressResolution, 1000)"></textarea>
 				</div>
 			</div>
           <div class="form-group">
@@ -159,7 +159,7 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label">出纸价格：</label>
 				<div class="col-sm-8">
-					<input id="tissuePrice" name="tissuePrice" class="form-control" type="text">
+					<input id="tissuePrice" name="tissuePrice" th:value="${tissuePrice}" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">
@@ -171,10 +171,24 @@
 		                th:with="type=${@dict.getType('tissue_len')}"
 		                data-live-search="true"
 		                class="form-control block-plugin__select-picker selectpicker"
-		                data-style="btn-white btn-sm">
+		                data-style="btn-white btn-sm"
+		                th:value="${tissueLen}">
 		                <option value="">---请选择---</option>
-		                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+		                <option th:selected="${tissueLen eq dict.dictValue}" th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" ></option>
 	              	</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>服务网点：</label>
+				<div class="col-sm-8">
+					<select
+						id="servicePoint"
+						name="servicePoint"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
+						<option value="">---请选择---</option>
+					</select>
 				</div>
 			</div>
 			<div class="form-group">
@@ -187,7 +201,6 @@
 						class="form-control block-plugin__select-picker selectpicker"
 						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
-						<option th:each="c:${userListRepair}"  th:value="${c.userId}" th:text="${c.userName}"/>
 					</select>
 				</div>
 			</div>
@@ -201,10 +214,10 @@
 						class="form-control block-plugin__select-picker selectpicker"
 						data-style="btn-white btn-sm">
 						<option value="">---请选择---</option>
-						<option th:each="c:${userListRepair}"  th:value="${c.userId}" th:text="${c.userName}"/>
 					</select>
 				</div>
 			</div>
+			<!-- 
 			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>经办人：</label>
 				<div class="col-sm-8">
@@ -219,6 +232,7 @@
 					</select>
 				</div>
 			</div>
+			-->
 			<!-- <div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>机主：</label>
 				<div class="col-sm-8">
@@ -294,6 +308,18 @@
     <script type="text/javascript">
 
       $('[data-toggle="tooltip"]').tooltip('show');
+
+      // 节流
+      var addressResolutionThrottleLastTime = null;
+      function addressResolutionThrottle (fn, time) {
+        return (function () {
+          var nowTime = +new Date();
+          if (nowTime - addressResolutionThrottleLastTime > time) {
+            fn();
+            addressResolutionThrottleLastTime = nowTime;
+          }
+        }())
+      }
 
       // 腾讯地图api获取经纬度
       function addressResolution () {
@@ -372,10 +398,15 @@
 	        })
 
 	        $("#county").change(function () {
-	        	//根据区域缩小维修人员选择范围
-	        	getRepairUserList();
+	        	//获取服务网点
+	        	getServicePointList();
 	        })
 	        
+	        $("#servicePoint").change(function () {
+	        	//根据服务商选择维修人员选择范围
+	        	getRepairUserListByRepairId();
+	        })
+
 	        var placeList = selectPlaceList();
 	    	$.each(placeList, function (i) {
             	$('#parentPlaceId').append("<option value=" + placeList[i].placeId + ">" + placeList[i].name + "</option>");
@@ -427,6 +458,45 @@
             $("#county").append(str).selectpicker("refresh");
 	    }
 
+	  	//通过选择的区域获取服务网点，再根据服务网点获取维修员送纸员
+	    function getServicePointList() {
+	    	var city = $("#city option:selected").val();
+	        var county = $("#county option:selected").val();
+	        //判断区县这个下拉框选中的值是否为空
+	        if (county == "") {
+	            return;
+	        }
+	        $("#servicePoint").html("");
+	        var servicePoint = "<option value=''>---请选择---</option>";
+
+	        var servicePointList = selectservicePointBycounty(city,county);
+	        $.each(servicePointList, function (i, item) {
+	        	servicePoint += "<option value=" + item.repairId + ">" + item.repairName + "</option>";
+            })
+            //将数据添加到服务网点这个下拉框里面
+            $("#servicePoint").append(servicePoint).selectpicker("refresh");;
+	    }
+	  	//通过服务商获取维修员及送纸员
+	    function getRepairUserListByRepairId() {
+	    	var servicePoint = $("#servicePoint option:selected").val();
+	        //判断区县这个下拉框选中的值是否为空
+	        if (servicePoint == "") {
+	            return;
+	        }
+	        $("#repairId").html("");
+	        var repairStr = "<option value=''>---请选择---</option>";
+	        $("#supplyId").html("");
+	        var supplyStr = "<option value=''>---请选择---</option>";
+
+	        var repairUserList = selectUserByRepairId(servicePoint);
+	        $.each(repairUserList, function (i, item) {
+	        	repairStr += "<option value=" + item.userId + ">" + item.userName + "</option>";
+	        	supplyStr += "<option value=" + item.userId + ">" + item.userName + "</option>";
+            })
+            //将数据添加到区县这个下拉框里面
+            $("#repairId").append(repairStr).selectpicker("refresh");;
+	        $("#supplyId").append(supplyStr).selectpicker("refresh");;
+	    }
 	    //通过选择的区域获取维修员及送纸员
 	    function getRepairUserList() {
 	    	var city = $("#city option:selected").val();
@@ -449,7 +519,6 @@
             $("#repairId").append(repairStr).selectpicker("refresh");;
 	        $("#supplyId").append(supplyStr).selectpicker("refresh");;
 	    }
-
 
 		var prefix = ctx + "business/place"
 		$("#form-place-add").validate({
@@ -505,6 +574,9 @@
 					digits:true,
 					min:0,
 					max:100000
+				},
+				servicePoint:{
+					required:true,
 				},
 			},
 			messages: {

@@ -49,6 +49,13 @@ public interface UserExtensionMapper
 	
 	public List<UserExtension> selectUserExtension(UserExtension userExtension);
 	
+	/**
+	 * 获取历史用户推广收益
+	 * @param userExtension
+	 * @return
+	 */
+	public List<UserExtension> selectCurUserExtension(UserExtension userExtension);
+	
 	
 	/**
      * 删除客户推广日统计
@@ -67,5 +74,12 @@ public interface UserExtensionMapper
 	public int deleteUserExtensionByIds(String[] incomeIds);
 	
 	List<?> queryExport(HashMap<String, String> map);
+	
+	/**
+	 * 刪除錯誤統計
+	 * @param userExtension
+	 * @return
+	 */
+	public int deleteWrongExtendIncome(UserExtension userExtension);
 	
 }

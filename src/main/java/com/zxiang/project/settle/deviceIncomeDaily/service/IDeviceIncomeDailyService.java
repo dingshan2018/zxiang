@@ -2,8 +2,10 @@ package com.zxiang.project.settle.deviceIncomeDaily.service;
 
 import com.zxiang.project.settle.deviceIncomeDaily.domain.DeviceIncomeDaily;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -86,5 +88,40 @@ public interface IDeviceIncomeDailyService
 	public List<HashMap<String, Object>> selectreleaserecordlist(HashMap<String, Object> map);
 	
 	public HashMap<String, Object> selecadschedulelist(Integer scheduleId);
+
+	/**
+	 * 重新计算日收益统计
+	 * @param deviceIncomeDaily
+	 * @return
+	 */
+	public Map<String,Object> reCalc(DeviceIncomeDaily deviceIncomeDaily);
+
+	/**
+	 * 查询历史某天设备销售查询
+	 * @param map
+	 * @return
+	 */
+	List<HashMap<String, Object>> selectCurrentdeviceorderlist(HashMap<String, Object> map);
+
+	/**
+	 * 重算历史某天收益数据
+	 * @param currentTime
+	 */
+
+	void restatisticaldata(Date currentTime);
+
+	/**
+	 * 获取历史某天出纸记录
+	 * @param map
+	 * @return
+	 */
+	List<HashMap<String, Object>> selectcurrenttissuerecordlist(HashMap<String, Object> map);
+
+	/**
+	 * 获取历史某天有效出纸次数
+	 * @param map
+	 * @return
+	 */
+	int selectcurrenttissuerecordAll(HashMap<String, Object> map);
 	
 }

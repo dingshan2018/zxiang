@@ -10,6 +10,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.zxiang.common.constant.ShiroConstants;
@@ -32,7 +34,7 @@ import com.zxiang.project.system.user.domain.User;
 public class DataFilterAspect {
 //    @Autowired
 //    private SysRoleDeptService sysRoleDeptService;
-
+	private static Logger logger = LoggerFactory.getLogger(DataFilterAspect.class);
     @Pointcut("@annotation(com.zxiang.framework.aspectj.lang.annotation.DataFilter)")
     public void dataFilterCut() {
 
@@ -46,12 +48,14 @@ public class DataFilterAspect {
             User user = ShiroUtils.getUser();
             //系统用户不做数据权限过滤
             if(!UserConstants.USER_TYPE_SYS.equals(user.getUserType())) {
+            	String filterSql = getFilterSQL(user, point);
+            	logger.info("数据权限："+filterSql);
             	if(params instanceof Map) {
             		Map paramMap = (Map)params;
-            		paramMap.put("filterSql", getFilterSQL(user, point));
+            		paramMap.put("filterSql", filterSql);
             	}else if(params instanceof BaseEntity) {
             		BaseEntity base = (BaseEntity) params;
-                	base.setFilterSql(getFilterSQL(user, point));
+                	base.setFilterSql(filterSql);
             	}
             	
             }
@@ -148,6 +152,7 @@ public class DataFilterAspect {
             return "";
         }
         filterSql.append(" ) ");
+        
         return filterSql.toString();
     }
 

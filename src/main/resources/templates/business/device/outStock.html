@@ -5,7 +5,19 @@
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-device-outStock">
-			<div class="form-group">
+        	<div class="form-group">
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>出库类型：</label>
+				<div class="col-sm-8">
+					<select	name="outStockType" id="outStockType"	data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						onchange="showTraceTyte(this.options[this.options.selectedIndex].value)"
+						data-style="btn-white btn-sm">
+                        <option value="0">平台订单</option>
+                        <option value="1">商城订单</option>
+                    </select>
+				</div>
+			</div>
+			<div class="form-group" id="userIdDiv">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>机主：</label>
 				<div class="col-sm-8">
 					<select
@@ -20,7 +32,7 @@
 					</select>
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group" id="tradeOrderIdDiv">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>商户订单号：</label>
 				<div class="col-sm-8">
 					<select
@@ -35,37 +47,31 @@
 					</select>
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group" id="transactionIdDiv">
 				<label class="col-sm-3 control-label">交易订单号：</label>
 				<div class="col-sm-8">
 					<input id="transactionId" name="transactionId" class="form-control" type="text" readonly="readonly">
 				</div>
 			</div>
-			<!-- <div class="form-group">
-				<label class="col-sm-3 control-label">机主：</label>
-				<div class="col-sm-8">
-					<input id="userId" name="userId" class="form-control" type="text" readonly="readonly">
-				</div>
-			</div> -->
-			<div class="form-group">
+			<div class="form-group" id="totalCntDiv">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>订单数量：</label>
 				<div class="col-sm-8">
 					<input id="totalCnt" name="totalCnt" class="form-control" type="text" readonly="readonly">
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group" id="sendedDiv">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>已发货数：</label>
 				<div class="col-sm-8">
 					<input id="sended" name="sended" class="form-control" type="text" readonly="readonly">
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group" id="remainDiv">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>剩余发货数：</label>
 				<div class="col-sm-8">
 					<input id="remain" name="remain" class="form-control" type="text" readonly="readonly">
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group" id="remarkDiv">
 				<label class="col-sm-3 control-label">订单备注：</label>
 				<div class="col-sm-8">
 					<input id="remark" name="remark" class="form-control" type="text" readonly="readonly">
@@ -85,6 +91,34 @@
 					</select>
 				</div>
 			</div> -->
+			<!-- 商城订单table开始 -->
+			<div class="form-group" id="userIdDingShangDiv" style="display: none;">
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>机主：</label>
+				<div class="col-sm-8">
+					<select
+						id="userIdDingShang" name="userIdDingShang" data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
+						<option value="">---请选择---</option>
+						<option th:each="u:${userList}"  th:value="${u.userId}" th:text="${u.userName}"/>
+					</select>
+				</div>
+			</div>
+			
+			<div class="form-group" id="tradeOrderIdDingShangDiv" style="display: none;">
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>商城订单号码：</label>
+				<div class="col-sm-8">
+					<input id="tradeOrderIdDingShang" name="tradeOrderIdDingShang" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group" id="totalCntDingShangDiv" style="display: none;">
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>商城订单数量：</label>
+				<div class="col-sm-8">
+					<input id="totalCntDingShang" name="totalCntDingShang" class="form-control" type="text">
+				</div>
+			</div>
+			<!-- 商城订单table结束 -->
+			
 			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>可出库设备：</label>
 				<div class="col-sm-8">
@@ -121,11 +155,19 @@
 				
 			},
 			submitHandler: function(form) {
-				outStockByTradeId();
+				var outStockType = $.form.selectSelects("outStockType");
+				if(outStockType == '0'){
+					//console.log("平台购机出库提交:",outStockType);
+					outStockByTradeId();
+				}else if(outStockType == '1'){
+					//console.log("鼎善商城出库提交:",outStockType);
+					outStockByDingShang();
+				}
+				
 			}
 		});
 
-		//提交投放设备请求
+		//提交投放设备请求--平台订单
 		function outStockByTradeId() {
 			var tradeOrderId = $("#tradeOrderId").val();
 			var deviceIds = $.form.selectCheckeds("device");
@@ -163,7 +205,58 @@
 	        	});
 			});
         }
+		
+		//提交投放设备请求--鼎善商城订单
+		function outStockByDingShang() {
+			var userIdDingShang = $.form.selectSelects("userIdDingShang");
+			var tradeOrderIdDingShang = $("#tradeOrderIdDingShang").val();
+			var totalCntDingShang = $("#totalCntDingShang").val();
+			var deviceIds = $.form.selectCheckeds("device");
+			
+			if(!userIdDingShang || !tradeOrderIdDingShang || !totalCntDingShang){
+				$.modal.alertWarning("请完整填写表单内容!");
+				return;
+			}
+			
+			var pattern = /^\+?[1-9][0-9]*$/;
+			if(!pattern.test(totalCntDingShang)){
+				$.modal.alertWarning("您输入的商城订单数量不正确,请输入正数!");
+				return;
+			}
+			/* console.log("totalCntDingShang:",totalCntDingShang);
+			console.log("deviceIds.length:",deviceIds.length);
+			if(totalCntDingShang != deviceIds.length){
+				$.modal.alertWarning("您选择的设备数量与您输入的订单数量不一致,请重新选择!");
+				return;
+			} */
+			
+			if(deviceIds.length <= 0){
+        		$.modal.alertWarning("没有选择出库设备!");
+				return;
+	       	}
 
+			$.modal.confirm("确认出库?", function() {
+	        	$.ajax({
+	        		cache : true,
+	        		type : "POST",
+	        		url : prefix + "/outStockByDingShang",
+	        		data : {
+	        			"ids": deviceIds,
+	        			"userIdDingShang":userIdDingShang,
+	        			"tradeOrderIdDingShang":tradeOrderIdDingShang,
+	        			"totalCntDingShang":totalCntDingShang
+	        		},
+	        		async : false,
+	        		error : function(request) {
+	        			$.modal.alertError("系统错误");
+	        		},
+	        		success : function(data) {
+	        			$.operate.saveSuccess(data);
+	        		}
+	        	});
+			});
+        }
+		
 		//选择机主加载订单列表
 		function showTradeList(value){
 			$("#tradeOrderId").html("");
@@ -246,6 +339,38 @@
 			    })
 			}
 		}
+		
+		//选择订单类型onchange事件
+		function showTraceTyte(value){
+	        if(value=="0"){
+	        	//console.log("平台购机订单,隐藏商城订单表单元素");
+	        	$("#userIdDiv").show();
+	        	$("#tradeOrderIdDiv").show();
+	        	$("#transactionIdDiv").show();
+	        	$("#totalCntDiv").show();
+	        	$("#sendedDiv").show();
+	        	$("#remainDiv").show();
+	        	$("#remarkDiv").show();
+	        	
+	        	$("#userIdDingShangDiv").hide();
+	        	$("#tradeOrderIdDingShangDiv").hide();
+	        	$("#totalCntDingShangDiv").hide();
+
+	        } else if(value=="1"){
+	        	//console.log("商城购机订单,隐藏平台订单表单元素");
+	        	$("#userIdDiv").hide();
+	        	$("#tradeOrderIdDiv").hide();
+	        	$("#transactionIdDiv").hide();
+	        	$("#totalCntDiv").hide();
+	        	$("#sendedDiv").hide();
+	        	$("#remainDiv").hide();
+	        	$("#remarkDiv").hide();
+	        	
+	        	$("#userIdDingShangDiv").show();
+	        	$("#tradeOrderIdDingShangDiv").show();
+	        	$("#totalCntDingShangDiv").show();
+	        } 
+	    }
 	</script>
 </body>
 </html>

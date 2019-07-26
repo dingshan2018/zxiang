@@ -27,25 +27,32 @@ import com.zxiang.project.business.terminalstatus.service.ITerminalStatusService
  * @date 2018-10-14
  */
 @Controller
-@RequestMapping("/system/terminalStatus")
+@RequestMapping("/business/terminalStatus")
 public class TerminalStatusController extends BaseController
 {
-    private String prefix = "system/terminalStatus";
+    private String prefix = "business/terminalStatus";
 	
 	@Autowired
 	private ITerminalStatusService terminalStatusService;
 	
-	@RequiresPermissions("system:terminalStatus:view")
+//	@RequiresPermissions("business:terminalStatus:view")
 	@GetMapping()
 	public String terminalStatus()
 	{
 	    return prefix + "/terminalStatus";
 	}
 	
+	@GetMapping("/showStatus/{terminalId}")
+	public String editDevice(@PathVariable("terminalId") Integer terminalId, ModelMap mmap)
+	{
+		mmap.put("terminalId", terminalId);
+	    return prefix + "/terminalStatus";
+	}
+	
 	/**
 	 * 查询终端状态记录列表
 	 */
-	@RequiresPermissions("system:terminalStatus:list")
+//	@RequiresPermissions("business:terminalStatus:list")
 	@PostMapping("/list")
 	@ResponseBody
 	public TableDataInfo list(TerminalStatus terminalStatus)
@@ -54,6 +61,21 @@ public class TerminalStatusController extends BaseController
         List<TerminalStatus> list = terminalStatusService.selectTerminalStatusList(terminalStatus);
 		return getDataTable(list);
 	}
+	
+	/**
+	 * 查询终端状态记录列表
+	 */
+//	@RequiresPermissions("business:terminalStatus:list")
+	@PostMapping("/list2/{terminalId}")
+	@ResponseBody
+	public TableDataInfo list2(@PathVariable("terminalId") Integer terminalId,TerminalStatus terminalStatus)
+	{
+		startPage();
+		terminalStatus.setTerminalId(terminalId);
+        List<TerminalStatus> list = terminalStatusService.selectTerminalStatusList(terminalStatus);
+		return getDataTable(list);
+	}
+	
 	
 	/**
 	 * 新增终端状态记录
@@ -67,7 +89,7 @@ public class TerminalStatusController extends BaseController
 	/**
 	 * 新增保存终端状态记录
 	 */
-	@RequiresPermissions("system:terminalStatus:add")
+//	@RequiresPermissions("business:terminalStatus:add")
 	@Log(title = "终端状态记录", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
@@ -90,7 +112,7 @@ public class TerminalStatusController extends BaseController
 	/**
 	 * 修改保存终端状态记录
 	 */
-	@RequiresPermissions("system:terminalStatus:edit")
+//	@RequiresPermissions("business:terminalStatus:edit")
 	@Log(title = "终端状态记录", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
@@ -102,7 +124,7 @@ public class TerminalStatusController extends BaseController
 	/**
 	 * 删除终端状态记录
 	 */
-	@RequiresPermissions("system:terminalStatus:remove")
+//	@RequiresPermissions("business:terminalStatus:remove")
 	@Log(title = "终端状态记录", businessType = BusinessType.DELETE)
 	@PostMapping( "/remove")
 	@ResponseBody

@@ -1,7 +1,12 @@
 package com.zxiang.project.business.place.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +16,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.druid.util.StringUtils;
 import com.zxiang.common.constant.UserConstants;
 import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
@@ -22,8 +29,11 @@ import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.business.place.domain.Place;
 import com.zxiang.project.business.place.service.IPlaceService;
+import com.zxiang.project.client.repair.domain.Repair;
+import com.zxiang.project.client.repair.service.IRepairService;
 import com.zxiang.project.system.area.service.IAreaService;
 import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.mapper.UserMapper;
 import com.zxiang.project.system.user.service.IUserService;
 
 /**
@@ -44,6 +54,10 @@ public class PlaceController extends BaseController
 	private IAreaService areaService;
 	@Autowired
 	private IUserService userService;
+	@Autowired
+	private UserMapper userMapper;
+	@Autowired
+	private IRepairService repairService;
 	
 	@RequiresPermissions("business:place:view")
 	@GetMapping()
@@ -72,15 +86,12 @@ public class PlaceController extends BaseController
 	@GetMapping("/add")
 	public String add(ModelMap mmap)
 	{
-		User queryUser = new User();
-		List<User> userListAll = userService.selectUserList(queryUser);
+		List<User> userListAll = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,UserConstants.USER_TYPE_PARTNER,
+				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
 		mmap.put("userListAll", userListAll);
-		
 		//维修员送纸员根据场所选择了所在城市后进行加载
-		//queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
-		//List<User> userListRepair = userService.selectUserList(queryUser);
-		//mmap.put("userListRepair", userListRepair);
-		
+		mmap.put("tissueLen", "200");
+		mmap.put("tissuePrice","0.3");
 	    return prefix + "/add";
 	}
 	
@@ -108,22 +119,33 @@ public class PlaceController extends BaseController
 	public String edit(@PathVariable("placeId") Integer placeId, ModelMap mmap)
 	{
 		Place place = placeService.selectPlaceById(placeId);
+		if(StringUtils.isEmpty(place.getTissueLen()+"")) {
+			place.setTissueLen(200);
+		}
+		if(StringUtils.isEmpty(place.getTissuePrice()+"")) {
+			place.setTissuePrice(0.3f);
+		}
 		mmap.put("place", place);
+		
 		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 		
 		mmap.put("provinceDropBoxList", areaService.selectDropBoxList(0L));
 		mmap.put("cityDropBoxList", areaService.selectDropBoxList(place.getProvince()));
 		mmap.put("countyDropBoxList", areaService.selectDropBoxList(place.getCity()));
 		
-		User queryUser = new User();
-		List<User> userListAll = userService.selectUserList(queryUser);
+		List<User> userListAll = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,UserConstants.USER_TYPE_PARTNER,
+				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
 		mmap.put("userListAll", userListAll);
 		
-		//维修员送纸员根据场所选择了所在城市后进行加载
-		//queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
-		//List<User> userListRepair = userService.selectUserList(queryUser);
-		List<User> userListRepair = userService.selectUserByCity(place.getCity(),place.getCounty());
-		mmap.put("userListRepair", userListRepair);
+		List<Repair> repairList = repairService.selectRepairByCity(place.getCity(),place.getCounty());
+		mmap.put("repairList", repairList);
+		//List<User> userListRepair = userService.selectUserByCity(place.getCity(),place.getCounty());
+		if(place.getServicePoint() != null){
+			Map<String, Object> qryParam = new HashMap<>();
+			qryParam.put("repairId", place.getServicePoint()+"");
+			List<User> userListRepair = userService.selectUserByRepairId(qryParam);
+			mmap.put("userListRepair", userListRepair);
+		}
 		
 	    return prefix + "/edit";
 	}
@@ -187,13 +209,31 @@ public class PlaceController extends BaseController
 		mmap.put("place", place);
 		
 		User queryUser = new User();
-		List<User> userListAll = userService.selectUserList(queryUser);
+		List<User> userListAll = userMapper.selectUserList(queryUser);//userService.selectUserList(queryUser);
 		mmap.put("userListAll", userListAll);
 		
 		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
-		List<User> userListRepair = userService.selectUserList(queryUser);
+		List<User> userListRepair = userMapper.selectUserList(queryUser);//userService.selectUserList(queryUser);
 		mmap.put("userListRepair", userListRepair);
 		
+		List<Repair> repairList = repairService.selectRepairByCity(place.getCity(),place.getCounty());
+		mmap.put("repairList", repairList);
+		
 	    return prefix + "/placeDetail";
+	}
+	
+	/**
+	 * 导出Excel
+	 * 注意数据权限要与查询列表一致
+	 */
+	@DataFilter(placeAlias="place_id")
+	@RequestMapping("/excelExport")
+	public void excelExport(@RequestParam HashMap<String, String> params, 
+			HttpServletResponse response,HttpServletRequest request){
+		try {
+			placeService.queryExport(params, request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

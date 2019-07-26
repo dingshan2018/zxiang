@@ -16,15 +16,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="status"    column="status"    />
         <result property="createTime"    column="create_time"    />
         <result property="remark"    column="remark"    />
+        <result property="totalBalance"    column="total_balance"    />
+        <result property="freezeBalance"    column="freeze_balance"    />
     </resultMap>
 	
 	<sql id="selectFundLogVo">
-        select pay_id, client_id,client_type, serial, total_fee, balance, content, type, status, create_time, remark from zx_fund_log
+        select pay_id, client_id,client_type, serial, total_fee, balance,total_balance,freeze_balance, content, type, status, create_time, remark from zx_fund_log
     </sql>
 	
     <select id="selectFundLogList" parameterType="FundLog" resultMap="FundLogResult">
         <include refid="selectFundLogVo"/>
-        <where>  
+        where 
+            del_flag = '0'
             <if test="payId != null and payId != ''"> and pay_id = #{payId}</if>
              <if test="clientId != null and clientId != ''"> and client_id = #{clientId}</if>
              <if test="clientType != null and clientType != ''"> and client_type = #{clientType}</if>
@@ -36,9 +39,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="status != null and status != ''"> and status = #{status}</if>
              <if test="createTime != null "> and create_time = #{createTime}</if>
              <if test="remark != null and remark != ''"> and remark = #{remark}</if>
-         </where>
+             <if test="beginTime != null"> and create_time &gt; #{beginTime}</if>
+             <if test="endTime != null"> and create_time &lt; #{endTime}</if>
+             <if test="beginTime1 != null and beginTime1.trim()!='' "> and date_format(create_time,'%Y-%m-%d') &gt;= #{beginTime1}</if>
+             <if test="endTime1 != null and endTime1.trim()!='' "> and date_format(create_time,'%Y-%m-%d') &lt;= #{endTime1}</if>
          order by create_time desc
     </select>
+    
+    <select id="selectWrongFundLogList" parameterType="FundLog" resultMap="FundLogResult">
+        <include refid="selectFundLogVo"/>
+        where 
+            del_flag = '0' and client_type&lt;&gt;'05'
+            <if test="payId != null and payId != ''"> and pay_id = #{payId}</if>
+             <if test="clientId != null and clientId != ''"> and client_id = #{clientId}</if>
+             <if test="clientType != null and clientType != ''"> and client_type = #{clientType}</if>
+             <if test="serial != null and serial != ''"> and serial = #{serial}</if>
+             <if test="totalFee != null and totalFee != ''"> and total_fee = #{totalFee}</if>
+             <if test="balance != null and balance != ''"> and balance = #{balance}</if>
+             <if test="content != null and content != ''"> and content = #{content}</if>
+             <if test="type != null and type != ''"> and type = #{type}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+             <if test="beginTime != null"> and create_time &gt;= #{beginTime}</if>
+             <if test="endTime != null"> and create_time &lt;= #{endTime}</if>
+         order by create_time asc
+    </select>
+    
     
     <select id="selectFundLogById" parameterType="Integer" resultMap="FundLogResult">
         <include refid="selectFundLogVo"/>
@@ -54,6 +80,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="serial != null and serial != '' ">serial,</if>
 			<if test="totalFee != null and totalFee != '' ">total_fee,</if>
 			<if test="balance != null and balance != '' ">balance,</if>
+			<if test="freezeBalance != null and freezeBalance != '' ">freeze_balance,</if>
+			<if test="totalBalance != null and totalBalance != '' ">total_balance,</if>
 			<if test="content != null and content != '' ">content,</if>
 			<if test="type != null and type != '' ">type,</if>
 			<if test="status != null and status != '' ">status,</if>
@@ -67,6 +95,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="serial != null and serial != ''">#{serial},</if>
 			<if test="totalFee != null and totalFee != ''">#{totalFee},</if>
 			<if test="balance != null and balance != ''">#{balance},</if>
+			<if test="freezeBalance != null and freezeBalance != ''">#{freezeBalance},</if>
+			<if test="totalBalance != null and totalBalance != ''">#{totalBalance},</if>
 			<if test="content != null and content != ''">#{content},</if>
 			<if test="type != null and type != ''">#{type},</if>
 			<if test="status != null and status != ''">#{status},</if>
@@ -88,6 +118,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''  ">status = #{status},</if>
             <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="totalBalance != null  and totalBalance != ''  ">total_balance = #{totalBalance},</if>
+            <if test="freezeBalance != null  and freezeBalance != ''  ">freeze_balance = #{freezeBalance},</if>
         </trim>
         where pay_id = #{payId}
     </update>
@@ -103,6 +135,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     <update id="updateStatus">
-        update zx_fund_log set status = #{status},remark =#{remark} where pay_id = #{payId}
+        update zx_fund_log set status = #{status},content =#{content},remark =#{remark} where pay_id = #{payId}
     </update>
+    
+    <update id="deleteWrongFundLog" parameterType="FundLog">
+         update zx_fund_log set del_flag='1' 
+          where del_flag='0' 
+          <if test="type != null and type != ''"> and type = #{type}</if>
+          <if test="content != null and content != ''"> and content=#{content}</if>
+          <if test="beginTime !=null "> and create_time &gt;=#{beginTime}</if>
+          <if test="endTime !=null "> and create_time &lt;=#{endTime}</if>
+    </update>
+    
+    <select id="selectLastFundLog" parameterType="FundLog" resultMap="FundLogResult">
+        <include refid="selectFundLogVo"/>
+        where del_flag='0' and create_time &lt; #{createTime} and client_id = #{clientId} and client_type = #{clientType}
+         order by create_time desc
+         limit 1
+    </select>
+    
+    <update id="recalcFundLog" parameterType="FundLog">
+         update zx_fund_log set del_flag='1' 
+         <trim prefix="SET" suffixOverrides=",">
+            <if test="balance != null  ">balance = #{balance},</if>
+            <if test="totalBalance != null  ">total_balance = #{totalBalance},</if>
+            <if test="freezeBalance != null  ">freeze_balance =#{freezeBalance},</if>
+            <if test="remark != null and remark != '' ">remark =#{remark},</if>
+        </trim>
+        where pay_id = #{payId}
+    </update>
+    
+    
 </mapper>

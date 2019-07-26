@@ -2,8 +2,12 @@ package com.zxiang.project.business.device.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +33,13 @@ import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.service.IDeviceService;
+import com.zxiang.project.business.place.domain.Place;
 import com.zxiang.project.business.place.service.IPlaceService;
 import com.zxiang.project.business.terminal.service.ITerminalService;
+import com.zxiang.project.system.area.domain.Area;
+import com.zxiang.project.system.area.service.IAreaService;
 import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.mapper.UserMapper;
 import com.zxiang.project.system.user.service.IUserService;
 
 /**
@@ -54,6 +62,10 @@ public class DeviceController extends BaseController
 	private IPlaceService placeService;
 	@Autowired
 	private IUserService userService;
+	@Autowired
+	private UserMapper userMapper;
+	@Autowired
+	private IAreaService areaService;
 	
 	@RequiresPermissions("business:device:view")
 	@GetMapping()
@@ -82,6 +94,26 @@ public class DeviceController extends BaseController
 	}
 	
 	/**
+	 * 查询共享设备列表
+	 */
+	@RequiresPermissions("business:device:list")
+	@PostMapping("/list2/{adScheduleId}")
+	@ResponseBody
+	public TableDataInfo list2(@PathVariable("adScheduleId") Integer adScheduleId,Device device)
+	{
+		startPage();
+		User user =getUser();
+		String userType = user.getUserType();
+		if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+			device.setUserId(user.getUserId()+"");
+		}
+		device.setScheduleId(adScheduleId);
+		device.setReleaseDeviceCondition("YES");//广告投放设备查询条件，有值即过滤终端不为空的设备
+        List<Device> list = deviceService.selectDeviceList(device);
+		return getDataTable(list);
+	}
+	
+	/**
 	 * 新增共享设备
 	 */
 	@GetMapping("/add")
@@ -89,7 +121,7 @@ public class DeviceController extends BaseController
 	{
 		User queryUser = new User();
 		queryUser.setUserType(UserConstants.USER_TYPE_JOIN);
-		List<User> userListJoin = userService.selectUserList(queryUser);
+		List<User> userListJoin = userMapper.selectUserList(queryUser);
 		mmap.put("userList", userListJoin);
 		
 	    return prefix + "/add";
@@ -122,9 +154,19 @@ public class DeviceController extends BaseController
 		mmap.put("device", device);
 		mmap.put("terminalDropBoxList", terminalService.selectDropBoxList());
 		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
+		List<Area> provinceList = areaService.selectDropBoxList(0);
+		mmap.put("provinceList", provinceList == null ? new ArrayList<Area>() : provinceList);
+		if (device.getProvince() != null) {
+			List<Area> cityList = areaService.selectDropBoxList(device.getProvince());
+			mmap.put("cityList", cityList);
+		}
+		if (device.getCity() != null) {
+			List<Area> countyList = areaService.selectDropBoxList(device.getCity());
+			mmap.put("countyList", countyList == null ? new ArrayList<Area>() : countyList);
+		}
 		User queryUser = new User();
 		queryUser.setUserType(UserConstants.USER_TYPE_JOIN);
-		List<User> userListJoin = userService.selectUserList(queryUser);
+		List<User> userListJoin = userMapper.selectUserList(queryUser);//userService.selectUserList(queryUser);
 		mmap.put("userList", userListJoin);
 		
 	    return prefix + "/edit";
@@ -242,7 +284,7 @@ public class DeviceController extends BaseController
 		
 		User queryUser = new User();
 		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
-		List<User> userList = userService.selectUserList(queryUser);
+		List<User> userList = userMapper.selectUserList(queryUser);
 		mmap.put("userList", userList);
 		
 	    return prefix + "/changeDevice";
@@ -274,11 +316,28 @@ public class DeviceController extends BaseController
 	{
 		Device device = deviceService.selectDeviceById(deviceId);
 		mmap.put("device", device);
-		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
+		//mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 		
-		User queryUser = new User();
-		queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
-		List<User> userList = userService.selectUserList(queryUser);
+		List<User> userList = new ArrayList<>();
+		Integer supplierId = null;
+		try {
+			String placeId = device.getPlaceId() == null? "0" : device.getPlaceId();//若设备为空将抛出空指针异常
+			Place place = placeService.selectPlaceById(Integer.parseInt(placeId));
+			if(place != null && place.getServicePoint() != null){
+				Map<String, Object> qryParam = new HashMap<>();
+				qryParam.put("repairId", place.getServicePoint()+"");
+				userList = userService.selectUserByRepairId(qryParam);
+				supplierId = place.getSupplyId();
+			}else{
+				User queryUser = new User();
+				queryUser.setUserType(UserConstants.USER_TYPE_REPAIR);
+				userList = userMapper.selectUserList(queryUser);
+			}
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			//return error("获取补纸人员异常!");
+		}
+		mmap.put("supplierUser", supplierId);//放入默认补纸人员给前端显示
 		mmap.put("userList", userList);
 		
 	    return prefix + "/supplyTissueAdd";
@@ -381,4 +440,24 @@ public class DeviceController extends BaseController
     	Device device = deviceService.selectDeviceById(deviceId);
         return device;
     }
+    
+    /**
+	 * 导出Excel
+	 * 注意数据权限要与查询列表一致
+	 */
+	@DataFilter(placeAlias="place_id")
+	@RequestMapping("/excelExport")
+	public void excelExport(@RequestParam HashMap<String, String> params, 
+			HttpServletResponse response,HttpServletRequest request){
+		try {
+			User user =getUser();
+			String userType = user.getUserType();
+			if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+				params.put("userId", user.getUserId()+"");
+			}
+			deviceService.queryExport(params, request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

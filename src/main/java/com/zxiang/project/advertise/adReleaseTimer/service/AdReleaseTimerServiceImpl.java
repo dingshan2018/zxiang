@@ -1,13 +1,18 @@
 package com.zxiang.project.advertise.adReleaseTimer.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.project.advertise.adReleaseTimer.domain.AdReleaseTimer;
 import com.zxiang.project.advertise.adReleaseTimer.mapper.AdReleaseTimerMapper;
+import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
+import com.zxiang.project.advertise.adSchedule.mapper.AdScheduleMapper;
+import com.zxiang.project.advertise.utils.constant.AdConstant;
 
 /**
  * 广告投放时段 服务层实现
@@ -20,7 +25,8 @@ public class AdReleaseTimerServiceImpl implements IAdReleaseTimerService
 {
 	@Autowired
 	private AdReleaseTimerMapper adReleaseTimerMapper;
-
+	@Autowired
+	private AdScheduleMapper adScheduleMapper;
 	/**
      * 查询广告投放时段信息
      * 
@@ -54,6 +60,14 @@ public class AdReleaseTimerServiceImpl implements IAdReleaseTimerService
 	@Override
 	public int insertAdReleaseTimer(AdReleaseTimer adReleaseTimer)
 	{
+		AdSchedule schedule = adScheduleMapper.selectAdScheduleById(adReleaseTimer.getAdScheduleId());
+		if("01".equals(schedule.getReleasePosition())) {
+			schedule.setPayStatus(AdConstant.AD_WAIT_PAY);
+			schedule.setReleaseStatus(AdConstant.AD_REPUBLISH);
+			schedule.setUpdateBy(ShiroUtils.getLoginName());
+			schedule.setUpdateTime(new Date());
+			adScheduleMapper.updateAdSchedule(schedule);
+		}
 	    return adReleaseTimerMapper.insertAdReleaseTimer(adReleaseTimer);
 	}
 	
@@ -66,6 +80,14 @@ public class AdReleaseTimerServiceImpl implements IAdReleaseTimerService
 	@Override
 	public int updateAdReleaseTimer(AdReleaseTimer adReleaseTimer)
 	{
+		AdSchedule schedule = adScheduleMapper.selectAdScheduleById(adReleaseTimer.getAdScheduleId());
+		if("01".equals(schedule.getReleasePosition())) {
+			schedule.setPayStatus(AdConstant.AD_WAIT_PAY);
+			schedule.setReleaseStatus(AdConstant.AD_WAIT_REPUBLISH);
+			schedule.setUpdateBy(ShiroUtils.getLoginName());
+			schedule.setUpdateTime(new Date());
+			adScheduleMapper.updateAdSchedule(schedule);
+		}
 	    return adReleaseTimerMapper.updateAdReleaseTimer(adReleaseTimer);
 	}
 

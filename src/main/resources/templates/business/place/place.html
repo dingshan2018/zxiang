@@ -53,6 +53,9 @@
               </a>
               <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
               </a>
+              <a class="btn btn-success btn-rounded btn-sm" onclick="exportExcel()">
+                <i class="fa fa-download"></i>&nbsp;导出
+              </a>
             </li>
           </ul>
         </div>
@@ -101,6 +104,7 @@
           removeUrl: prefix + '/remove',
           modalName: '场所管理',
           search   : false,
+          showExport: false,
           columns  : [
             {
               checkbox: true
@@ -162,6 +166,10 @@
               title: '地区'
             },
             {
+                field: 'servicePointName',
+                title: '服务网点'
+            },
+            {
               field: 'tissuePrice',
               title: '出纸价格'
             },
@@ -170,8 +178,12 @@
               title: '每次出纸长度'
             },
             {
-              field: 'serviceId',
-              title: '服务网点'
+              field: 'agentLevel1',
+              title: '地级市代'
+            },
+            {
+              field: 'agentLevel2',
+              title: '区县代理'
             },
             {
               field: 'repairName',
@@ -184,10 +196,6 @@
             {
               field: 'operatorName',
               title: '经办人'
-            },
-            {
-              field: 'ownerName',
-              title: '机主'
             },
             {
               field: 'deviceCount',
@@ -225,6 +233,7 @@
         $('#bootstrap-table').bootstrapTable('hideColumn', 'lon');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'lat');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'packet');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'operatorName');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'parentPlaceName');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'tissuePrice');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'tissueLen');
@@ -238,6 +247,9 @@
         $('#bootstrap-table').bootstrapTable('hideColumn', 'createTime');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'updateBy');
         $('#bootstrap-table').bootstrapTable('hideColumn', 'updateTime');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'repairName');
+        $('#bootstrap-table').bootstrapTable('hideColumn', 'supplyName');
+        
       });
       function proviceBind () {
         //清空下拉数据
@@ -289,7 +301,24 @@
      function placeDetail(placeId) {
  		var url = prefix + '/placeDetail/' + placeId;
  		$.modal.open("场所信息详情", url);
-   	}
+   	 }
+ 	 
+   	 //导出Excel
+     function exportExcel(){
+     	$.modal.confirm("确认导出？", function() {
+     		var name = $("#name").val();
+    		var province = $("#province").val();
+    		var city = $("#city").val();
+    		var county = $("#county").val();
+    		var startTime = $("#startTime").val();
+    		var endTime = $("#endTime").val();
+    		
+ 			location.href = prefix + "/excelExport?name="+name+'&province='+province+'&city='+city
+ 					+'&county='+county+'&startTime='+startTime+'&endTime='+endTime
+     		//$.modal.alert("导出成功!");
+ 		});
+     }
+   
     </script>
 </body>
 </html>

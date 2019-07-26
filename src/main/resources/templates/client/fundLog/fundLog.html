@@ -24,6 +24,7 @@
               	<option value="3">提现</option>
               	<option value="4">收益</option>
               	<option value="5">广告费用冻结</option>
+              	<option value="6">回账</option>
               </select>
             </li>
             <li>
@@ -39,6 +40,12 @@
               	<option value="1">成功</option>
               	<option value="2">失败</option>
               </select>
+            </li>
+             <li class="select-time">
+              <label class="select-item-name">时间： </label>
+              <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="beginTime1"/>
+              <span>-</span>
+              <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="endTime1"/>
             </li>
             <li class="select-btns">
               <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
@@ -89,6 +96,7 @@
 						if(value == "3") {return "提现"}
 						if(value == "4") {return "收益"}
 						if(value == "5") {return "广告费用冻结"}
+						if(value == "6") {return "回账"}
 						return "-";
 		            }
 				},

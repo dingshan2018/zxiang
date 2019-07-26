@@ -15,26 +15,41 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="accSysIp"    column="acc_sys_ip"    />
         <result property="accSysPort"    column="acc_sys_port"    />
         <result property="createTime"    column="create_time"    />
+        <result property="address"    column="address"    />
+        <result property="build"    column="build"    />
+        <result property="terminalCode"    column="terminal_code"    />
+        <result property="deviceCode"    column="device_code"    />
     </resultMap>
 	
 	<sql id="selectTerminalStatusVo">
-        select status_id, terminal_id, version, rssi, iccid, lon, lat, acc_sys_ip, acc_sys_port, create_time from zx_terminal_status
+        select address,build,status_id, terminal_id, version, rssi, iccid, lon, lat, acc_sys_ip, acc_sys_port, create_time from zx_terminal_status
+    </sql>
+    
+	<sql id="selectTerminalStatusVo2">
+        select zt.terminal_code,zd.device_code,zts.address,zts.build,zts.status_id, zts.terminal_id, zts.version, zts.rssi, zts.iccid, zts.lon, zts.lat, zts.acc_sys_ip, zts.acc_sys_port, zts.create_time from zx_terminal_status zts left join zx_terminal zt on zts.terminal_id=zt.terminal_id left join zx_device zd on zt.device_id=zd.device_id 
     </sql>
 	
     <select id="selectTerminalStatusList" parameterType="TerminalStatus" resultMap="TerminalStatusResult">
-        <include refid="selectTerminalStatusVo"/>
+        <include refid="selectTerminalStatusVo2"/>
         <where>  
-            <if test="statusId != null and statusId != ''"> and status_id = #{statusId}</if>
-             <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
-             <if test="version != null and version != ''"> and version = #{version}</if>
-             <if test="rssi != null and rssi != ''"> and rssi = #{rssi}</if>
-             <if test="iccid != null and iccid != ''"> and iccid = #{iccid}</if>
-             <if test="lon != null and lon != ''"> and lon = #{lon}</if>
-             <if test="lat != null and lat != ''"> and lat = #{lat}</if>
-             <if test="accSysIp != null and accSysIp != ''"> and acc_sys_ip = #{accSysIp}</if>
-             <if test="accSysPort != null and accSysPort != ''"> and acc_sys_port = #{accSysPort}</if>
-             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
-         </where>
+            <if test="statusId != null "> and zts.status_id = #{statusId}</if>
+             <if test="terminalId != null "> and zts.terminal_id = #{terminalId}</if>
+             <if test="version != null and version != ''"> and zts.version = #{version}</if>
+             <if test="rssi != null and rssi != ''"> and zts.rssi = #{rssi}</if>
+             <if test="iccid != null and iccid != ''"> and zts.iccid = #{iccid}</if>
+             <if test="lon != null and lon != ''"> and zts.lon = #{lon}</if>
+             <if test="lat != null and lat != ''"> and zts.lat = #{lat}</if>
+             <if test="accSysIp != null and accSysIp != ''"> and zts.acc_sys_ip = #{accSysIp}</if>
+             <if test="accSysPort != null and accSysPort != ''"> and zts.acc_sys_port = #{accSysPort}</if>
+             <if test="createTime != null "> and zts.create_time = #{createTime}</if>
+             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				AND date_format(zts.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			 </if>
+			 <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				AND date_format(zts.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+			 </if>
+		</where>
+		order by zts.create_time desc
     </select>
     
     <select id="selectTerminalStatusById" parameterType="Integer" resultMap="TerminalStatusResult">
@@ -54,7 +69,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="lat != null and lat != '' ">lat,</if>
 			<if test="accSysIp != null and accSysIp != '' ">acc_sys_ip,</if>
 			<if test="accSysPort != null and accSysPort != '' ">acc_sys_port,</if>
-			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="createTime != null">create_time,</if>
+			<if test="address != null and address != '' ">address,</if>
+			<if test="build != null and build != '' ">build,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="statusId != null and statusId != ''">#{statusId},</if>
@@ -66,7 +83,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="lat != null and lat != ''">#{lat},</if>
 			<if test="accSysIp != null and accSysIp != ''">#{accSysIp},</if>
 			<if test="accSysPort != null and accSysPort != ''">#{accSysPort},</if>
-			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="createTime != null">#{createTime},</if>
+			<if test="address != null and address != '' ">#{address},</if>
+			<if test="build != null and build != '' ">#{build},</if>
          </trim>
     </insert>
 	 
@@ -82,6 +101,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="accSysIp != null  and accSysIp != ''  ">acc_sys_ip = #{accSysIp},</if>
             <if test="accSysPort != null  and accSysPort != ''  ">acc_sys_port = #{accSysPort},</if>
             <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="address != null and address != '' ">address=#{address},</if>
+			<if test="build != null and build != '' ">build=#{build},</if>
         </trim>
         where status_id = #{statusId}
     </update>

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.utils.StringUtils;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
@@ -28,8 +29,11 @@ import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.advertise.utils.AdHttpResult;
 import com.zxiang.project.advertise.utils.Tools;
 import com.zxiang.project.advertise.utils.constant.AdConstant;
+import com.zxiang.project.client.agent.domain.Agent;
+import com.zxiang.project.client.agent.service.IAgentService;
 import com.zxiang.project.client.fundLog.domain.FundLog;
 import com.zxiang.project.client.fundLog.service.IFundLogService;
+import com.zxiang.project.settle.coefficient.service.ICoefficientService;
 
 /**
  * 资金流水 信息操作处理
@@ -45,6 +49,10 @@ public class FundLogController extends BaseController {
 	
 	@Autowired
 	private IFundLogService fundLogService;
+	@Autowired
+	private ICoefficientService iCoefficientService;
+	@Autowired
+	private IAgentService agentService;
 	
 	@RequiresPermissions("client:fundLog:view")
 	@GetMapping("/{clientType}/{clientId}")
@@ -64,7 +72,7 @@ public class FundLogController extends BaseController {
 	public AjaxResult buildPayQrCode(@RequestParam String advertiseId,@RequestParam String total_fee ) {
 		try {
 //			String url = AdConstant.AD_PAY_PREFIX;
-			String url = "http://mp.bp.zcloudtechs.cn/wx/wxpay/dingshanIncomeCode";
+			String url = "http://mp.dingscm.com/wx/wxpay/dingshanIncomeCode";
 			Map<String, String> paramsMap = new HashMap<String, String>();
 			paramsMap.put("total_fee", total_fee);
 			paramsMap.put("advertiseId", advertiseId);
@@ -90,6 +98,22 @@ public class FundLogController extends BaseController {
 		mmap.put("clientId", clientId);
 		mmap.put("clientType", clientType);
 		fundLogService.showClientInfo(clientId, clientType, mmap);
+		// 设置可配置的最低提现金额 
+		String type = "1"; // 1:机主 2:一级代理 3:二级代理 4:服务商
+		if(UserConstants.USER_TYPE_JOIN.equals(clientType)) {
+			type = "1";
+		}else if(UserConstants.USER_TYPE_AGENT.equals(clientType)) {
+			Agent agent = agentService.selectAgentById(clientId);
+			if(agent != null && agent.getLevel() != null && agent.getLevel().intValue() == 1) {
+				type = "2";
+			}else {
+				type = "3";
+			}
+		}else if(UserConstants.USER_TYPE_REPAIR.equals(clientType)) {
+			type = "4";
+		}
+		Long lowestMoney = iCoefficientService.queryLowerCashBy(type);
+		mmap.put("lowestMoney", lowestMoney);
 		return prefix + "/moneyDialogs";
 	}
 	@PostMapping("/moneyHandle") // 提现处理中

@@ -26,8 +26,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
     <select id="selectSupplyTissueList" parameterType="SupplyTissue" resultMap="SupplyTissueResult">
         <include refid="selectSupplyTissueVo"/>
-        <where>  
-            ${filterSql}
+        <where>
+            <if test="userId == null">  ${filterSql} </if>
+            <if test="userId != null and userId != ''">
+            	and #{userId} = (SELECT DISTINCT zd.owner_id FROM zx_device zd WHERE zd.device_id = zst.device_id)
+            </if>  
             <if test="supplyTissueId != null and supplyTissueId != ''"> and supply_tissue_id = #{supplyTissueId}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
              <if test="deviceSn != null and deviceSn != ''"> and device_id in 
@@ -95,9 +98,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="queryExport" resultType="java.util.HashMap">
        <include refid="selectSupplyTissueVo"/>
         <where>  
-        	${filterSql}
+        	 <if test="userId == null">  ${filterSql} </if>
+             <if test="userId != null and userId != ''">
+            	and #{userId} = (SELECT DISTINCT zd.owner_id FROM zx_device zd WHERE zd.device_id = zst.device_id)
+             </if>
              <if test="supplyTissueId != null and supplyTissueId != ''"> and supply_tissue_id = #{supplyTissueId}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="deviceSn != null and deviceSn != ''"> and device_id in 
+             (SELECT DISTINCT zd.device_id FROM zx_device zd WHERE zd.device_sn LIKE concat('%', #{deviceSn}, '%'))</if>
              <if test="tissueCount != null and tissueCount != ''"> and tissue_count = #{tissueCount}</if>
              <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
              <if test="supplierId != null and supplierId != ''"> and supplier_id = #{supplierId}</if>

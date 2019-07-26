@@ -38,6 +38,14 @@ public interface UserIncomeMapper
 	public int insertUserIncome(UserIncome userIncome);
 	
 	/**
+     * 新增客户历史收入日统计
+     * 
+     * @param userIncome 客户收入日统计信息
+     * @return 结果
+     */
+	public int insertCurUserIncome(UserIncome userIncome);
+	
+	/**
      * 修改客户收入日统计
      * 
      * @param userIncome 客户收入日统计信息
@@ -66,6 +74,12 @@ public interface UserIncomeMapper
 	 * 
 	 * */
 	public List<UserIncome> selectUserIncome(UserIncome userIncome);
+	
+	/**
+	 * 判断是否历史某天有记录
+	 * 
+	 * */
+	public List<UserIncome> selectCurrentUserIncome(UserIncome userIncome);
 	/**
 	 * 获取销售人员类型
 	 * */
@@ -80,7 +94,10 @@ public interface UserIncomeMapper
 	 * */
 	public List<HashMap<String, Object>> selectzxagentlist(HashMap<String, Object> map);
 	
-	
+	/**
+	 * 代理商
+	 * */
+	public List<HashMap<String, Object>> selectcuragentlist(HashMap<String, Object> map);
 	/**
 	 * 代理商
 	 * */
@@ -100,4 +117,16 @@ public interface UserIncomeMapper
 	
 	List<HashMap<String, Object>> selectUsertotalIncome();
 	
+	/**
+	 * 删除错误客户日收益
+	 * @param userIncome
+	 * @return
+	 */
+	public int deleteWrongUserIncome(UserIncome userIncome);
+
+	/**
+	 * 获取历史用户收入
+	 * @return
+	 */
+	public List<HashMap<String, Object>> selectCurUsertotalIncome(HashMap<String,Object> param);
 }

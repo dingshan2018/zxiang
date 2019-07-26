@@ -1,6 +1,7 @@
 package com.zxiang.project.client.fundLog.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import com.zxiang.project.client.fundLog.domain.WithdrawDeposit;	
 
@@ -59,5 +60,7 @@ public interface WithdrawDepositMapper
      * @return 结果
      */
 	public int deleteWithdrawDepositByIds(String[] ids);
+
+	public List queryExport(Map<String, Object> params);
 	
 }

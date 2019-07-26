@@ -2,6 +2,7 @@ package com.zxiang.project.system.user.service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.project.system.user.domain.User;
@@ -153,7 +154,7 @@ public interface IUserService
     /**
    	 * 查询用户下拉框数据列表
    	 */
-	public List<User> getDropBoxUserList();
+	public List<User> getDropBoxUserList(User user);
 	
 	/**
 	 * 查询业务员的主体名称
@@ -190,8 +191,17 @@ public interface IUserService
 	 */
 	public List<User> selectUserByCity(long city,long countyId);
 	
+	public List<HashMap<String, Object>> selectJoinPlace(String userId);
+	
     public List<HashMap<String, Object>> selectzxagent(String agentId);
 	
 	public List<HashMap<String, Object>> selectzxrepairarea(String repairId);
+
+	/**
+	 * 根据服务商ID获取服务商员工
+	 * @param params
+	 * @return
+	 */
+	public List<User> selectUserByRepairId(Map<String, Object> params);
 	
 }

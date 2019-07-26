@@ -64,6 +64,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
           ORDER BY a.release_device_id DESC
     </select>
     
+    <select id="countAdReleaseDay" parameterType="Long" resultType="int">
+		select count(1) from zx_ad_release_record where schedule_id = #{scheduleId} group by date_format(play_time,'%y%m%d')
+	</select>
+    
+    <select id="getAdTotalPay" parameterType="HashMap" resultType="Float">
+        select sum(ifnull(price,0)) totalPay from zx_ad_release_record 
+        	where schedule_id=#{scheduleId}
+        		<if test="deviceId != null and deviceId != '' ">
+        		and device_id=#{deviceId}
+        		</if>
+        		<if test="beginTime != null">
+        		and play_time&gt;=#{beginTime}
+        		</if>
+        		<if test="endTime != null">
+        		and play_time&lt;=#{endTime}
+        		</if>
+        		<if test="playTime != null">
+        		and play_time=#{playTime}
+        		</if>
+    </select>
+    
     <select id="selectAdReleaseRecordById" parameterType="Integer" resultMap="AdReleaseRecordResult">
         <include refid="selectAdReleaseRecordVo"/>
         where release_device_id = #{releaseDeviceId}
@@ -131,7 +152,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="queryExport" resultType="java.util.HashMap">
        <include refid="selectAdReleaseRecordVos"/>
         <where>  
-        ${filterSql}
+        	<if test="userId == null">  ${filterSql} </if>
+            <if test="userId != null and userId != ''"> and #{userId} = b.owner_id </if>
             <if test="releaseDeviceId != null and releaseDeviceId != ''"> and a.release_device_id = #{releaseDeviceId}</if>
              <if test="scheduleId != null and scheduleId != ''"> and a.schedule_id = #{scheduleId}</if>
              <if test="scheduleName != null and scheduleName != ''"> and a.schedule_id in 

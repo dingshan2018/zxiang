@@ -1,7 +1,12 @@
 package com.zxiang.project.business.place.service;
 
 import com.zxiang.project.business.place.domain.Place;
+
+import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 场所管理 服务层
@@ -60,5 +65,14 @@ public interface IPlaceService
      * 校验场所编号
      */
 	public String checkPlaceCodeUnique(String placeCode);
+
+	/**
+	 * 导出Excel文件
+	 * @param params
+	 * @param request
+	 * @param response
+	 * @throws Exception 
+	 */
+	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception;
 	
 }

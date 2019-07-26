@@ -1,11 +1,15 @@
 package com.zxiang.project.business.device.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,7 @@ import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.StringUtils;
+import com.zxiang.common.utils.excel.EXCELObject;
 import com.zxiang.common.utils.security.ShiroUtils;
 import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.project.advertise.utils.Tools;
@@ -37,6 +42,10 @@ import com.zxiang.project.record.deviceOrder.domain.DeviceOrder;
 import com.zxiang.project.record.deviceOrder.mapper.DeviceOrderMapper;
 import com.zxiang.project.record.tradeOrder.domain.TradeOrder;
 import com.zxiang.project.record.tradeOrder.mapper.TradeOrderMapper;
+import com.zxiang.project.system.config.domain.Config;
+import com.zxiang.project.system.config.mapper.ConfigMapper;
+import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.mapper.UserMapper;
 
 /**
  * 共享设备 服务层实现
@@ -66,6 +75,10 @@ public class DeviceServiceImpl implements IDeviceService
 	private IDeviceReleaseAuditService deviceReleaseAuditService;
 	@Autowired
 	private IServerService serverService;
+	@Autowired
+	private ConfigMapper configMapper;
+	@Autowired
+    private UserMapper userMapper;
 	
 	/**
      * 查询共享设备信息
@@ -138,6 +151,31 @@ public class DeviceServiceImpl implements IDeviceService
 	@Override
 	public int updateDevice(Device device)
 	{
+		Terminal terminal = this.terminalMapper.selectTerByDeviceId(device.getDeviceId());
+		Device oldDevice = deviceMapper.selectDeviceById(device.getDeviceId());
+		if(terminal!=null) {
+			terminal.setPlaceId(device.getPlaceId()!=null?Integer.parseInt(device.getPlaceId()):null);
+			terminal.setUpdateBy(device.getUpdateBy());
+			terminal.setUpdateTime(new Date());
+			//若编辑的机主与原来机主不同则更新终端激活时间
+			Integer ownerId = device.getOwnerId();
+			if(ownerId != null && !ownerId.equals(oldDevice.getOwnerId())){
+				terminal.setCreateTime(new Date());
+				// 通知终端更改机主 	0x25 更改机主  {"termCode":"","ownerId":"","ownerName":""}
+				JSONObject reqJson = new JSONObject();
+				reqJson.put("termCode",terminal.getTerminalCode());
+				reqJson.put("ownerId",ownerId);//
+				User ownerUser = userMapper.selectUserById(ownerId.longValue());
+				reqJson.put("ownerName",ownerUser.getUserName());//
+				reqJson.put("command","37");//参数下发命令0x25,转十进制为37	
+				try {
+					serverService.issuedCommand(terminal,reqJson);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			this.terminalMapper.updateTerminal(terminal);
+		}
 	    return deviceMapper.updateDevice(device);
 	}
 
@@ -460,7 +498,11 @@ public class DeviceServiceImpl implements IDeviceService
 		paramsMap.put("city", "");
 		String param = Tools.paramsToString(paramsMap);
 		
-		String result = Tools.doPostForm(AdConstant.AD_URL_SAVETERMINAL, param);
+		Config config = new Config();
+        config.setConfigKey("AD_SCHEDULE_URL");
+        Config retConfig = configMapper.selectConfig(config);
+        String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue() : "http://mmedia.bp.zcloudtechs.cn";
+		String result = Tools.doPostForm(rootUrl+AdConstant.AD_URL_SAVETERMINAL, param);
 		return result;
 	}
 	
@@ -474,7 +516,11 @@ public class DeviceServiceImpl implements IDeviceService
 		paramsMap.put("terminalId", deviceId);
 		String param = Tools.paramsToString(paramsMap);
 		
-		String result = Tools.doPostForm(AdConstant.AD_URL_DELETETERMINAL, param);
+		Config config = new Config();
+        config.setConfigKey("AD_SCHEDULE_URL");
+        Config retConfig = configMapper.selectConfig(config);
+        String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue() : "http://mmedia.bp.zcloudtechs.cn";
+		String result = Tools.doPostForm(rootUrl+AdConstant.AD_URL_DELETETERMINAL, param);
 		return result;
 	}
 	
@@ -555,6 +601,76 @@ public class DeviceServiceImpl implements IDeviceService
 		
 		return updateDeviceNum;
 	}
+	
+	/**
+	 * 通过鼎善商城订单号出库
+	 */
+	@Override
+	public int outStockByDingShang(String ids, Integer userIdDingShang, String tradeOrderIdDingShang,
+			String totalCntDingShang, String operatorUser) {
+		
+		int updateDeviceNum = deviceMapper.outStock(Convert.toStrArray(ids),userIdDingShang);
+		if(updateDeviceNum !=  Integer.parseInt(totalCntDingShang)){
+			throw new RRException("操作失败,您所选的出库设备与填写订单数量不一致!");
+		}
+		
+		// 将鼎善商城订单插入订单记录表;如果输入重复订单则更新原来订单的数量
+		TradeOrder hasTradeOrder = tradeOrderMapper.selectByOutTradeOrder(tradeOrderIdDingShang);
+		Integer insertTradeOrderId ;
+		if(hasTradeOrder == null){
+			TradeOrder tradeOrder = new TradeOrder();
+			tradeOrder.setOutTradeOrder(tradeOrderIdDingShang);
+			tradeOrder.setUserId(userIdDingShang);
+			tradeOrder.setTotalCnt(Integer.parseInt(totalCntDingShang));
+			tradeOrder.setOrderType("1");
+			tradeOrder.setOrderStatus("1");
+			tradeOrder.setSendStatus("1");
+			tradeOrder.setRemark("商城订单");
+			tradeOrder.setCreateBy(operatorUser);
+			tradeOrder.setCreateTime(new Date());
+			tradeOrderMapper.insertTradeOrder(tradeOrder);
+			insertTradeOrderId = tradeOrder.getTradeOrderId();
+			System.out.println("新插入订单的tradeOrder:"+insertTradeOrderId);
+		}else{
+			Integer newTotalCnt = Integer.parseInt(totalCntDingShang) + hasTradeOrder.getTotalCnt();
+			hasTradeOrder.setUserId(userIdDingShang);
+			hasTradeOrder.setTotalCnt(newTotalCnt);
+			hasTradeOrder.setUpdateBy(operatorUser);
+			hasTradeOrder.setUpdateTime(new Date());
+			tradeOrderMapper.updateTradeOrder(hasTradeOrder);
+			insertTradeOrderId = hasTradeOrder.getTradeOrderId();
+			System.out.println("原有订单的hasTradeOrder:"+insertTradeOrderId);
+		}
+		
+		// 订单销售记录表插入记录
+		List<DeviceOrder> deviceOrderList = new ArrayList<>();
+		String[] devices = Convert.toStrArray(ids);
+		if(devices.length > 0){
+			for (String device : devices) {
+				//查询这台设备已有信息
+				Device dev = deviceMapper.selectDeviceById(Integer.parseInt(device));
+				//要插入的设备订单数据
+				DeviceOrder deviceOrder = new DeviceOrder();
+				deviceOrder.setDeviceId(Integer.parseInt(device));
+				deviceOrder.setTradeOrderId(insertTradeOrderId);
+				deviceOrder.setTerminalCode(dev.getTerminalCode());
+				//deviceOrder.setPrice(tradeOrder.getTotalFee());
+				deviceOrder.setStatus("1");
+				deviceOrder.setBuyerId(userIdDingShang);
+				//deviceOrder.setBuyerOpenId(tradeOrder.getOpenId());
+				deviceOrder.setCreateBy(operatorUser+",商城订单号-"+tradeOrderIdDingShang);
+				deviceOrder.setCreateTime(new Date());
+				
+				deviceOrderList.add(deviceOrder);
+			}
+
+			deviceOrderMapper.batchInsert(deviceOrderList);
+		}
+		System.out.println("商城订单出库操作数量:"+updateDeviceNum);
+		return updateDeviceNum;
+	}
+
+	
 	@DataFilter(placeAlias="d.place_id")
 	@Override
 	public int selectTotal(Map<String, Object> param) {
@@ -563,6 +679,37 @@ public class DeviceServiceImpl implements IDeviceService
 			param.put("userId", ShiroUtils.getUser().getUserId());
 		}
 		return deviceMapper.selectTotal(param);
+	}
+
+	@Override
+	public void queryExport(HashMap<String, String> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		List erportList = deviceMapper.queryExport(params);
+      	String realPath = request.getSession().getServletContext().getRealPath("/file/temp");
+  		EXCELObject s = new EXCELObject();
+  		s.seteFilePath(realPath);
+  		//表头名称
+  		String[] titH = { "ID", "设备资产编号", "场所名称","场景","终端编号","机主",
+  				"微信昵称", "投放时间","服务网点", "地级市代理","区县代理",
+  				"剩余出纸", "最近扫码","设备状态","归属省份","归属城市","归属区县","投放地址","当前地址","累计出纸","有效出纸","无效出纸"};
+  		//SQL方法查询出的字段名称
+  		String[] titN = { "device_id","device_code","placeName","sceneName","terminalCode","ownerName",
+  				"wxNickname","release_time","servicePointName","agentLevel1","agentLevel2",
+  				"remain_len","last_scan_time","statusName","provinceName","cityName","countyName","note","address","total_cnt","valid_cnt","invalid_cnt"};
+  		String[] width= 
+  			   {"15","20","20","20","20","20",
+  				"20","20","20","20","20",
+  				"20","20","20","20","20","20","20","20","10","10","10"};
+  		s.setWidth(width);
+  		s.setFname("运营设备"); // sheet栏名称
+  		s.setTitle("运营设备"); // Excel内容标题名称
+  		s.setTitH(titH);
+  		s.setTitN(titN);
+  		s.setDataList(erportList);
+  		File exportFile = null;
+  		exportFile = s.setData();
+  		//Excel文件名称
+  		String excelName = "运营设备" + System.currentTimeMillis() + ".xls";
+  		s.exportExcel("运营设备", excelName, exportFile, request, response);
 	}
 
 }

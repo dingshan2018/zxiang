@@ -40,7 +40,7 @@
 						class="form-control block-plugin__select-picker selectpicker"
 						data-style="btn-white btn-sm">
                     	<option value=""> -- 请选择 -- </option>
-	                    <option th:selected="${join.buyerId eq c.userId}" th:each="c:${payUserList}"  th:value="${c.userId}"  th:title="${c.userType}" th:text="${c.userName}"/>
+	                    <option th:selected="${join.buyerId eq c.userId}" th:each="c:${payUserList}"  th:value="${c.userId}" th:data-type="${c.userType}" th:text="${c.userName}"/>
                     </select>
 				</div>
 			</div>
@@ -49,7 +49,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">收款账号：</label>
                 <div class="col-sm-8">
-                    <input id="bankAccount" name="bankAccount" th:field="*{bankAccount}" class="form-control" type="text" maxlength="18">
+                    <input id="bankAccount" name="bankAccount" th:field="*{bankAccount}" class="form-control" type="text" maxlength="20">
                 </div>
             </div>
             <div class="form-group">
@@ -109,8 +109,8 @@
 				var userType = document.getElementById("userType");
 				for(var i=0; i<options.length; i++){
 					if(options[i].value == buyerId.value){
-						puserId.value = buyerId.value
-						userType.value = options[i].title;
+						puserId.value = buyerId.value || "";
+						userType.value = options[i].dataset.type || "";
 					}
 				}
 				

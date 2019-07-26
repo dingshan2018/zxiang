@@ -120,7 +120,7 @@ public interface UserMapper
     /**
 	 * 查询用户下拉框数据列表
 	 */
-	public List<User> selectDropBoxList();
+	public List<User> selectDropBoxList(User user);
 	
 	 /**
      * 通过openId查询用户
@@ -149,7 +149,16 @@ public interface UserMapper
 	 */
 	public List<User> selectUserByCity(long cityId);
 	
+	public List<HashMap<String, Object>> selectJoinPlace(String userId);
+	
 	public List<HashMap<String, Object>> selectzxagent(String agentId);
 	
 	public List<HashMap<String, Object>> selectzxrepairarea(String repairId);
+
+	/**
+	 * 根据服务商ID获取服务商员工
+	 * @param parseLong
+	 * @return
+	 */
+	public List<User> selectUserByRepairId(long repairId);
 }

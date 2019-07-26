@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="AdReleaseTimer" id="AdReleaseTimerResult">
         <result property="adReleaseTimerId"    column="ad_release_timer_id"    />
         <result property="adScheduleId"    column="ad_schedule_id"    />
+        <result property="adScheduleName"    column="schedule_name"    />
         <result property="releaseBeginTime"    column="release_begin_time"    />
         <result property="releaseEndTime"    column="release_end_time"    />
         <result property="remark"    column="remark"    />
@@ -19,25 +20,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<sql id="selectAdReleaseTimerVo">
         select ad_release_timer_id, ad_schedule_id, release_begin_time, release_end_time, remark, create_by, create_time, update_by, update_time from zx_ad_release_timer
     </sql>
+    <sql id="selectAdReleaseTimerExVo">
+        select ad_release_timer_id, zart.ad_schedule_id,zas.schedule_name, release_begin_time, release_end_time, zart.remark, zart.create_by, zart.create_time, zart.update_by, zart.update_time from zx_ad_release_timer zart left join zx_ad_schedule zas on zart.ad_schedule_id=zas.ad_schedule_id
+    </sql>
 	
     <select id="selectAdReleaseTimerList" parameterType="AdReleaseTimer" resultMap="AdReleaseTimerResult">
-        <include refid="selectAdReleaseTimerVo"/>
+        <include refid="selectAdReleaseTimerExVo"/>
         <where>  
-            <if test="adReleaseTimerId != null and adReleaseTimerId != ''"> and ad_release_timer_id = #{adReleaseTimerId}</if>
-             <if test="adScheduleId != null and adScheduleId != ''"> and ad_schedule_id = #{adScheduleId}</if>
-             <if test="releaseBeginTime != null "> and release_begin_time = #{releaseBeginTime}</if>
-             <if test="releaseEndTime != null "> and release_end_time = #{releaseEndTime}</if>
-             <if test="remark != null and remark != ''"> and remark = #{remark}</if>
-             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null "> and create_time = #{createTime}</if>
-             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
-             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+            <if test="adReleaseTimerId != null and adReleaseTimerId != ''"> and zart.ad_release_timer_id = #{adReleaseTimerId}</if>
+             <if test="adScheduleId != null and adScheduleId != ''"> and zart.ad_schedule_id = #{adScheduleId}</if>
+             <if test="releaseBeginTime != null "> and zart.release_begin_time = #{releaseBeginTime}</if>
+             <if test="releaseEndTime != null "> and zart.release_end_time = #{releaseEndTime}</if>
+             <if test="remark != null and remark != ''"> and zart.remark = #{remark}</if>
+             <if test="createBy != null and createBy != ''"> and zart.create_by = #{createBy}</if>
+             <if test="createTime != null "> and zart.create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and zart.update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and zart.update_time = #{updateTime}</if>
+             <if test="params.releaseEndTime != null and params.releaseEndTime != ''"><!-- 有效投放时间检索 -->
+				AND date_format(zart.release_end_time,'%y%m%d') &gt;= date_format(#{params.releaseEndTime},'%y%m%d')
+			 </if>
+			 <if test="params.releaseBeginTime != null and params.releaseBeginTime != ''"><!-- 有效投放时间检索 -->
+				AND date_format(zart.release_begin_time,'%y%m%d') &lt;= date_format(#{params.releaseBeginTime},'%y%m%d')
+			 </if>
          </where>
     </select>
     
     <select id="selectAdReleaseTimerById" parameterType="Integer" resultMap="AdReleaseTimerResult">
-        <include refid="selectAdReleaseTimerVo"/>
-        where ad_release_timer_id = #{adReleaseTimerId}
+        <include refid="selectAdReleaseTimerExVo"/>
+        where zart.ad_release_timer_id = #{adReleaseTimerId}
     </select>
         
     <insert id="insertAdReleaseTimer" parameterType="AdReleaseTimer">
@@ -99,5 +109,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{adScheduleId}
         </foreach>
     </delete>
+    
+    <!-- 批量插入AdReleaseTimer表数据  -->
+    <insert id="batchInsert">
+		insert into zx_ad_release_timer(ad_schedule_id, release_begin_time,release_end_time,remark,create_by,create_time) values
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.adScheduleId},#{item.releaseBeginTime},#{item.releaseEndTime},#{item.remark},#{createBy},#{createTime})
+		</foreach>
+	</insert>
     
 </mapper>

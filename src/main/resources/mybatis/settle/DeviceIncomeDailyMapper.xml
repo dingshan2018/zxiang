@@ -58,6 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
               <if test="userId == null">  ${filterSql} </if>
               AND a.`device_id`=t.`device_id`
               AND a.`place_id` = p.`place_id`
+              AND a.del_flag = '0'
              <if test="userId != null and userId != ''"> and #{userId} = t.owner_id </if>
              <if test="incomeId != null and incomeId != ''"> and a.income_id = #{incomeId}</if>
              <if test="deviceSn != null and deviceSn != ''"> and t.device_sn = #{deviceSn}</if>
@@ -114,6 +115,38 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			DATE_SUB(CURDATE(), INTERVAL 1 DAY)
          </trim>
     </insert>
+    
+    <insert id="insertCurDeviceIncomeDaily" parameterType="DeviceIncomeDaily">
+        insert into zx_device_income_daily
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="deviceId != null and deviceId != '' ">device_id,</if>
+			<if test="terminalId != null and terminalId != '' ">terminal_id,</if>
+			<if test="placeId != null and placeId != '' ">place_id,</if>
+			<if test="sellIncome != null and sellIncome != '' ">sell_income,</if>
+			<if test="adIncome != null and adIncome != '' ">ad_income,</if>
+			<if test="scanIncome != null and scanIncome != '' ">scan_income,</if>
+			<if test="refundIncome != null and refundIncome != '' ">refund_income,</if>
+			<if test="refundNum != null and refundNum != '' ">refund_num,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="updateBy != null and updateBy != '' ">update_by,</if>
+			sum_date,
+			create_time
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="deviceId != null and deviceId != ''">#{deviceId},</if>
+			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
+			<if test="placeId != null and placeId != ''">#{placeId},</if>
+			<if test="sellIncome != null and sellIncome != ''">#{sellIncome},</if>
+			<if test="adIncome != null and adIncome != ''">#{adIncome},</if>
+			<if test="scanIncome != null and scanIncome != ''">#{scanIncome},</if>
+			<if test="refundIncome != null and refundIncome != ''">#{refundIncome},</if>
+			<if test="refundNum != null and refundNum != ''">#{refundNum},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+			#{sumDate},
+			#{sumDate}
+         </trim>
+    </insert>
 	 
     <update id="updateDeviceIncomeDaily" parameterType="DeviceIncomeDaily">
         update zx_device_income_daily
@@ -153,6 +186,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
 			    '%Y-%m-%d'
 			  )
+			  and del_flag='0'
+         </where>
+    </select>
+    
+     <select id="selectCurDeviceIncomeDaily" parameterType="DeviceIncomeDaily" resultMap="DeviceIncomeDailyResult">
+        select income_id from zx_device_income_daily
+        <where>  
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+         	 and DATE_FORMAT(sum_date, '%Y-%m-%d') = DATE_FORMAT(
+			    #{sumDate},
+			    '%Y-%m-%d'
+			  )
+			  and del_flag='0'
          </where>
     </select>
     
@@ -169,6 +215,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			  seller_id,
 			  buyer_id,
 			  IF(DATE_FORMAT(create_time, '%Y-%m-%d') = DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 DAY),'%Y-%m-%d'),'01','00') isincome 
+			FROM
+			  zx_device_order 
+			WHERE  device_id = #{deviceId}
+			   and status = 1
+			  order by create_time desc
+    </select>
+    
+     <select id="selectCurrentdeviceorderlist"  resultType="java.util.HashMap">
+	        SELECT 
+			  device_id,
+			  terminal_id,
+			  price,
+			  cut_off,
+			  seller_id,
+			  buyer_id,
+			  IF(DATE_FORMAT(create_time, '%Y-%m-%d') = DATE_FORMAT(#{currentTime},'%Y-%m-%d'),'01','00') isincome 
 			FROM
 			  zx_device_order 
 			WHERE  device_id = #{deviceId}
@@ -194,9 +256,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		AND (DATE_FORMAT(down_time, '%Y-%m-%d') = DATE_FORMAT( DATE_SUB(CURDATE(), INTERVAL 1 DAY), '%Y-%m-%d') OR DATE_FORMAT(play_time, '%Y-%m-%d') = DATE_FORMAT( DATE_SUB(CURDATE(), INTERVAL 1 DAY), '%Y-%m-%d'))
     </select>
     
+      <select id="selectcurreleaserecordlist"  resultType="java.util.HashMap">
+       SELECT 
+		  * 
+		FROM
+		  zx_ad_release_record 
+		WHERE 
+		device_id = #{device_id}
+		<if test="scheduleId != null and scheduleId != ''"> and schedule_id = #{scheduleId}</if>
+		AND (DATE_FORMAT(down_time, '%Y-%m-%d') = DATE_FORMAT( #{currentTime}, '%Y-%m-%d') OR DATE_FORMAT(play_time, '%Y-%m-%d') = DATE_FORMAT( #{currentTime}, '%Y-%m-%d'))
+    </select>
+    
       <select id="selectzxtissuerecordlist"  resultType="java.util.HashMap">
 	        SELECT 
-			  z.open_id,
 			  z.qr_schedule_id schedule_id,
 			   s.promotioner
 			FROM
@@ -207,25 +279,62 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			   and  z.`qr_schedule_id` = s.`ad_schedule_id`
 			    AND s.promotioner != ''
 			    AND s.promotioner IS NOT NULL
+			    and tissue_channel = '1'
 			AND DATE_FORMAT(z.create_time, '%Y-%m-%d') = DATE_FORMAT(
 			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
 			    '%Y-%m-%d'
-			  ) GROUP BY z.open_id
+			  ) 
+    </select>
+    
+      <select id="selectcurrenttissuerecordlist"  resultType="java.util.HashMap">
+	        SELECT 
+			  z.qr_schedule_id schedule_id,
+			   s.promotioner,
+			   z.price
+			FROM
+			  zx_tissue_record z, zx_ad_schedule s
+			  WHERE 
+			   z.device_id = #{deviceId}
+			   and z.status = '1'
+			   and  z.`qr_schedule_id` = s.`ad_schedule_id`
+			    AND s.promotioner != ''
+			    AND s.promotioner IS NOT NULL
+			    and tissue_channel = '1'
+			AND DATE_FORMAT(z.create_time, '%Y-%m-%d') = DATE_FORMAT(
+			    #{currentTime},
+			    '%Y-%m-%d'
+			  ) 
     </select>
     
     
      <select id="selectzxtissuerecordAll"  resultType="int">
-	       SELECT COUNT(1)  FROM ( SELECT 
-			  open_id
+	        SELECT 
+			  COUNT(1)
 			FROM
 			  zx_tissue_record 
 			  WHERE 
 			   device_id = #{deviceId}
 			   and status = '1'
+			   and tissue_channel = '1'
 			AND DATE_FORMAT(create_time, '%Y-%m-%d') = DATE_FORMAT(
 			    DATE_SUB(CURDATE(), INTERVAL 1 DAY),
 			    '%Y-%m-%d'
-			  ) GROUP BY open_id) t
+			  )
+    </select>
+    
+     <select id="selectcurrenttissuerecordAll"  resultType="int">
+	        SELECT 
+			  COUNT(1)
+			FROM
+			  zx_tissue_record 
+			  WHERE 
+			   device_id = #{deviceId}
+			   and status = '1'
+			   and tissue_channel = '1'
+			AND DATE_FORMAT(create_time, '%Y-%m-%d') = DATE_FORMAT(
+			    #{currentTime},
+			    '%Y-%m-%d'
+			  )
     </select>
     
       
@@ -237,6 +346,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT pid FROM sys_area WHERE id = #{placeId}
     </select>
     
-     
+    <update id="deleteWrongDeviceIncome" parameterType="DeviceIncomeDaily">
+         update zx_device_income_daily set del_flag='1' 
+          where sum_date = #{sumDate} and del_flag='0' 
+    </update> 
     
 </mapper>

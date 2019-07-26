@@ -85,7 +85,9 @@ public class Place extends BaseEntity
 	private String updateBy;
 	/**  */
 	private Date updateTime;
-
+	/** 服务网点ID */
+	private Integer servicePoint;
+	private String servicePointName;//服务网点名称
 	
 	private String parentPlaceName;
 	private String provinceName;
@@ -96,6 +98,8 @@ public class Place extends BaseEntity
 	private String operatorName;
 	private String ownerName;
 	private String sceneName;
+	private String agentLevel1;
+	private String agentLevel2;
 	
 	public void setPlaceId(Integer placeId) 
 	{
@@ -474,6 +478,38 @@ public class Place extends BaseEntity
 
 	public void setSceneName(String sceneName) {
 		this.sceneName = sceneName;
+	}
+
+	public Integer getServicePoint() {
+		return servicePoint;
+	}
+
+	public void setServicePoint(Integer servicePoint) {
+		this.servicePoint = servicePoint;
+	}
+
+	public String getServicePointName() {
+		return servicePointName;
+	}
+
+	public void setServicePointName(String servicePointName) {
+		this.servicePointName = servicePointName;
+	}
+
+	public String getAgentLevel1() {
+		return agentLevel1;
+	}
+
+	public void setAgentLevel1(String agentLevel1) {
+		this.agentLevel1 = agentLevel1;
+	}
+
+	public String getAgentLevel2() {
+		return agentLevel2;
+	}
+
+	public void setAgentLevel2(String agentLevel2) {
+		this.agentLevel2 = agentLevel2;
 	}
 
 	public String toString() {

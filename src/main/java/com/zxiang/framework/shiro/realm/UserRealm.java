@@ -152,6 +152,7 @@ public class UserRealm extends AuthorizingRealm
         	userParam.setDelFlag("0");
 //        	userParam.setStatus("0");
         	userParam.setPuserId(puserId);
+        	userParam.setUserType(userType);
         	List<User> users = userService.selectUserList(userParam);
         	if(users!=null && users.size()>0) {
         		for(User person : users) {
@@ -164,46 +165,58 @@ public class UserRealm extends AuthorizingRealm
            //计算场所权限
            Place placeParam = new Place();
            List<Place> places = null;
-           if(userType.equals("03")) {
+           if(userType.equals("03")) {//代理商
         	   List<HashMap<String, Object>> zxagentList = userService.selectzxagent(""+puserId);
         	   String paramplace = "";
         	   String level = "";
-        	   for(HashMap<String, Object> zxagent : zxagentList) {
-        		   level=zxagent.get("level")+"";
-        		   if(level.equals("1")) {
-        			   paramplace+=zxagent.get("city")+",";
+        	   if(zxagentList!=null && zxagentList.size()>0) {
+        		   for(HashMap<String, Object> zxagent : zxagentList) {
+            		   level=zxagent.get("level")+"";
+            		   if(level.equals("1")) {
+            			   paramplace+=zxagent.get("city")+",";
+            		   }else {
+            			   paramplace+=zxagent.get("county")+",";
+            		   }
+            	   }
+            	   paramplace = paramplace.substring(0, paramplace.length() - 1); 
+            	   Map<String,Object> paramMap = new HashMap<String,Object>();
+            	   if(level.equals("1")) {
+            		   paramMap.put("city", ","+paramplace+",");
         		   }else {
-        			   paramplace+=zxagent.get("county")+",";
+        			   paramMap.put("county", ","+paramplace+",");
         		   }
+                   placeParam.setParams(paramMap);
+                   places = placeService.selectPlaceList(placeParam);
         	   }
-        	   paramplace = paramplace.substring(0, paramplace.length() - 1); 
-        	   Map<String,Object> paramMap = new HashMap<String,Object>();
-        	   if(level.equals("1")) {
-        		   paramMap.put("city", ","+paramplace+",");
-    		   }else {
-    			   paramMap.put("county", ","+paramplace+",");
-    		   }
-               placeParam.setParams(paramMap);
-               places = placeService.selectPlaceList(placeParam);
            }
-           if(userType.equals("04")) {
+           if(userType.equals("04")) {//服务商
         	   List<HashMap<String, Object>> zxrepairareaList = userService.selectzxrepairarea(""+puserId);
         	   String paramplace = "";
-               for(HashMap<String, Object> zxrepairarea : zxrepairareaList) {
-            	   paramplace+=zxrepairarea.get("county_id")+",";
+        	   if(zxrepairareaList != null && zxrepairareaList.size()>0) {
+        		   for(HashMap<String, Object> zxrepairarea : zxrepairareaList) {
+                	   paramplace+=zxrepairarea.get("county_id")+",";
+            	   }
+                   paramplace = paramplace.substring(0, paramplace.length() - 1); 
+            	   Map<String,Object> paramMap = new HashMap<String,Object>();
+                   paramMap.put("county", ","+paramplace+",");
+                   placeParam.setParams(paramMap);
+                   places = placeService.selectPlaceList(placeParam);
         	   }
-               paramplace = paramplace.substring(0, paramplace.length() - 1); 
-        	   Map<String,Object> paramMap = new HashMap<String,Object>();
-               paramMap.put("county", ","+paramplace+",");
-               placeParam.setParams(paramMap);
-               places = placeService.selectPlaceList(placeParam);
            }
         if(places!=null && places.size()>0) {
         	for(Place p : places) {
         		placeSets.add(p.getPlaceId()+"");
         	}
         }
-        
+        if(userType.equals("02")) {
+     	   List<HashMap<String, Object>> joinPlaceList = userService.selectJoinPlace(user.getUserId()+"");
+     	   if(joinPlaceList!=null && joinPlaceList.size()>0) {
+     		  for(HashMap<String, Object> joinPlace : joinPlaceList) {
+          		  placeSets.add(joinPlace.get("place_id")+"");
+         	   }
+     	   }
+     	   
+        }
         //计算部门权限
         if(deptId>0) {
         	Dept dept = deptService.selectDeptById(deptId);

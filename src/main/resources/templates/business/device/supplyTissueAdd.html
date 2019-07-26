@@ -22,11 +22,12 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>补纸数量：</label>
 				<div class="col-sm-8">
-					<input id="tissueCount" name="tissueCount" class="form-control" type="text">
+					<input id="tissueCount" name="tissueCount" class="form-control" type="text" value="260">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>补纸人员：</label>
+				<input id="aaa" name="aaa" th:value="${supplierUser}" class="form-control" readonly="readonly" type="hidden">
 				<div class="col-sm-8">
 					<select
 						id="supplierId"
@@ -50,6 +51,9 @@
     <div th:include="include::footer"></div>
     <script type="text/javascript">
 		var prefix = ctx + "business/device"
+		
+		$("#supplierId").val($("#aaa").val());
+		
 		$("#form-device-supplyTissueAdd").validate({
 			rules:{
 				tissueCount:{

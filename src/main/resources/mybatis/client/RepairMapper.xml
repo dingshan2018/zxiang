@@ -41,11 +41,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          status, del_flag, device_num, create_by, create_time, update_by, update_time from zx_repair
     </sql>
     	<sql id="selectRepairVos">
-        select distinct a.repair_id, a.repair_name, a.manager_name, a.manager_id, a.manager_phone, a.bank_receiver, a.bank_account, a.bank_name, 
+        select distinct a.repair_id, a.repair_name, a.manager_name, a.manager_id,b.phonenumber manager_phone, a.bank_receiver, a.bank_account, a.bank_name, 
         a.ad_rate,a.ad_carousel_rate, a.scan_rate,a.prom_direct_rate,a.prom_indirect_rate,a.prom_paper_rate,a.promotion_rate,a.subsidy_rate,
         a.balance,a.frozen_balance,a.status, a.buyer_id,a.puser_id,a.user_type,
         (select u.user_name from sys_user u where u.user_id = a.puser_id) buyerName,
-         a.del_flag, a.device_num, a.create_by, a.create_time, a.update_by, a.update_time from zx_repair a LEFT JOIN sys_user b ON b.puser_id = a.repair_id
+         a.del_flag, a.device_num, a.create_by, a.create_time, a.update_by, a.update_time from zx_repair a LEFT JOIN sys_user b ON b.user_id = a.manager_id and b.`user_type`='04'
     </sql>
 	
     <select id="selectRepairList" parameterType="Repair" resultMap="RepairResult">
@@ -56,7 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="repairName != null and repairName != ''"> and a.repair_name like concat('%', #{repairName}, '%')</if>
              <if test="managerName != null and managerName != ''"> and a.manager_name = #{managerName}</if>
              <if test="managerId != null and managerId != ''"> and a.manager_id = #{managerId}</if>
-             <if test="managerPhone != null  and managerPhone != ''  ">and a.manager_phone like concat('%', #{managerPhone}, '%')</if>
+             <if test="managerPhone != null  and managerPhone != ''  ">and b.phonenumber like concat('%', #{managerPhone}, '%')</if>
              <if test="bankReceiver != null and bankReceiver != ''"> and a.bank_receiver = #{bankReceiver}</if>
              <if test="bankAccount != null and bankAccount != ''"> and a.bank_account = #{bankAccount}</if>
              <if test="bankName != null and bankName != ''"> and a.bank_name = #{bankName}</if>
@@ -168,6 +168,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where repair_id = #{repairId}
     </update>
+    <update id="batchEditParam" parameterType="Repair">
+        update zx_repair
+        <trim prefix="SET" suffixOverrides=",">
+           	<if test="adRate != null">ad_rate = #{adRate},</if>
+			<if test="adCarouselRate != null">ad_carousel_rate = #{adCarouselRate},</if>
+			<if test="scanRate != null">scan_rate = #{scanRate},</if>
+			<if test="promDirectRate != null">prom_direct_rate = #{promDirectRate},</if>
+			<if test="promIndirectRate != null">prom_indirect_rate = #{promIndirectRate},</if>
+			<if test="promPaperRate != null">prom_paper_rate = #{promPaperRate},</if>
+			<if test="promotionRate != null">promotion_rate = #{promotionRate},</if>
+			<if test="subsidyRate != null">subsidy_rate = #{subsidyRate},</if>
+        </trim>
+        where repair_id = #{repairId}
+    </update>
 	<update id="updateBalance">
         update zx_repair
         <trim prefix="SET" suffixOverrides=",">
@@ -190,6 +204,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="selectDropBoxList" resultMap="RepairResult">
          select repair_id, repair_name,manager_id,manager_name from zx_repair where del_flag !=2 
+    </select>
+    
+    <select id="selectRepairByCountyOrCity" resultMap="RepairResult">
+        <include refid="selectRepairVo"/>
+        <where>  
+            <if test="countyId != null and countyId != ''"> and repair_id IN (SELECT repair_id FROM zx_repair_area WHERE county_id=#{countyId}) </if>
+            <if test="city != null and city != ''"> and repair_id IN (SELECT repair_id FROM zx_repair_area WHERE city_id=#{city})</if>
+        </where>
     </select>
     
 </mapper>

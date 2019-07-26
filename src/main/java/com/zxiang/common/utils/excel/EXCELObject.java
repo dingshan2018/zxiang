@@ -42,7 +42,7 @@ public class EXCELObject {
 	private String iFilePath;//读取文件的路径
 	private String eFilePath;//导出文件的路径
 	private boolean isCheck;
-	private List<Map<String, String>> dataList;
+	private List<Map<String, Object>> dataList;
 	private Integer pageSize;
 	
 	public String getTitle() {
@@ -76,11 +76,11 @@ public class EXCELObject {
 		this.pageSize = pageSize;
 	}
 
-	public List<Map<String, String>> getDataList() {
+	public List<Map<String, Object>> getDataList() {
 		return dataList;
 	}
 
-	public void setDataList(List<Map<String, String>> dataList) {
+	public void setDataList(List<Map<String, Object>> dataList) {
 		this.dataList = dataList;
 	}
 

@@ -267,6 +267,33 @@ public class SettlementParamController extends BaseController
 	
 	/**
 	 * 设备投放从场所查询
+	 * 本方法已废弃，采用审核方法
+	 *//*
+	@PostMapping("/deviceSave000")
+	@ResponseBody
+	@Deprecated
+	public Map<String, Object> deviceSave000(@RequestParam Map<String, Object> params)
+	{
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			int i = settlementParamService.deviceSave(params);
+			if(i>0) {
+				map.put("code", "0000");
+				map.put("msg", "操作成功");
+			}else {
+				map.put("code", "9999");
+				map.put("msg", "操作失败");
+			}
+			
+		} catch (Exception e) {
+			map.put("code", "9999");
+			map.put("msg", "操作失败");
+		}
+		return map;
+	}*/
+	
+	/**
+	 * 手机端投放设备提交审核方法
 	 */
 	@PostMapping("/deviceSave")
 	@ResponseBody
@@ -274,7 +301,7 @@ public class SettlementParamController extends BaseController
 	{
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			int i = settlementParamService.deviceSave(params);
+			int i = settlementParamService.releaseDeviceSave(params);
 			if(i>0) {
 				map.put("code", "0000");
 				map.put("msg", "操作成功");

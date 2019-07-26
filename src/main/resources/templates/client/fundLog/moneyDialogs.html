@@ -54,6 +54,11 @@
 					$.modal.alertError("超过可提现金额");
 					return;
 				}
+				var lowestMoney = [[${lowestMoney}]];
+				if(money < lowestMoney){
+					$.modal.alertError("提现金额必须"+lowestMoney+"元以上");
+					return;
+				}
 				$.modal.loading("正在处理中，请稍后...");
             	var config = {
             	        url: ctx +"client/fundLog/moneyHandle",

@@ -47,7 +47,7 @@ public class VersionServiceImpl implements IVersionService
 	Logger logger = Logger.getLogger(VersionServiceImpl.class);
 	
 	/** 版本更新包上传URL	 */
-	public final static String 	UPLOAD_URL_PACKAGE = "http://mmedia.bp.zcloudtechs.cn/mmedia/adpublish/api/uploadAttach.action";
+	public final static String 	UPLOAD_URL_PACKAGE = "http://mmedia.dingscm.com/mmedia/adpublish/api/uploadAttach.action";
 	
 	@Autowired
 	private VersionMapper versionMapper;

@@ -67,4 +67,13 @@ public interface ReleaseDeviceMapper
 	 */
 	public int batchInsert(List<ReleaseDevice> releaseDeviceList);
 	
+	/**
+	 * 删除广告投放数据表
+	 * @param scheduleId
+	 * @return
+	 */
+	public int deleteReleaseDeviceByScheduleId(Integer scheduleId);
+	
+	public int deleteReleaseDeviceByAdIds(String[] ids);
+	
 }

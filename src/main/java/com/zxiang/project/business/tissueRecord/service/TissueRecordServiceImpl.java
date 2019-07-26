@@ -134,15 +134,33 @@ public class TissueRecordServiceImpl implements ITissueRecordService
 			if(tissueCount.get("paperSum") != null){
 				paperSum =  (Long) tissueCount.get("paperSum");
 			}
+			Long validPaperSum = 0L;
+			if(tissueCount.get("validPaperSum") != null){
+				validPaperSum =  Long.parseLong(tissueCount.get("validPaperSum").toString());
+			}
+			Long invalidPaperSum = 0L;
+			if(tissueCount.get("invalidPaperSum") != null){
+				invalidPaperSum =  Long.parseLong(tissueCount.get("invalidPaperSum").toString());
+			}
 			String moneySum = "0";
 			if(tissueCount.get("moneySum") != null){
 				moneySum = new DecimalFormat("###,##0.00").format(tissueCount.get("moneySum"));
 			}
+			String validMoneySum = "0";
+			if(tissueCount.get("validMoneySum") != null){
+				validMoneySum = new DecimalFormat("###,##0.00").format(tissueCount.get("validMoneySum"));
+			}
 			result.put("paperSum", paperSum);
 			result.put("moneySum", moneySum);
+			result.put("validPaperSum", validPaperSum);
+			result.put("invalidPaperSum", invalidPaperSum);
+			result.put("validMoneySum", validMoneySum);
 		}else{
 			result.put("paperSum", "0");
 			result.put("moneySum", "0");
+			result.put("validPaperSum", "0");
+			result.put("invalidPaperSum", "0");
+			result.put("validMoneySum", "0.0");
 		}
 		
 		return result;

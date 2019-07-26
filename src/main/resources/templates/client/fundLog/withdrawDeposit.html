@@ -24,9 +24,21 @@
 									data-style="btn-white btn-sm">
 	              	<option value="">全部</option>
 	              	<option value="1">转账中</option>
-	              	<option value="2">转载成功</option>
+	              	<option value="2">转账成功</option>
 	              	<option value="3">转账失败</option>
 	              </select>
+	            </li>
+	            <li class="select-time">
+	              <label class="select-item-name">提现时间： </label>
+	              <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="beginTime"/>
+	              <span>-</span>
+	              <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="endTime"/>
+	            </li>
+	            <li class="select-time">
+	              <label class="select-item-name">付款时间： </label>
+	              <input type="text" class="time-input" data-laydate id="startPayTime" placeholder="开始时间" name="startPayTime"/>
+	              <span>-</span>
+	              <input type="text" class="time-input" data-laydate id="endPayTime" placeholder="结束时间" name="endPayTime"/>
 	            </li>
 	            <li class="select-btns">
 	              <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索
@@ -127,6 +139,10 @@
 				{
 					field : 'payTime',
 					title : '付款时间'
+				},
+				{
+					field : 'updateBy',
+					title : '操作者'
 				},
 				{
 					field : 'remark',

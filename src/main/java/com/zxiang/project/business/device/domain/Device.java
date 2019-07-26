@@ -74,12 +74,17 @@ public class Device extends BaseEntity
 
 	private String terminalCode;
 	private String placeName;
+	private String sceneName;
 	/** 省份 */
 	private Integer province;
+	private String provinceName;
 	/** 城市 */
 	private Integer city;
+	private String cityName;
 	/** 地区 */
 	private Integer county;
+
+	private String countyName;
 	//终端换板字段
 	private Integer newTerminalId;//新终端
 	private String oldVolumn;//音量
@@ -94,6 +99,48 @@ public class Device extends BaseEntity
 	
 	private String userId ;
 	
+	private String servicePointName;//服务网点名称
+	private String agentLevel1;//一级代理
+	private String agentLevel2;//二级代理
+	
+	private Integer scheduleId;
+	
+	private String adUrl;
+	
+	private String wxNickname;//微信昵称
+	
+	private String releaseDeviceCondition;//广告投放设备查询条件，有值即过滤终端不为空的设备
+	
+	private Long totalCnt;//累计出纸次数
+	private Long invalidCnt;//无效累计出纸巾
+	private Long validCnt;//有效累计出纸
+	
+	private String address;
+	
+	private String build;
+	public String getProvinceName() {
+		return provinceName;
+	}
+
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
+	}
+
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	public String getCountyName() {
+		return countyName;
+	}
+
+	public void setCountyName(String countyName) {
+		this.countyName = countyName;
+	}
 	public void setDeviceId(Integer deviceId) 
 	{
 		this.deviceId = deviceId;
@@ -439,6 +486,38 @@ public class Device extends BaseEntity
 		this.userId = userId;
 	}
 
+	public String getServicePointName() {
+		return servicePointName;
+	}
+
+	public void setServicePointName(String servicePointName) {
+		this.servicePointName = servicePointName;
+	}
+
+	public String getAgentLevel1() {
+		return agentLevel1;
+	}
+
+	public void setAgentLevel1(String agentLevel1) {
+		this.agentLevel1 = agentLevel1;
+	}
+
+	public String getAgentLevel2() {
+		return agentLevel2;
+	}
+
+	public void setAgentLevel2(String agentLevel2) {
+		this.agentLevel2 = agentLevel2;
+	}
+
+	public String getSceneName() {
+		return sceneName;
+	}
+
+	public void setSceneName(String sceneName) {
+		this.sceneName = sceneName;
+	}
+
 	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("deviceId", getDeviceId())
@@ -464,6 +543,80 @@ public class Device extends BaseEntity
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
+            .append("wxNickname", getWxNickname())
             .toString();
     }
+
+	public Integer getScheduleId() {
+		return scheduleId;
+	}
+
+	public void setScheduleId(Integer scheduleId) {
+		this.scheduleId = scheduleId;
+	}
+
+	public String getAdUrl() {
+		return adUrl;
+	}
+
+	public void setAdUrl(String adUrl) {
+		this.adUrl = adUrl;
+	}
+
+	public String getWxNickname() {
+		return wxNickname;
+	}
+
+	public void setWxNickname(String wxNickname) {
+		this.wxNickname = wxNickname;
+	}
+
+	public String getReleaseDeviceCondition() {
+		return releaseDeviceCondition;
+	}
+
+	public void setReleaseDeviceCondition(String releaseDeviceCondition) {
+		this.releaseDeviceCondition = releaseDeviceCondition;
+	}
+
+	public Long getTotalCnt() {
+		return totalCnt;
+	}
+
+	public void setTotalCnt(Long totalCnt) {
+		this.totalCnt = totalCnt;
+	}
+
+	public Long getInvalidCnt() {
+		return invalidCnt;
+	}
+
+	public void setInvalidCnt(Long invalidCnt) {
+		this.invalidCnt = invalidCnt;
+	}
+
+	public Long getValidCnt() {
+		return validCnt;
+	}
+
+	public void setValidCnt(Long validCnt) {
+		this.validCnt = validCnt;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getBuild() {
+		return build;
+	}
+
+	public void setBuild(String build) {
+		this.build = build;
+	}
+	
 }

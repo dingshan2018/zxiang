@@ -7,6 +7,7 @@ import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,7 +60,7 @@ public interface IAdScheduleService
      * @param ids 需要删除的数据ID
      * @return 结果
      */
-	public int deleteAdScheduleByIds(String ids);
+	public int deleteAdScheduleByIds(String ids)  throws Exception;
 
 	
 	/**
@@ -139,6 +140,32 @@ public interface IAdScheduleService
 	 * @return
 	 */
 	public String checkNameUnique(String scheduleName);
+	
+	/**
+	 * 变更广告终端
+	 * @param adSchedule
+	 * @param operatorUser
+	 * @return
+	 */
+	public int republish(AdSchedule adSchedule, String operatorUser) throws Exception;
+
+	/**
+	 * 定时更新未发布排期
+	 */
+	public void releaseSchdule() throws Exception;
+
+	/**
+	 * 定时删除已发布排期
+	 */
+	public void stopSchdule() throws Exception;
+
+	/**
+	 * 广告下架
+	 * @param adSchedule
+	 * @param operatorUser
+	 * @return
+	 */
+	public int removeAd(AdSchedule adSchedule, String operatorUser) throws Exception;
 
 
 }

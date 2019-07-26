@@ -59,7 +59,7 @@
                     <input id="placeCode" name="placeCode" th:field="*{placeCode}" class="form-control" type="text" readonly="readonly">
                 </div>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label class="col-sm-3 control-label">场所类型：</label>
                 <div class="col-sm-8">
                     <select
@@ -73,7 +73,7 @@
                         <option value="2" th:selected="${place.placeType=='2'}">自购</option>
 					</select>
                 </div>
-            </div>
+            </div> -->
             <div class="form-group">
                 <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>场景：</label>
                 <div class="col-sm-8">
@@ -98,10 +98,10 @@
                           style="font-size: 20px;"
                           data-toggle="tooltip"
                           data-placement="top"
-                          onclick="addressResolution()">
+                          onclick="addressResolutionThrottle(addressResolution, 1000)">
                     <span class="glyphicon glyphicon-map-marker"></span>
                   </button>
-                    <input id="address" name="address" th:field="*{address}" class="form-control" type="text" onblur="addressResolution()">
+                    <input id="address" name="address" th:field="*{address}" class="form-control" type="text" onblur="addressResolutionThrottle(addressResolution, 1000)">
                 </div>
             </div>
             <div class="form-group">
@@ -138,9 +138,24 @@
                       data-live-search="true"
                       class="form-control m-b block-plugin__select-picker selectpicker"
                       data-style="btn-white btn-sm">
-	                    <option value="">---请选择---</option>
+	                    <option value="0">---请选择---</option>
 	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{tissueLen}"></option>
 	                </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>服务网点：</label>
+                <div class="col-sm-8">
+                    <select
+                      id="servicePoint"
+                      name="servicePoint"
+                      data-live-search="true"
+                      class="form-control block-plugin__select-picker selectpicker"
+                      data-style="btn-white btn-sm">
+						<option value=""></option>
+						<option th:each="repair:${repairList}" th:value="${repair.repairId}"
+						 th:text="${repair.repairName}" th:field="*{servicePoint}"></option>
+					</select>
                 </div>
             </div>
             <div class="form-group">
@@ -173,6 +188,7 @@
 					</select>
                 </div>
             </div>
+            <!--  
             <div class="form-group">
                 <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>经办人：</label>
                 <div class="col-sm-8">
@@ -188,6 +204,7 @@
 					</select>
                 </div>
             </div>
+            -->
             <!-- <div class="form-group">
                 <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>机主：</label>
                 <div class="col-sm-8">
@@ -266,12 +283,20 @@
 	        //绑定事件
 	        $("#province").change( function () {
 	            cityBind();
-	          	//根据城市区域缩小维修人员选择范围
-	        	getRepairUserList();
 	        })
 
 	        $("#city").change(function () {
 	        	countyBind();
+	        })
+	        
+	        $("#county").change(function () {
+	        	//获取服务网点
+	        	getServicePointList();
+	        })
+	        
+	        $("#servicePoint").change(function () {
+	        	//根据服务商选择维修人员选择范围
+	        	getRepairUserListByRepairId();
 	        })
 	    })
 
@@ -310,6 +335,46 @@
             $("#county").append(str).selectpicker("refresh");
 	    }
 
+	  	//通过选择的区域获取服务网点，再根据服务网点获取维修员送纸员
+	    function getServicePointList() {
+	    	var city = $("#city option:selected").val();
+	        var county = $("#county option:selected").val();
+	        //判断区县这个下拉框选中的值是否为空
+	        if (county == "") {
+	            return;
+	        }
+	        $("#servicePoint").html("");
+	        var servicePoint = "<option value=''>---请选择---</option>";
+
+	        var servicePointList = selectservicePointBycounty(city,county);
+	        $.each(servicePointList, function (i, item) {
+	        	servicePoint += "<option value=" + item.repairId + ">" + item.repairName + "</option>";
+            })
+            //将数据添加到服务网点这个下拉框里面
+            $("#servicePoint").append(servicePoint).selectpicker("refresh");;
+	    }
+	  	//通过服务商获取维修员及送纸员
+	    function getRepairUserListByRepairId() {
+	    	var servicePoint = $("#servicePoint option:selected").val();
+	        //判断区县这个下拉框选中的值是否为空
+	        if (servicePoint == "") {
+	            return;
+	        }
+	        $("#repairId").html("");
+	        var repairStr = "<option value=''>---请选择---</option>";
+	        $("#supplyId").html("");
+	        var supplyStr = "<option value=''>---请选择---</option>";
+
+	        var repairUserList = selectUserByRepairId(servicePoint);
+	        $.each(repairUserList, function (i, item) {
+	        	repairStr += "<option value=" + item.userId + ">" + item.userName + "</option>";
+	        	supplyStr += "<option value=" + item.userId + ">" + item.userName + "</option>";
+            })
+            //将数据添加到区县这个下拉框里面
+            $("#repairId").append(repairStr).selectpicker("refresh");;
+	        $("#supplyId").append(supplyStr).selectpicker("refresh");;
+	    }
+	  	
 	  	//通过选择的区域获取维修员及送纸员
 	    function getRepairUserList() {
 	        var city = $("#city option:selected").val();
@@ -331,6 +396,18 @@
             $("#repairId").append(repairStr);
 	        $("#supplyId").append(supplyStr);
 	    }
+
+	    // 节流
+	    var addressResolutionThrottleLastTime = null;
+	    function addressResolutionThrottle (fn, time) {
+        return (function () {
+          var nowTime = +new Date();
+          if (nowTime - addressResolutionThrottleLastTime > time) {
+            fn();
+            addressResolutionThrottleLastTime = nowTime;
+          }
+        }())
+      }
 
 	 	// 腾讯地图api获取经纬度
 	    function addressResolution () {
@@ -400,6 +477,9 @@
 					digits:true,
 					min:0,
 					max:100000
+				},
+				servicePoint:{
+					required:true,
 				},
 			},
 			submitHandler: function(form) {

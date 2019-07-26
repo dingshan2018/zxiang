@@ -39,20 +39,28 @@
 	                </div>
 	            </div>
 	            <div class="form-group">	
-	                <label class="col-sm-3 control-label">场所类型：</label>
+	                <!-- <label class="col-sm-3 control-label">场所类型：</label>
 	                <div class="col-sm-3">
 	                    <select id="placeType" name="placeType" class="form-control" th:field="*{placeType}" disabled>
 							<option value="0" >自营</option>
 	                        <option value="1" >代理</option>
 	                        <option value="2" >自购</option>
 						</select>
-	                </div>
+	                </div> -->
 	                <label class="col-sm-3 control-label">场景：</label>
 	                <div class="col-sm-3">
 	                    <select id="scene" name="scene"  class="form-control m-b" th:with="type=${@dict.getType('place_type')}" disabled>
 		                    <option value=""></option>
 		                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{scene}"></option>
 		                </select>
+	                </div>
+	                <label class="col-sm-3 control-label">服务网点：</label>
+	                <div class="col-sm-3">
+	                    <select id=servicePoint name="servicePoint" class="form-control" disabled>
+							<option value=""></option>
+							<option th:each="repair:${repairList}" th:value="${repair.repairId}"
+						 	 th:text="${repair.repairName}" th:field="*{servicePoint}"></option>
+						</select>
 	                </div>
 	            </div>
 	            <div class="form-group">	
@@ -94,7 +102,14 @@
 	                </div>
 	                <label class="col-sm-3 control-label">出纸长度：</label>
 	                <div class="col-sm-3">
-	                    <label th:text="*{tissueLen}" class="form-control"></label>
+	                    <!-- <label th:text="*{tissueLen}" class="form-control"></label> -->
+	                    <select
+	                      id="tissueLen"
+	                      name="tissueLen"
+	                      th:with="type=${@dict.getType('tissue_len')}" class="form-control" disabled>
+		                    <option value=""></option>
+		                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{tissueLen}"></option>
+		                </select>
 	                </div>
 	            </div>
 	            <div class="form-group">	
@@ -124,7 +139,7 @@
 	                </div>
 	            </div>
             </div>
-            <div>
+            <!-- <div>
             	<div style="height: 30px;line-height: 30px;background: #f1f1f1;color: #000;font-weight: 600;text-indent: 8px;margin-bottom: 18px;">合同信息</div>
 	            <div class="form-group">	
 	                <label class="col-sm-3 control-label">开户行（合同收款方）：</label>
@@ -156,7 +171,7 @@
 	                    <input id="ctRate" name="ctRate" th:field="*{ctRate}" class="form-control" type="text">
 	                </div>
 	            </div>
-            </div>
+            </div> -->
           
 			<div class="form-group">
 				<div class="form-control-static col-sm-offset-9">

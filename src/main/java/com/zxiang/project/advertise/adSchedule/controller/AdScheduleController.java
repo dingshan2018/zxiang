@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -136,6 +137,9 @@ public class AdScheduleController extends BaseController
 			adSchedule.setCreateBy(operatorUser);
 			adSchedule.setCreateTime(new Date());
 			adSchedule.setIsDel("0");
+			if(StringUtils.isNotBlank(adSchedule.getQrUrl())) {
+				adSchedule.setQrUrl(StringEscapeUtils.unescapeHtml(adSchedule.getQrUrl()));
+			}
 			
 			return toAjax(adScheduleService.saveAdTemplates(adSchedule));
 		} catch (Exception e) {
@@ -171,7 +175,9 @@ public class AdScheduleController extends BaseController
 		String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
 		adSchedule.setUpdateBy(operatorUser);
 		adSchedule.setUpdateTime(new Date());
-		
+		if(StringUtils.isNotBlank(adSchedule.getQrUrl())) {
+			adSchedule.setQrUrl(StringEscapeUtils.unescapeHtml(adSchedule.getQrUrl()));
+		}
 		return toAjax(adScheduleService.updateAdSchedule(adSchedule));
 	}
 	
@@ -184,7 +190,13 @@ public class AdScheduleController extends BaseController
 	@ResponseBody
 	public AjaxResult remove(String ids)
 	{		
-		return toAjax(adScheduleService.deleteAdScheduleByIds(ids));
+		try {
+			return toAjax(adScheduleService.deleteAdScheduleByIds(ids));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return error("删除广告失败");
+		}
 	}
 	
 	/**
@@ -254,6 +266,43 @@ public class AdScheduleController extends BaseController
 		try {
 			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
 			return toAjax(adScheduleService.orderSave(adSchedule,operatorUser));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error();
+		}
+	}
+	
+	/**
+	 * 播放广告
+	 */
+	@RequiresPermissions("advertise:adSchedule:republish")
+	@Log(title = "广告投放变更", businessType = BusinessType.UPDATE)
+	@PostMapping("/republish")
+	@ResponseBody
+	public AjaxResult republish(AdSchedule adSchedule)
+	{
+		try {
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			return toAjax(adScheduleService.republish(adSchedule,operatorUser));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error();
+		}
+	}
+	/**
+	 * 停播广告
+	 * @param adSchedule
+	 * @return
+	 */
+	@RequiresPermissions("advertise:adSchedule:removeAd")
+	@Log(title = "广告下架", businessType = BusinessType.UPDATE)
+	@PostMapping("/removeAd")
+	@ResponseBody
+	public AjaxResult removeAd(AdSchedule adSchedule)
+	{
+		try {
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			return toAjax(adScheduleService.removeAd(adSchedule,operatorUser));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return error();

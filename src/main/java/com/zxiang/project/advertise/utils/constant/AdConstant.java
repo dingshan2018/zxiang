@@ -29,23 +29,39 @@ public class AdConstant {
 	public final static String AD_ADUIT_NO_PASS = "0";
 	
 	
+	/******************** 广告投放播放狀態常量	*******************/
+	/** 待播放	*/
+	public final static String AD_WAIT_REPUBLISH = "0"; 
+	/** 播放中	*/
+	public final static String AD_REPUBLISH = "1"; 
+	/** 停播	*/
+	public final static String AD_STOP_REPUBLISH = "2"; 
+	
+	/******************** 广告投放支付狀態常量	*******************/
+	/** 待支付	*/
+	public final static String AD_WAIT_PAY = "0"; 
+	/** 已支付	*/
+	public final static String AD_HAS_PAY = "1"; 
+
 	
 	/******************** 广告HTTP接口URL常量	*******************/
 	
 	/** 获取模板详细信息列表URL	 */
-	public final static String 	AD_URL_GETTHEMELIST = "http://mmedia.bp.zcloudtechs.cn/mmedia/adpublish/api/getThemeList.action";
+	public final static String 	AD_URL_GETTHEMELIST = "/mmedia/adpublish/api/getThemeList.action";
 	/** 新增推广计划URL	 */
-	public final static String 	AD_URL_SAVEPLAYBILL = "http://mmedia.bp.zcloudtechs.cn/mmedia/adpublish/api/savePlaybill.action";
+	public final static String 	AD_URL_SAVEPLAYBILL = "/mmedia/adpublish/api/savePlaybill.action";
 	/** 上传素材信息URL	 */
-	public final static String 	AD_URL_ADDELEMENT = "http://mmedia.bp.zcloudtechs.cn/mmedia/adpublish/api/addElement.action";
+	public final static String 	AD_URL_ADDELEMENT = "/mmedia/adpublish/api/addElement.action";
 	/** 新增广告终端URL	 */
-	public final static String 	AD_URL_SAVETERMINAL = "http://mmedia.bp.zcloudtechs.cn/mmedia/adpublish/api/saveTerminal.action";
+	public final static String 	AD_URL_SAVETERMINAL = "/mmedia/adpublish/api/saveTerminal.action";
 	/** 删除广告终端URL	 */
-	public final static String 	AD_URL_DELETETERMINAL = "http://mmedia.bp.zcloudtechs.cn/mmedia/adpublish/api/deleteTerminal.action";
+	public final static String 	AD_URL_DELETETERMINAL = "/mmedia/adpublish/api/deleteTerminal.action";
 	/** 生成排期计划URL	 */
-	public final static String 	AD_URL_ADDSCHEDULE = "http://mmedia.bp.zcloudtechs.cn/mmedia/adpublish/api/addSchedule.action";
+	public final static String 	AD_URL_ADDSCHEDULE = "/mmedia/adpublish/api/addSchedule.action";
 	/** 审核通过下发排期计划URL	 */
-	public final static String 	AD_URL_PUBLISHSCHEDULE = "http://mmedia.bp.zcloudtechs.cn/mmedia/adpublish/api/publishSchedule.action";
+	public final static String 	AD_URL_PUBLISHSCHEDULE = "/mmedia/adpublish/api/publishSchedule.action";
+	/** 下发更改排期计划URL	 */
+	public final static String 	AD_URL_REPUBLISHSCHEDULE = "/mmedia/adpublish/api/republishSchedule.action";
 	/******************** 广告HTTP接口返回状态	*******************/
 	
 	/** 接口返回成功码	 */
@@ -83,14 +99,16 @@ public class AdConstant {
 	public final static String AD_TYPE_H5 = "03";
 	/** 终端页面和轮播两种类型广告 */
 	public final static String AD_TYPE_PHOTO_VIDEO = "04";
-	
+	/** 终端页面、轮播、文本类型广告 */
+	public final static String AD_TYPE_PHOTO_VIDEO_TXT = "05";
 	
 	/******************** 广告素材包含的文件类型	*******************/
 	/** 图片 */
 	public final static String MATERIAL_TYPE_PHOTO = "图片";
 	/** 视频 */
 	public final static String MATERIAL_TYPE_VIDEO = "视频";
-	
+	/** 文本 */
+	public final static String MATERIAL_TYPE_TXT = "文本";
 	
 	
 	

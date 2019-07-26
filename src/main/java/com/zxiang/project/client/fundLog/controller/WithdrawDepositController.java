@@ -1,6 +1,10 @@
 package com.zxiang.project.client.fundLog.controller;
 
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +14,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.framework.aspectj.lang.annotation.DataFilter;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -45,6 +51,7 @@ public class WithdrawDepositController extends BaseController
 	/**
 	 * 查询提现记录列表
 	 */
+	@DataFilter(personAlias="b.user_id")
 	@RequiresPermissions("client:withdrawDeposit:list")
 	@PostMapping("/list")
 	@ResponseBody
@@ -128,5 +135,16 @@ public class WithdrawDepositController extends BaseController
 	{		
 		return toAjax(withdrawDepositService.deleteWithdrawDepositByIds(ids));
 	}
-	
+	/**
+	 * 数据导出
+	 */
+	@RequestMapping("/excelExport")
+	public void excelExport(@RequestParam Map<String, Object> params, 
+			HttpServletResponse response,HttpServletRequest request){
+		try {
+			withdrawDepositService.queryExport(params, request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
