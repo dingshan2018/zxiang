@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -140,6 +141,42 @@ public class Tools {
 		try {
 			StringRequestEntity entity = new StringRequestEntity(requst, "application/x-www-form-urlencoded", "UTF-8");
 			method.setRequestEntity(entity);
+			client.executeMethod(method);
+
+			InputStream inputStream = method.getResponseBodyAsStream();
+			restult = IOUtils.toString(inputStream);
+			return restult;
+		}finally {
+			// 释放连接
+			method.releaseConnection();
+		}
+	}
+	
+	/**
+	 * HTTP post请求
+	 * Content-Type 为application/x-www-form-urlencoded;charset=UTF-8
+	 * @param uri
+	 * @param requst
+	 * @return
+	 * @throws IOException
+	 */
+	public static String doPostForm(String uri, String requst,HashMap<String,String> headerMap) throws IOException {
+		String restult =null;
+		ProtocolSocketFactory fcty = new MySecureProtocolSocketFactory();
+		Protocol.registerProtocol("https", new Protocol("https", fcty, 443));
+		HttpClient client = new HttpClient();
+		// 使用POST方法
+		PostMethod method = new PostMethod(uri);
+		try {
+			StringRequestEntity entity = new StringRequestEntity(requst, "application/x-www-form-urlencoded", "UTF-8");
+			method.setRequestEntity(entity);
+			Set<String> keySet = headerMap.keySet();
+			if(keySet!=null && keySet.size()>0) {
+				for(String key : keySet) {
+					method.setRequestHeader(key,headerMap.get(key));
+				}
+			}
+			
 			client.executeMethod(method);
 
 			InputStream inputStream = method.getResponseBodyAsStream();

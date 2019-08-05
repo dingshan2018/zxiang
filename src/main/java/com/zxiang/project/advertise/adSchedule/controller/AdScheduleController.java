@@ -1,5 +1,7 @@
 package com.zxiang.project.advertise.adSchedule.controller;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,8 +11,18 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.commons.httpclient.methods.multipart.PartSource;
+import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -25,6 +37,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.exception.RRException;
@@ -40,9 +53,11 @@ import com.zxiang.project.advertise.adReleaseTimer.domain.AdReleaseTimer;
 import com.zxiang.project.advertise.adReleaseTimer.mapper.AdReleaseTimerMapper;
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
 import com.zxiang.project.advertise.adSchedule.domain.ElementType;
+import com.zxiang.project.advertise.adSchedule.domain.MaterialResult;
 import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
 import com.zxiang.project.advertise.adSchedule.service.IAdScheduleService;
 import com.zxiang.project.advertise.utils.AdHttpResult;
+import com.zxiang.project.advertise.utils.SignUtil;
 import com.zxiang.project.advertise.utils.Tools;
 import com.zxiang.project.advertise.utils.constant.AdConstant;
 import com.zxiang.project.business.device.domain.Device;
@@ -52,6 +67,8 @@ import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
 import com.zxiang.project.system.area.domain.Area;
 import com.zxiang.project.system.area.mapper.AreaMapper;
+import com.zxiang.project.system.config.domain.Config;
+import com.zxiang.project.system.config.mapper.ConfigMapper;
 import com.zxiang.project.system.user.domain.User;
 import com.zxiang.project.system.user.service.IUserService;
 
@@ -65,6 +82,7 @@ import com.zxiang.project.system.user.service.IUserService;
 @RequestMapping("/advertise/adSchedule")
 public class AdScheduleController extends BaseController
 {
+	Logger logger = Logger.getLogger(AdScheduleController.class);
     private String prefix = "advertise/adSchedule";
 	
 	@Autowired
@@ -83,6 +101,8 @@ public class AdScheduleController extends BaseController
 	private AreaMapper areaMapper;
 	@Autowired
 	private IUserService userService;
+	@Autowired
+	private ConfigMapper configMapper;
 	 
 	@RequiresPermissions("advertise:adSchedule:view")
 	@GetMapping()
@@ -240,6 +260,125 @@ public class AdScheduleController extends BaseController
 		}
     }
 	
+	/**
+     * 素材上传保存
+     */
+	@RequiresPermissions("advertise:adSchedule:add")
+	@Log(title = "广告素材上传保存", businessType = BusinessType.UPDATE)
+	@RequestMapping(value = "/materialUploadSave2", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxResult materialUploadSave2(HttpServletRequest request)
+    {
+    	 try {
+			String adScheduleId = request.getParameter("adScheduleId");
+			String materialText = request.getParameter("materialText");
+			//String elementId = request.getParameter("elementId");
+			//String elementName = request.getParameter("elementName");//素材类型,保存在ad_material表remark字段用来判断价格
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			
+			 List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
+			 
+			if (!files.isEmpty()) {
+				String result = uploadMaterial(files,operatorUser);
+				// 调用上传文件的接口
+				// 返回结果封装
+				if(StringUtils.isBlank(result)) {
+					return error("素材服务器上传异常");
+				}else {
+					
+					JSONObject materialObject = JSONObject.parseObject("result");
+					
+					if ("0".equals(materialObject.getString("code"))) {
+						JSONArray materialArray = materialObject.getJSONArray("materials");
+						if(materialArray.size()>0) {
+							List<MaterialResult> retMaterials = materialArray.toJavaList(MaterialResult.class);
+							adScheduleService.materialUpload2(retMaterials,adScheduleId,operatorUser);
+						}else {
+							throw new Exception("不存在图片、视频素材上传");
+						}
+						
+					
+						return success("素材上传成功");
+					}else {
+						return error("素材上传失败");
+					}
+				}	
+			}
+			return error("素材文件不存在");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error();
+		}
+    }
+    	 
+    private String uploadMaterial(List<MultipartFile> files,String operator) throws Exception {
+    	Config config = new Config();
+		config.setConfigKey("AD_MATERIAL_URL");
+		Config retConfig = configMapper.selectConfig(config);
+		String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue()
+				: "http://mmedia.bp.zcloudtechs.cn";
+		PostMethod postMethod = new PostMethod(rootUrl + AdConstant.AD_URL_MATERIAL);
+		HttpClient client = new HttpClient();
+		File file = null;
+		try {
+			List<Part> fileParts = new ArrayList<Part>();
+			if(files!=null && files.size()>0) {
+				//List<File> attachfiles = new ArrayList<File>();
+				for(MultipartFile multipartFile : files) {
+					InputStream ins = multipartFile.getInputStream();
+					file = new File(multipartFile.getOriginalFilename());
+					Tools.inputStreamToFile(ins, file);
+					FilePart myUpload = new FilePart("Filedata", file);	
+					fileParts.add(myUpload);
+				}
+			}
+			
+
+			// FilePart：用来上传文件的类
+			fileParts.add(new StringPart("belong",operator));
+			Part[] parts = (Part[])fileParts.toArray();
+
+			MultipartRequestEntity mre = new MultipartRequestEntity(
+					(org.apache.commons.httpclient.methods.multipart.Part[]) parts, postMethod.getParams());
+			postMethod.setRequestEntity(mre);
+			HashMap<String,String> headerMap = new HashMap<String,String>();
+	        config.setConfigKey("AD_API_URL");
+			Config cConfig = this.configMapper.selectConfig(config);
+			config.setConfigKey("AD_API_APPID");
+			cConfig = this.configMapper.selectConfig(config);
+			String appId = cConfig.getConfigValue();
+			headerMap.put("appid", appId);
+			postMethod.setRequestHeader(new Header("appid",appId));
+			config.setConfigKey("AD_API_SECRECT");
+			String appSecrect = cConfig.getConfigValue();
+			headerMap.put("appid", appId);
+			String timestamp = new Date().getTime()+"";
+			headerMap.put("timestamp", timestamp);
+			postMethod.setRequestHeader(new Header("timestamp",timestamp));
+			headerMap.put("nonce", appId+"_"+timestamp);
+			postMethod.setRequestHeader(new Header("nonce",appId+"_"+timestamp));
+			postMethod.setRequestHeader("sign", SignUtil.createSign(headerMap,appSecrect));
+			client.getHttpConnectionManager().getParams().setConnectionTimeout(50000);// 设置连接时间
+			int status = client.executeMethod(postMethod);
+			if (status == HttpStatus.SC_OK) {
+				String result = postMethod.getResponseBodyAsString();
+				return result;
+			}
+		} catch (Exception e) {
+			logger.error("addElement error:" + e);
+			throw e;
+		} finally {
+			if (file.exists()) {
+				file.delete();
+			}
+			// 释放连接
+			postMethod.releaseConnection();
+		}
+
+		return null;
+    }
+	
+    
 	/**
 	 * 广告投放预约
 	 */

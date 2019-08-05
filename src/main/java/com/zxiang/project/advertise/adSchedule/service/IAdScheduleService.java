@@ -2,6 +2,7 @@ package com.zxiang.project.advertise.adSchedule.service;
 
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
 import com.zxiang.project.advertise.adSchedule.domain.ElementType;
+import com.zxiang.project.advertise.adSchedule.domain.MaterialResult;
 import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
 
 import java.io.IOException;
@@ -84,6 +85,12 @@ public interface IAdScheduleService
 	public int saveAdTemplates(AdSchedule adSchedule) throws Exception;
 
 	/**
+	 * 新增广告并且保存推广计划
+	 * @param adSchedule
+	 * @return
+	 */
+	public int saveAdTemplates2(AdSchedule adSchedule) throws Exception;
+	/**
 	 * 素材上传调用HTTP接口保存文件
 	 * 
 	 * @param files
@@ -116,6 +123,13 @@ public interface IAdScheduleService
 	 * @throws IOException 
 	 */
 	public int releaseOnlineSave(AdSchedule adSchedule) throws IOException;
+	
+	/**
+	 * 广告投放发布
+	 * @param adSchedule
+	 * @throws IOException 
+	 */
+	public int releaseOnlineSave2(AdSchedule adSchedule) throws IOException;
 
 	/**
 	 * 导出Excel
@@ -166,6 +180,22 @@ public interface IAdScheduleService
 	 * @return
 	 */
 	public int removeAd(AdSchedule adSchedule, String operatorUser) throws Exception;
+	
+	/**
+	 * 广告下架
+	 * @param adSchedule
+	 * @param operatorUser
+	 * @return
+	 */
+	public int removeAd2(AdSchedule adSchedule, String operatorUser) throws Exception;
+
+	/**
+	 * 上传素材
+	 * @param retMaterials
+	 */
+	public void materialUpload2(List<MaterialResult> retMaterials,String adScheduleId,String operator) throws Exception;
+	
+	
 
 
 }

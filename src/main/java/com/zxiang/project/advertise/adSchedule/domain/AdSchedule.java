@@ -96,6 +96,8 @@ public class AdSchedule extends BaseEntity
 	
 	private String deviceCode;
 	
+	private String extScheduleId;
+	
 	public void setAdScheduleId(Integer adScheduleId) 
 	{
 		this.adScheduleId = adScheduleId;
@@ -493,5 +495,13 @@ public class AdSchedule extends BaseEntity
 
 	public void setDeviceCode(String deviceCode) {
 		this.deviceCode = deviceCode;
+	}
+
+	public String getExtScheduleId() {
+		return extScheduleId;
+	}
+
+	public void setExtScheduleId(String extScheduleId) {
+		this.extScheduleId = extScheduleId;
 	}
 }

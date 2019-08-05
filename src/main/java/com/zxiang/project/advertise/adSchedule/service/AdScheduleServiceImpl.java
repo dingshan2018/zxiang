@@ -17,6 +17,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -30,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -48,11 +50,13 @@ import com.zxiang.project.advertise.adReleaseTimer.domain.AdReleaseTimer;
 import com.zxiang.project.advertise.adReleaseTimer.mapper.AdReleaseTimerMapper;
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
 import com.zxiang.project.advertise.adSchedule.domain.ElementType;
+import com.zxiang.project.advertise.adSchedule.domain.MaterialResult;
 import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
 import com.zxiang.project.advertise.adSchedule.mapper.AdScheduleMapper;
 import com.zxiang.project.advertise.releaseDevice.domain.ReleaseDevice;
 import com.zxiang.project.advertise.releaseDevice.mapper.ReleaseDeviceMapper;
 import com.zxiang.project.advertise.utils.AdHttpResult;
+import com.zxiang.project.advertise.utils.SignUtil;
 import com.zxiang.project.advertise.utils.Tools;
 import com.zxiang.project.advertise.utils.constant.AdConstant;
 import com.zxiang.project.business.device.domain.Device;
@@ -221,6 +225,47 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 					logger.error("调用新增推广计划接口失败!" + adHttp.toString());
 					throw new RRException("调用新增推广计划接口失败!");
 				}
+			} else if (AdConstant.RELEASE_TYPE_H5.equals(releasePosition)) {
+				// 页面H5广告不需要模板不需要审核不需要支付
+				// adSchedule.setPayStatus("1");
+
+			} else {
+				logger.error("广告投放位置类型错误!" + releasePosition);
+				throw new RRException("广告投放位置类型错误!");
+			}
+		} catch (Exception e) {
+			logger.error("saveAdTemplates error:" + e);
+			throw e;
+		}
+
+		// 2.保存Advertise表数据
+		return adScheduleMapper.insertAdSchedule(adSchedule);
+	}
+	
+	@Override
+	public int saveAdTemplates2(AdSchedule adSchedule) throws Exception {
+
+		logger.info("adSchedule:" + adSchedule.toString());
+		try {
+			String scheduleName = adSchedule.getScheduleName();
+			String releasePosition = adSchedule.getReleasePosition();
+			// 是终端广告还是页面广告，页面H5广告不需要模板不需要审核不需要支付
+			if (AdConstant.RELEASE_TYPE_TERMINAL.equals(releasePosition)) {
+				// 如果是终端广告有广告商，投放人就是广告商的managerID
+				Advertise advertise = advertiseMapper.selectAdvertiseById(adSchedule.getAdvertiser());
+				if (advertise != null) {
+					adSchedule.setReleaser(advertise.getManagerId());
+				}
+				HashMap<String,Object> scheduleMap = new HashMap<String,Object>();
+				scheduleMap.put("scheduleName", adSchedule.getScheduleName());
+				String rspSchedule = saveSchedule(scheduleMap);
+				if(StringUtils.isNotEmpty(rspSchedule)) {
+					JSONObject scheduleObject = JSONObject.parseObject(rspSchedule);
+					adSchedule.setExtScheduleId(scheduleObject.getString("data"));
+				}else {
+					throw new Exception("向广告系统新增广告排期失败");
+				}
+				
 			} else if (AdConstant.RELEASE_TYPE_H5.equals(releasePosition)) {
 				// 页面H5广告不需要模板不需要审核不需要支付
 				// adSchedule.setPayStatus("1");
@@ -667,6 +712,79 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 
 	}
 
+	@Override
+	@Transactional
+	public int releaseOnlineSave2(AdSchedule adSchedule) throws IOException {
+
+		// 如果是H5广告不需要下发排期计划
+		Integer adScheduleId = adSchedule.getAdScheduleId();
+		// 获取最新的广告数据
+		AdSchedule ad = adScheduleMapper.selectAdScheduleById(adScheduleId);
+
+		String releasePosition = ad.getReleasePosition();
+		String qrUrl = ad.getQrUrl();
+
+		if (AdConstant.RELEASE_TYPE_TERMINAL.equals(releasePosition)) {
+			// 1.发布时下发排期计划
+			String result = publishSchedule(ad.getSxScheduleId());
+			// 返回结果封装
+			AdHttpResult adHttp = Tools.analysisResult(result);
+			if (AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())) {
+				// 新排期不做下发，直接通知广告中心
+				
+			} else {
+				logger.error("调用审核通过下发排期计划接口失败!" + adHttp.toString());
+				throw new RRException("调用排期接口失败!");
+			}
+
+			// 广告商累计投放广告次数加1
+			if (ad.getAdvertiser() != null) {
+				Advertise advertise = advertiseService.selectAdvertiseById(ad.getAdvertiser());
+				if (advertise != null) {
+					Integer releaseNum = advertise.getReleaseNum();
+					if (releaseNum != null) {
+						++releaseNum;
+					} else {
+						releaseNum = 1;
+					}
+					advertise.setReleaseNum(releaseNum);
+					advertiseService.updateAdvertise(advertise);
+				} else {
+					logger.warn("插入广告商累计投放广告次数失败!广告id：" + ad.getAdScheduleId());
+				}
+			}
+
+		} else if (AdConstant.RELEASE_TYPE_H5.equals(releasePosition)) {
+			// 更新H5的二维码URL
+			// 保存qrURL链接,deviceIds通过设备投放范围关联
+//			AdReleaseRange range = adReleaseRangeMapper.selectAdRangeByAd(adScheduleId);
+//			if (range != null) {
+//				String devices = range.getDevices();
+//				String[] deviceIds = Convert.toStrArray(devices);
+//				int updateQrUrl = deviceMapper.updateQrUrl(qrUrl, deviceIds, adScheduleId);
+//				logger.info("成功更新:" + updateQrUrl + " 条设备qrUrl数据");
+//				for (String deviceId : deviceIds) {
+//					try {
+//						// 下发更新终端二维码
+//						qrCodeIssued(deviceId, qrUrl, adScheduleId);
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+		}
+
+		// 若广告的status已经为04则已经发布过不再更新，若没有发布则进行发布操作
+		if (AdConstant.AD_WAIT_PLAY.equals(ad.getStatus())) {
+			return 0;
+		} else {
+			ad.setStatus(AdConstant.AD_WAIT_PLAY);
+			ad.setReleaseStatus(AdConstant.AD_REPUBLISH);
+			return adScheduleMapper.updateAdSchedule(ad);
+		}
+
+	}
+	
 	/**
 	 * 更改广告主题下发命令 参数封装方法
 	 * 
@@ -686,6 +804,26 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 			serverService.issuedCommand(terminal, reqJson);
 		}
 	}
+	
+	/**
+	 * 更改广告主题下发命令 参数封装方法
+	 * 
+	 * @param deviceId
+	 * @param adUrl
+	 * @throws IOException
+	 */
+	private void refreshAd(Integer deviceId) throws IOException {
+
+		Terminal terminal = this.terminalMapper.selectTerByDeviceId(deviceId);
+		if (terminal != null) {
+			JSONObject reqJson = new JSONObject();
+			reqJson.put("termCode", terminal.getTerminalCode());
+			reqJson.put("command", "25");// 参数下发命令0x19,转十进制为25
+
+			serverService.issuedCommand(terminal, reqJson);
+		}
+	}
+
 
 	/**
 	 * 下发更新终端二维码 下发命令 参数封装方法
@@ -906,6 +1044,71 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 	}
 
 	/**
+	 * 接口3：新增推广计划 HTTP application/x-www-form-urlencoded接口
+	 * 
+	 * @param scheduleName
+	 *            推广计划名称
+	 * @param templateId
+	 *            模板ID
+	 * @param advertiser
+	 *            广告主体名称
+	 * @param totalTime
+	 *            总共播放时长
+	 * @return
+	 * @throws IOException
+	 */
+	public String saveSchedule(HashMap<String,Object> param)
+			throws Exception {
+		Map<String, String> paramsMap = new HashMap<String, String>();
+		if(param.containsKey("scheduleName")) {
+			paramsMap.put("scheduleName", param.get("scheduleName").toString());
+		}else {
+			throw new IOException("未找到广告名称");
+		}
+		if(param.containsKey("scheduleType")) {
+			paramsMap.put("scheduleType", param.get("scheduleType").toString());
+		}else {
+			paramsMap.put("scheduleType", "1");//内部数据源
+		}
+		if(param.containsKey("eachSlots")) {
+			paramsMap.put("eachSlots", param.get("eachSlots").toString());
+		}else {
+			paramsMap.put("eachSlots", "15");//默认每个广告位15秒
+		}
+		if(param.containsKey("adNotifyUrl")) {
+			paramsMap.put("adNotifyUrl", param.get("adNotifyUrl").toString());
+		}
+		if(param.containsKey("monitorNotifyUrl")) {
+			paramsMap.put("monitorNotifyUrl", param.get("monitorNotifyUrl").toString());
+		}
+
+		String reqParam = Tools.paramsToString(paramsMap);
+		Config config = new Config();
+		config.setConfigKey("AD_NEW_SCHEDULE_URL");
+		Config retConfig = configMapper.selectConfig(config);
+		String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue()
+				: "http://mmedia.bp.zcloudtechs.cn";
+		HashMap<String,String> headerMap = new HashMap<String,String>();
+        config.setConfigKey("AD_API_URL");
+		Config cConfig = this.configMapper.selectConfig(config);
+		config.setConfigKey("AD_API_APPID");
+		cConfig = this.configMapper.selectConfig(config);
+		String appId = cConfig.getConfigValue();
+		headerMap.put("appid", appId);
+		config.setConfigKey("AD_API_SECRECT");
+		String appSecrect = cConfig.getConfigValue();
+		headerMap.put("appid", appId);
+		String timestamp = new Date().getTime()+"";
+		headerMap.put("timestamp", timestamp);
+		headerMap.put("nonce", appId+"_"+timestamp);
+		headerMap.put("sign", SignUtil.createSign(headerMap,appSecrect));
+		logger.info("新增排期参数："+JSON.toJSONString(reqParam));
+		String result = Tools.doPostForm(rootUrl + AdConstant.AD_URL_NEW_ADDSCHEDULE, reqParam ,headerMap);
+		logger.info("新增排期响应："+result);
+		return result;
+	}
+	
+	/**
 	 * 接口4：新增广告终端 HTTP application/x-www-form-urlencoded接口
 	 * 
 	 * @param terminalId
@@ -1020,6 +1223,85 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				: "http://mmedia.bp.zcloudtechs.cn";
 		logger.info("发布参数："+JSON.toJSONString(param));
 		String result = Tools.doPostForm(rootUrl + AdConstant.AD_URL_PUBLISHSCHEDULE, param);
+		logger.info("发布响应："+result);
+		return result;
+	}
+	
+	/**
+	 * 接口7：调用下发排期计划 HTTP application/x-www-form-urlencoded接口
+	 * 
+	 * @param adScheduleId
+	 *            排期计划ID
+	 * @throws IOException
+	 */
+	private String releaseSchedule(AdSchedule adSchedule) throws Exception {
+		//todo 获取scheduleId
+		String exAdScheduleId = adSchedule.getExtScheduleId();
+		//todo 获取终端列表
+		ReleaseDevice releaseDevice = new ReleaseDevice();
+		releaseDevice.setScheduleId(adSchedule.getAdScheduleId());
+		List<ReleaseDevice> relaseDevices = this.releaseDeviceMapper.selectReleaseDeviceList(releaseDevice);
+		List<HashMap<String,Object>> adScreens = new ArrayList<HashMap<String,Object>>();
+		if(relaseDevices!=null && relaseDevices.size()>0) {
+			for(ReleaseDevice release : relaseDevices) {
+				if(StringUtils.isBlank(release.getMediaId())) {
+					continue;
+				}
+				HashMap<String,Object> adScreen = new HashMap<String,Object>();
+				adScreen.put("screenId", release.getMediaId());
+				adScreens.add(adScreen);
+			}
+		}
+		if(adScreens.size()<=0) {
+			throw new Exception("未找到已注册的广告设备");
+		}
+		List<HashMap<String,Object>> adDates = new ArrayList<HashMap<String,Object>>();
+		//todo 获取排期时间
+		AdReleaseTimer releaseTimer = new AdReleaseTimer();
+		releaseTimer.setAdScheduleId(adSchedule.getAdScheduleId());
+		List<AdReleaseTimer> releaseTimers = this.adReleaseTimerMapper.selectAdReleaseTimerList(releaseTimer);
+		//todo 组合scheduleInfo
+		if(releaseTimer!=null && releaseTimers.size()>0) {
+			for(AdReleaseTimer timer : releaseTimers) {
+				HashMap<String,Object> adDate = new HashMap<String,Object>();
+				adDate.put("beginDate", timer.getReleaseBeginTime().getTime());
+				adDate.put("endDate", timer.getReleaseEndTime().getTime());
+				adDates.add(adDate);
+			}
+		}
+		if(adDates.size()<=0) {
+			throw new Exception("发布时间未设置");
+		}
+		
+		Map<String, String> paramsMap = new HashMap<String, String>();
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("scheduleId", exAdScheduleId);
+		param.put("adScreens", adScreens);
+		param.put("adDates", adDates);
+		paramsMap.put("scheduleInfo", JSONObject.toJSONString(param));
+		String params = Tools.paramsToString(paramsMap);
+		Config config = new Config();
+		config.setConfigKey("AD_SCHEDULE_URL");
+		Config retConfig = configMapper.selectConfig(config);
+		String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue()
+				: "http://mmedia.bp.zcloudtechs.cn";
+		config.setConfigKey("AD_NEW_SCHEDULE_URL");
+		HashMap<String,String> headerMap = new HashMap<String,String>();
+        config.setConfigKey("AD_API_URL");
+		Config cConfig = this.configMapper.selectConfig(config);
+		config.setConfigKey("AD_API_APPID");
+		cConfig = this.configMapper.selectConfig(config);
+		String appId = cConfig.getConfigValue();
+		headerMap.put("appid", appId);
+		config.setConfigKey("AD_API_SECRECT");
+		String appSecrect = cConfig.getConfigValue();
+		headerMap.put("appid", appId);
+		String timestamp = new Date().getTime()+"";
+		headerMap.put("timestamp", timestamp);
+		headerMap.put("nonce", appId+"_"+timestamp);
+		headerMap.put("sign", SignUtil.createSign(headerMap,appSecrect));
+		logger.info("发布参数："+JSON.toJSONString(param));
+		String result = Tools.doPostForm(rootUrl + AdConstant.AD_URL_PUBLISHSCHEDULE, params,headerMap);
 		logger.info("发布响应："+result);
 		return result;
 	}
@@ -1529,5 +1811,143 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 			
 		
 	}
+	
+	@Override
+	public int removeAd2(AdSchedule adSchedule1, String operatorUser) throws Exception {
+		Integer adScheduleId = adSchedule1.getAdScheduleId();
+		AdSchedule adSchedule = adScheduleMapper.selectAdScheduleById(adScheduleId);
+		if(AdConstant.RELEASE_TYPE_H5.equals(adSchedule.getReleasePosition())) {
+			return adScheduleMapper.deleteAdScheduleById(adScheduleId);
+		}else {
+			ReleaseDevice deviceParam = new ReleaseDevice();
+			deviceParam.setScheduleId(adScheduleId);
+			List<ReleaseDevice> releaseDevices = this.releaseDeviceMapper.selectReleaseDeviceList(deviceParam);
+			String deviceIds = "";
+			if(releaseDevices != null && releaseDevices.size()>0) {
+				for(ReleaseDevice releaseDevice:releaseDevices) {
+					deviceIds += ","+releaseDevice.getDeviceId();
+				}
+				deviceIds = deviceIds.substring(1);
+			}
+			
+			String retJson = stopSchedule(adSchedule);
+			JSONObject retObject = JSONObject.parseObject(retJson);
+			if ("0".equals(retObject.getString("code"))) {
+				ReleaseDevice releaseDeviceParam = new ReleaseDevice();
+				releaseDeviceParam.setScheduleId(adSchedule.getAdScheduleId());
+				List<ReleaseDevice> adDevices = this.releaseDeviceMapper.selectReleaseDeviceList(releaseDeviceParam);
+				if(adDevices!=null && adDevices.size()>0) {
+					for (ReleaseDevice adDevice : adDevices) {
+						Integer deviceId = adDevice.getDeviceId();
+						// 2.下发更新广告主题
+						refreshAd(deviceId);
+					}
+				}else {
+					for(ReleaseDevice rDevice : releaseDevices) {
+						Device device = this.deviceMapper.selectDeviceById(rDevice.getDeviceId());
+						device.setAdUrl("");
+						this.deviceMapper.updateDevice(device);
+						try {
+							// 下发广告更新主题命令
+							adIssued(device.getDeviceId()+"", "");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				
+//				adSchedule.setReleaseStatus("1");// 已发布
+				//todo 如果排期未完成，解凍金額
+				Map<String, Object> param = new HashMap<String, Object>();
+				param.put("scheduleId", adSchedule.getAdScheduleId());
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				param.put("endTime", df.format(new Date()));
+				
+				Float hasPay = this.releaseRecordMapper.getAdTotalPay(param);
+				if(hasPay == null) {
+					hasPay = 0.0f;
+				}
+				fundLogService.adPublishFrozen(adSchedule.getAdvertiser(),
+						new BigDecimal(Float.toString(hasPay-adSchedule.getTotalPay())));
+				adSchedule.setReleaseStatus(AdConstant.AD_STOP_REPUBLISH);
+				return this.adScheduleMapper.updateAdSchedule(adSchedule);
+			} else {
+				logger.error("调用审核通过下发排期计划接口失败!" );
+				throw new RRException("调用排期接口失败!");
+			}
+		}
+			
+		
+	}
+
+
+	private String stopSchedule(AdSchedule adSchedule) throws Exception{
+		Map<String, String> paramsMap = new HashMap<String, String>();
+		String extScheduleId = adSchedule.getExtScheduleId();
+		paramsMap.put("id", extScheduleId);
+		String reqParam = Tools.paramsToString(paramsMap);
+		Config config = new Config();
+		config.setConfigKey("AD_STOP_SCHEDULE_URL");
+		Config retConfig = configMapper.selectConfig(config);
+		String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue()
+				: "http://mmedia.bp.zcloudtechs.cn";
+		HashMap<String,String> headerMap = new HashMap<String,String>();
+        config.setConfigKey("AD_API_URL");
+		Config cConfig = this.configMapper.selectConfig(config);
+		config.setConfigKey("AD_API_APPID");
+		cConfig = this.configMapper.selectConfig(config);
+		String appId = cConfig.getConfigValue();
+		headerMap.put("appid", appId);
+		config.setConfigKey("AD_API_SECRECT");
+		String appSecrect = cConfig.getConfigValue();
+		headerMap.put("appid", appId);
+		String timestamp = new Date().getTime()+"";
+		headerMap.put("timestamp", timestamp);
+		headerMap.put("nonce", appId+"_"+timestamp);
+		headerMap.put("sign", SignUtil.createSign(headerMap,appSecrect));
+		logger.info("停止排期参数："+JSON.toJSONString(reqParam));
+		String result = Tools.doPostForm(rootUrl + AdConstant.AD_URL_NEW_ADDSCHEDULE, reqParam ,headerMap);
+		logger.info("停止排期响应："+result);
+		return result;
+	}
+
+	@Override
+	public void materialUpload2(List<MaterialResult> retMaterials,String adScheduleId,String operator) throws Exception{
+		int saveNum = 0;
+		try {
+
+			AdSchedule adSchedule = adScheduleMapper.selectAdScheduleById(Integer.parseInt(adScheduleId));
+			// 查询当前最大批次
+			int maxBatch = adMaterialMapper.selectMaxBatch(Integer.parseInt(adScheduleId));
+			++maxBatch;
+			// 1.上传素材文件
+			if(retMaterials.size()>0) {
+				Integer sequence = 0;
+				for(MaterialResult retMaterial : retMaterials) {
+					AdMaterial adMaterial = new AdMaterial();
+					adMaterial.setAdScheduleId(Integer.parseInt(adScheduleId));
+					adMaterial.setPreview(retMaterial.getPreviewUrl());
+					adMaterial.setBatch(maxBatch);
+					adMaterial.setSequence(++sequence);
+					adMaterial.setCreateBy(operator);
+					adMaterial.setCreateTime(new Date());
+					adMaterial.setRemark(adSchedule.getScheduleName()+"新增广告素材");
+					adMaterial.setFileName(retMaterial.getMaterialName());
+					if(!"3".equals(retMaterial.getType())) {
+						adMaterial.setFileSize(retMaterial.getFileSize());
+					}
+					adMaterialMapper.insertAdMaterial(adMaterial);
+				}
+			}
+			logger.info("成功上传: " + saveNum + " 份文件");
+
+		} catch (Exception e) {
+			logger.error("materialUpload error: " + e);
+			throw e;
+		}
+		
+	}
+
+
 
 }

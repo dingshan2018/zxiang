@@ -40,6 +40,8 @@ public class ReleaseDevice extends BaseEntity
 	private Integer county;
 	
 	private String deviceIds;
+	
+	private String mediaId;
 
 	public void setReleaseDeviceId(Integer releaseDeviceId) 
 	{
@@ -159,5 +161,13 @@ public class ReleaseDevice extends BaseEntity
 
 	public void setDeviceIds(String deviceIds) {
 		this.deviceIds = deviceIds;
+	}
+
+	public String getMediaId() {
+		return mediaId;
+	}
+
+	public void setMediaId(String mediaId) {
+		this.mediaId = mediaId;
 	}
 }

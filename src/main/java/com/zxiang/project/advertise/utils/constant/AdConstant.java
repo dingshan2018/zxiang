@@ -52,6 +52,10 @@ public class AdConstant {
 	public final static String 	AD_URL_SAVEPLAYBILL = "/mmedia/adpublish/api/savePlaybill.action";
 	/** 上传素材信息URL	 */
 	public final static String 	AD_URL_ADDELEMENT = "/mmedia/adpublish/api/addElement.action";
+	/** 上传素材信息URL	 */
+	public final static String 	AD_URL_MATERIAL = "/open/api/material/addMaterial";
+	/** 新增推广计划URL	 */
+	public final static String 	AD_URL_NEW_ADDSCHEDULE = "/open/api/schedule/add";
 	/** 新增广告终端URL	 */
 	public final static String 	AD_URL_SAVETERMINAL = "/mmedia/adpublish/api/saveTerminal.action";
 	/** 删除广告终端URL	 */
