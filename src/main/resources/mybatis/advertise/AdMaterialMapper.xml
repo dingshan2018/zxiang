@@ -17,15 +17,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="fileName"    column="filename"    />
         <result property="fileSize"    column="filesize"    />
-        
+        <result property="extMaterialId"    column="ext_material_id"    />
+        <result property="extMaterialType"    column="ext_material_type"    />
     </resultMap>
 	
 	<sql id="selectAdMaterialVo">
         <!-- select ad_material_id, ad_schedule_id, preview,teid,tresid, batch, sequence, 
         remark, create_by, create_time,filename,filesize from zx_ad_material -->
-        SELECT ad_material_id, ad_schedule_id,(SELECT DISTINCT schedule_name FROM zx_ad_schedule za 
+        SELECT ext_material_id,ext_material_type,ad_material_id, ad_schedule_id,(SELECT DISTINCT schedule_name FROM zx_ad_schedule za 
         WHERE zam.ad_schedule_id=za.ad_schedule_id ) scheduleName, preview,teid,tresid, batch, sequence, 
-        remark, create_by, create_time,filename,filesize FROM zx_ad_material zam
+        remark, create_by, create_time,filename,filesize,ext_material_id FROM zx_ad_material zam
     </sql>
 	
     <select id="selectAdMaterialList" parameterType="AdMaterial" resultMap="AdMaterialResult">
@@ -65,6 +66,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createTime != null  ">create_time,</if>
 			<if test="fileName != null  ">filename,</if>
 			<if test="fileSize != null  ">filesize,</if>
+			<if test="extMaterialId != null  and extMaterialId.trim()!='' ">ext_material_id,</if>
+			<if test="extMaterialType != null  and extMaterialType.trim()!='' ">ext_material_type,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="adMaterialId != null and adMaterialId != ''">#{adMaterialId},</if>
@@ -79,6 +82,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createTime != null ">#{createTime},</if>
 			<if test="fileName != null ">#{fileName},</if>
 			<if test="fileSize != null ">#{fileSize},</if>
+			<if test="extMaterialId != null  and extMaterialId.trim()!='' ">#{extMaterialId},</if>
+			<if test="extMaterialType != null  and extMaterialType.trim()!='' ">#{extMaterialType},</if>
          </trim>
     </insert>
 	 
@@ -96,6 +101,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="fileName != null  ">filename = #{fileName},</if>
             <if test="fileSize != null  ">filesize = #{fileSize},</if>
+            <if test="extMaterialId != null  and extMaterialId.trim()!='' ">ext_material_id=#{extMaterialId},</if>
+            <if test="extMaterialType != null  and extMaterialType.trim()!='' ">ext_material_type=#{extMaterialType},</if>
         </trim>
         where ad_material_id = #{adMaterialId}
     </update>

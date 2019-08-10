@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +22,7 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.math.RandomUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,7 +110,7 @@ public class AdScheduleController extends BaseController
 	@GetMapping()
 	public String adSchedule()
 	{
-	    return prefix + "/adSchedule";
+	    return prefix + "/adSchedule2";
 	}
 	
 	/**
@@ -139,7 +141,7 @@ public class AdScheduleController extends BaseController
 				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
 		mmap.put("promotionerList", userList);
 		
-	    return prefix + "/add";
+	    return prefix + "/add2";
 	}
 	
 	/**
@@ -161,10 +163,10 @@ public class AdScheduleController extends BaseController
 				adSchedule.setQrUrl(StringEscapeUtils.unescapeHtml(adSchedule.getQrUrl()));
 			}
 			
-			return toAjax(adScheduleService.saveAdTemplates(adSchedule));
+			return toAjax(adScheduleService.saveAdTemplates2(adSchedule));
 		} catch (Exception e) {
 			e.printStackTrace();
-			return error();
+			return error(e.getMessage());
 		}
 	}
 
@@ -180,7 +182,7 @@ public class AdScheduleController extends BaseController
 		mmap.put("ThemeTemplateList", ThemeTemplateList);
 		mmap.put("advertiserList", advertiseMapper.selectAdvertiseList(new Advertise()));
 		
-	    return prefix + "/edit";
+	    return prefix + "/edit2";
 	}
 	
 	/**
@@ -235,6 +237,18 @@ public class AdScheduleController extends BaseController
 		}
 		
 	    return prefix + "/materialUpload";
+	}
+	
+	/**
+	 * 素材上传
+	 */
+	@GetMapping("/materialUpload2/{adScheduleId}")
+	public String materialUpload2(@PathVariable("adScheduleId") Integer adScheduleId, ModelMap mmap)
+	{
+		AdSchedule adSchedule = adScheduleService.selectAdScheduleById(adScheduleId);
+		mmap.put("adSchedule", adSchedule);
+		
+	    return prefix + "/materialUpload2";
 	}
 	
 	/**
@@ -313,10 +327,12 @@ public class AdScheduleController extends BaseController
     	 
     private String uploadMaterial(List<MultipartFile> files,String operator) throws Exception {
     	Config config = new Config();
-		config.setConfigKey("AD_MATERIAL_URL");
+		config.setConfigKey("AD_NEW_URL");
 		Config retConfig = configMapper.selectConfig(config);
-		String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue()
-				: "http://mmedia.bp.zcloudtechs.cn";
+		if(retConfig==null) {
+			throw new Exception("新广告排期地址未生成");
+		}
+		String rootUrl = retConfig.getConfigValue();
 		PostMethod postMethod = new PostMethod(rootUrl + AdConstant.AD_URL_MATERIAL);
 		HttpClient client = new HttpClient();
 		File file = null;
@@ -342,21 +358,18 @@ public class AdScheduleController extends BaseController
 					(org.apache.commons.httpclient.methods.multipart.Part[]) parts, postMethod.getParams());
 			postMethod.setRequestEntity(mre);
 			HashMap<String,String> headerMap = new HashMap<String,String>();
-	        config.setConfigKey("AD_API_URL");
-			Config cConfig = this.configMapper.selectConfig(config);
 			config.setConfigKey("AD_API_APPID");
-			cConfig = this.configMapper.selectConfig(config);
+			Config cConfig = this.configMapper.selectConfig(config);
 			String appId = cConfig.getConfigValue();
 			headerMap.put("appid", appId);
 			postMethod.setRequestHeader(new Header("appid",appId));
 			config.setConfigKey("AD_API_SECRECT");
 			String appSecrect = cConfig.getConfigValue();
-			headerMap.put("appid", appId);
 			String timestamp = new Date().getTime()+"";
 			headerMap.put("timestamp", timestamp);
 			postMethod.setRequestHeader(new Header("timestamp",timestamp));
 			headerMap.put("nonce", appId+"_"+timestamp);
-			postMethod.setRequestHeader(new Header("nonce",appId+"_"+timestamp));
+			postMethod.setRequestHeader(new Header("nonce",appId+"_"+RandomUtils.nextInt(new Random(), 10000)+"_"+timestamp));
 			postMethod.setRequestHeader("sign", SignUtil.createSign(headerMap,appSecrect));
 			client.getHttpConnectionManager().getParams().setConnectionTimeout(50000);// 设置连接时间
 			int status = client.executeMethod(postMethod);

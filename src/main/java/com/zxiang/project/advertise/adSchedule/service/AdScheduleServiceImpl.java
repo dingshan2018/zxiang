@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +26,7 @@ import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
+import org.apache.commons.lang.math.RandomUtils;
 import org.jboss.logging.Logger;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -261,7 +263,16 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				String rspSchedule = saveSchedule(scheduleMap);
 				if(StringUtils.isNotEmpty(rspSchedule)) {
 					JSONObject scheduleObject = JSONObject.parseObject(rspSchedule);
-					adSchedule.setExtScheduleId(scheduleObject.getString("data"));
+					if(scheduleObject.containsKey("code")) {
+						Integer code = scheduleObject.getInteger("code");
+						if(0 != code.intValue()) {
+							throw new Exception(scheduleObject.getString("msg"));
+						}
+						adSchedule.setExtScheduleId(scheduleObject.getString("data"));
+					}else {
+						throw new Exception("新广告系统请求异常，请联系管理员");
+					}
+					
 				}else {
 					throw new Exception("向广告系统新增广告排期失败");
 				}
@@ -1070,37 +1081,40 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		}else {
 			paramsMap.put("scheduleType", "1");//内部数据源
 		}
-		if(param.containsKey("eachSlots")) {
-			paramsMap.put("eachSlots", param.get("eachSlots").toString());
-		}else {
-			paramsMap.put("eachSlots", "15");//默认每个广告位15秒
+		Config config = new Config();
+		config.setConfigKey("AD_SLOT_PERIOD");
+		Config retConfig = configMapper.selectConfig(config);
+		if(retConfig!=null) {
+			paramsMap.put("slotPeriod",retConfig.getConfigValue());
 		}
-		if(param.containsKey("adNotifyUrl")) {
-			paramsMap.put("adNotifyUrl", param.get("adNotifyUrl").toString());
+		config.setConfigKey("AD_NOTIFY_URL");
+		retConfig = configMapper.selectConfig(config);
+		if(retConfig!=null) {
+			paramsMap.put("adNotifyUrl", retConfig.getConfigValue());
 		}
 		if(param.containsKey("monitorNotifyUrl")) {
 			paramsMap.put("monitorNotifyUrl", param.get("monitorNotifyUrl").toString());
 		}
-
-		String reqParam = Tools.paramsToString(paramsMap);
-		Config config = new Config();
-		config.setConfigKey("AD_NEW_SCHEDULE_URL");
-		Config retConfig = configMapper.selectConfig(config);
-		String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue()
-				: "http://mmedia.bp.zcloudtechs.cn";
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("scheduleInfo", JSONObject.toJSONString(paramsMap));
+		String reqParam = Tools.paramsToString(paramMap);
+		config.setConfigKey("AD_NEW_URL");
+		retConfig = configMapper.selectConfig(config);
+		if(retConfig == null) {
+			throw new Exception("广告地址未配置");
+		}
+		String rootUrl = retConfig.getConfigValue();
 		HashMap<String,String> headerMap = new HashMap<String,String>();
-        config.setConfigKey("AD_API_URL");
-		Config cConfig = this.configMapper.selectConfig(config);
 		config.setConfigKey("AD_API_APPID");
-		cConfig = this.configMapper.selectConfig(config);
+		Config cConfig = this.configMapper.selectConfig(config);
 		String appId = cConfig.getConfigValue();
 		headerMap.put("appid", appId);
 		config.setConfigKey("AD_API_SECRECT");
+		cConfig = this.configMapper.selectConfig(config);
 		String appSecrect = cConfig.getConfigValue();
-		headerMap.put("appid", appId);
 		String timestamp = new Date().getTime()+"";
 		headerMap.put("timestamp", timestamp);
-		headerMap.put("nonce", appId+"_"+timestamp);
+		headerMap.put("nonce", appId+"_"+RandomUtils.nextInt(new Random(), 10000)+"_"+timestamp);
 		headerMap.put("sign", SignUtil.createSign(headerMap,appSecrect));
 		logger.info("新增排期参数："+JSON.toJSONString(reqParam));
 		String result = Tools.doPostForm(rootUrl + AdConstant.AD_URL_NEW_ADDSCHEDULE, reqParam ,headerMap);
@@ -1933,6 +1947,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 					adMaterial.setCreateTime(new Date());
 					adMaterial.setRemark(adSchedule.getScheduleName()+"新增广告素材");
 					adMaterial.setFileName(retMaterial.getMaterialName());
+					adMaterial.setExtMaterialId(retMaterial.getMaterialId());
+					adMaterial.setExtMaterialType(retMaterial.getType());
 					if(!"3".equals(retMaterial.getType())) {
 						adMaterial.setFileSize(retMaterial.getFileSize());
 					}

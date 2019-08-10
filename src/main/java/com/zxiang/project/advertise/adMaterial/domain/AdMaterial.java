@@ -39,6 +39,10 @@ public class AdMaterial extends BaseEntity
 	private String fileName;
 	private float fileSize;
 	private String scheduleName;
+	
+	private String extMaterialId;
+	
+	private String extMaterialType;
 
 	public void setAdMaterialId(Integer adMaterialId) 
 	{
@@ -165,4 +169,20 @@ public class AdMaterial extends BaseEntity
             .append("createTime", getCreateTime())
             .toString();
     }
+
+	public String getExtMaterialId() {
+		return extMaterialId;
+	}
+
+	public void setExtMaterialId(String extMaterialId) {
+		this.extMaterialId = extMaterialId;
+	}
+
+	public String getExtMaterialType() {
+		return extMaterialType;
+	}
+
+	public void setExtMaterialType(String extMaterialType) {
+		this.extMaterialType = extMaterialType;
+	}
 }

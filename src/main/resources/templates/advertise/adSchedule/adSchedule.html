@@ -76,7 +76,7 @@
               	</a>
                 <a class="btn btn-success btn-rounded btn-sm" onclick="exportModule()"><i class="fa fa-download"></i>&nbsp;导出
                 </a>
-                <a class="btn btn-warning btn-rounded btn-sm" onclick="materialUpload()" shiro:hasPermission="advertise:adSchedule:add"><i class="fa fa-search"></i>&nbsp;素材上传
+                <a class="btn btn-warning btn-rounded btn-sm" onclick="materialUpload2()" shiro:hasPermission="advertise:adSchedule:add"><i class="fa fa-search"></i>&nbsp;素材上传
                 </a>
                 <a class="btn btn-info btn-rounded btn-sm" onclick="editReleaseTimer()" shiro:hasPermission="advertise:adSchedule:editReleaseTimer"><i class="fa fa-edit"></i>&nbsp;投放时段
                 </a>
@@ -419,6 +419,34 @@
    	        return;
    		}
     	var url = ctx + "advertise/adSchedule/materialUpload/" + rows;
+    	$.modal.open("素材上传", url);
+	}
+  	
+    function materialUpload2() {
+    	var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+   		if (rows.length == 0) {
+   			$.modal.alertWarning(selectOneRecord);
+   			return;
+   		}
+   		if (rows.length > 1){
+   			$.modal.alertWarning(onlyOneRecord);
+   			return;
+   		}
+
+      	//H5广告不需要上传素材不需要审核不需要支付
+      	var adSchedule = getAdScheduleInfo(rows);
+      	if(adSchedule.releasePosition == type_h5){
+      		$.modal.alertWarning("页面H5广告不能上传素材!");
+   	        return;
+      	}
+
+      	//改成在未预约之前可以上传多次素材，每次模板元素只能单选，即同一批次上传的文件都是同一模板元素的
+      	var hasOrder = getOrderNum(rows);
+   		if (hasOrder > 0) {
+   			$.modal.alertWarning("该广告已预约过,不能再次上传素材!");
+   	        return;
+   		}
+    	var url = ctx + "advertise/adSchedule/materialUpload2/" + rows;
     	$.modal.open("素材上传", url);
 	}
   	
