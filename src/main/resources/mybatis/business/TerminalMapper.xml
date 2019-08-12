@@ -33,6 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<sql id="selectTerminalVo">
         select terminal_id, terminal_code, 
+        acc_sys_ip,acc_sys_port,
         device_id, 
         (select distinct d.device_sn from zx_device d where d.device_id =t.`device_id` ) deviceSn,
         place_id, 
