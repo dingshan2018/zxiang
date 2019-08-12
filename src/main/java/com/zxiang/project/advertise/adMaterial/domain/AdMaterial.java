@@ -44,6 +44,8 @@ public class AdMaterial extends BaseEntity
 	
 	private String extMaterialType;
 
+	private String materialText;
+	
 	public void setAdMaterialId(Integer adMaterialId) 
 	{
 		this.adMaterialId = adMaterialId;
@@ -184,5 +186,13 @@ public class AdMaterial extends BaseEntity
 
 	public void setExtMaterialType(String extMaterialType) {
 		this.extMaterialType = extMaterialType;
+	}
+
+	public String getMaterialText() {
+		return materialText;
+	}
+
+	public void setMaterialText(String materialText) {
+		this.materialText = materialText;
 	}
 }

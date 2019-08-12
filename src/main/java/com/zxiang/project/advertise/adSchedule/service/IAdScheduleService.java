@@ -110,6 +110,13 @@ public interface IAdScheduleService
 	public int orderSave(AdSchedule adSchedule, String operatorUser) throws Exception;
 	
 	/**
+	 * 广告投放预约保存
+	 * @param adSchedule
+	 * @param operatorUser 
+	 */
+	public int orderSave2(AdSchedule adSchedule, String operatorUser) throws Exception;
+	
+	/**
 	 * 广告投放审核
 	 * @param adSchedule
 	 * @param operatorUser 

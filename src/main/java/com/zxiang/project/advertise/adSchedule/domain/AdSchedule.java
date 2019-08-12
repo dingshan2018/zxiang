@@ -98,6 +98,8 @@ public class AdSchedule extends BaseEntity
 	
 	private String extScheduleId;
 	
+	private String materialText;
+	
 	public void setAdScheduleId(Integer adScheduleId) 
 	{
 		this.adScheduleId = adScheduleId;
@@ -503,5 +505,13 @@ public class AdSchedule extends BaseEntity
 
 	public void setExtScheduleId(String extScheduleId) {
 		this.extScheduleId = extScheduleId;
+	}
+
+	public String getMaterialText() {
+		return materialText;
+	}
+
+	public void setMaterialText(String materialText) {
+		this.materialText = materialText;
 	}
 }

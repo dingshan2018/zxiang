@@ -17,6 +17,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="fileName"    column="filename"    />
         <result property="fileSize"    column="filesize"    />
+        <result property="materialText"    column="material_text"    />
         <result property="extMaterialId"    column="ext_material_id"    />
         <result property="extMaterialType"    column="ext_material_type"    />
     </resultMap>

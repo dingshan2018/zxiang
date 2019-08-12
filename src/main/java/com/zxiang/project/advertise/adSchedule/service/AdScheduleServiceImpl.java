@@ -571,6 +571,157 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		}
 	}
 
+	
+	@Override
+	@Transactional
+	public int orderSave2(AdSchedule adSchedule, String operatorUser) throws Exception {
+
+		try {
+			Integer adScheduleId = adSchedule.getAdScheduleId();
+			Date createDate = new Date();
+			// 1.插入广告投放范围表 一对一
+			AdReleaseRange adReleaseRange = new AdReleaseRange();
+			adReleaseRange.setAdScheduleId(adScheduleId);
+			String releaseType = adSchedule.getReleaseType();
+			adReleaseRange.setReleaseType(releaseType);
+			adReleaseRange.setCreateBy(operatorUser);
+			adReleaseRange.setCreateTime(createDate);
+			// 根据投放方式判断保存哪些字段:投放类型:0全部；1按地区；2按场所
+			if ("0".equals(releaseType)) {
+
+			} else if ("1".equals(releaseType)) {
+				adReleaseRange.setProvince(adSchedule.getProvince());
+				adReleaseRange.setCity(adSchedule.getCity());
+				adReleaseRange.setCounty(adSchedule.getCounty());
+			} else if ("2".equals(releaseType)) {
+				adReleaseRange.setPlaceGrade(adSchedule.getPlaceGrade());
+			}
+			String deviceIds = adSchedule.getDeviceIds();
+			int deviceNum = deviceIds.split(",").length;
+
+			adReleaseRange.setDevices(deviceIds);
+			adReleaseRangeMapper.insertAdReleaseRange(adReleaseRange);
+
+			// 2.插入广告与时间范围关系表 一对多
+			List<String> timeSlots = new ArrayList<>();
+			Date deadLineDate = null;
+			int days = 0;
+			String timeSlotArr = adSchedule.getTimeSlotArr();
+
+			JSONArray timeSlotJsonArray = new JSONArray(timeSlotArr);
+			for (int i = 0; i < timeSlotJsonArray.length(); i++) {
+				org.json.JSONObject time = timeSlotJsonArray.getJSONObject(i);
+				String beginTime = time.getString("beginTime");
+				String lastTime = time.getString("endTime");
+
+				AdReleaseTimer adReleaseTimer = new AdReleaseTimer();
+				adReleaseTimer.setAdScheduleId(adScheduleId);
+				adReleaseTimer.setReleaseBeginTime(yyyyMMddSFormat.parse(beginTime));
+				adReleaseTimer.setReleaseEndTime(yyyyMMddSFormat.parse(lastTime));
+				adReleaseTimer.setCreateBy(operatorUser);
+				adReleaseTimer.setCreateTime(createDate);
+				adReleaseTimerMapper.insertAdReleaseTimer(adReleaseTimer);
+
+				/*
+				 * //处理时间 String startDate = beginTime.substring(0, beginTime.lastIndexOf(" "));
+				 * String startTime = beginTime.substring(beginTime.lastIndexOf(" ") + 1);
+				 * String endDate = lastTime.substring(0, lastTime.lastIndexOf(" ")); String
+				 * endTime = lastTime.substring(lastTime.lastIndexOf(" ") + 1);
+				 */
+				// 现在原来的yyyymmddhhmm改成yyyymmdd,开始时间默认00:00,结束时间2359
+
+				HashMap<String, Object> timeSlot = new HashMap<>();
+				timeSlot.put("startDate", beginTime);
+				timeSlot.put("endDate", lastTime);
+				timeSlot.put("startTime", "00:00");
+				timeSlot.put("endTime", "23:59");
+				// Map转换成JSON
+				String jsonTimeSlot = JSON.toJSONString(timeSlot);
+				timeSlots.add(jsonTimeSlot);
+
+				if (deadLineDate == null) {
+					deadLineDate = yyyyMMddSFormat.parse(lastTime);
+				}
+
+				// 取最后日期
+				deadLineDate = compareDate(deadLineDate, yyyyMMddSFormat.parse(lastTime));
+
+				// 获取时间段之间的相差天数
+				days += differentDaysByMillisecond(yyyyMMddSFormat.parse(beginTime), yyyyMMddSFormat.parse(lastTime));
+			}
+			adSchedule.setDeadLine(deadLineDate);
+			// 3.终端广告需要生成排期,页面H5广告不需要生成排期
+			String releasePosition = adSchedule.getReleasePosition();
+			String priceType = null;
+			if (AdConstant.RELEASE_TYPE_TERMINAL.equals(releasePosition)) {
+				// 终端广告预约设备后广告状态变为待审核
+				adSchedule.setStatus(AdConstant.AD_WAIT_ADUIT);
+				// 终端广告预约设备后计算价格,按照素材表显性文字展示判断,图片/视频/图片视频
+				priceType = getPriceType(adScheduleId);
+
+				// 这边的参数tid是设备的ID，而不是广告表的tid，需要修改!
+				String pIds = adSchedule.getpId();
+				String result = addSchedule(pIds, deviceIds, timeSlots.toString(),
+						yyyyMMddSFormat.format(deadLineDate));
+//				// 返回结果封装
+//				AdHttpResult adHttp = Tools.analysisResult(result);
+//				// 保存排期ID
+//				if (AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())) {
+//					JSONObject data = (JSONObject) adHttp.get("data");
+//					String scheduleId = (String) data.get("scheduleId");
+//					adSchedule.setSxScheduleId(scheduleId);
+//
+//				} else {
+//					logger.error("调用排期接口失败!" + adHttp.toString());
+//					throw new RRException("调用排期接口失败!");
+//				}
+			} else if (AdConstant.RELEASE_TYPE_H5.equals(releasePosition)) {
+				// 页面H5广告预约设备后广告状态变为待发布
+				adSchedule.setStatus(AdConstant.AD_WAIT_PUBLISH);
+				// 页面H5广告预约设备后计算价格;
+				priceType = AdConstant.AD_TYPE_H5;
+			}
+
+			// 计算总价和押金 总价= 计费类型*days*播放设备数量,押金=总价*比率
+			if (StringUtils.isNotEmpty(priceType)) {
+				AdPriceCfg adPriceCfg = adPriceCfgMapper.getPriceByType(priceType);
+				if (adPriceCfg != null) {
+					float totalPay = adPriceCfg.getDailyPrice() * days * deviceNum;
+					float prepay = totalPay * AdConstant.PREPAY;
+					adSchedule.setTotalPay(totalPay);
+					adSchedule.setPrepay(prepay);
+					adSchedule.setReleaseDays(days);
+				}
+			} else {
+				adSchedule.setTotalPay((float) 0);
+				adSchedule.setPrepay((float) 0);
+				adSchedule.setReleaseDays(days);
+			}
+
+			// 4.插入zx_release_device表
+			List<ReleaseDevice> releaseDeviceList = new ArrayList<ReleaseDevice>();
+			String[] devices = Convert.toStrArray(deviceIds);
+			for (String deviceId : devices) {
+				ReleaseDevice releaseDevice = new ReleaseDevice();
+				releaseDevice.setScheduleId(adScheduleId);
+				releaseDevice.setReleasePosition(releasePosition);
+				releaseDevice.setDeviceId(Integer.parseInt(deviceId));
+				releaseDeviceList.add(releaseDevice);
+			}
+			// 批量插入ReleaseDevice表数据
+			releaseDeviceMapper.batchInsert(releaseDeviceList);
+
+			// 5.修改广告计划数据
+			// 投放终端数
+			adSchedule.setReleaseTermNum(deviceNum);
+
+			return updateAdSchedule(adSchedule);
+
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
 	/**
 	 * 获取终端广告的计费价格类型 包含图片01;包含视频02;包含图片和视频返回04
 	 * 

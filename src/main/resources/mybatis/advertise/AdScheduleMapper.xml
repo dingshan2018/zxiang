@@ -59,7 +59,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         is_del, release_note, create_by, create_time, update_by, update_time,
         advertiser,
         (SELECT DISTINCT za.advertisor_name FROM zx_advertise za WHERE za.advertise_id =zas.`advertiser`) advertiseName,
-        total_time,pay_status,qr_url,dead_line from zx_ad_schedule zas
+        (select material_text from zx_ad_material zam where zam.ad_schedule_id=zas.ad_schedule_id and ext_material_type='3' limit 1) materialText,
+        total_time,pay_status,qr_url,dead_line from zx_ad_schedule zas 
     </sql>
     
     <sql id="selectAdScheduleVos">

@@ -59,6 +59,7 @@ import com.zxiang.project.advertise.adSchedule.domain.MaterialResult;
 import com.zxiang.project.advertise.adSchedule.domain.ThemeTemplate;
 import com.zxiang.project.advertise.adSchedule.service.IAdScheduleService;
 import com.zxiang.project.advertise.utils.AdHttpResult;
+import com.zxiang.project.advertise.utils.HttpclientUtil;
 import com.zxiang.project.advertise.utils.SignUtil;
 import com.zxiang.project.advertise.utils.Tools;
 import com.zxiang.project.advertise.utils.constant.AdConstant;
@@ -300,16 +301,20 @@ public class AdScheduleController extends BaseController
 					return error("素材服务器上传异常");
 				}else {
 					
-					JSONObject materialObject = JSONObject.parseObject("result");
+					JSONObject materialObject = JSONObject.parseObject(result);
 					
 					if ("0".equals(materialObject.getString("code"))) {
-						JSONArray materialArray = materialObject.getJSONArray("materials");
-						if(materialArray.size()>0) {
-							List<MaterialResult> retMaterials = materialArray.toJavaList(MaterialResult.class);
-							adScheduleService.materialUpload2(retMaterials,adScheduleId,operatorUser);
-						}else {
-							throw new Exception("不存在图片、视频素材上传");
+						JSONObject dataObject = materialObject.getJSONObject("data");
+						if(dataObject!=null) {
+							JSONArray materialArray = dataObject.getJSONArray("materials");
+							if(materialArray.size()>0) {
+								List<MaterialResult> retMaterials = materialArray.toJavaList(MaterialResult.class);
+								adScheduleService.materialUpload2(retMaterials,adScheduleId,operatorUser);
+							}else {
+								throw new Exception("不存在图片、视频素材上传");
+							}
 						}
+						
 						
 					
 						return success("素材上传成功");
@@ -332,64 +337,63 @@ public class AdScheduleController extends BaseController
 		if(retConfig==null) {
 			throw new Exception("新广告排期地址未生成");
 		}
+		
+		
+		
 		String rootUrl = retConfig.getConfigValue();
-		PostMethod postMethod = new PostMethod(rootUrl + AdConstant.AD_URL_MATERIAL);
-		HttpClient client = new HttpClient();
-		File file = null;
+//		PostMethod postMethod = new PostMethod(rootUrl + AdConstant.AD_URL_MATERIAL);
+//		postMethod.setParameter("belong", operator);
+////		postMethod.setParameter("materialText", "123");
+//		HttpClient client = new HttpClient();
+//		File file = null;
 		try {
-			List<Part> fileParts = new ArrayList<Part>();
-			if(files!=null && files.size()>0) {
-				//List<File> attachfiles = new ArrayList<File>();
-				for(MultipartFile multipartFile : files) {
-					InputStream ins = multipartFile.getInputStream();
-					file = new File(multipartFile.getOriginalFilename());
-					Tools.inputStreamToFile(ins, file);
-					FilePart myUpload = new FilePart("Filedata", file);	
-					fileParts.add(myUpload);
-				}
-			}
-			
-
-			// FilePart：用来上传文件的类
-			fileParts.add(new StringPart("belong",operator));
-			Part[] parts = (Part[])fileParts.toArray();
-
-			MultipartRequestEntity mre = new MultipartRequestEntity(
-					(org.apache.commons.httpclient.methods.multipart.Part[]) parts, postMethod.getParams());
-			postMethod.setRequestEntity(mre);
+//			List<Part> fileParts = new ArrayList<Part>();
+//			if(files!=null && files.size()>0) {
+//				//List<File> attachfiles = new ArrayList<File>();
+//				for(MultipartFile multipartFile : files) {
+//					InputStream ins = multipartFile.getInputStream();
+//					file = new File(multipartFile.getOriginalFilename());
+//					Tools.inputStreamToFile(ins, file);
+//					FilePart myUpload = new FilePart("Filedata", file);	
+//					StringPart belong = new StringPart("belong", operator);
+//					//StringPart adScheduleId = new StringPart("materialText", "123");
+//					Part[] parts = { (Part) belong,  (Part) myUpload };
+//				}
+//			}
+//			Part[] parts = new Part[fileParts.size()];
+//			fileParts.toArray(parts);
+//
+//			// FilePart：用来上传文件的类
+//			//fileParts.add(new StringPart("belong",operator));
+//			
+//			
+//
+//			MultipartRequestEntity mre = new MultipartRequestEntity(
+//					(org.apache.commons.httpclient.methods.multipart.Part[]) parts, postMethod.getParams());
+//			postMethod.setRequestEntity(mre);
+			String postUrl = rootUrl + AdConstant.AD_URL_MATERIAL;
+			Map<String,String> param = new HashMap<String,String>();
+			param.put("belong", operator);
+			param.put("materialText", "123");
 			HashMap<String,String> headerMap = new HashMap<String,String>();
 			config.setConfigKey("AD_API_APPID");
 			Config cConfig = this.configMapper.selectConfig(config);
 			String appId = cConfig.getConfigValue();
 			headerMap.put("appid", appId);
-			postMethod.setRequestHeader(new Header("appid",appId));
 			config.setConfigKey("AD_API_SECRECT");
 			String appSecrect = cConfig.getConfigValue();
 			String timestamp = new Date().getTime()+"";
 			headerMap.put("timestamp", timestamp);
-			postMethod.setRequestHeader(new Header("timestamp",timestamp));
-			headerMap.put("nonce", appId+"_"+timestamp);
-			postMethod.setRequestHeader(new Header("nonce",appId+"_"+RandomUtils.nextInt(new Random(), 10000)+"_"+timestamp));
-			postMethod.setRequestHeader("sign", SignUtil.createSign(headerMap,appSecrect));
-			client.getHttpConnectionManager().getParams().setConnectionTimeout(50000);// 设置连接时间
-			int status = client.executeMethod(postMethod);
-			if (status == HttpStatus.SC_OK) {
-				String result = postMethod.getResponseBodyAsString();
-				return result;
-			}
+			headerMap.put("nonce", appId+"_"+RandomUtils.nextInt(new Random(), 10000)+"_"+timestamp);
+			headerMap.put("sign", SignUtil.createSign(headerMap,appSecrect));
+			return HttpclientUtil.upload(postUrl, files, param, headerMap);
 		} catch (Exception e) {
 			logger.error("addElement error:" + e);
 			throw e;
-		} finally {
-			if (file.exists()) {
-				file.delete();
-			}
-			// 释放连接
-			postMethod.releaseConnection();
 		}
-
-		return null;
     }
+    
+     
 	
     
 	/**
@@ -417,7 +421,7 @@ public class AdScheduleController extends BaseController
 	{
 		try {
 			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
-			return toAjax(adScheduleService.orderSave(adSchedule,operatorUser));
+			return toAjax(adScheduleService.orderSave2(adSchedule,operatorUser));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return error();

@@ -181,4 +181,19 @@ public class AdMaterialController extends BaseController
 			return "error";
 		}
     }
+    
+    /**
+     *	查询模板元素各种类型是否都有上传
+     */
+    @PostMapping("/judgeAllType2/{adScheduleId}")
+    @ResponseBody
+    public String judgeAllType2(@PathVariable("adScheduleId") Integer adScheduleId)
+    {
+//        try {
+			return "allHas";
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return "error";
+//		}
+    }
 }
