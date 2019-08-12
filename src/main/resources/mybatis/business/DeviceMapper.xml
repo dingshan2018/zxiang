@@ -40,10 +40,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="province"    column="province"    />
         <result property="city"    column="city"    />
         <result property="county"    column="county"    />
+        <result property="mediaId"    column="media_id"    />
     </resultMap>
 	
 	<sql id="selectDeviceVo">
-        select total_cnt,valid_cnt,invalid_cnt,device_id, device_code, device_sn, device_type,
+        select media_id,total_cnt,valid_cnt,invalid_cnt,device_id, device_code, device_sn, device_type,
          terminal_id,
          province, 
         (select distinct a.pname from sys_area a where a.id =d.`province` ) provinceName,
@@ -234,6 +235,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="province != null ">province,</if>
 			<if test="city != null ">city,</if>
 			<if test="county != null ">county,</if>
+			<if test="mediaId != null and mediaId.trim()!='' ">media_id,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="deviceId != null and deviceId != ''">#{deviceId},</if>
@@ -265,6 +267,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="province != null ">#{province},</if>
 			<if test="city != null ">#{city},</if>
 			<if test="county != null ">#{county},</if>
+			<if test="mediaId != null and mediaId.trim()!='' ">#{mediaId},</if>
          </trim>
     </insert>
 	 
@@ -303,6 +306,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="province != null ">province=#{province},</if>
 			<if test="city != null ">city=#{city},</if>
 			<if test="county != null ">county=#{county},</if>
+			<if test="mediaId != null and mediaId.trim()!='' ">media_id=#{mediaId},</if>
         </trim>
         where device_id = #{deviceId}
     </update>

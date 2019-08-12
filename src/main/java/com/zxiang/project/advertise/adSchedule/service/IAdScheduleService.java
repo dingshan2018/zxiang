@@ -136,7 +136,7 @@ public interface IAdScheduleService
 	 * @param adSchedule
 	 * @throws IOException 
 	 */
-	public int releaseOnlineSave2(AdSchedule adSchedule) throws IOException;
+	public int releaseOnlineSave2(AdSchedule adSchedule) throws Exception;
 
 	/**
 	 * 导出Excel

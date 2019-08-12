@@ -56,6 +56,8 @@ public class AdConstant {
 	public final static String 	AD_URL_MATERIAL = "/open/api/material/addMaterial";
 	/** 新增推广计划URL	 */
 	public final static String 	AD_URL_NEW_ADDSCHEDULE = "/open/api/schedule/add";
+	/** 修改推广计划URL	 */
+	public final static String 	AD_URL_NEW_UPDATESCHEDULE = "/open/api/schedule/save";
 	/** 新增广告终端URL	 */
 	public final static String 	AD_URL_SAVETERMINAL = "/mmedia/adpublish/api/saveTerminal.action";
 	/** 删除广告终端URL	 */
@@ -64,6 +66,8 @@ public class AdConstant {
 	public final static String 	AD_URL_ADDSCHEDULE = "/mmedia/adpublish/api/addSchedule.action";
 	/** 审核通过下发排期计划URL	 */
 	public final static String 	AD_URL_PUBLISHSCHEDULE = "/mmedia/adpublish/api/publishSchedule.action";
+	/** 审核通过下发排期计划URL	 */
+	public final static String 	AD_URL_NEW_PUBLISHSCHEDULE = "/open/api/schedule/publishSchedule";
 	/** 下发更改排期计划URL	 */
 	public final static String 	AD_URL_REPUBLISHSCHEDULE = "/mmedia/adpublish/api/republishSchedule.action";
 	/******************** 广告HTTP接口返回状态	*******************/

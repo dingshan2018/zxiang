@@ -509,9 +509,9 @@ public class AdScheduleController extends BaseController
 			adSchedule.setUpdateBy(operatorUser);
 			adSchedule.setUpdateTime(new Date());
 			
-			int releaseNumber = adScheduleService.releaseOnlineSave(adSchedule);
+			int releaseNumber = adScheduleService.releaseOnlineSave2(adSchedule);
 			return success("成功发布 "+ releaseNumber + " 条广告");
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return error();
 		}

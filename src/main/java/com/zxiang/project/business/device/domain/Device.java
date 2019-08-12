@@ -118,6 +118,8 @@ public class Device extends BaseEntity
 	private String address;
 	
 	private String build;
+	
+	private String mediaId;
 	public String getProvinceName() {
 		return provinceName;
 	}
@@ -617,6 +619,14 @@ public class Device extends BaseEntity
 
 	public void setBuild(String build) {
 		this.build = build;
+	}
+
+	public String getMediaId() {
+		return mediaId;
+	}
+
+	public void setMediaId(String mediaId) {
+		this.mediaId = mediaId;
 	}
 	
 }

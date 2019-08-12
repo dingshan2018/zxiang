@@ -86,6 +86,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 	Logger logger = Logger.getLogger(AdScheduleServiceImpl.class);
 	private SimpleDateFormat yyyyMMddHHmmSFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	private SimpleDateFormat yyyyMMddSFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private SimpleDateFormat apiYYYYMMDDHHmmssFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Autowired
 	private AdScheduleMapper adScheduleMapper;
@@ -577,6 +578,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 	public int orderSave2(AdSchedule adSchedule, String operatorUser) throws Exception {
 
 		try {
+			List<HashMap<String,Object>> adScreens = new ArrayList<HashMap<String,Object>>();
 			Integer adScheduleId = adSchedule.getAdScheduleId();
 			Date createDate = new Date();
 			// 1.插入广告投放范围表 一对一
@@ -601,13 +603,23 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 
 			adReleaseRange.setDevices(deviceIds);
 			adReleaseRangeMapper.insertAdReleaseRange(adReleaseRange);
-
+			String[] deviceIdArr = deviceIds.split(",");
+			if(deviceIdArr != null && deviceIdArr.length>0) {
+				for(String deviceId : deviceIdArr) {
+					Device device = this.deviceMapper.selectDeviceById(Integer.parseInt(deviceId));
+					if(device!=null && StringUtils.isNotBlank(device.getMediaId().trim())) {
+						HashMap<String,Object> adMap = new HashMap<String,Object>();
+						adMap.put("screenId", device.getMediaId());
+						adScreens.add(adMap);
+					}
+				}
+			}
 			// 2.插入广告与时间范围关系表 一对多
 			List<String> timeSlots = new ArrayList<>();
 			Date deadLineDate = null;
 			int days = 0;
 			String timeSlotArr = adSchedule.getTimeSlotArr();
-
+			List<HashMap<String,Object>> adDates = new ArrayList<HashMap<String,Object>>();
 			JSONArray timeSlotJsonArray = new JSONArray(timeSlotArr);
 			for (int i = 0; i < timeSlotJsonArray.length(); i++) {
 				org.json.JSONObject time = timeSlotJsonArray.getJSONObject(i);
@@ -630,15 +642,19 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				 */
 				// 现在原来的yyyymmddhhmm改成yyyymmdd,开始时间默认00:00,结束时间2359
 
-				HashMap<String, Object> timeSlot = new HashMap<>();
-				timeSlot.put("startDate", beginTime);
-				timeSlot.put("endDate", lastTime);
-				timeSlot.put("startTime", "00:00");
-				timeSlot.put("endTime", "23:59");
-				// Map转换成JSON
-				String jsonTimeSlot = JSON.toJSONString(timeSlot);
-				timeSlots.add(jsonTimeSlot);
-
+//				HashMap<String, Object> timeSlot = new HashMap<>();
+//				timeSlot.put("startDate", beginTime);
+//				timeSlot.put("endDate", lastTime);
+//				timeSlot.put("startTime", "00:00");
+//				timeSlot.put("endTime", "23:59");
+//				
+//				// Map转换成JSON
+//				String jsonTimeSlot = JSON.toJSONString(timeSlot);
+//				timeSlots.add(jsonTimeSlot);
+				HashMap<String,Object> timeSlot = new HashMap<String,Object>();
+				timeSlot.put("beginDate", beginTime+" 00:00:00");
+				timeSlot.put("endDate", lastTime+" 23:59:59");
+				adDates.add(timeSlot);
 				if (deadLineDate == null) {
 					deadLineDate = yyyyMMddSFormat.parse(lastTime);
 				}
@@ -661,8 +677,26 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 
 				// 这边的参数tid是设备的ID，而不是广告表的tid，需要修改!
 				String pIds = adSchedule.getpId();
-				String result = addSchedule(pIds, deviceIds, timeSlots.toString(),
-						yyyyMMddSFormat.format(deadLineDate));
+				HashMap<String,Object> scheduleMap = new HashMap<String,Object>();
+				AdSchedule extSchedule = this.adScheduleMapper.selectAdScheduleById(adScheduleId);
+				if(extSchedule == null) {
+					throw new Exception("广告计划不存在");
+				}
+				if(StringUtils.isBlank(extSchedule.getExtScheduleId())) {
+					throw new Exception("不存在广告中心ID");
+				}
+				scheduleMap.put("id", extSchedule.getExtScheduleId());
+				scheduleMap.put("adDates", adDates);
+				scheduleMap.put("adScreens", adScreens);
+				String result = updateSchedule(scheduleMap);
+				JSONObject retObject = JSONObject.parseObject(result);
+				if(retObject.containsKey("code") ) {
+					if(!"0".equals(retObject.get("code").toString())) {
+						throw new Exception("修改广告计划失败："+retObject.getString("msg"));
+					}
+				}else {
+					throw new Exception("修改广告计划失败");
+				}
 //				// 返回结果封装
 //				AdHttpResult adHttp = Tools.analysisResult(result);
 //				// 保存排期ID
@@ -876,7 +910,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 
 	@Override
 	@Transactional
-	public int releaseOnlineSave2(AdSchedule adSchedule) throws IOException {
+	public int releaseOnlineSave2(AdSchedule adSchedule) throws Exception {
 
 		// 如果是H5广告不需要下发排期计划
 		Integer adScheduleId = adSchedule.getAdScheduleId();
@@ -888,7 +922,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 
 		if (AdConstant.RELEASE_TYPE_TERMINAL.equals(releasePosition)) {
 			// 1.发布时下发排期计划
-			String result = publishSchedule(ad.getSxScheduleId());
+			String result = publishSchedule2(ad);
 			// 返回结果封装
 			AdHttpResult adHttp = Tools.analysisResult(result);
 			if (AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())) {
@@ -1274,6 +1308,54 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 	}
 	
 	/**
+	 * 接口3：新增推广计划 HTTP application/x-www-form-urlencoded接口
+	 * 
+	 * @param scheduleName
+	 *            推广计划名称
+	 * @param templateId
+	 *            模板ID
+	 * @param advertiser
+	 *            广告主体名称
+	 * @param totalTime
+	 *            总共播放时长
+	 * @return
+	 * @throws IOException
+	 */
+	public String updateSchedule(HashMap<String,Object> param)
+			throws Exception {
+		
+		Map<String, String> paramMap = new HashMap<String, String>();
+		if(!param.containsKey("id")) {
+			throw new Exception("不存在广告中心ID");
+		}
+		paramMap.put("scheduleInfo", JSONObject.toJSONString(param));
+		String reqParam = Tools.paramsToString(paramMap);
+		Config config = new Config();
+		config.setConfigKey("AD_NEW_URL");
+		Config retConfig = configMapper.selectConfig(config);
+		if(retConfig == null) {
+			throw new Exception("广告地址未配置");
+		}
+		String rootUrl = retConfig.getConfigValue();
+		HashMap<String,String> headerMap = new HashMap<String,String>();
+		config.setConfigKey("AD_API_APPID");
+		Config cConfig = this.configMapper.selectConfig(config);
+		String appId = cConfig.getConfigValue();
+		headerMap.put("appid", appId);
+		config.setConfigKey("AD_API_SECRECT");
+		cConfig = this.configMapper.selectConfig(config);
+		String appSecrect = cConfig.getConfigValue();
+		String timestamp = new Date().getTime()+"";
+		headerMap.put("timestamp", timestamp);
+		headerMap.put("nonce", appId+"_"+RandomUtils.nextInt(new Random(), 10000)+"_"+timestamp);
+		headerMap.put("sign", SignUtil.createSign(headerMap,appSecrect));
+		logger.info("修改排期参数："+JSON.toJSONString(reqParam));
+		String result = Tools.doPostForm(rootUrl + AdConstant.AD_URL_NEW_UPDATESCHEDULE, reqParam ,headerMap);
+		logger.info("修改排期响应："+result);
+		return result;
+	}
+	
+	/**
 	 * 接口4：新增广告终端 HTTP application/x-www-form-urlencoded接口
 	 * 
 	 * @param terminalId
@@ -1399,7 +1481,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 	 *            排期计划ID
 	 * @throws IOException
 	 */
-	private String releaseSchedule(AdSchedule adSchedule) throws Exception {
+	private String publishSchedule2(AdSchedule adSchedule) throws Exception {
 		//todo 获取scheduleId
 		String exAdScheduleId = adSchedule.getExtScheduleId();
 		//todo 获取终端列表
@@ -1429,8 +1511,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		if(releaseTimer!=null && releaseTimers.size()>0) {
 			for(AdReleaseTimer timer : releaseTimers) {
 				HashMap<String,Object> adDate = new HashMap<String,Object>();
-				adDate.put("beginDate", timer.getReleaseBeginTime().getTime());
-				adDate.put("endDate", timer.getReleaseEndTime().getTime());
+				adDate.put("beginDate", apiYYYYMMDDHHmmssFormat.format(timer.getReleaseBeginTime()));
+				adDate.put("endDate", apiYYYYMMDDHHmmssFormat.format(timer.getReleaseEndTime()));
 				adDates.add(adDate);
 			}
 		}
@@ -1446,27 +1528,26 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		paramsMap.put("scheduleInfo", JSONObject.toJSONString(param));
 		String params = Tools.paramsToString(paramsMap);
 		Config config = new Config();
-		config.setConfigKey("AD_SCHEDULE_URL");
+		config.setConfigKey("AD_NEW_URL");
 		Config retConfig = configMapper.selectConfig(config);
-		String rootUrl = StringUtils.isNotNull(retConfig) ? retConfig.getConfigValue()
-				: "http://mmedia.bp.zcloudtechs.cn";
-		config.setConfigKey("AD_NEW_SCHEDULE_URL");
+		if(retConfig==null) {
+			throw new Exception("新排期地址未配置");
+		}
+		String rootUrl = retConfig.getConfigValue();
 		HashMap<String,String> headerMap = new HashMap<String,String>();
-        config.setConfigKey("AD_API_URL");
-		Config cConfig = this.configMapper.selectConfig(config);
 		config.setConfigKey("AD_API_APPID");
-		cConfig = this.configMapper.selectConfig(config);
+		Config cConfig = this.configMapper.selectConfig(config);
 		String appId = cConfig.getConfigValue();
 		headerMap.put("appid", appId);
 		config.setConfigKey("AD_API_SECRECT");
+		cConfig = this.configMapper.selectConfig(config);
 		String appSecrect = cConfig.getConfigValue();
-		headerMap.put("appid", appId);
 		String timestamp = new Date().getTime()+"";
 		headerMap.put("timestamp", timestamp);
-		headerMap.put("nonce", appId+"_"+timestamp);
+		headerMap.put("nonce", appId+"_"+RandomUtils.nextInt(new Random(), 10000)+"_"+timestamp);
 		headerMap.put("sign", SignUtil.createSign(headerMap,appSecrect));
 		logger.info("发布参数："+JSON.toJSONString(param));
-		String result = Tools.doPostForm(rootUrl + AdConstant.AD_URL_PUBLISHSCHEDULE, params,headerMap);
+		String result = Tools.doPostForm(rootUrl + AdConstant.AD_URL_NEW_PUBLISHSCHEDULE, params,headerMap);
 		logger.info("发布响应："+result);
 		return result;
 	}
