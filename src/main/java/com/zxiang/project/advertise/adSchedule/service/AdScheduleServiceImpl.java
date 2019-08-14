@@ -674,7 +674,18 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				adSchedule.setStatus(AdConstant.AD_WAIT_ADUIT);
 				// 终端广告预约设备后计算价格,按照素材表显性文字展示判断,图片/视频/图片视频
 				priceType = getPriceType(adScheduleId);
+				AdMaterial materialParam = new AdMaterial();
+				materialParam.setAdScheduleId(adScheduleId);
+				List<AdMaterial> materials = this.adMaterialMapper.selectAdMaterialList(materialParam);
+				List<HashMap<String,Object>> adMaterials = new ArrayList<HashMap<String,Object>>();
 
+				if(materials!=null && materials.size()>0) {
+					for(AdMaterial material : materials) {
+						HashMap<String,Object> materialMap = new HashMap<String,Object>();
+						materialMap.put("materialId", material.getExtMaterialId());
+						adMaterials.add(materialMap);
+					}
+				}
 				// 这边的参数tid是设备的ID，而不是广告表的tid，需要修改!
 				String pIds = adSchedule.getpId();
 				HashMap<String,Object> scheduleMap = new HashMap<String,Object>();
@@ -688,6 +699,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				scheduleMap.put("id", extSchedule.getExtScheduleId());
 				scheduleMap.put("adDates", adDates);
 				scheduleMap.put("adScreens", adScreens);
+				scheduleMap.put("adMaterials", adMaterials);
 				String result = updateSchedule(scheduleMap);
 				JSONObject retObject = JSONObject.parseObject(result);
 				if(retObject.containsKey("code") ) {
@@ -925,9 +937,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 			String result = publishSchedule2(ad);
 			// 返回结果封装
 			AdHttpResult adHttp = Tools.analysisResult(result);
-			if (AdConstant.RESPONSE_CODE_SUCCESS.equals(adHttp.getCode())) {
+			if ("0".equals(adHttp.getCode())) {
 				// 新排期不做下发，直接通知广告中心
-				
+				logger.info("新排期成功");
 			} else {
 				logger.error("调用审核通过下发排期计划接口失败!" + adHttp.toString());
 				throw new RRException("调用排期接口失败!");
@@ -1788,7 +1800,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		}
 		
 		// 5.修改广告计划数据
-		if ("1".equals(adSchedule.getPayStatus()) && todayRelease) {
+		if ("1".equals(adSchedule.getPayStatus())) {
 			String retJson = republishSchedule(adSchedule.getSxScheduleId() + "", deviceIds, timeSlots.toString(),
 					yyyyMMddSFormat.format(deadLineDate), "UPDATE");
 			AdHttpResult adHttp = Tools.analysisResult(retJson);
@@ -2169,6 +2181,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 			// 1.上传素材文件
 			if(retMaterials.size()>0) {
 				Integer sequence = 0;
+				String[] adIds = {adScheduleId};
+				//新附件上传，每次全量更新
+				adMaterialMapper.deleteMaterialByAdIds(adIds);
 				for(MaterialResult retMaterial : retMaterials) {
 					AdMaterial adMaterial = new AdMaterial();
 					adMaterial.setAdScheduleId(Integer.parseInt(adScheduleId));
@@ -2181,8 +2196,16 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 					adMaterial.setFileName(retMaterial.getMaterialName());
 					adMaterial.setExtMaterialId(retMaterial.getMaterialId());
 					adMaterial.setExtMaterialType(retMaterial.getType());
-					if(!"3".equals(retMaterial.getType())) {
+					
+					if("1".equals(retMaterial.getType())) {
 						adMaterial.setFileSize(retMaterial.getFileSize());
+						adMaterial.setRemark("视频");
+					}else if("2".equals(retMaterial.getType())) {
+						adMaterial.setFileSize(retMaterial.getFileSize());
+						adMaterial.setRemark("图片");
+					}else {
+						adMaterial.setMaterialText(retMaterial.getMaterialText());
+						adMaterial.setRemark("文本");
 					}
 					adMaterialMapper.insertAdMaterial(adMaterial);
 				}

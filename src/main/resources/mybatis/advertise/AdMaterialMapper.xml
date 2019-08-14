@@ -69,6 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="fileSize != null  ">filesize,</if>
 			<if test="extMaterialId != null  and extMaterialId.trim()!='' ">ext_material_id,</if>
 			<if test="extMaterialType != null  and extMaterialType.trim()!='' ">ext_material_type,</if>
+			<if test="materialText != null  and materialText.trim()!='' ">material_text,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="adMaterialId != null and adMaterialId != ''">#{adMaterialId},</if>
@@ -85,6 +86,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="fileSize != null ">#{fileSize},</if>
 			<if test="extMaterialId != null  and extMaterialId.trim()!='' ">#{extMaterialId},</if>
 			<if test="extMaterialType != null  and extMaterialType.trim()!='' ">#{extMaterialType},</if>
+			<if test="materialText != null  and materialText.trim()!='' ">#{materialText},</if>
          </trim>
     </insert>
 	 
@@ -104,6 +106,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fileSize != null  ">filesize = #{fileSize},</if>
             <if test="extMaterialId != null  and extMaterialId.trim()!='' ">ext_material_id=#{extMaterialId},</if>
             <if test="extMaterialType != null  and extMaterialType.trim()!='' ">ext_material_type=#{extMaterialType},</if>
+        	<if test="materialText != null  and materialText.trim()!='' ">material_text=#{materialText},</if>
         </trim>
         where ad_material_id = #{adMaterialId}
     </update>

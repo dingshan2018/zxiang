@@ -7,6 +7,7 @@ public class MaterialResult {
 	private Long duration;
 	private String previewUrl;
 	private Long fileSize;
+	private String materialText;
 	public String getType() {
 		return type;
 	}
@@ -42,6 +43,12 @@ public class MaterialResult {
 	}
 	public void setFileSize(Long fileSize) {
 		this.fileSize = fileSize;
+	}
+	public String getMaterialText() {
+		return materialText;
+	}
+	public void setMaterialText(String materialText) {
+		this.materialText = materialText;
 	}
 
 }

@@ -294,7 +294,7 @@ public class AdScheduleController extends BaseController
 			 List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
 			 
 			if (!files.isEmpty()) {
-				String result = uploadMaterial(files,operatorUser);
+				String result = uploadMaterial(files,operatorUser,materialText);
 				// 调用上传文件的接口
 				// 返回结果封装
 				if(StringUtils.isBlank(result)) {
@@ -330,57 +330,26 @@ public class AdScheduleController extends BaseController
 		}
     }
     	 
-    private String uploadMaterial(List<MultipartFile> files,String operator) throws Exception {
+    private String uploadMaterial(List<MultipartFile> files,String operator,String materialText) throws Exception {
     	Config config = new Config();
 		config.setConfigKey("AD_NEW_URL");
 		Config retConfig = configMapper.selectConfig(config);
 		if(retConfig==null) {
 			throw new Exception("新广告排期地址未生成");
 		}
-		
-		
-		
 		String rootUrl = retConfig.getConfigValue();
-//		PostMethod postMethod = new PostMethod(rootUrl + AdConstant.AD_URL_MATERIAL);
-//		postMethod.setParameter("belong", operator);
-////		postMethod.setParameter("materialText", "123");
-//		HttpClient client = new HttpClient();
-//		File file = null;
 		try {
-//			List<Part> fileParts = new ArrayList<Part>();
-//			if(files!=null && files.size()>0) {
-//				//List<File> attachfiles = new ArrayList<File>();
-//				for(MultipartFile multipartFile : files) {
-//					InputStream ins = multipartFile.getInputStream();
-//					file = new File(multipartFile.getOriginalFilename());
-//					Tools.inputStreamToFile(ins, file);
-//					FilePart myUpload = new FilePart("Filedata", file);	
-//					StringPart belong = new StringPart("belong", operator);
-//					//StringPart adScheduleId = new StringPart("materialText", "123");
-//					Part[] parts = { (Part) belong,  (Part) myUpload };
-//				}
-//			}
-//			Part[] parts = new Part[fileParts.size()];
-//			fileParts.toArray(parts);
-//
-//			// FilePart：用来上传文件的类
-//			//fileParts.add(new StringPart("belong",operator));
-//			
-//			
-//
-//			MultipartRequestEntity mre = new MultipartRequestEntity(
-//					(org.apache.commons.httpclient.methods.multipart.Part[]) parts, postMethod.getParams());
-//			postMethod.setRequestEntity(mre);
 			String postUrl = rootUrl + AdConstant.AD_URL_MATERIAL;
 			Map<String,String> param = new HashMap<String,String>();
 			param.put("belong", operator);
-			param.put("materialText", "123");
+			param.put("materialText", materialText);
 			HashMap<String,String> headerMap = new HashMap<String,String>();
 			config.setConfigKey("AD_API_APPID");
 			Config cConfig = this.configMapper.selectConfig(config);
 			String appId = cConfig.getConfigValue();
 			headerMap.put("appid", appId);
 			config.setConfigKey("AD_API_SECRECT");
+			cConfig = this.configMapper.selectConfig(config);
 			String appSecrect = cConfig.getConfigValue();
 			String timestamp = new Date().getTime()+"";
 			headerMap.put("timestamp", timestamp);
