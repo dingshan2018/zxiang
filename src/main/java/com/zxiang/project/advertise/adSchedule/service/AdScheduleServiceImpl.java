@@ -1260,7 +1260,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		}
 		
 		// 5.修改广告计划数据
-		if ("1".equals(adSchedule.getPayStatus()) && todayRelease) {
+		if ("1".equals(adSchedule.getPayStatus())) {
 			String retJson = republishSchedule(adSchedule.getSxScheduleId() + "", deviceIds, timeSlots.toString(),
 					yyyyMMddSFormat.format(deadLineDate), "UPDATE");
 			AdHttpResult adHttp = Tools.analysisResult(retJson);
