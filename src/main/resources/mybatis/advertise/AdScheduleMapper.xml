@@ -367,4 +367,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT COUNT(1) FROM `zx_ad_schedule` WHERE BINARY schedule_name=#{scheduleName}
 	</select>
 	
+    
 </mapper>

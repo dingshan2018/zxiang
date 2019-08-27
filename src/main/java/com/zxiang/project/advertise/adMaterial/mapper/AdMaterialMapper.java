@@ -1,5 +1,6 @@
 package com.zxiang.project.advertise.adMaterial.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -97,5 +98,34 @@ public interface AdMaterialMapper
 	 */
 	public int deleteMaterialByAdIds(String[] adIds);
 
+	/**
+	 * 通过广告ID删除数据
+	 * @param adIds
+	 * @return
+	 */
+	public int deleteMaterialByAdIds2(String[] adIds);
 	
+	/**
+     * 新增广告投放素材
+     * 
+     * @param adMaterial 广告投放素材信息
+     * @return 结果
+     */
+	public int insertAdScheduleMaterial(HashMap<String,Object> adMaterial);
+	
+	/**
+     * 查询广告投放素材列表
+     * 
+     * @param adMaterial 广告投放素材信息
+     * @return 广告投放素材集合
+     */
+	public List<AdMaterial> selectAdMaterialList2(AdMaterial adMaterial);
+	
+	/**
+	 * 根据广告ID查询该广告下所有素材列表
+	 * @param adMaterial
+	 * @return
+	 */
+	public List<AdMaterial> selectListByAdSchId2(@Param("adScheduleId") Integer adScheduleId);
+
 }

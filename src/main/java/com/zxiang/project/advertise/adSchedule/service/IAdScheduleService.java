@@ -202,7 +202,6 @@ public interface IAdScheduleService
 	 */
 	public void materialUpload2(List<MaterialResult> retMaterials,String adScheduleId,String operator) throws Exception;
 	
-	
-
+	public int republish2(AdSchedule adSchedule, String operatorUser) throws Exception;
 
 }

@@ -46,6 +46,17 @@ public class AdMaterial extends BaseEntity
 
 	private String materialText;
 	
+	/** 创建者 */
+	private String auditBy;
+	/** 创建时间 */
+	private Date auditTime;
+	
+	private String auditOpinion;
+	
+	private String status;
+	
+	private String share;
+	
 	public void setAdMaterialId(Integer adMaterialId) 
 	{
 		this.adMaterialId = adMaterialId;
@@ -195,4 +206,46 @@ public class AdMaterial extends BaseEntity
 	public void setMaterialText(String materialText) {
 		this.materialText = materialText;
 	}
+
+	public String getAuditBy() {
+		return auditBy;
+	}
+
+	public void setAuditBy(String auditBy) {
+		this.auditBy = auditBy;
+	}
+
+	public Date getAuditTime() {
+		return auditTime;
+	}
+
+	public void setAuditTime(Date auditTime) {
+		this.auditTime = auditTime;
+	}
+
+	public String getAuditOpinion() {
+		return auditOpinion;
+	}
+
+	public void setAuditOpinion(String auditOpinion) {
+		this.auditOpinion = auditOpinion;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getShare() {
+		return share;
+	}
+
+	public void setShare(String share) {
+		this.share = share;
+	}
+	
+	
 }

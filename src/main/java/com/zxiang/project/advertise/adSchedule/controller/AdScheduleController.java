@@ -50,6 +50,7 @@ import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
 import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
+import com.zxiang.project.advertise.adMaterial.service.IAdMaterialService;
 import com.zxiang.project.advertise.adReleaseRange.mapper.AdReleaseRangeMapper;
 import com.zxiang.project.advertise.adReleaseTimer.domain.AdReleaseTimer;
 import com.zxiang.project.advertise.adReleaseTimer.mapper.AdReleaseTimerMapper;
@@ -105,7 +106,7 @@ public class AdScheduleController extends BaseController
 	@Autowired
 	private IUserService userService;
 	@Autowired
-	private ConfigMapper configMapper;
+	private IAdMaterialService materialService;
 	 
 	@RequiresPermissions("advertise:adSchedule:view")
 	@GetMapping()
@@ -294,7 +295,7 @@ public class AdScheduleController extends BaseController
 			 List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
 			 
 			if (!files.isEmpty()) {
-				String result = uploadMaterial(files,operatorUser,materialText);
+				String result = materialService.uploadMaterial(files,operatorUser,materialText);
 				// 调用上传文件的接口
 				// 返回结果封装
 				if(StringUtils.isBlank(result)) {
@@ -330,37 +331,7 @@ public class AdScheduleController extends BaseController
 		}
     }
     	 
-    private String uploadMaterial(List<MultipartFile> files,String operator,String materialText) throws Exception {
-    	Config config = new Config();
-		config.setConfigKey("AD_NEW_URL");
-		Config retConfig = configMapper.selectConfig(config);
-		if(retConfig==null) {
-			throw new Exception("新广告排期地址未生成");
-		}
-		String rootUrl = retConfig.getConfigValue();
-		try {
-			String postUrl = rootUrl + AdConstant.AD_URL_MATERIAL;
-			Map<String,String> param = new HashMap<String,String>();
-			param.put("belong", operator);
-			param.put("materialText", materialText);
-			HashMap<String,String> headerMap = new HashMap<String,String>();
-			config.setConfigKey("AD_API_APPID");
-			Config cConfig = this.configMapper.selectConfig(config);
-			String appId = cConfig.getConfigValue();
-			headerMap.put("appid", appId);
-			config.setConfigKey("AD_API_SECRECT");
-			cConfig = this.configMapper.selectConfig(config);
-			String appSecrect = cConfig.getConfigValue();
-			String timestamp = new Date().getTime()+"";
-			headerMap.put("timestamp", timestamp);
-			headerMap.put("nonce", appId+"_"+RandomUtils.nextInt(new Random(), 10000)+"_"+timestamp);
-			headerMap.put("sign", SignUtil.createSign(headerMap,appSecrect));
-			return HttpclientUtil.upload(postUrl, files, param, headerMap);
-		} catch (Exception e) {
-			logger.error("addElement error:" + e);
-			throw e;
-		}
-    }
+    
     
      
 	
@@ -408,7 +379,7 @@ public class AdScheduleController extends BaseController
 	{
 		try {
 			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
-			return toAjax(adScheduleService.republish(adSchedule,operatorUser));
+			return toAjax(adScheduleService.republish2(adSchedule,operatorUser));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return error();
@@ -427,7 +398,7 @@ public class AdScheduleController extends BaseController
 	{
 		try {
 			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
-			return toAjax(adScheduleService.removeAd(adSchedule,operatorUser));
+			return toAjax(adScheduleService.removeAd2(adSchedule,operatorUser));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return error();

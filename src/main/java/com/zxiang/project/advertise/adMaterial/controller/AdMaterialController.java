@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,8 +15,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.zxiang.common.utils.StringUtils;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -22,6 +30,8 @@ import com.zxiang.framework.web.domain.AjaxResult;
 import com.zxiang.framework.web.page.TableDataInfo;
 import com.zxiang.project.advertise.adMaterial.domain.AdMaterial;
 import com.zxiang.project.advertise.adMaterial.service.IAdMaterialService;
+import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
+import com.zxiang.project.advertise.adSchedule.domain.MaterialResult;
 
 /**
  * 广告投放素材 信息操作处理
@@ -30,25 +40,28 @@ import com.zxiang.project.advertise.adMaterial.service.IAdMaterialService;
  * @date 2018-11-08
  */
 @Controller
-@RequestMapping("/settle/adMaterial")
+@RequestMapping("/advertise/adMaterial")
 public class AdMaterialController extends BaseController
 {
-    private String prefix = "settle/adMaterial";
+    private String prefix = "advertise/adMaterial";
 	
 	@Autowired
 	private IAdMaterialService adMaterialService;
 	
-	@RequiresPermissions("settle:adMaterial:view")
+	@Autowired
+	private IAdMaterialService materialService;
+	
+	@RequiresPermissions("advertise:adMaterial:view")
 	@GetMapping()
 	public String adMaterial()
 	{
-	    return prefix + "/adMaterial";
+	    return prefix + "/adMaterial2";
 	}
 	
 	/**
 	 * 查询广告投放素材列表
 	 */
-	@RequiresPermissions("settle:adMaterial:list")
+	@RequiresPermissions("advertise:adMaterial:list")
 	@PostMapping("/list")
 	@ResponseBody
 	public TableDataInfo list(AdMaterial adMaterial)
@@ -57,6 +70,29 @@ public class AdMaterialController extends BaseController
         List<AdMaterial> list = adMaterialService.selectAdMaterialList(adMaterial);
 		return getDataTable(list);
 	}
+	
+	/**
+	 * 广告投放审核
+	 */
+	@GetMapping("/audit/{adMaterialId}")
+	public String audit(@PathVariable("adMaterialId") Integer adMaterialId, ModelMap mmap)
+	{
+		AdMaterial admaterial = adMaterialService.selectAdMaterialById(adMaterialId);
+		mmap.put("adMaterial", admaterial);
+		
+	    return prefix + "/audit";
+	}
+	
+	
+	/**
+     * 获取广告素材信息
+     */
+    @RequestMapping("/selectInfo/{adMaterialId}")
+    @ResponseBody
+    public AdMaterial selectInfo(@PathVariable("adMaterialId") Integer adScheduleId) {
+    	AdMaterial adMaterial = adMaterialService.selectAdMaterialById(adScheduleId);
+        return adMaterial;
+    }
 	
 	@GetMapping("/previewFileNameByAdSchId/{adScheduleId}")
 	public String previewFileNameByAdSchId(@PathVariable("adScheduleId") Integer adScheduleId, ModelMap mmap)
@@ -89,16 +125,58 @@ public class AdMaterialController extends BaseController
 	}
 	
 	/**
-	 * 新增保存广告投放素材
-	 */
-	@RequiresPermissions("settle:adMaterial:add")
-	@Log(title = "广告投放素材", businessType = BusinessType.INSERT)
-	@PostMapping("/add")
-	@ResponseBody
-	public AjaxResult addSave(AdMaterial adMaterial)
-	{		
-		return toAjax(adMaterialService.insertAdMaterial(adMaterial));
-	}
+     * 素材上传保存
+     */
+	@RequiresPermissions("advertise:adMaterial:add")
+	@Log(title = "广告素材上传保存", businessType = BusinessType.UPDATE)
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxResult add(HttpServletRequest request)
+    {
+    	 try {
+			//String elementId = request.getParameter("elementId");
+			//String elementName = request.getParameter("elementName");//素材类型,保存在ad_material表remark字段用来判断价格
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			
+			 List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
+			 
+			if (!files.isEmpty()) {
+				String result = materialService.uploadMaterial(files,operatorUser,null);
+				// 调用上传文件的接口
+				// 返回结果封装
+				if(StringUtils.isBlank(result)) {
+					return error("素材服务器上传异常");
+				}else {
+					
+					JSONObject materialObject = JSONObject.parseObject(result);
+					
+					if ("0".equals(materialObject.getString("code"))) {
+						JSONObject dataObject = materialObject.getJSONObject("data");
+						if(dataObject!=null) {
+							JSONArray materialArray = dataObject.getJSONArray("materials");
+							if(materialArray.size()>0) {
+								List<MaterialResult> retMaterials = materialArray.toJavaList(MaterialResult.class);
+								materialService.batchAddMaterial(retMaterials,operatorUser);
+							}else {
+								throw new Exception("不存在图片、视频素材上传");
+							}
+						}
+						
+						
+					
+						return success("素材上传成功");
+					}else {
+						return error("素材上传失败");
+					}
+				}	
+			}
+			return error("素材文件不存在");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error();
+		}
+    }
+    	
 
 	/**
 	 * 修改广告投放素材
@@ -114,7 +192,7 @@ public class AdMaterialController extends BaseController
 	/**
 	 * 修改保存广告投放素材
 	 */
-	@RequiresPermissions("settle:adMaterial:edit")
+	@RequiresPermissions("advertise:adMaterial:edit")
 	@Log(title = "广告投放素材", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
@@ -126,7 +204,7 @@ public class AdMaterialController extends BaseController
 	/**
 	 * 删除广告投放素材
 	 */
-	@RequiresPermissions("settle:adMaterial:remove")
+	@RequiresPermissions("advertise:adMaterial:remove")
 	@Log(title = "广告投放素材", businessType = BusinessType.DELETE)
 	@PostMapping( "/remove")
 	@ResponseBody
@@ -196,4 +274,39 @@ public class AdMaterialController extends BaseController
 //			return "error";
 //		}
     }
+    
+    /**
+	 * 广告投放审核保存
+	 */
+	@RequiresPermissions("advertise:admaterial:audit")
+	@Log(title = "广告素材审核保存", businessType = BusinessType.UPDATE)
+	@PostMapping("/auditSave")
+	@ResponseBody
+	public AjaxResult auditSave(AdMaterial adMaterial)
+	{
+		try {
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			return toAjax(adMaterialService.auditSave(adMaterial,operatorUser));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error();
+		}
+	}
+	/**
+	 * 广告投放审核保存
+	 */
+	@RequiresPermissions("advertise:admaterial:share")
+	@Log(title = "广告素材分享", businessType = BusinessType.UPDATE)
+	@PostMapping("/share")
+	@ResponseBody
+	public AjaxResult share(AdMaterial adMaterial)
+	{
+		try {
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			return toAjax(adMaterialService.share(adMaterial,operatorUser));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error();
+		}
+	}
 }

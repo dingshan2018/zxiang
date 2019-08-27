@@ -17,9 +17,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="fileName"    column="filename"    />
         <result property="fileSize"    column="filesize"    />
+        <result property="status"    column="status"    />
         <result property="materialText"    column="material_text"    />
         <result property="extMaterialId"    column="ext_material_id"    />
         <result property="extMaterialType"    column="ext_material_type"    />
+         <result property="auditBy"    column="audit_by"    />
+        <result property="auditTime"    column="audit_time"    />
+         <result property="auditOpinion"    column="audit_opinion"    />
+        <result property="share"    column="share"    />
     </resultMap>
 	
 	<sql id="selectAdMaterialVo">
@@ -27,7 +32,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         remark, create_by, create_time,filename,filesize from zx_ad_material -->
         SELECT ext_material_id,ext_material_type,ad_material_id, ad_schedule_id,(SELECT DISTINCT schedule_name FROM zx_ad_schedule za 
         WHERE zam.ad_schedule_id=za.ad_schedule_id ) scheduleName, preview,teid,tresid, batch, sequence, 
-        remark, create_by, create_time,filename,filesize,ext_material_id FROM zx_ad_material zam
+        remark, create_by, create_time,filename,filesize,ext_material_id,status,share,audit_by,audit_time,audit_opinion FROM zx_ad_material zam
+    </sql>
+    <sql id="selectAdMaterialVo2">
+        <!-- select ad_material_id, ad_schedule_id, preview,teid,tresid, batch, sequence, 
+        remark, create_by, create_time,filename,filesize from zx_ad_material -->
+        SELECT zam.ext_material_id,zam.ext_material_type,zam.ad_material_id,zas.ad_schedule_id,zas.scheduleName, zam.preview, zam.batch, zam.sequence, 
+        zam.remark, zam.create_by, zam.create_time,zam.filename,zam.filesize,zam.ext_material_id,zam.status,zam.share,zam.audit_by,zam.audit_time,zam.audit_opinion FROM zx_ad_material zam left join zx_ad_schedule_material zasm on zam.ad_material_id=zasm.ad_material_id left join zx_ad_schedule zas on zasm.ad_schedule_id=zas.ad_schedule_id  
     </sql>
 	
     <select id="selectAdMaterialList" parameterType="AdMaterial" resultMap="AdMaterialResult">
@@ -45,6 +56,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="createTime != null "> and create_time = #{createTime}</if>
              <if test="fileName != null "> and filename = #{fileName}</if>
          </where>
+         order by create_time desc 
+    </select>
+    
+    <select id="selectAdMaterialList2" parameterType="AdMaterial" resultMap="AdMaterialResult">
+        <include refid="selectAdMaterialVo2"/>
+        <where>  
+            <if test="adMaterialId != null and adMaterialId != ''"> and zam.ad_material_id = #{adMaterialId} </if>
+             <if test="adScheduleId != null and adScheduleId != ''"> and zasm.ad_schedule_id=#{adScheduleId} </if>
+             <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="fileName != null "> and filename = #{fileName}</if>
+         </where>
+         order by create_time desc 
     </select>
     
     <select id="selectAdMaterialById" parameterType="Integer" resultMap="AdMaterialResult">
@@ -70,6 +95,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="extMaterialId != null  and extMaterialId.trim()!='' ">ext_material_id,</if>
 			<if test="extMaterialType != null  and extMaterialType.trim()!='' ">ext_material_type,</if>
 			<if test="materialText != null  and materialText.trim()!='' ">material_text,</if>
+			<if test="auditBy != null  and auditBy.trim()!='' ">audit_by,</if>
+			<if test="auditTime != null ">audit_time,</if>
+			<if test="auditOpinion != null  and auditOpinion.trim()!='' ">audit_opinion,</if>
+			<if test="status != null  and status.trim()!='' ">status,</if>
+			<if test="share != null  and share.trim()!='' ">share,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="adMaterialId != null and adMaterialId != ''">#{adMaterialId},</if>
@@ -87,6 +117,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="extMaterialId != null  and extMaterialId.trim()!='' ">#{extMaterialId},</if>
 			<if test="extMaterialType != null  and extMaterialType.trim()!='' ">#{extMaterialType},</if>
 			<if test="materialText != null  and materialText.trim()!='' ">#{materialText},</if>
+			<if test="auditBy != null  and auditBy.trim()!='' ">#{auditBy},</if>
+			<if test="auditTime != null ">#{auditTime},</if>
+			<if test="auditOpinion != null  and auditOpinion.trim()!='' ">#{auditOpinion},</if>
+			<if test="status != null  and status.trim()!='' ">#{opinion},</if>
+			<if test="share != null  and share.trim()!='' ">#{share},</if>
          </trim>
     </insert>
 	 
@@ -107,6 +142,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="extMaterialId != null  and extMaterialId.trim()!='' ">ext_material_id=#{extMaterialId},</if>
             <if test="extMaterialType != null  and extMaterialType.trim()!='' ">ext_material_type=#{extMaterialType},</if>
         	<if test="materialText != null  and materialText.trim()!='' ">material_text=#{materialText},</if>
+        	<if test="auditBy != null  and auditBy.trim()!='' ">audit_by=#{auditBy},</if>
+			<if test="auditTime != null ">audit_time=#{auditTime},</if>
+			<if test="auditOpinion != null  and auditOpinion.trim()!='' ">audit_opinion=#{auditOpinion},</if>
+			<if test="status != null  and status.trim()!='' ">status=#{status},</if>
+			<if test="share != null  and share.trim()!='' ">share=#{share},</if>
         </trim>
         where ad_material_id = #{adMaterialId}
     </update>
@@ -138,6 +178,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     	SELECT * FROM `zx_ad_material` WHERE ad_schedule_id = #{adScheduleId};
     </select>
     
+     <!-- 根据广告ID查询该广告下所有素材列表 -->
+    <select id="selectListByAdSchId2" parameterType="Integer" resultMap="AdMaterialResult">
+    	SELECT * FROM `zx_ad_material` WHERE exists(select 1 from zx_ad_schedule_material zasm where zasm.ad_schedule_id=#{adScheduleId} and zasm.ad_material_id=zx_ad_material.ad_material_id);
+    </select>
+    
     <!-- 通过广告ID删除数据 -->
     <delete id="deleteMaterialByAdIds" parameterType="String">
         delete from zx_ad_material where ad_schedule_id in 
@@ -145,6 +190,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{adScheduleId}
         </foreach>
     </delete>
+    
+    <!-- 通过广告ID删除数据 -->
+    <delete id="deleteMaterialByAdIds2" parameterType="String">
+        delete from zx_ad_schedule_material where ad_schedule_id in 
+        <foreach item="adScheduleId" collection="array" open="(" separator="," close=")">
+            #{adScheduleId}
+        </foreach>
+    </delete>
+    
+    <insert id="insertAdScheduleMaterial" parameterType="HashMap">
+        insert into zx_ad_schedule_material
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="adScheduleId != null and adScheduleId.trim() != '' ">ad_schedule_id,</if>
+			<if test="adMaterialId != null and adMaterialId.trim() != '' ">ad_material_id,</if>
+			<if test="materialType != null and materialType != '' ">material_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="adScheduleId != null and adScheduleId.trim() != '' ">#{adScheduleId},</if>
+			<if test="adMaterialId != null and adMaterialId.trim() != '' ">#{adMaterialId},</if>
+			<if test="materialType != null and materialType != '' ">#{materialType},</if>
+		</trim>
+    </insert>
     
     <!-- 根据广告ID查询该广告下不同的素材类型 -->
     <select id="getDistinctList" parameterType="Integer" resultMap="AdMaterialResult">

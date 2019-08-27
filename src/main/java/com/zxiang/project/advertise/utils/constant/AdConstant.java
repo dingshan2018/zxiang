@@ -70,6 +70,8 @@ public class AdConstant {
 	public final static String 	AD_URL_NEW_PUBLISHSCHEDULE = "/open/api/schedule/publishSchedule";
 	/** 下发更改排期计划URL	 */
 	public final static String 	AD_URL_REPUBLISHSCHEDULE = "/mmedia/adpublish/api/republishSchedule.action";
+	/** 停播排期 */
+	public final static String 	AD_URL_STOPSHSCHEDULE = "/open/api/schedule/stopSchedule";
 	/******************** 广告HTTP接口返回状态	*******************/
 	
 	/** 接口返回成功码	 */
@@ -119,7 +121,53 @@ public class AdConstant {
 	public final static String MATERIAL_TYPE_TXT = "文本";
 	
 	
+	public enum MaterialAuditStatus
+    {
+        /**
+         * 未审核
+         */
+        UNAUDIT("0"),
+        /**
+         * 已审核
+         */
+        AUDIT("1");
+
+        private String value;
+
+        private MaterialAuditStatus(String value)
+        {
+            this.value = value;
+        }
+
+        public String getValue()
+        {
+            return value;
+        }
+    }
 	
+	public enum MaterialShareStatus
+    {
+        /**
+         * 未共享
+         */
+        UNSHARE("0"),
+        /**
+         * 已共享
+         */
+        SHARE("1");
+
+        private String value;
+
+        private MaterialShareStatus(String value)
+        {
+            this.value = value;
+        }
+
+        public String getValue()
+        {
+            return value;
+        }
+    }
 	
 	
 }

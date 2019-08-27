@@ -3,7 +3,10 @@ package com.zxiang.project.advertise.adMaterial.service;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.zxiang.project.advertise.adMaterial.domain.AdMaterial;
+import com.zxiang.project.advertise.adSchedule.domain.MaterialResult;
 
 /**
  * 广告投放素材 服务层
@@ -81,5 +84,13 @@ public interface IAdMaterialService
 	 * @throws IOException 
 	 */
 	public String judgeAllType(Integer adScheduleId) throws IOException;
+
+	String uploadMaterial(List<MultipartFile> files, String operator, String materialText) throws Exception;
+
+	public void batchAddMaterial(List<MaterialResult> retMaterials, String operatorUser);
+
+	public int auditSave(AdMaterial adMaterial, String operatorUser);
+
+	public int share(AdMaterial adMaterial, String operatorUser);
 	
 }
