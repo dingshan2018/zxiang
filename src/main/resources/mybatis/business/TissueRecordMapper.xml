@@ -105,7 +105,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <select id="selectTissueDataList" resultType="java.util.HashMap">
-        select zd.device_code as deviceCode,if(zas.schedule_name is not null,zas.schedule_name,if(zas.create_by='关注出纸','关注出纸','无扫码广告')) as adName,
+        select zd.device_code as deviceCode,if(zas.schedule_name is not null,zas.schedule_name,'无扫码广告') as adName,
         DATE_FORMAT(ztr.create_time,'%Y年%m月%d日') as tissueDate,
         count(1) as tissueCnt 
         from zx_tissue_record ztr left join zx_ad_schedule zas on ztr.qr_schedule_id=zas.ad_schedule_id left join zx_device zd on ztr.device_id=zd.device_id  
@@ -131,7 +131,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
      <select id="queryExportData" resultType="java.util.HashMap">
-        select zd.device_code as deviceCode,if(zas.schedule_name is not null,zas.schedule_name,if(zas.create_by='关注出纸','关注出纸','无扫码广告')) as adName,
+        select zd.device_code as deviceCode,if(zas.schedule_name is not null,zas.schedule_name,'无扫码广告') as adName,
         DATE_FORMAT(ztr.create_time,'%Y年%m月%d日') as tissueDate,
         count(1) as tissueCnt 
         from zx_tissue_record ztr left join zx_ad_schedule zas on ztr.qr_schedule_id=zas.ad_schedule_id left join zx_device zd on ztr.device_id=zd.device_id  
@@ -153,7 +153,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</if>
         and ztr.status='1' 
         group by zd.owner_id,ztr.device_id,DATE_FORMAT(ztr.create_time,'%Y/%m/%d')  
-        order by DATE_FORMAT(ztr.create_time,'%Y/%m/%d'),zd.owner_id,zd.device_code,ztr.qr_schedule_id
+        order by DATE_FORMAT(ztr.create_time,'%Y/%m/%d'),zd.device_code,ztr.qr_schedule_id
     </select>
         
     <insert id="insertTissueRecord" parameterType="TissueRecord">
