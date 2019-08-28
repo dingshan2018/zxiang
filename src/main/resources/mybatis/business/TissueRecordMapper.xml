@@ -103,6 +103,58 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectTissueRecordVo"/>
         where tissue_record_id = #{tissueRecordId}
     </select>
+    
+    <select id="selectTissueDataList" resultType="java.util.HashMap">
+        select zd.device_code as deviceCode,if(zas.schedule_name is not null,zas.schedule_name,if(zas.create_by='关注出纸','关注出纸','无扫码广告')) as adName,
+        DATE_FORMAT(ztr.create_time,'%Y年%m月%d日') as tissueDate,
+        count(1) as tissueCnt 
+        from zx_tissue_record ztr left join zx_ad_schedule zas on ztr.qr_schedule_id=zas.ad_schedule_id left join zx_device zd on ztr.device_id=zd.device_id  
+        where 
+        	1=1 
+        <if test="filterSql!=null and filterSql.trim()!='' ">
+            and ${filterSql}
+        </if>
+        and zd.device_code is not null 
+        and  tissue_channel='1' 
+        <if test="deviceSn != null and deviceSn != ''"> 
+            and ztr.device_code like CONCAT('%',#{deviceSn},'%') 
+        </if>
+        <if test="params.beginTime != null and params.beginTime != '' "><!-- 开始时间检索 -->
+			AND date_format(ztr.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+		</if>
+		<if test="params.endTime != null and params.endTime != '' "><!-- 结束时间检索 -->
+			AND date_format(ztr.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+		</if>
+        and ztr.status='1' 
+        group by zd.owner_id,ztr.device_id,DATE_FORMAT(ztr.create_time,'%Y/%m/%d')  
+        order by DATE_FORMAT(ztr.create_time,'%Y/%m/%d'),zd.owner_id,zd.device_code,ztr.qr_schedule_id
+    </select>
+    
+     <select id="queryExportData" resultType="java.util.HashMap">
+        select zd.device_code as deviceCode,if(zas.schedule_name is not null,zas.schedule_name,if(zas.create_by='关注出纸','关注出纸','无扫码广告')) as adName,
+        DATE_FORMAT(ztr.create_time,'%Y年%m月%d日') as tissueDate,
+        count(1) as tissueCnt 
+        from zx_tissue_record ztr left join zx_ad_schedule zas on ztr.qr_schedule_id=zas.ad_schedule_id left join zx_device zd on ztr.device_id=zd.device_id  
+        where 
+        	1=1 
+        <if test="filterSql!=null and filterSql.trim()!='' ">
+            and ${filterSql}
+        </if>
+        and zd.device_code is not null 
+        and  tissue_channel='1' 
+        <if test="deviceSn != null and deviceSn != ''"> 
+            and ztr.device_code like CONCAT('%',#{deviceSn},'%') 
+        </if>
+        <if test="beginTime != null and beginTime != '' "><!-- 开始时间检索 -->
+			AND date_format(ztr.create_time,'%y%m%d') &gt;= date_format(#{beginTime},'%y%m%d')
+		</if>
+		<if test="endTime != null and endTime != '' "><!-- 结束时间检索 -->
+			AND date_format(ztr.create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+		</if>
+        and ztr.status='1' 
+        group by zd.owner_id,ztr.device_id,DATE_FORMAT(ztr.create_time,'%Y/%m/%d')  
+        order by DATE_FORMAT(ztr.create_time,'%Y/%m/%d'),zd.owner_id,zd.device_code,ztr.qr_schedule_id
+    </select>
         
     <insert id="insertTissueRecord" parameterType="TissueRecord">
         insert into zx_tissue_record
@@ -245,6 +297,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </where>  
          ORDER BY tissue_record_id DESC      
     </select>
+    
+   
     
     <!--  根据条件查询出纸数量及出纸金额统计 -->
 	<select id="tissueCount" resultType="java.util.HashMap">

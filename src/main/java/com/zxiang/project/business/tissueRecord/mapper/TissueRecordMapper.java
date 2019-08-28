@@ -72,5 +72,9 @@ public interface TissueRecordMapper
 	 * @return
 	 */
 	public HashMap<String, Object> tissueCount(HashMap<String, String> params);
+
+	public List queryExportData(HashMap<String, String> params);
+
+	public List<HashMap<String, Object>> selectTissueDataList(TissueRecord tissueRecord);
 	
 }
