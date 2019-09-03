@@ -183,11 +183,11 @@ public class TissueRecordServiceImpl implements ITissueRecordService
   		EXCELObject s = new EXCELObject();
   		s.seteFilePath(realPath);
   		//表头名称
-  		String[] titH = {"投放设备", "广告名称","统计日期","有效次数"};
+  		String[] titH = {"投放设备", "广告名称","统计日期","微信昵称","有效次数"};
   		//数据库字段名称
-  		String[] titN = { "deviceCode","adName","tissueDate","tissueCnt"};
+  		String[] titN = { "deviceCode","adName","tissueDate","nickName","tissueCnt"};
   		String[] width= 
-  			   {"15","20","20","20"};
+  			   {"15","20","20","20","20"};
   		s.setWidth(width);
   		s.setFname("出纸记录"); // sheet栏名称
   		s.setTitle("出纸记录"); // Excel内容标题名称

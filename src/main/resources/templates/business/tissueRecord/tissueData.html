@@ -99,6 +99,10 @@
             title: '广告日期'
           },
           {
+              field: 'nickName',
+              title: '微信昵称'
+           },
+          {
             field: 'tissueCnt',
             title: '有效出纸次数'
           }
@@ -113,7 +117,7 @@
     		var startTime = $("#startTime").val();
     		var endTime = $("#endTime").val();
     		var deviceSn = $("#deviceSn").val();
-			location.href = ctx + "business/tissueRecord/excelExportData?&startTime="+startTime+'&endTime='+endTime+'&deviceSn='+deviceSn;
+			location.href = ctx + "business/tissueRecord/excelExportData?&beginTime="+startTime+'&endTime='+endTime+'&deviceSn='+deviceSn;
     		//$.modal.alert("导出成功!");
 		});
     }
