@@ -265,4 +265,45 @@ public class TerminalController extends BaseController
 			return error(e.getMessage()+" ,操作失败!");
 		}
 	}
+	
+	@Log(title = "终端重启", businessType = BusinessType.UPDATE)
+	@PostMapping( "/resetTerminal")
+	@ResponseBody
+	public AjaxResult resetTerminal(Integer terminalId)
+	{		
+		try {
+			// 调用接口下发命令 调知终端上报日志
+			int number = terminalService.resetTerminal(terminalId);
+			if(number > 0){
+				return success("操作成功!");
+			}else{
+				return success("操作失败!");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error(e.getMessage()+" ,操作失败!");
+		}
+	}
+	
+	@Log(title = "终端重载广告资源", businessType = BusinessType.UPDATE)
+	@PostMapping( "/reloadTerminal")
+	@ResponseBody
+	public AjaxResult reloadTerminal(Integer terminalId)
+	{		
+		try {
+			// 调用接口下发命令 调知终端上报日志
+			int number = terminalService.reloadTerminal(terminalId);
+			if(number > 0){
+				return success("操作成功!");
+			}else{
+				return success("操作失败!");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error(e.getMessage()+" ,操作失败!");
+		}
+	}
+
 }

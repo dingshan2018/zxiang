@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.excel.EXCELObject;
+import com.zxiang.project.business.device.domain.Device;
+import com.zxiang.project.business.device.mapper.DeviceMapper;
 import com.zxiang.project.business.server.service.IServerService;
 import com.zxiang.project.business.terminal.domain.Terminal;
 import com.zxiang.project.business.terminal.mapper.TerminalMapper;
@@ -40,6 +42,8 @@ public class TerminalServiceImpl implements ITerminalService
 	private TerminalTimerMapper terminalTimerMapper;
 	@Autowired
 	private IServerService serverService;
+	@Autowired
+	private DeviceMapper deviceMapper;
 	
 	/**
      * 查询终端管理信息
@@ -227,5 +231,47 @@ public class TerminalServiceImpl implements ITerminalService
 		number++;
 		return number;
 	}
+	
+	@Override
+	public int resetTerminal(Integer terminalId) {
+		int number = 0;
+		Terminal terminal = terminalMapper.selectTerminalById(terminalId);
+		if(terminal != null ){
+			JSONObject reqJson = new JSONObject();
+			reqJson.put("termCode",terminal.getTerminalCode());
+			// 接口参数 进行封装
+			reqJson.put("command","29");
+			try {
+				serverService.issuedCommand(terminal,reqJson);
+				number++;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		number++;
+		return number;
+	}
 
+	@Override
+	public int reloadTerminal(Integer terminalId) {
+		int number = 0;
+		Terminal terminal = terminalMapper.selectTerminalById(terminalId);
+		Device device = deviceMapper.selectDeviceById(terminal.getDeviceId());
+		if(terminal != null && device!=null){
+			JSONObject reqJson = new JSONObject();
+			reqJson.put("termCode",terminal.getTerminalCode());
+			reqJson.put("adUrl", device.getAdUrl());
+			reqJson.put("forceDonwload", 1);
+			// 接口参数 进行封装
+			reqJson.put("command","25");
+			try {
+				serverService.issuedCommand(terminal,reqJson);
+				number++;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		number++;
+		return number;
+	}
 }

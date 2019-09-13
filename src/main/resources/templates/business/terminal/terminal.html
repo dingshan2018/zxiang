@@ -70,6 +70,8 @@
     var editFlag = [[${@permission.hasPermi('business:terminal:edit')}]];
     var removeFlag = [[${@permission.hasPermi('business:terminal:remove')}]];
     var showFlag = [[${@permission.hasPermi('business:terminal:show')}]];
+    var resetFlag = [[${@permission.hasPermi('business:terminal:reset')}]];
+    var reloadFlag = [[${@permission.hasPermi('business:terminal:reload')}]];
     var prefix = ctx + 'business/terminal';
 
     $(function () {
@@ -192,7 +194,11 @@
               var actions = [];
              /*  actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' +
                 row.terminalId + '\')"><i class="fa fa-edit"></i>编辑</a> '); */
-                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="reportLog(\'' 
+                actions.push('<a class="btn btn-danger btn-xs ' + resetFlag + '" href="#" onclick="resetTerminal(\'' 
+                		  + row.terminalId + '\')"><i class="fa fa-upload"></i>重启</a> ');
+                actions.push('<a class="btn btn-warning btn-xs ' + reloadFlag + '" href="#" onclick="reloadTerminal(\'' 
+              		  + row.terminalId + '\')"><i class="fa fa-upload"></i>重载广告</a> ');
+                actions.push('<a class="btn btn-info btn-xs ' + editFlag + '" href="#" onclick="reportLog(\'' 
               		  + row.terminalId + '\')"><i class="fa fa-upload"></i>上报日志</a> ');
                 actions.push('<a class="btn btn-success btn-xs ' + showFlag + '" href="#" onclick="showStatus(\'' 
               		  + row.terminalId + '\')"><i class="fa fa-upload"></i>状态</a> ');
@@ -285,6 +291,44 @@
     		cache : true,
     		type : "POST",
     		url : prefix + "/reportLog",
+    		data : {
+    			"terminalId": terminalId
+    		},
+    		async : false,
+    		error : function(request) {
+    			$.modal.alertError("系统错误");
+    		},
+    		success : function(data) {
+    			$.modal.msgSuccess(data.msg);
+    			//$.table.search();
+    		}
+    	});
+  	}
+    
+    function resetTerminal(terminalId) {
+    	$.ajax({
+    		cache : true,
+    		type : "POST",
+    		url : prefix + "/resetTerminal",
+    		data : {
+    			"terminalId": terminalId
+    		},
+    		async : false,
+    		error : function(request) {
+    			$.modal.alertError("系统错误");
+    		},
+    		success : function(data) {
+    			$.modal.msgSuccess(data.msg);
+    			//$.table.search();
+    		}
+    	});
+  	}
+    
+    function reloadTerminal(terminalId) {
+    	$.ajax({
+    		cache : true,
+    		type : "POST",
+    		url : prefix + "/reloadTerminal",
     		data : {
     			"terminalId": terminalId
     		},
