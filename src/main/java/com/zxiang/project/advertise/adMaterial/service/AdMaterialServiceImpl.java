@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.lang.math.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -167,7 +168,9 @@ public class AdMaterialServiceImpl implements IAdMaterialService
 			String postUrl = rootUrl + AdConstant.AD_URL_MATERIAL;
 			Map<String,String> param = new HashMap<String,String>();
 			param.put("belong", operator);
-			param.put("materialText", materialText);
+			if(StringUtils.isNotBlank(materialText)) {
+				param.put("materialText", materialText);
+			}
 			HashMap<String,String> headerMap = new HashMap<String,String>();
 			config.setConfigKey("AD_API_APPID");
 			Config cConfig = this.configMapper.selectConfig(config);

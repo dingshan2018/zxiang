@@ -90,7 +90,7 @@
         var removeFlag = [[${@permission.hasPermi('advertise:adMaterial:remove')}]];
         var prefix = ctx + "advertise/adMaterial"
         var scheduleId = $('#adScheduleId').val();
-        
+        var materialStatus = [[${@dict.getType('material_status')}]];
         $(function() {
             var options = {
                 url: prefix + "/list",
@@ -110,6 +110,10 @@
 					title : 'ID' 
 				},
 				{
+					field : 'scheduleName', 
+					title : '首次投放广告' 
+				},
+				{
 					field : 'fileName', 
 					title : '素材名称' 
 				},
@@ -126,12 +130,31 @@
 					title : '文件类型' 
 				},
 				{
+					field : 'status', 
+					title : '文件状态',
+		            formatter: function(value, row, index) {
+		            	return $.table.selectDictLabel(materialStatus, value);
+		            }
+				},
+				{
 					field : 'createBy', 
 					title : '提交人' 
 				},
 				{
 					field : 'createTime', 
 					title : '提交时间' 
+				},
+				{
+					field : 'auditBy', 
+					title : '审核人' 
+				},
+				{
+					field : 'auditTime', 
+					title : '审核时间' 
+				},
+				{
+					field : 'auditOpinion', 
+					title : '审核意见' 
 				},
 		        {
 		            title: '操作',

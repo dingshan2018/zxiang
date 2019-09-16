@@ -385,7 +385,7 @@
 
   	//素材预览仅展示文件名称及缩略图
   	function previewFileName(adScheduleId){
-  	    var url = ctx + "settle/adMaterial/previewFileNameByAdSchId/" + adScheduleId;
+  	    var url = ctx + "advertise/adMaterial/previewFileNameByAdSchId/" + adScheduleId;
   	    createMenuItem(url, '广告素材');
   	}
   
@@ -735,7 +735,7 @@
     function getMaxBatch(rows) {
     	var batch = 0;
 	    $.ajax({
-		        url: ctx + "settle/adMaterial/getMaxBatch/" + rows,
+		        url: ctx + "advertise/adMaterial/getMaxBatch/" + rows,
 		        type: "post",
 		        dataType: "json",
 		        data: 'data',
@@ -754,7 +754,7 @@
     function judgeAllType(rows) {
     	var allType = "error";
 	    $.ajax({
-		        url: ctx + "settle/adMaterial/judgeAllType2/" + rows,
+		        url: ctx + "advertise/adMaterial/judgeAllType2/" + rows,
 		        type: "post",
 		        //dataType: "json",
 		        //data: 'data',

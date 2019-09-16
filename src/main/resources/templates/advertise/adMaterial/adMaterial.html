@@ -24,7 +24,7 @@
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('settle:adMaterial:edit')}]];
         var removeFlag = [[${@permission.hasPermi('settle:adMaterial:remove')}]];
-        var prefix = ctx + "settle/adMaterial"
+        var prefix = ctx + "advertise/adMaterial"
         var scheduleId = $('#adScheduleId').val();
         
         $(function() {

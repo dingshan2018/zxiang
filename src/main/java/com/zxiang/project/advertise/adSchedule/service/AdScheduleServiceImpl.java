@@ -2161,16 +2161,33 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				Integer sequence = 0;
 				String[] adIds = {adScheduleId};
 				//新附件上传，每次全量更新
-				adMaterialMapper.deleteMaterialByAdIds(adIds);
-				adMaterialMapper.deleteMaterialByAdIds2(adIds);
+//				adMaterialMapper.deleteMaterialByAdIds(adIds);
+//				adMaterialMapper.deleteMaterialByAdIds2(adIds);
 				for(MaterialResult retMaterial : retMaterials) {
-					AdMaterial adMaterial = new AdMaterial();
+					//比对是否同一张素材
+					AdMaterial adMaterial = null;
+					AdMaterial materialParm = new AdMaterial();
+					if(StringUtils.isNotBlank(adScheduleId)) {
+						materialParm.setAdScheduleId(Integer.parseInt(adScheduleId));
+					}
+					materialParm.setExtMaterialId(retMaterial.getMaterialId());
+					materialParm.setCreateBy(operator);
+					List<AdMaterial> materials = this.adMaterialMapper.selectAdMaterialList2(materialParm);
+//					materialParm.set
+					if(materials!=null && materials.size()>0) {
+						adMaterial = ad
+					}
+					adMaterial = new AdMaterial();
 					//adMaterial.setAdScheduleId(Integer.parseInt(adScheduleId));
 					adMaterial.setPreview(retMaterial.getPreviewUrl());
 					adMaterial.setBatch(maxBatch);
 					adMaterial.setSequence(++sequence);
 					adMaterial.setCreateBy(operator);
 					adMaterial.setCreateTime(new Date());
+					if(StringUtils.isNotBlank(adScheduleId+"")) {
+						adMaterial.setAdScheduleId(Integer.parseInt(adScheduleId));
+					}
+					
 					adMaterial.setRemark(adSchedule.getScheduleName()+"新增广告素材");
 					adMaterial.setFileName(retMaterial.getMaterialName());
 					adMaterial.setExtMaterialId(retMaterial.getMaterialId());
@@ -2186,7 +2203,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 						adMaterial.setMaterialText(retMaterial.getMaterialText());
 						adMaterial.setRemark("文本");
 					}
-					adMaterial.setStatus(AdConstant.MaterialAuditStatus.AUDIT.getValue());
+					if(StringUtils.isNotBlank(adScheduleId+"")) {
+						adMaterial.setStatus(AdConstant.MaterialAuditStatus.AUDIT.getValue());
+					}else {
+						adMaterial.setStatus(AdConstant.MaterialAuditStatus.UNAUDIT.getValue());
+					}
 					adMaterial.setShare(AdConstant.MaterialShareStatus.UNSHARE.getValue());
 					adMaterialMapper.insertAdMaterial(adMaterial);
 					HashMap<String,Object> adScheduleMaterialMap = new HashMap<String,Object>();

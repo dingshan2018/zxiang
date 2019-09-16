@@ -126,11 +126,11 @@ public class AdConstant {
         /**
          * 未审核
          */
-        UNAUDIT("0"),
+        UNAUDIT("1"),
         /**
          * 已审核
          */
-        AUDIT("1");
+        AUDIT("2");
 
         private String value;
 

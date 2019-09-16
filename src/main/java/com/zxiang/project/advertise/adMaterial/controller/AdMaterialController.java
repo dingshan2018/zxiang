@@ -99,7 +99,7 @@ public class AdMaterialController extends BaseController
 	{
 		mmap.put("adScheduleId", adScheduleId);
 	    //return prefix + "/adMaterial";//生成代码时路径不对
-	    return "advertise/adMaterial"+ "/adMaterial";
+	    return "advertise/adMaterial/adMaterial";
 	}
 	
 	/**

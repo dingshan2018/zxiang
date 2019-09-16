@@ -37,7 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectAdMaterialVo2">
         <!-- select ad_material_id, ad_schedule_id, preview,teid,tresid, batch, sequence, 
         remark, create_by, create_time,filename,filesize from zx_ad_material -->
-        SELECT zam.ext_material_id,zam.ext_material_type,zam.ad_material_id,zas.ad_schedule_id,zas.scheduleName, zam.preview, zam.batch, zam.sequence, 
+        SELECT zam.ext_material_id,zam.ext_material_type,zam.ad_material_id,zas.ad_schedule_id,zas.schedule_name, zam.preview, zam.batch, zam.sequence, 
         zam.remark, zam.create_by, zam.create_time,zam.filename,zam.filesize,zam.ext_material_id,zam.status,zam.share,zam.audit_by,zam.audit_time,zam.audit_opinion FROM zx_ad_material zam left join zx_ad_schedule_material zasm on zam.ad_material_id=zasm.ad_material_id left join zx_ad_schedule zas on zasm.ad_schedule_id=zas.ad_schedule_id  
     </sql>
 	
@@ -65,6 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="adMaterialId != null and adMaterialId != ''"> and zam.ad_material_id = #{adMaterialId} </if>
              <if test="adScheduleId != null and adScheduleId != ''"> and zasm.ad_schedule_id=#{adScheduleId} </if>
              <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+             <if test="adScheduleId == null"> and zam.ad_schedule_id is null</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
              <if test="createTime != null "> and create_time = #{createTime}</if>
              <if test="fileName != null "> and filename = #{fileName}</if>
@@ -77,10 +78,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where ad_material_id = #{adMaterialId}
     </select>
         
-    <insert id="insertAdMaterial" parameterType="AdMaterial">
+    <insert id="insertAdMaterial" parameterType="AdMaterial" useGeneratedKeys="true" keyProperty="adMaterialId">
         insert into zx_ad_material
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="adMaterialId != null and adMaterialId != '' ">ad_material_id,</if>
 			<if test="adScheduleId != null and adScheduleId != '' ">ad_schedule_id,</if>
 			<if test="preview != null and preview != '' ">preview,</if>
 			<if test="tEid != null and tEid != '' ">teid,</if>
@@ -102,7 +102,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="share != null  and share.trim()!='' ">share,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="adMaterialId != null and adMaterialId != ''">#{adMaterialId},</if>
 			<if test="adScheduleId != null and adScheduleId != ''">#{adScheduleId},</if>
 			<if test="preview != null and preview != ''">#{preview},</if>
 			<if test="tEid != null and tEid != ''">#{tEid},</if>
@@ -120,7 +119,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="auditBy != null  and auditBy.trim()!='' ">#{auditBy},</if>
 			<if test="auditTime != null ">#{auditTime},</if>
 			<if test="auditOpinion != null  and auditOpinion.trim()!='' ">#{auditOpinion},</if>
-			<if test="status != null  and status.trim()!='' ">#{opinion},</if>
+			<if test="status != null  and status.trim()!='' ">#{status},</if>
 			<if test="share != null  and share.trim()!='' ">#{share},</if>
          </trim>
     </insert>
@@ -202,13 +201,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertAdScheduleMaterial" parameterType="HashMap">
         insert into zx_ad_schedule_material
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="adScheduleId != null and adScheduleId.trim() != '' ">ad_schedule_id,</if>
-			<if test="adMaterialId != null and adMaterialId.trim() != '' ">ad_material_id,</if>
+			<if test="adScheduleId != null ">ad_schedule_id,</if>
+			<if test="adMaterialId != null  ">ad_material_id,</if>
 			<if test="materialType != null and materialType != '' ">material_type,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="adScheduleId != null and adScheduleId.trim() != '' ">#{adScheduleId},</if>
-			<if test="adMaterialId != null and adMaterialId.trim() != '' ">#{adMaterialId},</if>
+			<if test="adScheduleId != null  ">#{adScheduleId},</if>
+			<if test="adMaterialId != null ">#{adMaterialId},</if>
 			<if test="materialType != null and materialType != '' ">#{materialType},</if>
 		</trim>
     </insert>
