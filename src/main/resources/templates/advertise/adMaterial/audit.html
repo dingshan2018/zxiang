@@ -5,27 +5,29 @@
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-adSchedule-audit" th:object="${adSchedule}">
+        <form class="form-horizontal m" id="form-adSchedule-audit" th:object="${adMaterial}">
             <div class="form-group">	
                 <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放名称：</label>
                 <div class="col-sm-8">
                 	<input id="adMaterialId" name="adMaterialId" th:field="*{adMaterialId}"  type="hidden">
-                    <input id="filename" name="filename" th:field="*{filename}" class="form-control" type="text" readonly="readonly">
+                	<input id="preview" name="preview" th:field="*{preview}"  type="hidden">
+                	<input id="remark" name="remark" th:field="*{remark}"  type="hidden">
+                	<input id="materialText" name="materialText" th:field="*{materialText}"  type="hidden">
+                    <input id="fileName" name="fileName" th:field="*{fileName}" class="form-control" type="text" readonly="readonly">
                 </div>
             </div>
 
             <div class="form-group">	
                 <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>预览素材：</label>
                 <div class="col-sm-8">
-                	<!-- <button type="button" class="btn btn-primary" onclick="preview()">&nbsp;预览广告素材</button> -->
-                	<!--  <button type="button" class="btn btn-primary" onclick="adView()">&nbsp;广告预览</button>-->
+                	 <div class="image-list" id="image-list"></div>
                 </div>
             </div>            
             <div class="form-group">	
                 <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>审核结果：</label>
                 <div class="col-sm-8">
-                	<input type="radio" name="status" value="1" class="radio-box">通过
-					<input type="radio" name="status" value="0" class="radio-box">不通过
+                	<input type="radio" name="status" value="2" class="radio-box">通过
+					<input type="radio" name="status" value="1" class="radio-box">不通过
                 </div>
             </div>
             <div class="form-group">	
@@ -44,7 +46,8 @@
 		</form>
     </div>
     <div th:include="include::footer"></div>
-    
+    <script th:src="@{/js/jquery.mousewheel.min.js}"></script>
+    <script th:src="@{/js/pictureViewer.js}"></script>
     <script type="text/javascript">
 		var prefix = ctx + "advertise/adMaterial"
 		$("#form-adSchedule-audit").validate({
@@ -60,13 +63,32 @@
 				},
 			},
 			submitHandler: function(form) {
-				var filename = $("#filename").val();
-				var aduitResult = $("input[name='status']:checked").val()=="1"?'通过':'不通过';
+				var filename = $("#fileName").val();
+				var aduitResult = $("input[name='status']:checked").val()=="2"?'通过':'不通过';
 				$.modal.confirm("确定对素材 "+ filename + " 审核 " + aduitResult + " ?", function() {
 					$.operate.save(prefix + "/auditSave", $('#form-adSchedule-audit').serialize());
 		    	});
 			}
 		});
+		
+		$(function () {
+	  		//TODO 加载素材列表
+			getPreviewUrl();
+			
+	        $('.image-list').on('click', '.cover', function () {
+	            var this_ = $(this);
+	            var images = this_.parents('.image-list').find('.cover');
+	            var imagesArr = new Array();
+	            $.each(images, function (i, image) {
+	                imagesArr.push($(image).children('img').attr('src'));
+	            });
+	            $.pictureViewer({
+	                images: imagesArr, //需要查看的图片，数据类型为数组
+	                initImageIndex: this_.index() + 1, //初始查看第几张图片，默认1
+	                scrollSwitch: true //是否使用鼠标滚轮切换图片，默认false
+	            });
+	        });
+	    });
 		
 		//预览函数
 		function preview(){
@@ -77,24 +99,33 @@
 		
 		//获取预览文件
 		function getPreviewUrl(){
-			var previewUrls;
-			var adScheduleId = $("#adScheduleId").val();
-			$.ajax({
-		        url: ctx + "advertise/adMaterial/selectListByAdSchId",
-		        type: "post",
-		        contentType:"application/json",
-		        dataType: "json",
-		        data: JSON.stringify({ "adScheduleId": adScheduleId}),
-		        async:false,
-		        success: function (data) {
-		        	previewUrls = data.rows;
-		        },
-		        error: function (data) {
-		        	console.log("getPreviewUrl:",data);
-		            alert("查询失败");
-		        }
-			})
-			return previewUrls;
+			debugger;
+			var previewUrls = [];
+			var preview = $('#preview').val();
+			var remark = $('#remark').val();
+			if(preview != '' && preview != null){
+				if(remark === '图片'){
+					previewUrls.push(preview);
+					var html = '';
+					if(previewUrls.length > 0){
+						for (var i = 0; i < previewUrls.length; i++) {
+				       	 	html += `<div class="cover"><img src="${previewUrls[i]}" style="width: 100%;" alt=""></div>`;
+				      	}
+				      	$('#image-list').html(html);
+					}else{
+						$('#image-list').html("<h4 align=\"center\">暂无素材信息!</h4>");
+					}
+				}else if(remark === '视频'){
+					var html = `<video id="video"  style="width: 100%;" src="${preview}" preload="auto" controls="controls" autoplay="autoplay"></video>`
+					$('#image-list').html(html);
+				}
+				
+			}else if(remark === '文本'){
+				var materialText = $('#materialText').val();
+				$('#image-list').html("<h4 align=\"center\">"+materialText+"</h4>");
+			}
+			
+			
 		}
 		
 		function adView(){

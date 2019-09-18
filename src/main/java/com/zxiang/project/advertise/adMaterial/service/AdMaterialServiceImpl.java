@@ -236,7 +236,7 @@ public class AdMaterialServiceImpl implements IAdMaterialService
 		Integer adMaterialId = adMaterial.getAdMaterialId();
 		AdMaterial material = this.adMaterialMapper.selectAdMaterialById(adMaterialId);
 		if(material == null) {
-			return -1;
+			return 0;
 		}
 		material.setStatus(adMaterial.getStatus());
 		material.setAuditBy(operatorUser);
@@ -245,7 +245,7 @@ public class AdMaterialServiceImpl implements IAdMaterialService
 		material.setUpdateBy(operatorUser);
 		material.setUpdateTime(new Date());
 		this.adMaterialMapper.updateAdMaterial(material);
-		return 0;
+		return 1;
 	}
 
 	@Override

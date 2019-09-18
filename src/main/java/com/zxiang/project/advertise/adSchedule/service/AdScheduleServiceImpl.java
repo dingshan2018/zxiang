@@ -2151,7 +2151,6 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 	public void materialUpload2(List<MaterialResult> retMaterials,String adScheduleId,String operator) throws Exception{
 		int saveNum = 0;
 		try {
-
 			AdSchedule adSchedule = adScheduleMapper.selectAdScheduleById(Integer.parseInt(adScheduleId));
 			// 查询当前最大批次
 			int maxBatch = adMaterialMapper.selectMaxBatch(Integer.parseInt(adScheduleId));
@@ -2175,41 +2174,43 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 					List<AdMaterial> materials = this.adMaterialMapper.selectAdMaterialList2(materialParm);
 //					materialParm.set
 					if(materials!=null && materials.size()>0) {
-						adMaterial = ad
-					}
-					adMaterial = new AdMaterial();
-					//adMaterial.setAdScheduleId(Integer.parseInt(adScheduleId));
-					adMaterial.setPreview(retMaterial.getPreviewUrl());
-					adMaterial.setBatch(maxBatch);
-					adMaterial.setSequence(++sequence);
-					adMaterial.setCreateBy(operator);
-					adMaterial.setCreateTime(new Date());
-					if(StringUtils.isNotBlank(adScheduleId+"")) {
-						adMaterial.setAdScheduleId(Integer.parseInt(adScheduleId));
+						adMaterial = materials.get(0);
+					}else {
+						adMaterial = new AdMaterial();
+						//adMaterial.setAdScheduleId(Integer.parseInt(adScheduleId));
+						adMaterial.setPreview(retMaterial.getPreviewUrl());
+						adMaterial.setBatch(maxBatch);
+						adMaterial.setSequence(++sequence);
+						adMaterial.setCreateBy(operator);
+						adMaterial.setCreateTime(new Date());
+						if(StringUtils.isNotBlank(adScheduleId+"")) {
+							adMaterial.setAdScheduleId(Integer.parseInt(adScheduleId));
+						}
+						
+						adMaterial.setRemark(adSchedule.getScheduleName()+"新增广告素材");
+						adMaterial.setFileName(retMaterial.getMaterialName());
+						adMaterial.setExtMaterialId(retMaterial.getMaterialId());
+						adMaterial.setExtMaterialType(retMaterial.getType());
+						
+						if("1".equals(retMaterial.getType())) {
+							adMaterial.setFileSize(retMaterial.getFileSize());
+							adMaterial.setRemark("视频");
+						}else if("2".equals(retMaterial.getType())) {
+							adMaterial.setFileSize(retMaterial.getFileSize());
+							adMaterial.setRemark("图片");
+						}else {
+							adMaterial.setMaterialText(retMaterial.getMaterialText());
+							adMaterial.setRemark("文本");
+						}
+						if(StringUtils.isNotBlank(adScheduleId+"")) {
+							adMaterial.setStatus(AdConstant.MaterialAuditStatus.AUDIT.getValue());
+						}else {
+							adMaterial.setStatus(AdConstant.MaterialAuditStatus.UNAUDIT.getValue());
+						}
+						adMaterial.setShare(AdConstant.MaterialShareStatus.UNSHARE.getValue());
+						adMaterialMapper.insertAdMaterial(adMaterial);
 					}
 					
-					adMaterial.setRemark(adSchedule.getScheduleName()+"新增广告素材");
-					adMaterial.setFileName(retMaterial.getMaterialName());
-					adMaterial.setExtMaterialId(retMaterial.getMaterialId());
-					adMaterial.setExtMaterialType(retMaterial.getType());
-					
-					if("1".equals(retMaterial.getType())) {
-						adMaterial.setFileSize(retMaterial.getFileSize());
-						adMaterial.setRemark("视频");
-					}else if("2".equals(retMaterial.getType())) {
-						adMaterial.setFileSize(retMaterial.getFileSize());
-						adMaterial.setRemark("图片");
-					}else {
-						adMaterial.setMaterialText(retMaterial.getMaterialText());
-						adMaterial.setRemark("文本");
-					}
-					if(StringUtils.isNotBlank(adScheduleId+"")) {
-						adMaterial.setStatus(AdConstant.MaterialAuditStatus.AUDIT.getValue());
-					}else {
-						adMaterial.setStatus(AdConstant.MaterialAuditStatus.UNAUDIT.getValue());
-					}
-					adMaterial.setShare(AdConstant.MaterialShareStatus.UNSHARE.getValue());
-					adMaterialMapper.insertAdMaterial(adMaterial);
 					HashMap<String,Object> adScheduleMaterialMap = new HashMap<String,Object>();
 					adScheduleMaterialMap.put("adScheduleId", adScheduleId);
 					adScheduleMaterialMap.put("adMaterialId", adMaterial.getAdMaterialId());

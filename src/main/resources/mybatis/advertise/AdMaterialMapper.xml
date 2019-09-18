@@ -32,13 +32,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         remark, create_by, create_time,filename,filesize from zx_ad_material -->
         SELECT ext_material_id,ext_material_type,ad_material_id, ad_schedule_id,(SELECT DISTINCT schedule_name FROM zx_ad_schedule za 
         WHERE zam.ad_schedule_id=za.ad_schedule_id ) scheduleName, preview,teid,tresid, batch, sequence, 
-        remark, create_by, create_time,filename,filesize,ext_material_id,status,share,audit_by,audit_time,audit_opinion FROM zx_ad_material zam
+        remark, create_by, create_time,filename,filesize,ext_material_id,status,share,audit_by,audit_time,audit_opinion,material_text FROM zx_ad_material zam
     </sql>
     <sql id="selectAdMaterialVo2">
         <!-- select ad_material_id, ad_schedule_id, preview,teid,tresid, batch, sequence, 
         remark, create_by, create_time,filename,filesize from zx_ad_material -->
         SELECT zam.ext_material_id,zam.ext_material_type,zam.ad_material_id,zas.ad_schedule_id,zas.schedule_name, zam.preview, zam.batch, zam.sequence, 
-        zam.remark, zam.create_by, zam.create_time,zam.filename,zam.filesize,zam.ext_material_id,zam.status,zam.share,zam.audit_by,zam.audit_time,zam.audit_opinion FROM zx_ad_material zam left join zx_ad_schedule_material zasm on zam.ad_material_id=zasm.ad_material_id left join zx_ad_schedule zas on zasm.ad_schedule_id=zas.ad_schedule_id  
+        zam.remark, zam.create_by, zam.create_time,zam.filename,zam.filesize,zam.ext_material_id,zam.status,zam.share,zam.audit_by,zam.audit_time,zam.audit_opinion,zam.material_text FROM zx_ad_material zam left join zx_ad_schedule_material zasm on zam.ad_material_id=zasm.ad_material_id left join zx_ad_schedule zas on zasm.ad_schedule_id=zas.ad_schedule_id  
     </sql>
 	
     <select id="selectAdMaterialList" parameterType="AdMaterial" resultMap="AdMaterialResult">
@@ -50,11 +50,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="tEid != null and tEid != ''"> and teid = #{tEid}</if>
              <if test="treSid != null and treSid != ''"> and tresid = #{treSid}</if>
              <if test="batch != null and batch != ''"> and batch = #{batch}</if>
+              <if test="status != null and status.trim() != ''"> and status = #{status}</if>
              <if test="sequence != null and sequence != ''"> and sequence = #{sequence}</if>
              <if test="remark != null and remark != ''"> and remark = #{remark}</if>
              <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
              <if test="createTime != null "> and create_time = #{createTime}</if>
-             <if test="fileName != null "> and filename = #{fileName}</if>
+             <if test="fileName != null and fileName.trim()!= '' "> and filename like CONCAT('%',#{fileName},'%') </if>
+             <if test="params.beginTime != null  and params.beginTime!='' "> and create_time &gt;= #{params.beginTime}</if>
+             <if test="params.endTime != null and params.endTime!='' "> and create_time &lt;= #{params.endTime}</if>
          </where>
          order by create_time desc 
     </select>
@@ -64,11 +67,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="adMaterialId != null and adMaterialId != ''"> and zam.ad_material_id = #{adMaterialId} </if>
              <if test="adScheduleId != null and adScheduleId != ''"> and zasm.ad_schedule_id=#{adScheduleId} </if>
-             <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+             <if test="remark != null and remark != ''"> and zam.remark = #{remark}</if>
              <if test="adScheduleId == null"> and zam.ad_schedule_id is null</if>
-             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
-             <if test="createTime != null "> and create_time = #{createTime}</if>
-             <if test="fileName != null "> and filename = #{fileName}</if>
+             <if test="createBy != null and createBy != ''"> and zam.create_by = #{createBy}</if>
+             <if test="status != null and status.trim() != ''"> and zam.status = #{status}</if>
+             <if test="createTime != null "> and zam.create_time = #{createTime}</if>
+             <if test="fileName != null and fileName.trim()!= '' "> and zam.filename like CONCAT('%',#{fileName},'%') </if>
+             <if test="extMaterialId != null and extMaterialId != ''"> and zam.ext_material_id = #{extMaterialId}</if>
+             <if test="params.beginTime != null and params.beginTime!=''"> and zam.create_time &gt;= #{params.beginTime}</if>
+             <if test="params.endTime != null and params.endTime!=''"> and zam.create_time &lt;= #{params.endTime}</if>
          </where>
          order by create_time desc 
     </select>
