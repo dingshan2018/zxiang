@@ -118,7 +118,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         and zd.device_code is not null 
         and  tissue_channel='1' 
         <if test="deviceSn != null and deviceSn != ''"> 
-            and ztr.device_code like CONCAT('%',#{deviceSn},'%') 
+            and zd.device_code like CONCAT('%',#{deviceSn},'%') 
         </if>
         <if test="params.beginTime != null and params.beginTime != '' "><!-- 开始时间检索 -->
 			AND date_format(ztr.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
@@ -145,7 +145,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         and zd.device_code is not null 
         and  tissue_channel='1' 
         <if test="deviceSn != null and deviceSn != ''"> 
-            and ztr.device_code like CONCAT('%',#{deviceSn},'%') 
+            and zd.device_code like CONCAT('%',#{deviceSn},'%') 
         </if>
 		<if test="beginTime != null and beginTime != '' "><!-- 开始时间检索 -->
 			AND date_format(ztr.create_time,'%y%m%d') &gt;= date_format(#{beginTime},'%y%m%d')
