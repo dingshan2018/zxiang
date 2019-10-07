@@ -20,6 +20,7 @@ import com.zxiang.project.advertise.adMaterial.mapper.AdMaterialMapper;
 import com.zxiang.project.advertise.adSchedule.domain.AdSchedule;
 import com.zxiang.project.advertise.adSchedule.domain.ElementType;
 import com.zxiang.project.advertise.adSchedule.domain.MaterialResult;
+import com.zxiang.project.advertise.adSchedule.mapper.AdScheduleMapper;
 import com.zxiang.project.advertise.adSchedule.service.IAdScheduleService;
 import com.zxiang.project.advertise.utils.HttpclientUtil;
 import com.zxiang.project.advertise.utils.SignUtil;
@@ -42,6 +43,8 @@ public class AdMaterialServiceImpl implements IAdMaterialService
 	private IAdScheduleService adScheduleService;
 	@Autowired
 	private ConfigMapper configMapper;
+	@Autowired
+	private AdScheduleMapper adScheduleMapper;
 	
 	/**
      * 查询广告投放素材信息
@@ -245,6 +248,18 @@ public class AdMaterialServiceImpl implements IAdMaterialService
 		material.setUpdateBy(operatorUser);
 		material.setUpdateTime(new Date());
 		this.adMaterialMapper.updateAdMaterial(material);
+		AdSchedule adSchedule = new AdSchedule();
+		List<AdSchedule> scheduleList = this.adScheduleMapper.selectUnReleaseSchedule(adSchedule);
+		if(scheduleList!=null && scheduleList.size()>0) {
+			for(AdSchedule schedule: scheduleList) {
+				try {
+					this.adScheduleService.releaseOnlineSave2(schedule);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		return 1;
 	}
 

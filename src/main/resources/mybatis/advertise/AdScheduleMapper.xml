@@ -154,6 +154,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where ad_schedule_id = #{adScheduleId}
     </select>
         
+    <select id="selectUnReleaseSchedule" parameterType="AdSchedule" resultMap="AdScheduleResult">
+        select zas.* from zx_ad_schedule zas
+        where zas.approved='1' and pay_status='1' and release_status='0'
+         and exists(select 1 from zx_ad_schedule_material zasm where zas.ad_schedule_id=zasm.ad_schedule_id and zasm.ad_material_id=#{params.materialId})
+         and not exists(select 1 from zx_ad_schedule_material zasm left join zx_ad_material zam  on zasm.ad_material_id=zam.ad_material_id where zas.ad_schedule_id=zasm.ad_schedule_id and zam.status='0' )
+    </select>
+    
     <insert id="insertAdSchedule" parameterType="AdSchedule">
         insert into zx_ad_schedule
 		<trim prefix="(" suffix=")" suffixOverrides=",">

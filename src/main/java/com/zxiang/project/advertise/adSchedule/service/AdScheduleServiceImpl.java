@@ -983,7 +983,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		}
 
 		// 若广告的status已经为04则已经发布过不再更新，若没有发布则进行发布操作
-		if (AdConstant.AD_WAIT_PLAY.equals(ad.getStatus())) {
+		if (AdConstant.AD_WAIT_PLAY.equals(ad.getStatus()) && AdConstant.AD_REPUBLISH.equals(ad.getReleaseStatus())) {
 			return 0;
 		} else {
 			ad.setStatus(AdConstant.AD_WAIT_PLAY);
@@ -1563,6 +1563,73 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		logger.info("发布响应："+result);
 		return result;
 	}
+	
+	private String stopSchedule2(AdSchedule adSchedule) throws Exception {
+		//todo 获取scheduleId
+		String exAdScheduleId = adSchedule.getExtScheduleId();
+		//todo 获取终端列表
+		ReleaseDevice releaseDevice = new ReleaseDevice();
+		releaseDevice.setScheduleId(adSchedule.getAdScheduleId());
+//		List<ReleaseDevice> relaseDevices = this.releaseDeviceMapper.selectReleaseDeviceList(releaseDevice);
+		List<HashMap<String,Object>> adScreens = new ArrayList<HashMap<String,Object>>();
+//		if(relaseDevices!=null && relaseDevices.size()>0) {
+//			for(ReleaseDevice release : relaseDevices) {
+//				if(StringUtils.isBlank(release.getMediaId())) {
+//					continue;
+//				}
+//				HashMap<String,Object> adScreen = new HashMap<String,Object>();
+//				adScreen.put("screenId", release.getMediaId());
+//				adScreens.add(adScreen);
+//			}
+//		}
+//		if(adScreens.size()<=0) {
+//			throw new Exception("未找到已注册的广告设备");
+//		}
+		List<HashMap<String,Object>> adDates = new ArrayList<HashMap<String,Object>>();
+		//todo 获取排期时间
+		AdReleaseTimer releaseTimer = new AdReleaseTimer();
+		releaseTimer.setAdScheduleId(adSchedule.getAdScheduleId());
+		List<AdReleaseTimer> releaseTimers = this.adReleaseTimerMapper.selectAdReleaseTimerList(releaseTimer);
+		//todo 组合scheduleInfo
+		if(releaseTimer!=null && releaseTimers.size()>0) {
+			for(AdReleaseTimer timer : releaseTimers) {
+				HashMap<String,Object> adDate = new HashMap<String,Object>();
+				adDate.put("beginDate", apiYYYYMMDDHHmmssFormat.format(timer.getReleaseBeginTime()));
+				adDate.put("endDate", apiYYYYMMDDHHmmssFormat.format(timer.getReleaseEndTime()));
+				adDates.add(adDate);
+			}
+		}
+		if(adDates.size()<=0) {
+			throw new Exception("发布时间未设置");
+		}
+		
+		Map<String, String> paramsMap = new HashMap<String, String>();
+		paramsMap.put("id", exAdScheduleId);
+		String params = Tools.paramsToString(paramsMap);
+		Config config = new Config();
+		config.setConfigKey("AD_NEW_URL");
+		Config retConfig = configMapper.selectConfig(config);
+		if(retConfig==null) {
+			throw new Exception("新排期地址未配置");
+		}
+		String rootUrl = retConfig.getConfigValue();
+		HashMap<String,String> headerMap = new HashMap<String,String>();
+		config.setConfigKey("AD_API_APPID");
+		Config cConfig = this.configMapper.selectConfig(config);
+		String appId = cConfig.getConfigValue();
+		headerMap.put("appid", appId);
+		config.setConfigKey("AD_API_SECRECT");
+		cConfig = this.configMapper.selectConfig(config);
+		String appSecrect = cConfig.getConfigValue();
+		String timestamp = new Date().getTime()+"";
+		headerMap.put("timestamp", timestamp);
+		headerMap.put("nonce", appId+"_"+RandomUtils.nextInt(new Random(), 10000)+"_"+timestamp);
+		headerMap.put("sign", SignUtil.createSign(headerMap,appSecrect));
+		logger.info("发布参数："+params);
+		String result = Tools.doPostForm(rootUrl + AdConstant.AD_URL_STOPSHSCHEDULE, params,headerMap);
+		logger.info("发布响应："+result);
+		return result;
+	}
 
 	/**
 	 * 接口7：调用重新下发排期计划 HTTP application/x-www-form-urlencoded接口
@@ -2079,6 +2146,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 	public int removeAd2(AdSchedule adSchedule1, String operatorUser) throws Exception {
 		Integer adScheduleId = adSchedule1.getAdScheduleId();
 		AdSchedule adSchedule = adScheduleMapper.selectAdScheduleById(adScheduleId);
+		
 		if(AdConstant.RELEASE_TYPE_H5.equals(adSchedule.getReleasePosition())) {
 			return adScheduleMapper.deleteAdScheduleById(adScheduleId);
 		}else {
@@ -2093,7 +2161,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				deviceIds = deviceIds.substring(1);
 			}
 			// 修改adSchedule状态
-			String retJson = stopSchedule(adSchedule1);
+			String retJson = stopSchedule2(adSchedule);
 			// 如果成功就下发变更广告通知
 			AdHttpResult adHttp = Tools.analysisResult(retJson);
 			if ("0".equals(adHttp.getCode())) {

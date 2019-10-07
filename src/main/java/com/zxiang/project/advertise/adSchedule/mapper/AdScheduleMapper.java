@@ -86,5 +86,7 @@ public interface AdScheduleMapper
 	 * @return
 	 */
 	public List<AdSchedule> selectNeedDeleteSchedule();
+
+	public List<AdSchedule> selectUnReleaseSchedule(AdSchedule adSchedule);
 	
 }
