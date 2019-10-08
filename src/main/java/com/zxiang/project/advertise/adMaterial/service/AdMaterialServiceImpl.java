@@ -67,7 +67,7 @@ public class AdMaterialServiceImpl implements IAdMaterialService
 	@Override
 	public List<AdMaterial> selectAdMaterialList(AdMaterial adMaterial)
 	{
-	    return adMaterialMapper.selectAdMaterialList(adMaterial);
+	    return adMaterialMapper.selectAdMaterialList2(adMaterial);
 	}
 	
     /**
@@ -186,6 +186,7 @@ public class AdMaterialServiceImpl implements IAdMaterialService
 			headerMap.put("timestamp", timestamp);
 			headerMap.put("nonce", appId+"_"+RandomUtils.nextInt(new Random(), 10000)+"_"+timestamp);
 			headerMap.put("sign", SignUtil.createSign(headerMap,appSecrect));
+//			headerMap.put("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 			return HttpclientUtil.upload(postUrl, files, param, headerMap);
 		} catch (Exception e) {
 			throw e;

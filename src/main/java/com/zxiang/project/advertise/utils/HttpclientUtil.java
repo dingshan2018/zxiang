@@ -12,6 +12,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -30,7 +31,8 @@ public class HttpclientUtil {
 	       logger.info("*****************request*****************");
 	       CloseableHttpClient httpClient = null;
 	       CloseableHttpResponse response = null;
-	       MultipartEntityBuilder builder = MultipartEntityBuilder.create();;
+//	       MultipartEntityBuilder builder = MultipartEntityBuilder.create();;
+	       MultipartEntityBuilder builder = MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
 	       String url = postUrl;
 	       String rst = "";
 	       try {
@@ -39,7 +41,7 @@ public class HttpclientUtil {
 	           HttpPost httpPost = new HttpPost(url);
 	           for(MultipartFile multipartFile:files){
 	               InputStream ins = multipartFile.getInputStream();
-	               builder.addBinaryBody("Filedata", ins, ContentType.create("multipart/form-data", Consts.UTF_8), multipartFile.getOriginalFilename());
+	               builder.addBinaryBody("Filedata", ins, ContentType.DEFAULT_BINARY, multipartFile.getOriginalFilename());
 	           }
 	           if(param!=null && param.size()>0) {
 	        	   for (Map.Entry<String, String> entry : param.entrySet()) {

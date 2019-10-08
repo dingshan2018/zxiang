@@ -25,6 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="auditTime"    column="audit_time"    />
          <result property="auditOpinion"    column="audit_opinion"    />
         <result property="share"    column="share"    />
+        <result property="scheduleName"    column="schedule_name"    />
     </resultMap>
 	
 	<sql id="selectAdMaterialVo">
