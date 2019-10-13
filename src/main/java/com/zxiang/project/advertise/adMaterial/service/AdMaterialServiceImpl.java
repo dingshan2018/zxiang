@@ -277,5 +277,13 @@ public class AdMaterialServiceImpl implements IAdMaterialService
 		this.adMaterialMapper.updateAdMaterial(material);
 		return 0;
 	}
+
+	@Override
+	public int deleteAdMaterial(AdMaterial adMaterial) {
+		AdSchedule adSchedule = this.adScheduleMapper.selectAdScheduleById(adMaterial.getAdScheduleId());
+		adSchedule.setReleaseStatus("0");//删除素材，需要重新发布
+		this.adScheduleMapper.updateAdSchedule(adSchedule);
+		return this.adMaterialMapper.deleteOneAdMaterial(adMaterial);
+	}
 	
 }

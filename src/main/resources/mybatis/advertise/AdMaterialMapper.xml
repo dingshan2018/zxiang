@@ -69,7 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="adMaterialId != null and adMaterialId != ''"> and zam.ad_material_id = #{adMaterialId} </if>
              <if test="adScheduleId != null and adScheduleId != ''"> and zasm.ad_schedule_id=#{adScheduleId} </if>
              <if test="remark != null and remark != ''"> and zam.remark = #{remark}</if>
-             <if test="adScheduleId == null"> and zam.ad_schedule_id is null</if>
+             <!-- <if test="adScheduleId == null"> and zam.ad_schedule_id is null</if> -->
              <if test="createBy != null and createBy != ''"> and zam.create_by = #{createBy}</if>
              <if test="status != null and status.trim() != ''"> and zam.status = #{status}</if>
              <if test="createTime != null "> and zam.create_time = #{createTime}</if>
@@ -160,6 +160,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<delete id="deleteAdMaterialById" parameterType="Integer">
         delete from zx_ad_material where ad_material_id = #{adMaterialId}
+    </delete>
+	
+	<delete id="deleteOneAdMaterial" parameterType="AdMaterial">
+        delete from zx_ad_schedule_material where ad_material_id = #{adMaterialId} and ad_schedule_id=#{adScheduleId}
     </delete>
 	
     <delete id="deleteAdMaterialByIds" parameterType="String">

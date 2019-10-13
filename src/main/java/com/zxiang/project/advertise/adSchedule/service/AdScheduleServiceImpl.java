@@ -2234,13 +2234,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 					//比对是否同一张素材
 					AdMaterial adMaterial = null;
 					AdMaterial materialParm = new AdMaterial();
-					if(StringUtils.isNotBlank(adScheduleId)) {
-						materialParm.setAdScheduleId(Integer.parseInt(adScheduleId));
-					}
 					materialParm.setExtMaterialId(retMaterial.getMaterialId());
-					materialParm.setCreateBy(operator);
 					List<AdMaterial> materials = this.adMaterialMapper.selectAdMaterialList2(materialParm);
-//					materialParm.set
 					if(materials!=null && materials.size()>0) {
 						adMaterial = materials.get(0);
 					}else {
@@ -2278,12 +2273,19 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 						adMaterial.setShare(AdConstant.MaterialShareStatus.UNSHARE.getValue());
 						adMaterialMapper.insertAdMaterial(adMaterial);
 					}
-					
-					HashMap<String,Object> adScheduleMaterialMap = new HashMap<String,Object>();
-					adScheduleMaterialMap.put("adScheduleId", adScheduleId);
-					adScheduleMaterialMap.put("adMaterialId", adMaterial.getAdMaterialId());
-					adScheduleMaterialMap.put("materialType", retMaterial.getType());
-					adMaterialMapper.insertAdScheduleMaterial(adScheduleMaterialMap);
+					if(StringUtils.isNotBlank(adScheduleId)) {
+						materialParm.setAdScheduleId(Integer.parseInt(adScheduleId));
+					}
+					materialParm.setExtMaterialId(retMaterial.getMaterialId());
+					materials = this.adMaterialMapper.selectAdMaterialList2(materialParm);
+//					materialParm.se
+					if(materials==null || materials.size()<=0) {						
+						HashMap<String,Object> adScheduleMaterialMap = new HashMap<String,Object>();
+						adScheduleMaterialMap.put("adScheduleId", adScheduleId);
+						adScheduleMaterialMap.put("adMaterialId", adMaterial.getAdMaterialId());
+						adScheduleMaterialMap.put("materialType", retMaterial.getType());
+						adMaterialMapper.insertAdScheduleMaterial(adScheduleMaterialMap);
+					}
 				}
 			}
 			

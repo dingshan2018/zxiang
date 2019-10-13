@@ -92,5 +92,7 @@ public interface IAdMaterialService
 	public int auditSave(AdMaterial adMaterial, String operatorUser);
 
 	public int share(AdMaterial adMaterial, String operatorUser);
+
+	public int deleteAdMaterial(AdMaterial adMaterial);
 	
 }

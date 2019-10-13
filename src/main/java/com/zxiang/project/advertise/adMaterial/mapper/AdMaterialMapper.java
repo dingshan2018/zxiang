@@ -128,4 +128,6 @@ public interface AdMaterialMapper
 	 */
 	public List<AdMaterial> selectListByAdSchId2(@Param("adScheduleId") Integer adScheduleId);
 
+	public int deleteOneAdMaterial(AdMaterial adMaterial);
+
 }

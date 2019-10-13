@@ -4,14 +4,6 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
-		<div class="btn-group hidden-xs" id="toolbar" role="group">
-			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="settle:adMaterial:add">
-				<i class="fa fa-plus"></i> 新增
-			</a>
-			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="settle:adMaterial:remove">
-				<i class="fa fa-trash-o"></i> 删除
-			</a>
-		</div>
 			
 		<div class="btn-group hidden-xs" id="toolbar" role="group">
 			<input type="text" id="adScheduleId" style="display:none" th:value="${adScheduleId}"/>
@@ -22,8 +14,8 @@
     </div>
     <div th:include="include :: footer"></div>
     <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('settle:adMaterial:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('settle:adMaterial:remove')}]];
+        var editFlag = [[${@permission.hasPermi('advertise:adMaterial:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('advertise:adMaterial:remove')}]];
         var prefix = ctx + "advertise/adMaterial"
         var scheduleId = $('#adScheduleId').val();
         
@@ -31,9 +23,9 @@
             var options = {
                 //url: prefix + "/list",
                 url: prefix + "/list2/"+scheduleId,
-                createUrl: prefix + "/add",
-                updateUrl: prefix + "/edit/{id}",
-                removeUrl: prefix + "/remove",
+                createUrl: prefix + "/add2",
+                updateUrl: prefix + "/edit2/{id}",
+                removeUrl: prefix + "/remove2",
                 modalName: "广告投放素材",
                 queryParams: queryParams,
                 search: false,
@@ -90,8 +82,7 @@
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	var actions = [];
-		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.adMaterialId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.adMaterialId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="removeScheduleMaterial(\'' + row.adMaterialId + '\')"><i class="fa fa-remove"></i>删除</a>');
 						return actions.join('');
 		            }
 		        }]
@@ -110,6 +101,29 @@
 				scheduleId:  scheduleId
 			};
 		}
+        
+        function removeScheduleMaterial(material){
+        	var adScheduleId = $('#adScheduleId').val();
+        	$.modal.confirm("确定删除播放素材吗？", function() {
+    	   		$.ajax({
+    	    		cache : true,
+    	    		type : "POST",
+    	    		url : prefix + "/removeScheduleMaterial",
+    	    		data : {
+    	    			"adScheduleId": adScheduleId,
+    	    			"adMaterialId": material
+    	    		},
+    	    		async : false,
+    	    		error : function(request) {
+    	    			$.modal.alertError("系统错误");
+    	    		},
+    	    		success : function(data) {
+    	    			$.modal.msgSuccess(data.msg);
+    	    			$.table.search();
+    	    		}
+    	    	});
+       		});
+        }
     </script>
 </body>
 </html>

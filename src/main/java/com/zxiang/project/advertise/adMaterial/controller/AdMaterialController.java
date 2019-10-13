@@ -214,6 +214,18 @@ public class AdMaterialController extends BaseController
 	}
 	
 	/**
+	 * 删除广告投放素材
+	 */
+	@RequiresPermissions("advertise:adMaterial:remove")
+	@Log(title = "广告投放素材", businessType = BusinessType.DELETE)
+	@PostMapping( "/removeScheduleMaterial")
+	@ResponseBody
+	public AjaxResult remove2(AdMaterial adMaterial)
+	{		
+		return toAjax(adMaterialService.deleteAdMaterial(adMaterial));
+	}
+	
+	/**
      *	查询素材表最大上传批次号
      */
     @PostMapping("/getMaxBatch/{adScheduleId}")
