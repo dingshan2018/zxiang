@@ -260,6 +260,10 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 					adSchedule.setReleaser(advertise.getManagerId());
 				}
 				HashMap<String,Object> scheduleMap = new HashMap<String,Object>();
+				if(StringUtils.isBlank(adSchedule.getScheduleType())) {
+					adSchedule.setScheduleType("1");//默认大广告
+				}
+				scheduleMap.put("scheduleType", adSchedule.getScheduleType());
 				scheduleMap.put("scheduleName", adSchedule.getScheduleName());
 				String rspSchedule = saveSchedule(scheduleMap);
 				if(StringUtils.isNotEmpty(rspSchedule)) {
@@ -599,18 +603,22 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				adReleaseRange.setPlaceGrade(adSchedule.getPlaceGrade());
 			}
 			String deviceIds = adSchedule.getDeviceIds();
-			int deviceNum = deviceIds.split(",").length;
-
+			int deviceNum = 0;
+			if(StringUtils.isNotBlank(deviceIds)) {
+				deviceNum = deviceIds.split(",").length;
+			}
 			adReleaseRange.setDevices(deviceIds);
 			adReleaseRangeMapper.insertAdReleaseRange(adReleaseRange);
 			String[] deviceIdArr = deviceIds.split(",");
 			if(deviceIdArr != null && deviceIdArr.length>0) {
 				for(String deviceId : deviceIdArr) {
-					Device device = this.deviceMapper.selectDeviceById(Integer.parseInt(deviceId));
-					if(device!=null && StringUtils.isNotBlank(device.getMediaId().trim())) {
-						HashMap<String,Object> adMap = new HashMap<String,Object>();
-						adMap.put("screenId", device.getMediaId());
-						adScreens.add(adMap);
+					if(StringUtils.isNotBlank(deviceId)) {
+						Device device = this.deviceMapper.selectDeviceById(Integer.parseInt(deviceId));
+						if(device!=null && StringUtils.isNotBlank(device.getMediaId().trim())) {
+							HashMap<String,Object> adMap = new HashMap<String,Object>();
+							adMap.put("screenId", device.getMediaId());
+							adScreens.add(adMap);
+						}
 					}
 				}
 			}
@@ -747,16 +755,22 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 			// 4.插入zx_release_device表
 			List<ReleaseDevice> releaseDeviceList = new ArrayList<ReleaseDevice>();
 			String[] devices = Convert.toStrArray(deviceIds);
-			for (String deviceId : devices) {
-				ReleaseDevice releaseDevice = new ReleaseDevice();
-				releaseDevice.setScheduleId(adScheduleId);
-				releaseDevice.setReleasePosition(releasePosition);
-				releaseDevice.setDeviceId(Integer.parseInt(deviceId));
-				releaseDeviceList.add(releaseDevice);
+			if(devices!=null && devices.length>0) {
+				for (String deviceId : devices) {
+					if(StringUtils.isNotBlank(deviceId)) {
+						ReleaseDevice releaseDevice = new ReleaseDevice();
+						releaseDevice.setScheduleId(adScheduleId);
+						releaseDevice.setReleasePosition(releasePosition);
+						releaseDevice.setDeviceId(Integer.parseInt(deviceId));
+						releaseDeviceList.add(releaseDevice);
+					}
+				}
 			}
+			
 			// 批量插入ReleaseDevice表数据
-			releaseDeviceMapper.batchInsert(releaseDeviceList);
-
+			if(releaseDeviceList!=null && releaseDeviceList.size()>0) {
+				releaseDeviceMapper.batchInsert(releaseDeviceList);
+			}
 			// 5.修改广告计划数据
 			// 投放终端数
 			adSchedule.setReleaseTermNum(deviceNum);
@@ -1511,8 +1525,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				adScreens.add(adScreen);
 			}
 		}
-		if(adScreens.size()<=0) {
-			throw new Exception("未找到已注册的广告设备");
+		if(adScreens.size()<=0 && "1".equals(adSchedule.getScheduleType())) {
+			throw new Exception("大广告排期，未找到已注册的广告设备");
 		}
 		List<HashMap<String,Object>> adDates = new ArrayList<HashMap<String,Object>>();
 		//todo 获取排期时间

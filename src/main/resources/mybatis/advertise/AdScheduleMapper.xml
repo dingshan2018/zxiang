@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="AdSchedule" id="AdScheduleResult">
         <result property="adScheduleId"    column="ad_schedule_id"    />
         <result property="scheduleName"    column="schedule_name"    />
+        <result property="scheduleType"    column="schedule_type"    />
         <result property="releaseType"    column="release_type"    />
         <result property="releasePosition"    column="release_position"    />
         <result property="releaseDays"    column="release_days"    />
@@ -39,7 +40,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectAdScheduleVo">
-        select ad_schedule_id, schedule_name, release_days,
+        select ad_schedule_id, schedule_name,schedule_type, release_days,
         release_type,
         <!-- release_type暂不采用字典表
         (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='release_type' AND sdd.dict_value=zas.`release_type` ) releaseTypeName, -->
@@ -65,7 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
     
     <sql id="selectAdScheduleVos">
-      SELECT DISTINCT zas.ad_schedule_id, zas.schedule_name, zas.release_days,
+      SELECT DISTINCT zas.ad_schedule_id, zas.schedule_name,zas.schedule_type,  zas.release_days,
         zas.release_type,
         CASE zas.release_type  WHEN '0' THEN '全部' WHEN '1' THEN '按地区' WHEN '2' THEN '按场所' ELSE '' END releaseTypeName,
         zas.release_position,
@@ -110,6 +111,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="scheduleName != null and scheduleName != ''">
               	and zas.schedule_name like concat('%', #{scheduleName}, '%')
              </if>
+             <if test="scheduleType != null and scheduleType != ''"> and zas.schedule_type = #{scheduleType}</if>
              <if test="releaseType != null and releaseType != ''"> and zas.release_type = #{releaseType}</if>
              <if test="releasePosition != null and releasePosition != ''"> and zas.release_position = #{releasePosition}</if>
              <if test="sxScheduleId != null and sxScheduleId != ''"> and zas.sx_schedule_id = #{sxScheduleId}</if>
@@ -165,6 +167,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into zx_ad_schedule
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="adScheduleId != null and adScheduleId != '' ">ad_schedule_id,</if>
+			<if test="scheduleType != null and scheduleType != ''"> schedule_type,</if>
 			<if test="scheduleName != null and scheduleName != '' ">schedule_name,</if>
 			<if test="releaseType != null and releaseType != '' ">release_type,</if>
 			<if test="releasePosition != null and releasePosition != '' ">release_position,</if>
@@ -194,9 +197,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="releaseStatus != null ">release_status,</if>
 			<if test="qrUrl != null ">qr_url,</if>
 			<if test="extScheduleId != null and extScheduleId.trim()!='' ">ext_schedule_id,</if>
+			<if test="deadLine != null  ">dead_line,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="adScheduleId != null and adScheduleId != ''">#{adScheduleId},</if>
+			<if test="scheduleType != null and scheduleType != ''"> #{scheduleType},</if>
 			<if test="scheduleName != null and scheduleName != ''">#{scheduleName},</if>
 			<if test="releaseType != null and releaseType != ''">#{releaseType},</if>
 			<if test="releasePosition != null and releasePosition != ''">#{releasePosition},</if>
@@ -226,12 +231,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="releaseStatus != null ">#{releaseStatus},</if>
 			<if test="qrUrl != null ">#{qrUrl},</if>
 			<if test="extScheduleId != null and extScheduleId.trim()!='' ">#{extScheduleId},</if>
+			<if test="deadLine != null  ">#{deadLine},</if>
          </trim>
     </insert>
 	 
     <update id="updateAdSchedule" parameterType="AdSchedule">
         update zx_ad_schedule
         <trim prefix="SET" suffixOverrides=",">
+            <if test="scheduleType != null and scheduleType != ''"> schedule_type=#{scheduleType},</if>
             <if test="scheduleName != null  and scheduleName != ''  ">schedule_name = #{scheduleName},</if>
             <if test="releaseType != null  and releaseType != ''  ">release_type = #{releaseType},</if>
             <if test="releasePosition != null  and releasePosition != ''  ">release_position = #{releasePosition},</if>
@@ -330,6 +337,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="scheduleName != null and scheduleName != ''">
               	and zas.schedule_name like concat('%', #{scheduleName}, '%')
              </if>
+             <if test="scheduleType != null and scheduleType != ''"> and zas.schedule_type = #{scheduleType}</if>
              <if test="releaseType != null and releaseType != ''"> and zas.release_type = #{releaseType}</if>
              <if test="releasePosition != null and releasePosition != ''"> and zas.release_position = #{releasePosition}</if>
              <if test="sxScheduleId != null and sxScheduleId != ''"> and zas.sx_schedule_id = #{sxScheduleId}</if>

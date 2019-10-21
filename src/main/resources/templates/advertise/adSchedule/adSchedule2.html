@@ -51,6 +51,19 @@
 	              	</select>
               </li>
               <li>
+                <span class="select-item-name">广告类型：</span>
+                <select
+                  name="scheduleType"
+                  id="scheduleType"
+                  th:with="type=${@dict.getType('schedule_type')}"
+                  data-live-search="true"
+                  class="block-plugin__select-picker selectpicker"
+                  data-style="btn-white btn-sm">
+                  <option value="">所有</option>
+                  <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+              </li>
+              <li>
                 <span class="select-item-name">投放状态：</span>
                 <select
                   name="status"
@@ -114,6 +127,8 @@
     var republishFlag = [[${@permission.hasPermi('advertise:adSchedule:republish')}]]; //播放权限
     var removeAdFlag = [[${@permission.hasPermi('advertise:adSchedule:removeAd')}]]; //停播权限
     var prefix = ctx + 'advertise/adSchedule';
+    var scheduleTypes = [[${@dict.getType('schedule_type')}]];
+    
 
     $(function() {
     	//投放广告商下拉框数据
@@ -150,6 +165,13 @@
 			{
 				field : 'scheduleName',
 				title : '投放名称'
+			},
+			{
+				field : 'scheduleType',
+				title : '广告类型',
+				formatter: function(value, item, index) {
+	            	return $.table.selectDictLabel(scheduleTypes, item.scheduleType);
+	            }
 			},
 			{
 				field : 'releaseType',

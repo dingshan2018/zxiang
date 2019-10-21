@@ -89,7 +89,7 @@ public interface IAdMaterialService
 
 	public void batchAddMaterial(List<MaterialResult> retMaterials, String operatorUser);
 
-	public int auditSave(AdMaterial adMaterial, String operatorUser);
+	public int auditSave(AdMaterial adMaterial, String operatorUser) throws Exception;
 
 	public int share(AdMaterial adMaterial, String operatorUser);
 

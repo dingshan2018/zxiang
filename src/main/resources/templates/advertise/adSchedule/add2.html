@@ -11,15 +11,15 @@
 					<input id="scheduleName" name="scheduleName" class="form-control" type="text">
 				</div>
 			</div>
-			<!-- <div class="form-group">
-				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放方式：</label>
+			<div class="form-group">
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>广告类型：</label>
 				<div class="col-sm-8">
-					<select id="releaseType" name="releaseType" class="form-control" th:with="type=${@dict.getType('release_type')}">
+					<select id="scheduleType" name="scheduleType" class="form-control" th:with="type=${@dict.getType('schedule_type')}">
 						<option value="">---请选择---</option>
 						<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 					</select>
 				</div>
-			</div> -->
+			</div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放类型：</label>
 				<div class="col-sm-8">

@@ -39,7 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <!-- select ad_material_id, ad_schedule_id, preview,teid,tresid, batch, sequence, 
         remark, create_by, create_time,filename,filesize from zx_ad_material -->
         SELECT zam.ext_material_id,zam.ext_material_type,zam.ad_material_id,zas.ad_schedule_id,zas.schedule_name, zam.preview, zam.batch, zam.sequence, 
-        zam.remark, zam.create_by, zam.create_time,zam.filename,zam.filesize,zam.ext_material_id,zam.status,zam.share,zam.audit_by,zam.audit_time,zam.audit_opinion,zam.material_text FROM zx_ad_material zam left join zx_ad_schedule_material zasm on zam.ad_material_id=zasm.ad_material_id left join zx_ad_schedule zas on zasm.ad_schedule_id=zas.ad_schedule_id  
+        zam.remark, zam.create_by, zam.create_time,zam.filename,zam.filesize,zam.ext_material_id,zam.status,zam.share,zam.audit_by,zam.audit_time,zam.audit_opinion,zam.material_text FROM zx_ad_material zam left join zx_ad_schedule zas on zam.ad_schedule_id=zas.ad_schedule_id  
     </sql>
 	
     <select id="selectAdMaterialList" parameterType="AdMaterial" resultMap="AdMaterialResult">
@@ -60,6 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="params.beginTime != null  and params.beginTime!='' "> and create_time &gt;= #{params.beginTime}</if>
              <if test="params.endTime != null and params.endTime!='' "> and create_time &lt;= #{params.endTime}</if>
          </where>
+         
          order by create_time desc 
     </select>
     
@@ -67,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectAdMaterialVo2"/>
         <where>  
             <if test="adMaterialId != null and adMaterialId != ''"> and zam.ad_material_id = #{adMaterialId} </if>
-             <if test="adScheduleId != null and adScheduleId != ''"> and zasm.ad_schedule_id=#{adScheduleId} </if>
+             <if test="adScheduleId != null and adScheduleId != ''"> and exists(select 1 from zx_ad_schedule_material zasm where zasm.ad_schedule_id=#{adScheduleId} and zasm.ad_material_id=zam.ad_material_id) </if>
              <if test="remark != null and remark != ''"> and zam.remark = #{remark}</if>
              <!-- <if test="adScheduleId == null"> and zam.ad_schedule_id is null</if> -->
              <if test="createBy != null and createBy != ''"> and zam.create_by = #{createBy}</if>

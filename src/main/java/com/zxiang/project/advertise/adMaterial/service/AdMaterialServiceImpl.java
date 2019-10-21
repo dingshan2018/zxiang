@@ -12,6 +12,7 @@ import org.apache.commons.lang.math.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zxiang.common.support.Convert;
@@ -35,6 +36,7 @@ import com.zxiang.project.system.config.mapper.ConfigMapper;
  * @date 2018-11-08
  */
 @Service
+@Transactional(rollbackFor=Exception.class)
 public class AdMaterialServiceImpl implements IAdMaterialService 
 {
 	@Autowired
@@ -236,7 +238,7 @@ public class AdMaterialServiceImpl implements IAdMaterialService
 	}
 
 	@Override
-	public int auditSave(AdMaterial adMaterial, String operatorUser) {
+	public int auditSave(AdMaterial adMaterial, String operatorUser) throws Exception {
 		Integer adMaterialId = adMaterial.getAdMaterialId();
 		AdMaterial material = this.adMaterialMapper.selectAdMaterialById(adMaterialId);
 		if(material == null) {
@@ -250,15 +252,13 @@ public class AdMaterialServiceImpl implements IAdMaterialService
 		material.setUpdateTime(new Date());
 		this.adMaterialMapper.updateAdMaterial(material);
 		AdSchedule adSchedule = new AdSchedule();
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("materialId", adMaterialId);
+		adSchedule.setParams(param);
 		List<AdSchedule> scheduleList = this.adScheduleMapper.selectUnReleaseSchedule(adSchedule);
 		if(scheduleList!=null && scheduleList.size()>0) {
 			for(AdSchedule schedule: scheduleList) {
-				try {
-					this.adScheduleService.releaseOnlineSave2(schedule);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				this.adScheduleService.releaseOnlineSave2(schedule);
 			}
 		}
 		return 1;

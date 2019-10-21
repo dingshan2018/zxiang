@@ -17,6 +17,7 @@ public class AdSchedule extends BaseEntity
 	
 	/**  */
 	private Integer adScheduleId;
+	private String scheduleType;
 	/** 投放名称 */
 	private String scheduleName;
 	/** 投放方式 */
@@ -513,5 +514,13 @@ public class AdSchedule extends BaseEntity
 
 	public void setMaterialText(String materialText) {
 		this.materialText = materialText;
+	}
+
+	public String getScheduleType() {
+		return scheduleType;
+	}
+
+	public void setScheduleType(String scheduleType) {
+		this.scheduleType = scheduleType;
 	}
 }
