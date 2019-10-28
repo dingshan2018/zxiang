@@ -176,13 +176,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <!-- 查询素材表最大上传批次号  -->
     <select id="selectMaxBatch" parameterType="Integer" resultType="int">
-       SELECT IFNULL(MAX(batch),0) FROM `zx_ad_material` WHERE ad_schedule_id=#{adScheduleId};
+       SELECT count(1) FROM `zx_ad_material` WHERE exists(select 1 from zx_ad_schedule_material zasm where zasm.ad_schedule_id=#{adScheduleId} and zasm.ad_material_id=zx_ad_material.ad_material_id) 
     </select>
     
     <!-- 根据广告ID查询最新批次素材列表 -->
     <select id="selectMaxListByAdSchId" parameterType="Integer" resultMap="AdMaterialResult">
-    	SELECT * FROM `zx_ad_material` WHERE ad_schedule_id = #{adScheduleId} AND batch=
-    	(SELECT IFNULL(MAX(batch),0) FROM `zx_ad_material` WHERE ad_schedule_id=#{adScheduleId});
+    	SELECT * FROM `zx_ad_material` WHERE exists(select 1 from zx_ad_schedule_material zasm where zasm.ad_schedule_id=#{adScheduleId} and zasm.ad_material_id=zx_ad_material.ad_material_id) 
     </select>
     
     <!-- 根据广告ID查询该广告下所有素材列表 -->

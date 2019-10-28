@@ -12,6 +12,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="terminalId"    column="terminal_id"    />
         <result property="placeId"    column="place_id"    />
         <result property="ownerId"    column="owner_id"    />
+        <result property="shopperId"    column="shopper_id"    />
+        <result property="shopperName"    column="shopper_name"    />
         <result property="price"    column="price"    />
         <result property="tissueLen"    column="tissue_len"    />
         <result property="lon"    column="lon"    />
@@ -58,6 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          place_id, owner_id,(SELECT DISTINCT wu.nickname FROM `zx_wx_user` wu WHERE d.`owner_id`=wu.user_id 
          ORDER BY wu.create_time DESC LIMIT 1) wxNickname,     
          (select distinct u.user_name from sys_user u where u.user_id =d.`owner_id` ) ownerName,
+         shopper_id,(select distinct u1.user_name from sys_user u1 where u1.user_id =d.`owner_id`) shopper_name,
          (select distinct p.name from zx_place p where p.place_id =d.`place_id` ) placeName,
          (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='place_type' 
          AND sdd.dict_value=(select p.`scene` from `zx_place` p where p.`place_id`=d.`place_id`) ) sceneName,
@@ -139,6 +142,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              	(SELECT user_id FROM `sys_user` su WHERE su.user_name LIKE concat('%', #{ownerName}, '%') 
              	AND del_flag='0')
              </if>
+              <if test="shopperName != null and shopperName != ''"> and d.shopper_id in 
+             	(SELECT user_id FROM `sys_user` su1 WHERE su1.user_name LIKE concat('%', #{shopperName}, '%') 
+             	AND del_flag='0')
+             </if>
              <if test="releaseDeviceCondition != null and releaseDeviceCondition != ''"> 
              	and d.terminal_id IS NOT NULL
              </if>
@@ -213,6 +220,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="terminalId != null and terminalId != '' ">terminal_id,</if>
 			<if test="placeId != null and placeId != '' ">place_id,</if>
 			<if test="ownerId != null and ownerId != '' ">owner_id,</if>
+			<if test="shopperId != null and shopperId != '' ">shopper_id,</if>
 			<if test="price != null and price != '' ">price,</if>
 			<if test="tissueLen != null and tissueLen != '' ">tissue_len,</if>
 			<if test="lon != null and lon != '' ">lon,</if>
@@ -245,6 +253,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
 			<if test="placeId != null and placeId != ''">#{placeId},</if>
 			<if test="ownerId != null and ownerId != ''">#{ownerId},</if>
+			<if test="shopperId != null and shopperId != '' ">#{shopperId},</if>
 			<if test="price != null and price != ''">#{price},</if>
 			<if test="tissueLen != null and tissueLen != ''">#{tissueLen},</if>
 			<if test="lon != null and lon != ''">#{lon},</if>
@@ -280,6 +289,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="terminalId != null  ">terminal_id = #{terminalId},</if>
             <if test="placeId != null  and placeId != ''  ">place_id = #{placeId},</if>
             <if test="ownerId != null  and ownerId != ''  ">owner_id = #{ownerId},</if>
+            <if test="shopperId != null and shopperId != '' ">shopper_id = #{shopperId},</if>
             <if test="price != null  ">price = #{price},</if>
             <if test="tissueLen != null  ">tissue_len = #{tissueLen},</if>
             <if test="lon != null  and lon != ''  ">lon = #{lon},</if>
@@ -402,6 +412,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
              <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
              <if test="ownerId != null and ownerId != ''"> and owner_id = #{ownerId}</if>
+             <if test="shopperId != null and shopperId != '' "> and shopper_id = #{shopperId}</if>
              <if test="price != null and price != ''"> and price = #{price}</if>
              <if test="tissueLen != null and tissueLen != ''"> and tissue_len = #{tissueLen}</if>
              <if test="lon != null and lon != ''"> and lon = #{lon}</if>
@@ -444,6 +455,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          	  <!-- 按照机主搜索 -->
              <if test="ownerName != null and ownerName != ''"> and d.owner_id in 
              	(SELECT user_id FROM `sys_user` su WHERE su.user_name LIKE concat('%', #{ownerName}, '%') 
+             	AND del_flag='0')
+             </if>
+             <if test="shopperName != null and shopperName != ''"> and d.shopper_id in 
+             	(SELECT user_id FROM `sys_user` su1 WHERE su1.user_name LIKE concat('%', #{shopperName}, '%') 
              	AND del_flag='0')
              </if>
          </where>

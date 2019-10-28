@@ -99,14 +99,19 @@ public class ReleaseDeviceServiceImpl implements IReleaseDeviceService
 	@Override
 	public int batchInsert(List<ReleaseDevice> devices) {
 		AdSchedule schedule = adScheduleMapper.selectAdScheduleById(devices.get(0).getScheduleId());
+		releaseDeviceMapper.batchInsert(devices);
 		if("01".equals(schedule.getReleasePosition())) {
-			schedule.setPayStatus(AdConstant.AD_WAIT_PAY);
+			ReleaseDevice releaseDevice = new ReleaseDevice();
+			releaseDevice.setScheduleId(schedule.getAdScheduleId());
+			List<ReleaseDevice> deviceList = this.releaseDeviceMapper.selectReleaseDeviceList(releaseDevice);
+			schedule.setReleaseTermNum(deviceList.size());
+			schedule.setPayStatus(AdConstant.AD_HAS_PAY);
 			schedule.setReleaseStatus(AdConstant.AD_WAIT_REPUBLISH);
 			schedule.setUpdateBy(ShiroUtils.getLoginName());
 			schedule.setUpdateTime(new Date());
 			adScheduleMapper.updateAdSchedule(schedule);
 		}
-		return releaseDeviceMapper.batchInsert(devices);
+		return 1;
 	}
 	
 }

@@ -63,6 +63,7 @@
                   <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
                 </select>
               </li>
+              
               <li>
                 <span class="select-item-name">投放状态：</span>
                 <select
@@ -104,9 +105,6 @@
         <a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="advertise:adSchedule:add">
           <i class="fa fa-plus"></i> 新增
         </a>
-        <a class="btn btn-outline btn-success btn-rounded" onclick="newAdSchedule()" shiro:hasPermission="advertise:adSchedule:add">
-          <i class="fa fa-plus"></i> 广告制作
-        </a>
         <a class="btn btn-outline btn-danger btn-rounded" onclick="deleteAd()" shiro:hasPermission="advertise:adSchedule:remove">
           <i class="fa fa-trash-o"></i> 删除
         </a>
@@ -128,6 +126,7 @@
     var removeAdFlag = [[${@permission.hasPermi('advertise:adSchedule:removeAd')}]]; //停播权限
     var prefix = ctx + 'advertise/adSchedule';
     var scheduleTypes = [[${@dict.getType('schedule_type')}]];
+    var schedulePeriods = [[${@dict.getType('schedule_period')}]]
     
 
     $(function() {
@@ -171,6 +170,13 @@
 				title : '广告类型',
 				formatter: function(value, item, index) {
 	            	return $.table.selectDictLabel(scheduleTypes, item.scheduleType);
+	            }
+			},
+			{
+				field : 'eachPeriod',
+				title : '广告周期',
+				formatter: function(value, item, index) {
+	            	return $.table.selectDictLabel(schedulePeriods, item.eachPeriod);
 	            }
 			},
 			{

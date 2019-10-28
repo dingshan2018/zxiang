@@ -120,6 +120,11 @@ public class Device extends BaseEntity
 	private String build;
 	
 	private String mediaId;
+	
+	private Integer shopperId;
+	
+	private String shopperName;
+	
 	public String getProvinceName() {
 		return provinceName;
 	}
@@ -627,6 +632,22 @@ public class Device extends BaseEntity
 
 	public void setMediaId(String mediaId) {
 		this.mediaId = mediaId;
+	}
+
+	public Integer getShopperId() {
+		return shopperId;
+	}
+
+	public void setShopperId(Integer shopperId) {
+		this.shopperId = shopperId;
+	}
+
+	public String getShopperName() {
+		return shopperName;
+	}
+
+	public void setShopperName(String shopperName) {
+		this.shopperName = shopperName;
 	}
 	
 }

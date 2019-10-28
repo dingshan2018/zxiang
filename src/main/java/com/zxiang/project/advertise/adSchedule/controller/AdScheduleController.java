@@ -159,9 +159,9 @@ public class AdScheduleController extends BaseController
 			if(StringUtils.isBlank(adSchedule.getScheduleType())) {
 				throw new RRException("广告类型未选择");
 			}
-			if("3".equals(adSchedule.getScheduleType())) {
-				throw new RRException("手机广告，请在公众号进行投放");
-			}
+//			if("3".equals(adSchedule.getScheduleType())) {
+//				throw new RRException("手机广告，请在公众号进行投放");
+//			}
 			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
 			adSchedule.setStatus(AdConstant.AD_WAIT_ORDER);//待预约
 			adSchedule.setCreateBy(operatorUser);

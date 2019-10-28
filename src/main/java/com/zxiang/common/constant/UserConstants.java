@@ -104,6 +104,8 @@ public class UserConstants
     public static final String USER_TYPE_REPAIR = "04";
     /** 用户类型：广告商 * */
     public static final String USER_TYPE_ADVERTISE = "05";
+    /** 用户类型：店家 * */
+    public static final String USER_TYPE_SHOPPER = "06";
     /** 用户类型：机主业务员 * */
     public static final String USER_TYPE_JOIN_SALESMAN = "12";
     /** 用户类型：代理商业务员 * */
@@ -117,7 +119,6 @@ public class UserConstants
     /** 用户类型：服务商维修员 * */
     public static final String USER_TYPE_SERVICE = "17";
     
-    
     public static final String DEPT_NAME = "合作伙伴";
     public static final String ROLE_NAME_AGENT = "代理商";
     public static final String ROLE_NAME_AGENT_SALESMAN = "代理商业务员";
@@ -129,6 +130,7 @@ public class UserConstants
     public static final String ROLE_NAME_SERVICEMAN = "维修员";
     public static final String ROLE_NAME_AD = "广告商";
     public static final String ROLE_NAME_AD_SALESMAN = "广告商业务员";
+    public static final String ROLE_NAME_SHOPPER = "店主";
     
     public static Map<String,String> clientMap = new HashMap<String,String>();
     public static Map<String,String> defaultRoleKey = new HashMap<String,String>();
@@ -142,6 +144,7 @@ public class UserConstants
     	clientMap.put(USER_TYPE_AGENT_SALESMAN, ROLE_NAME_AGENT_SALESMAN);
     	clientMap.put(USER_TYPE_REPAIR_SALESMAN, ROLE_NAME_REPAIR_SALESMAN);
     	clientMap.put(USER_TYPE_ADVERTISE_SALESMAN, ROLE_NAME_AD_SALESMAN);
+    	clientMap.put(USER_TYPE_SHOPPER, ROLE_NAME_SHOPPER);
     	// 默认权限
     	defaultRoleKey.put(USER_TYPE_JOIN, "join");
     	defaultRoleKey.put(USER_TYPE_AGENT, "agent");
@@ -151,6 +154,6 @@ public class UserConstants
     	defaultRoleKey.put(USER_TYPE_AGENT_SALESMAN, "agentSalesman");
     	defaultRoleKey.put(USER_TYPE_REPAIR_SALESMAN, "repairSalesman");
     	defaultRoleKey.put(USER_TYPE_ADVERTISE_SALESMAN, "advertiseSalesman");
-    	
+    	defaultRoleKey.put(USER_TYPE_SHOPPER, "shopper");
     }
 }

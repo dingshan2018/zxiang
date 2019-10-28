@@ -67,6 +67,9 @@
 			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" >
 				<i class="fa fa-plus"></i> 增加终端
 			</a>
+			<a class="btn btn-outline btn-info btn-rounded" onclick="importData()" >
+				<i class="fa fa-trash-o"></i> 导入终端
+			</a>
 			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" >
 				<i class="fa fa-trash-o"></i> 批量删除
 			</a>
@@ -159,6 +162,10 @@
             $('#bootstrap-table').bootstrapTable('hideColumn', 'releasePosition');
             $('#bootstrap-table').bootstrapTable('hideColumn', 'deviceId');
         });
+        function importData(){
+        	var url = ctx + 'advertise/releaseDevice/batchImport';
+          	$.modal.open('批量导入投放设备编号', url);
+        }
         function queryParams(params) {
 			return {
 				scheduleId:  scheduleId,

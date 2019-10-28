@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.client.shopper.mapper.ShopperMapper">
+    
+    <resultMap type="Shopper" id="ShopperResult">
+        <result property="shopperId"    column="shopper_id"    />
+        <result property="shopperName"    column="shopper_name"    />
+        <result property="managerId"    column="manager_id"    />
+        <result property="managerName"    column="manager_name"    />
+        <result property="managerPhone"    column="manager_phone"    />
+        <result property="deviceNum"    column="device_num"    />
+        <result property="bankAccount"    column="bank_account"    />
+        <result property="bankReceiver"    column="bank_receiver"    />
+        <result property="bankName"    column="bank_name"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="adRate"    column="ad_rate"    />
+        <result property="adCarouselRate"    column="ad_carousel_rate"    />
+        <result property="scanRate"    column="scan_rate"    />
+        <result property="promDirectRate"    column="prom_direct_rate"    />
+        <result property="promIndirectRate"    column="prom_indirect_rate"    />
+        <result property="promPaperRate"    column="prom_paper_rate"    />
+        <result property="promotionRate"    column="promotion_rate"    />
+        <result property="serveRate"    column="serve_rate"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="balance"    column="balance"/>
+        <result property="frozenBalance"    column="frozen_balance"/>
+    </resultMap>
+	
+	<sql id="selectShopperVo">
+        select shopper_id, shopper_name, manager_id, device_num, bank_account, bank_receiver, bank_name,manager_name, manager_phone,status, del_flag,
+          ad_rate,ad_carousel_rate, scan_rate,prom_direct_rate,prom_indirect_rate,prom_paper_rate,promotion_rate,serve_rate,balance,frozen_balance,  
+          create_by, create_time, update_by, update_time from zx_shopper
+    </sql>
+    
+    <sql id="selectShopperVos">
+        select distinct a.shopper_id, a.shopper_name, a.manager_id, a.device_num, a.bank_account, a.bank_receiver, a.bank_name,a.manager_name,b.phonenumber manager_phone,
+        a.status,a.buyer_id,a.puser_id,a.user_type, a.del_flag,
+        
+          a.ad_rate,a.ad_carousel_rate, a.scan_rate,a.prom_direct_rate,a.prom_indirect_rate,a.prom_paper_rate,a.promotion_rate,a.serve_rate, a.balance,a.frozen_balance, 
+          a.create_by, a.create_time, a.update_by, a.update_time from zx_join a LEFT JOIN sys_user b ON b.user_id = a.manager_id and b.`user_type`='06'
+    </sql>
+	
+    <select id="selectShopperList" parameterType="Shopper" resultMap="ShopperResult">
+        <include refid="selectShopperVos"/>
+        <where>  
+          ${filterSql}
+            <if test="shopperId != null and shopperId != ''"> and a.shopper_id = #{shopperId}</if>
+             <if test="shopperName != null and shopperName != ''"> and a.shopper_name like concat('%', #{shopperName}, '%')</if>
+             <if test="managerId != null and managerId != ''"> and a.manager_id = #{managerId}</if>
+             <if test="managerName != null  and managerName != ''  ">and a.manager_name like concat('%', #{managerName}, '%')</if>
+             <if test="managerPhone != null  and managerPhone != ''  ">and b.phonenumber like concat('%', #{managerPhone}, '%')</if>
+             <if test="deviceNum != null and deviceNum != ''"> and a.device_num = #{deviceNum}</if>
+             <if test="bankAccount != null and bankAccount != ''"> and a.bank_account = #{bankAccount}</if>
+             <if test="bankReceiver != null and bankReceiver != ''"> and a.bank_receiver = #{bankReceiver}</if>
+             <if test="bankName != null and bankName != ''"> and a.bank_name = #{bankName}</if>
+             <if test="status != null and status != ''"> and a.status = #{status}</if>
+             and a.del_flag != '2'
+             <if test="promotionRate != null and promotionRate != ''"> and a.promotion_rate = #{promotionRate}</if>
+             <if test="adRate != null and adRate != ''"> and a.ad_rate = #{adRate}</if>
+             <if test="scanRate != null and scanRate != ''"> and a.scan_rate = #{scanRate}</if>
+             <if test="createBy != null and createBy != ''"> and a.create_by = #{createBy}</if>
+             <if test="createTime != null"> and a.create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and a.update_by = #{updateBy}</if>
+             <if test="updateTime != null"> and a.update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectShopperById" parameterType="Integer" resultMap="ShopperResult">
+        <include refid="selectShopperVo"/>
+        where shopper_id = #{shopperId}
+    </select>
+        
+    <insert id="insertShopper" parameterType="Shopper" useGeneratedKeys="true" keyProperty="shopperId">
+        insert into zx_shopper
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="shopperId != null and shopperId != '' ">shopper_id,</if>
+			<if test="shopperName != null and shopperName != '' ">shopper_name,</if>
+			<if test="managerId != null and managerId != '' ">manager_id,</if>
+			<if test="managerName != null and managerName != '' ">manager_name,</if>
+			<if test="managerPhone != null and managerPhone != '' ">manager_phone,</if>
+			<if test="deviceNum != null and deviceNum != '' ">device_num,</if>
+			<if test="bankAccount != null and bankAccount != '' ">bank_account,</if>
+			<if test="bankReceiver != null and bankReceiver != '' ">bank_receiver,</if>
+			<if test="bankName != null and bankName != '' ">bank_name,</if>
+			<if test="status != null and status != '' ">status,</if>
+			del_flag,
+			<if test="adRate != null">ad_rate,</if>
+			<if test="adCarouselRate != null">ad_carousel_rate,</if>
+			<if test="scanRate != null">scan_rate,</if>
+			<if test="promDirectRate != null">prom_direct_rate,</if>
+			<if test="promIndirectRate != null">prom_indirect_rate,</if>
+			<if test="promPaperRate != null">prom_paper_rate,</if>
+			<if test="promotionRate != null">promotion_rate,</if>
+			<if test="serveRate != null">serve_rate,</if>
+			<if test="createBy != null and createBy != '' ">create_by,</if>
+			<if test="createTime != null ">create_time,</if>
+			<if test="updateBy != null and updateBy != '' ">update_by,</if>
+			<if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="shopperId != null and shopperId != ''">#{shopperId},</if>
+			<if test="shopperName != null and shopperName != ''">#{shopperName},</if>
+			<if test="managerId != null and managerId != ''">#{managerId},</if>
+			<if test="managerName != null and managerName != ''">#{managerName},</if>
+			<if test="managerPhone != null and managerPhone != ''">#{managerPhone},</if>
+			<if test="deviceNum != null and deviceNum != ''">#{deviceNum},</if>
+			<if test="bankAccount != null and bankAccount != ''">#{bankAccount},</if>
+			<if test="bankReceiver != null and bankReceiver != ''">#{bankReceiver},</if>
+			<if test="bankName != null and bankName != ''">#{bankName},</if>
+			<if test="status != null and status != ''">#{status},</if>
+			'0',
+			<if test="adRate != null">#{adRate},</if>
+			<if test="adCarouselRate != null">#{adCarouselRate},</if>
+			<if test="scanRate != null">#{scanRate},</if>
+			<if test="promDirectRate != null">#{promDirectRate},</if>
+			<if test="promIndirectRate != null">#{promIndirectRate},</if>
+			<if test="promPaperRate != null">#{promPaperRate},</if>
+			<if test="promotionRate != null">#{promotionRate},</if>
+			<if test="serveRate != null">#{serveRate},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null">#{createTime},</if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateShopper" parameterType="Shopper">
+        update zx_shopper
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="shopperName != null  and shopperName != ''  ">shopper_name = #{shopperName},</if>
+            <if test="managerId != null  ">manager_id = #{managerId},</if>
+            <if test="managerName != null  and managerName != ''  ">manager_name = #{managerName},</if>
+            <if test="managerPhone != null  and managerPhone != ''  ">manager_phone = #{managerPhone},</if>
+            <if test="deviceNum != null  ">device_num = #{deviceNum},</if>
+            <if test="bankAccount != null  and bankAccount != ''  ">bank_account = #{bankAccount},</if>
+            <if test="bankReceiver != null  and bankReceiver != ''  ">bank_receiver = #{bankReceiver},</if>
+            <if test="bankName != null  and bankName != ''  ">bank_name = #{bankName},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="adRate != null">ad_rate = #{adRate},</if>
+			<if test="adCarouselRate != null">ad_carousel_rate = #{adCarouselRate},</if>
+			<if test="scanRate != null">scan_rate = #{scanRate},</if>
+			<if test="promDirectRate != null">prom_direct_rate = #{promDirectRate},</if>
+			<if test="promIndirectRate != null">prom_indirect_rate = #{promIndirectRate},</if>
+			<if test="promPaperRate != null">prom_paper_rate = #{promPaperRate},</if>
+			<if test="promotionRate != null">promotion_rate = #{promotionRate},</if>
+			<if test="serveRate != null">serve_rate = #{serveRate},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where shopper_id = #{shopperId}
+    </update>
+	<update id="updateBalance">
+        update zx_shopper
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="balance != null">balance = #{balance},</if>
+            <if test="frozenBalance != null  ">frozen_balance = #{frozenBalance},</if>
+            update_time = now()
+        </trim>
+        where shopper_id = #{shopperId}
+    </update>
+	<update id="deleteShopperById" parameterType="Integer">
+        update zx_shopper set del_flag = '2' where shopper_id = #{shopperId}
+    </update>
+	
+    <update id="deleteShopperByIds" parameterType="String">
+         update zx_shopper set del_flag = '2' where shopper_id in 
+        <foreach item="shopperId" collection="array" open="(" separator="," close=")">
+            #{shopperId}
+        </foreach>
+    </update>
+    <update id="batchEditParam" parameterType="Shopper">
+         update zx_shopper 
+          <trim prefix="SET" suffixOverrides=",">
+            <if test="adRate != null">ad_rate = #{adRate},</if>
+			<if test="adCarouselRate != null">ad_carousel_rate = #{adCarouselRate},</if>
+			<if test="scanRate != null">scan_rate = #{scanRate},</if>
+			<if test="promDirectRate != null">prom_direct_rate = #{promDirectRate},</if>
+			<if test="promIndirectRate != null">prom_indirect_rate = #{promIndirectRate},</if>
+			<if test="promPaperRate != null">prom_paper_rate = #{promPaperRate},</if>
+			<if test="promotionRate != null">promotion_rate = #{promotionRate},</if>
+			<if test="serveRate != null">serve_rate = #{serveRate},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+         where shopper_id = #{shopperId}
+    </update>
+    
+    <select id="selectDropBoxList" resultMap="ShopperResult">
+         select shopper_id, shopper_name,manager_id,manager_name from zx_shopper where del_flag !=2 
+    </select>
+    
+</mapper>

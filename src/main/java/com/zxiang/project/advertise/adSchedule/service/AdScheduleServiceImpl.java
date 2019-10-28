@@ -265,6 +265,9 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				}
 				scheduleMap.put("scheduleType", adSchedule.getScheduleType());
 				scheduleMap.put("scheduleName", adSchedule.getScheduleName());
+				if(StringUtils.isNotBlank(adSchedule.getEachPeriod())) {
+					scheduleMap.put("eachPeriod", adSchedule.getEachPeriod());
+				}
 				String rspSchedule = saveSchedule(scheduleMap);
 				if(StringUtils.isNotEmpty(rspSchedule)) {
 					JSONObject scheduleObject = JSONObject.parseObject(rspSchedule);
@@ -588,29 +591,32 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 			// 1.插入广告投放范围表 一对一
 			AdReleaseRange adReleaseRange = new AdReleaseRange();
 			adReleaseRange.setAdScheduleId(adScheduleId);
-			String releaseType = adSchedule.getReleaseType();
-			adReleaseRange.setReleaseType(releaseType);
+			String releaseType = "0";
+			adReleaseRange.setReleaseType("0");
 			adReleaseRange.setCreateBy(operatorUser);
 			adReleaseRange.setCreateTime(createDate);
 			// 根据投放方式判断保存哪些字段:投放类型:0全部；1按地区；2按场所
-			if ("0".equals(releaseType)) {
-
-			} else if ("1".equals(releaseType)) {
-				adReleaseRange.setProvince(adSchedule.getProvince());
-				adReleaseRange.setCity(adSchedule.getCity());
-				adReleaseRange.setCounty(adSchedule.getCounty());
-			} else if ("2".equals(releaseType)) {
-				adReleaseRange.setPlaceGrade(adSchedule.getPlaceGrade());
-			}
+//			if ("0".equals(releaseType)) {
+//
+//			} else if ("1".equals(releaseType)) {
+//				adReleaseRange.setProvince(adSchedule.getProvince());
+//				adReleaseRange.setCity(adSchedule.getCity());
+//				adReleaseRange.setCounty(adSchedule.getCounty());
+//			} else if ("2".equals(releaseType)) {
+//				adReleaseRange.setPlaceGrade(adSchedule.getPlaceGrade());
+//			}
+			
 			String deviceIds = adSchedule.getDeviceIds();
-			int deviceNum = 0;
-			if(StringUtils.isNotBlank(deviceIds)) {
-				deviceNum = deviceIds.split(",").length;
-			}
+			int deviceNum = adSchedule.getReleaseTermNum();
+//			if(StringUtils.isNotBlank(deviceIds)) {
+//				deviceNum = deviceIds.split(",").length;
+//			}
 			adReleaseRange.setDevices(deviceIds);
 			adReleaseRangeMapper.insertAdReleaseRange(adReleaseRange);
+			
 			String[] deviceIdArr = deviceIds.split(",");
 			if(deviceIdArr != null && deviceIdArr.length>0) {
+				
 				for(String deviceId : deviceIdArr) {
 					if(StringUtils.isNotBlank(deviceId)) {
 						Device device = this.deviceMapper.selectDeviceById(Integer.parseInt(deviceId));
@@ -679,7 +685,11 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 			String priceType = null;
 			if (AdConstant.RELEASE_TYPE_TERMINAL.equals(releasePosition)) {
 				// 终端广告预约设备后广告状态变为待审核
-				adSchedule.setStatus(AdConstant.AD_WAIT_ADUIT);
+				adSchedule.setStatus(AdConstant.AD_WAIT_PUBLISH);
+				adSchedule.setApprovedRemark("平台自动通过");
+				adSchedule.setApproved("1");
+				adSchedule.setRemark("平台广告无需支付");
+				adSchedule.setPayStatus(AdConstant.AD_HAS_PAY);
 				// 终端广告预约设备后计算价格,按照素材表显性文字展示判断,图片/视频/图片视频
 				priceType = getPriceType(adScheduleId);
 				AdMaterial materialParam = new AdMaterial();
@@ -737,20 +747,20 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 			}
 
 			// 计算总价和押金 总价= 计费类型*days*播放设备数量,押金=总价*比率
-			if (StringUtils.isNotEmpty(priceType)) {
-				AdPriceCfg adPriceCfg = adPriceCfgMapper.getPriceByType(priceType);
-				if (adPriceCfg != null) {
-					float totalPay = adPriceCfg.getDailyPrice() * days * deviceNum;
-					float prepay = totalPay * AdConstant.PREPAY;
-					adSchedule.setTotalPay(totalPay);
-					adSchedule.setPrepay(prepay);
-					adSchedule.setReleaseDays(days);
-				}
-			} else {
-				adSchedule.setTotalPay((float) 0);
-				adSchedule.setPrepay((float) 0);
-				adSchedule.setReleaseDays(days);
-			}
+//			if (StringUtils.isNotEmpty(priceType)) {
+//				AdPriceCfg adPriceCfg = adPriceCfgMapper.getPriceByType(priceType);
+//				if (adPriceCfg != null) {
+//					float totalPay = adPriceCfg.getDailyPrice() * days * deviceNum;
+//					float prepay = totalPay * AdConstant.PREPAY;
+//					adSchedule.setTotalPay(totalPay);
+//					adSchedule.setPrepay(prepay);
+//					adSchedule.setReleaseDays(days);
+//				}
+//			} else {
+//				adSchedule.setTotalPay((float) 0);
+//				adSchedule.setPrepay((float) 0);
+//				adSchedule.setReleaseDays(days);
+//			}
 
 			// 4.插入zx_release_device表
 			List<ReleaseDevice> releaseDeviceList = new ArrayList<ReleaseDevice>();

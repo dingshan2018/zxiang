@@ -18,6 +18,7 @@ public class AdSchedule extends BaseEntity
 	/**  */
 	private Integer adScheduleId;
 	private String scheduleType;
+	private String eachPeriod;
 	/** 投放名称 */
 	private String scheduleName;
 	/** 投放方式 */
@@ -522,5 +523,13 @@ public class AdSchedule extends BaseEntity
 
 	public void setScheduleType(String scheduleType) {
 		this.scheduleType = scheduleType;
+	}
+
+	public String getEachPeriod() {
+		return eachPeriod;
+	}
+
+	public void setEachPeriod(String eachPeriod) {
+		this.eachPeriod = eachPeriod;
 	}
 }

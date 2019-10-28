@@ -168,7 +168,9 @@ public class DeviceController extends BaseController
 		queryUser.setUserType(UserConstants.USER_TYPE_JOIN);
 		List<User> userListJoin = userMapper.selectUserList(queryUser);//userService.selectUserList(queryUser);
 		mmap.put("userList", userListJoin);
-		
+		queryUser.setUserType(UserConstants.USER_TYPE_SHOPPER);
+		List<User> shopperList = userMapper.selectUserList(queryUser);
+		mmap.put("shopperList", shopperList);
 	    return prefix + "/edit";
 	}
 	
