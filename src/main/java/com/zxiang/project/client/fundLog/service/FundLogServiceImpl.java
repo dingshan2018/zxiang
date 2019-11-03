@@ -27,6 +27,8 @@ import com.zxiang.project.client.join.domain.Join;
 import com.zxiang.project.client.join.mapper.JoinMapper;
 import com.zxiang.project.client.repair.domain.Repair;
 import com.zxiang.project.client.repair.mapper.RepairMapper;
+import com.zxiang.project.client.shopper.domain.Shopper;
+import com.zxiang.project.client.shopper.mapper.ShopperMapper;
 
 /**
  * 资金流水 服务层实现
@@ -45,6 +47,8 @@ public class FundLogServiceImpl implements IFundLogService {
 	private AgentMapper agentMapper;
 	@Autowired
 	private JoinMapper joinMapper;
+	@Autowired
+	private ShopperMapper shopperMapper;
 	@Autowired
 	private RepairMapper repairMapper;
 	@Autowired
@@ -135,6 +139,12 @@ public class FundLogServiceImpl implements IFundLogService {
 			mmap.put("frozenBalance",
 					advertise == null || advertise.getFrozenBalance() == null ? 0.00 : advertise.getFrozenBalance());
 			mmap.put("clientName", advertise.getAdvertisorName());
+		} else if (UserConstants.USER_TYPE_SHOPPER.equals(clientType)) { // 店主
+			Shopper shopper = shopperMapper.selectShopperById(clientId);
+			mmap.put("balance", shopper == null || shopper.getBalance() == null ? 0.00 : shopper.getBalance());
+			mmap.put("frozenBalance",
+					shopper == null || shopper.getFrozenBalance() == null ? 0.00 : shopper.getFrozenBalance());
+			mmap.put("clientName", shopper.getShopperName());
 		} else {
 			mmap.put("balance", 0.00);
 			mmap.put("frozenBalance", 0.00);
@@ -182,6 +192,14 @@ public class FundLogServiceImpl implements IFundLogService {
 			}
 			balance = advertise.getBalance() == null ? money : advertise.getBalance().add(money);
 			frozenBalance = advertise.getFrozenBalance() == null ? new BigDecimal(0) : advertise.getFrozenBalance();
+			advertiseMapper.updateBalance(clientId, balance, null);
+		}else if (UserConstants.USER_TYPE_SHOPPER.equals(clientType)) { // 店主
+			Shopper shopper = shopperMapper.selectShopperById(clientId);
+			if (shopper == null) {
+				throw new RRException("未找到客户，clientId：" + clientId + ",clientType：" + clientType);
+			}
+			balance = shopper.getBalance() == null ? money : shopper.getBalance().add(money);
+			frozenBalance = shopper.getFrozenBalance() == null ? new BigDecimal(0) : shopper.getFrozenBalance();
 			advertiseMapper.updateBalance(clientId, balance, null);
 		} else {
 			throw new RRException("客户类型有误，clientType：" + clientType);
@@ -338,6 +356,23 @@ public class FundLogServiceImpl implements IFundLogService {
 			bankAccount = advertise.getBankAccount();
 			bankName = advertise.getBankName();
 			bankReceiver = advertise.getBankReceiver();
+		}else if (UserConstants.USER_TYPE_SHOPPER.equals(clientType)) { // 店主
+			Shopper shopper = shopperMapper.selectShopperById(clientId);
+			if (shopper == null) {
+				throw new RRException("未找到客户，clientId：" + clientId + ",clientType：" + clientType);
+			}
+			balance = shopper.getBalance() == null ? new BigDecimal(0) : shopper.getBalance();
+			if (shopper.getBalance().compareTo(money) == -1) {
+				throw new RRException("可提现余额不足");
+			}
+			frozenBalance = shopper.getFrozenBalance() == null ? new BigDecimal(0) : shopper.getFrozenBalance();
+			balance = shopper.getBalance().subtract(money);
+			shopperMapper.updateBalance(clientId, balance, null);
+			clientName = shopper.getShopperName();
+			managerPhone = shopper.getManagerPhone();
+			bankAccount = shopper.getBankAccount();
+			bankName = shopper.getBankName();
+			bankReceiver = shopper.getBankReceiver();
 		} else {
 			logger.error("客户类型有误，clientType：" + clientType);
 			throw new RRException("客户类型有误");
@@ -426,6 +461,16 @@ public class FundLogServiceImpl implements IFundLogService {
 				balance = advertise.getBalance() == null ? new BigDecimal(0) : advertise.getBalance();
 				frozenBalance = advertise.getFrozenBalance() == null ? new BigDecimal(0) : advertise.getFrozenBalance();
 				advertiseMapper.updateBalance(wd.getClientId(), advertise.getBalance().add(wd.getMoney()), null);
+			}
+		}else if (UserConstants.USER_TYPE_SHOPPER.equals(wd.getClientType())) { // 店主
+			Shopper shopper = shopperMapper.selectShopperById(wd.getClientId());
+			if (shopper == null) {
+				throw new RRException("未找到客户");
+			}
+			if (Const.WITHDRAW_FAIL.equals(drawStatus)) {
+				balance = shopper.getBalance() == null ? new BigDecimal(0) : shopper.getBalance();
+				frozenBalance = shopper.getFrozenBalance() == null ? new BigDecimal(0) : shopper.getFrozenBalance();
+				advertiseMapper.updateBalance(wd.getClientId(), shopper.getBalance().add(wd.getMoney()), null);
 			}
 		} else {
 			throw new RRException("未找到客户");

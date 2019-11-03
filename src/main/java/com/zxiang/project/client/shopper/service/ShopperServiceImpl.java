@@ -111,7 +111,7 @@ public class ShopperServiceImpl implements IShopperService {
 		join.setCreateTime(new Date());
 		join.setCreateBy(ShiroUtils.getLoginName());
 		// 设置默认参数
-		Coefficient coefficient = coefficientService.selectCoefficientByType("1");
+		Coefficient coefficient = coefficientService.selectCoefficientByType("5");
 		join.setAdRate(coefficient.getAdRate());
 		join.setAdCarouselRate(coefficient.getAdCarouselRate());
 		join.setScanRate(coefficient.getScanRate());

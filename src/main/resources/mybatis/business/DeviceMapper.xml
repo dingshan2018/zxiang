@@ -60,7 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          place_id, owner_id,(SELECT DISTINCT wu.nickname FROM `zx_wx_user` wu WHERE d.`owner_id`=wu.user_id 
          ORDER BY wu.create_time DESC LIMIT 1) wxNickname,     
          (select distinct u.user_name from sys_user u where u.user_id =d.`owner_id` ) ownerName,
-         shopper_id,(select distinct u1.user_name from sys_user u1 where u1.user_id =d.`owner_id`) shopper_name,
+         shopper_id,(select distinct u1.user_name from sys_user u1 where u1.user_id =d.`shopper_id`) shopper_name,
          (select distinct p.name from zx_place p where p.place_id =d.`place_id` ) placeName,
          (SELECT DISTINCT sdd.dict_label FROM sys_dict_data sdd WHERE sdd.dict_type ='place_type' 
          AND sdd.dict_value=(select p.`scene` from `zx_place` p where p.`place_id`=d.`place_id`) ) sceneName,

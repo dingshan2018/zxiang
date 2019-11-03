@@ -77,7 +77,7 @@ public class ShopperController extends BaseController {
 	/**
 	 * 新增保存机主
 	 */
-	@RequiresPermissions("client:join:add")
+	@RequiresPermissions("client:shopper:add")
 	@Log(title = "店主", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody

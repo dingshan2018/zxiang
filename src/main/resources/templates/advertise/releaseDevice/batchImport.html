@@ -51,15 +51,16 @@
     	
     	//提交请求
 		function batchImportSubmit() {
-    		var formdata = new FormData();
-    		formData.append("scheduleId",$("#scheduleId").val());
-    		formdata.append("fileUpload", document.getElementById("fileUpload").files[0]);   
+    		debugger;
+    		var formData = new FormData();
+    		formData.append("scheduleId",document.getElementById("scheduleId").value);
+    		formData.append("fileUpload", document.getElementById("fileUpload").files[0]);   
         	$.ajax({
-        		url : prefix + "/batchImport",
+        		url : prefix + "/batchImport1",
         		type:"post",  
         		contentType: false,  
                 processData: false, 
-                data: formdata,
+                data: formData,
         		async : false,
         		error : function(request) {
         			$.modal.alertError("系统错误");

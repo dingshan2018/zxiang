@@ -163,7 +163,7 @@
             $('#bootstrap-table').bootstrapTable('hideColumn', 'deviceId');
         });
         function importData(){
-        	var url = ctx + 'advertise/releaseDevice/batchImport';
+        	var url = ctx + 'advertise/releaseDevice/batchImport/'+scheduleId;
           	$.modal.open('批量导入投放设备编号', url);
         }
         function queryParams(params) {

@@ -111,6 +111,8 @@ public class FundLogController extends BaseController {
 			}
 		}else if(UserConstants.USER_TYPE_REPAIR.equals(clientType)) {
 			type = "4";
+		}else if(UserConstants.USER_TYPE_SHOPPER.equals(clientType)) {
+			type = "5";
 		}
 		Long lowestMoney = iCoefficientService.queryLowerCashBy(type);
 		mmap.put("lowestMoney", lowestMoney);

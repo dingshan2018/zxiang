@@ -51,7 +51,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 	
 	<select id="selectUserList" parameterType="User" resultMap="UserResult">
-		select u.user_id,u.puser_id,u.leader_id, u.dept_id,u.user_type, u.login_name, u.user_name, u.email, u.phonenumber, u.password, u.sex, u.avatar, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name,
+		select u.user_id,u.puser_id,u.leader_id, u.dept_id,u.user_type, u.login_name, CONCAT(u.user_name,'(',u.phonenumber,')') user_name, u.email, u.phonenumber, u.password, u.sex, u.avatar, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name,
 		(select nickname from zx_wx_user w where w.user_id = u.user_id limit 1)	as nickname	
 		from sys_user u
 		left join sys_dept d on u.dept_id = d.dept_id

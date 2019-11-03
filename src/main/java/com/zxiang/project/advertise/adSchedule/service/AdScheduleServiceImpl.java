@@ -587,6 +587,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		try {
 			List<HashMap<String,Object>> adScreens = new ArrayList<HashMap<String,Object>>();
 			Integer adScheduleId = adSchedule.getAdScheduleId();
+			AdSchedule adScheduleInfo = this.adScheduleMapper.selectAdScheduleById(adScheduleId);
 			Date createDate = new Date();
 			// 1.插入广告投放范围表 一对一
 			AdReleaseRange adReleaseRange = new AdReleaseRange();
@@ -607,10 +608,10 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 //			}
 			
 			String deviceIds = adSchedule.getDeviceIds();
-			int deviceNum = adSchedule.getReleaseTermNum();
-//			if(StringUtils.isNotBlank(deviceIds)) {
-//				deviceNum = deviceIds.split(",").length;
-//			}
+			int deviceNum = 0;
+			if(StringUtils.isNotBlank(deviceIds)) {
+				deviceNum = deviceIds.split(",").length;
+			}
 			adReleaseRange.setDevices(deviceIds);
 			adReleaseRangeMapper.insertAdReleaseRange(adReleaseRange);
 			

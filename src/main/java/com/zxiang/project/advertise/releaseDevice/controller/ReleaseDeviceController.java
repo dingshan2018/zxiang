@@ -83,7 +83,7 @@ public class ReleaseDeviceController extends BaseController
      * 批量导入广告设备
      */
 	@Log(title = "批量导入广告设备", businessType = BusinessType.IMPORT)
-    @RequestMapping(value = "/batchImport", method = RequestMethod.POST)
+    @RequestMapping(value = "/batchImport1", method = RequestMethod.POST)
     @ResponseBody
     public AjaxResult batchImportSave(@RequestParam("fileUpload") MultipartFile file,HttpServletRequest request)
     {
@@ -103,9 +103,10 @@ public class ReleaseDeviceController extends BaseController
 			//保存设备编号
 			List<ReleaseDevice> releaseDevices = new ArrayList<ReleaseDevice>();
 			if(sheetList!=null && sheetList.size()>0) {
-				for(Object deviceCode :sheetList) {
+				for(Object deviceCodeArr :sheetList) {
+					List<Object> deviceCodeList = (List<Object>)deviceCodeArr;
 					Device device = new Device();
-					device.setDeviceCode(deviceCode.toString());
+					device.setDeviceCode(deviceCodeList.get(0).toString());
 					List<Device> searchDevices = this.deviceService.selectDeviceList(device);
 					if(searchDevices!=null && searchDevices.size()>0) {
 						Device searchDevice = searchDevices.get(0);
@@ -127,7 +128,7 @@ public class ReleaseDeviceController extends BaseController
 			if(releaseDevices!=null && releaseDevices.size()>0) {
 				return toAjax(releaseDeviceService.batchInsert(releaseDevices));
 			}else {
-				return AjaxResult.error("未投放设备未找到");
+				return AjaxResult.error("投放设备未找到");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

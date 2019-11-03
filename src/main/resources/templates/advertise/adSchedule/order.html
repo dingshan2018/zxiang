@@ -22,7 +22,7 @@
                     <input id="releasePositionName" name="releasePositionName" th:field="*{releasePositionName}" class="form-control" type="text" readonly="readonly">
                 </div>
             </div>
-			<div class="form-group" th:if="${adSchedule.scheduleType} ne '2'">
+			<div class="form-group" style="display: none;">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放方式：</label>
 				<div class="col-sm-8">
 					<select
@@ -118,7 +118,7 @@
           </div>
         </div>
       </div>
-			<div class="form-group">
+			<div class="form-group" style="display: none;">
 				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>投放设备：</label>
 				<div class="col-sm-8">
 					<label class="checkbox-inline i-checks" >
@@ -158,10 +158,7 @@
 			rules:{
 				scheduleName:{
 					required:true,
-				},
-				releaseType:{
-					required:true,
-				},
+				}
 			},
 			submitHandler: function(form) {
 			  var dateTimeValidate = true;
@@ -244,10 +241,10 @@
 	    	//设备不能为空
 	    	var scheduleType = $('#scheduleType').val();
 	    	var deviceIds = $.form.selectCheckeds("device");
-        	if(deviceIds.length <= 0 && scheduleType != '2'){
+	    	/*if(deviceIds.length <= 0 && scheduleType != '2'){
         		$.modal.alertWarning("没有选择可投放的设备!");
 				return;
-	       	}
+	       	}*/
 
 	    	$.modal.confirm("确定预约？", function() {
 	        	var adScheduleId = $("#adScheduleId").val();
