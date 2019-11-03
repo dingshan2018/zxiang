@@ -60,6 +60,13 @@ public class TissueRecordController extends BaseController
 	    return prefix + "/tissueRecord";
 	}
 	
+	@RequiresPermissions("business:tissueRecord:view")
+	@GetMapping("/tissueData")
+	public String tissueData()
+	{
+	    return prefix+"/tissueData";
+	}
+	
 	/**
 	 * 查询出纸记录列表
 	 */
@@ -76,6 +83,25 @@ public class TissueRecordController extends BaseController
 			tissueRecord.setUserId(user.getUserId()+"");
 		}
         List<TissueRecord> list = tissueRecordService.selectTissueRecordList(tissueRecord);
+		return getDataTable(list);
+	}
+	
+	/**
+	 * 查询出纸记录列表
+	 */
+	@DataFilter(placeAlias="tr.place_id")
+	@RequiresPermissions("business:tissueRecord:list")
+	@PostMapping("/tissueDataList")
+	@ResponseBody
+	public TableDataInfo tissueDataList(TissueRecord tissueRecord)
+	{
+		startPage();
+		User user =getUser();
+		String userType = user.getUserType();
+		if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+			tissueRecord.setUserId(user.getUserId()+"");
+		}
+        List<HashMap<String,Object>> list = tissueRecordService.selectTissueDataList(tissueRecord);
 		return getDataTable(list);
 	}
 	
@@ -158,6 +184,26 @@ public class TissueRecordController extends BaseController
 				params.put("userId", user.getUserId()+"");
 			}
 			tissueRecordService.queryExport(params, request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 导出Excel
+	 * 
+	 */
+	@DataFilter(placeAlias="tr.place_id")
+	@RequestMapping("/excelExportData")
+	public void excelExportData(@RequestParam HashMap<String, String> params, 
+			HttpServletResponse response,HttpServletRequest request){
+		try {
+			User user =getUser();
+			String userType = user.getUserType();
+			if(userType.equals(UserConstants.USER_TYPE_JOIN)) {
+				params.put("userId", user.getUserId()+"");
+			}
+			tissueRecordService.queryExportData(params, request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

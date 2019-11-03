@@ -174,5 +174,38 @@ public class TissueRecordServiceImpl implements ITissueRecordService
 		}
 		return tissueRecordMapper.selectTotal(map);
 	}
+
+	@Override
+	public void queryExportData(HashMap<String, String> params, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		List erportList = tissueRecordMapper.queryExportData(params);
+      	String realPath = request.getSession().getServletContext().getRealPath("/file/temp");
+  		EXCELObject s = new EXCELObject();
+  		s.seteFilePath(realPath);
+  		//表头名称
+  		String[] titH = {"投放设备", "广告名称","统计日期","微信昵称","有效次数"};
+  		//数据库字段名称
+  		String[] titN = { "deviceCode","adName","tissueDate","nickName","tissueCnt"};
+  		String[] width= 
+  			   {"15","20","20","20","20"};
+  		s.setWidth(width);
+  		s.setFname("出纸记录"); // sheet栏名称
+  		s.setTitle("出纸记录"); // Excel内容标题名称
+  		s.setTitH(titH);
+  		s.setTitN(titN);
+  		s.setDataList(erportList);
+  		File exportFile = null;
+  		exportFile = s.setData();
+  		//Excel文件名称
+  		String excelName = "出纸记录" + System.currentTimeMillis() + ".xls";
+  		s.exportExcel("出纸记录", excelName, exportFile, request, response);
+		
+	}
+
+	@Override
+	public List<HashMap<String, Object>> selectTissueDataList(TissueRecord tissueRecord) {
+		
+		return tissueRecordMapper.selectTissueDataList(tissueRecord);
+	}
 	
 }

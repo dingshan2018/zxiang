@@ -91,7 +91,8 @@
 		</form>
     </div>
     <div th:include="include::footer"></div>
-    <script type="text/javascript" src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js"></script>
+    <script th:src="@{/js/bootstrap-datetimepicker.zh-CN.js}"></script>
+   <!--   <script type="text/javascript" src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js"></script> -->
     <script type="text/javascript">
 	    $(function(){
 	    	//不用引入语言直接复制中文转换代码

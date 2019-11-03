@@ -102,5 +102,9 @@ public interface ITerminalService
 	 */
 	public int reportLog(Integer terminalId);
 
+	public int resetTerminal(Integer terminalId);
+
+	public int reloadTerminal(Integer terminalId);
+
 	
 }

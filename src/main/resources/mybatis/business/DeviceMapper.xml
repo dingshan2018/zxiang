@@ -46,7 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectDeviceVo">
-        select media_id,total_cnt,valid_cnt,invalid_cnt,device_id, device_code, device_sn, device_type,
+        select media_id,d.ad_url,total_cnt,valid_cnt,invalid_cnt,device_id, device_code, device_sn, device_type,
          terminal_id,
          province, 
         (select distinct a.pname from sys_area a where a.id =d.`province` ) provinceName,

@@ -1,0 +1,131 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<style>
+  .bootstrap-table__tool{
+    overflow: auto;
+  }
+
+  .bootstrap-table__tool-total {
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+
+  .bootstrap-table__tool-total > a {
+    padding: 8px 14px
+  }
+
+  .bootstrap-table__tool-total .glyphicon {
+    font-size: 13px;
+  }
+
+  .bootstrap-table__tool-total strong {
+    font-size: 16px;
+  }
+</style>
+<body class="gray-bg">
+  <div class="container-div">
+    <div class="col-sm-12 select-info">
+      <form id="tissue-form">
+        <div class="select-list">
+          <ul>
+            <li>
+              <span class="select-item-name">出纸设备：</span>
+              <input type="text" name="deviceSn" id="deviceSn"/>
+            </li>
+            <li class="select-time">
+              <label>出纸时间： </label>
+              <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+              <span>-</span>
+              <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+            </li>
+            <li class="select-btns">
+              <a class="btn btn-primary btn-rounded btn-sm" onclick="tissueSearch()"><i class="fa fa-search"></i>&nbsp;搜索
+              </a>
+              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置
+              </a>
+              <a class="btn btn-success btn-rounded btn-sm" onclick="exportExcel()">
+                <i class="fa fa-download"></i>&nbsp;导出
+              </a>
+            </li>
+          </ul>
+        </div>
+      </form>
+    </div>
+    <div class="btn-group hidden-xs" id="toolbar" role="group">
+    <!--  
+      <a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="business:tissueRecord:add">
+        <i class="fa fa-plus"></i> 新增
+      </a>
+      <a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="business:tissueRecord:remove">
+        <i class="fa fa-trash-o"></i> 删除
+      </a>
+      -->
+    </div>
+
+    <div class="col-sm-12 select-table table-striped">
+      <table id="bootstrap-table" data-mobile-responsive="true"></table>
+    </div>
+  </div>
+  <div th:include="include :: footer"></div>
+  <script th:inline="javascript">
+    var prefix = ctx + 'business/tissueRecord';
+
+    $(function () {
+    	
+      //加载统计数据
+      tissueSearch();
+
+      var options = {
+        url      : prefix + '/tissueDataList',
+        search    : false,
+        showExport: false,
+        modalName: '有效出纸统计',
+        columns  : [
+          {
+            checkbox: true
+          },
+          {
+            field: 'deviceCode',
+            title: '设备编码'
+          },
+          {
+            field: 'adName',
+            title: '广告名称'
+          },
+          {
+            field: 'tissueDate',
+            title: '广告日期'
+          },
+          {
+              field: 'nickName',
+              title: '微信昵称'
+           },
+          {
+            field: 'tissueCnt',
+            title: '有效出纸次数'
+          }
+          ]
+      };
+      $.table.init(options);
+    });
+
+  	//导出Excel
+    function exportExcel(){
+    	$.modal.confirm("确认导出？", function() {
+    		var startTime = $("#startTime").val();
+    		var endTime = $("#endTime").val();
+    		var deviceSn = $("#deviceSn").val();
+			location.href = ctx + "business/tissueRecord/excelExportData?&beginTime="+startTime+'&endTime='+endTime+'&deviceSn='+deviceSn;
+    		//$.modal.alert("导出成功!");
+		});
+    }
+  	
+  	//搜索查询
+    function tissueSearch(){
+    	$.table.search();
+  	}
+  </script>
+</body>
+</html>

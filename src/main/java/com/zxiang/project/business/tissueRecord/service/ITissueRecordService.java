@@ -67,5 +67,10 @@ public interface ITissueRecordService
 	public Map<String, Object> tissueCount(HashMap<String, String> params);
 	
 	public int selectTotal(Map<String,Object> map);
+
+	public void queryExportData(HashMap<String, String> params, HttpServletRequest request,
+			HttpServletResponse response) throws Exception;
+
+	public List<HashMap<String, Object>> selectTissueDataList(TissueRecord tissueRecord);
 	
 }
