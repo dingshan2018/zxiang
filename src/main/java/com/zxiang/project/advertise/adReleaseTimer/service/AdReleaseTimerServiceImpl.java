@@ -1,5 +1,6 @@
 package com.zxiang.project.advertise.adReleaseTimer.service;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import com.zxiang.project.advertise.utils.constant.AdConstant;
 @Service
 public class AdReleaseTimerServiceImpl implements IAdReleaseTimerService 
 {
+	private SimpleDateFormat yyyyMMddSFormat = new SimpleDateFormat("yyyy-MM-dd");
 	@Autowired
 	private AdReleaseTimerMapper adReleaseTimerMapper;
 	@Autowired
@@ -82,7 +84,17 @@ public class AdReleaseTimerServiceImpl implements IAdReleaseTimerService
 	{
 		AdSchedule schedule = adScheduleMapper.selectAdScheduleById(adReleaseTimer.getAdScheduleId());
 		if("01".equals(schedule.getReleasePosition())) {
-			schedule.setPayStatus(AdConstant.AD_WAIT_PAY);
+			AdReleaseTimer timerParam = new AdReleaseTimer();
+			timerParam.setAdScheduleId(adReleaseTimer.getAdScheduleId());
+			List<AdReleaseTimer> releaseTimers = this.adReleaseTimerMapper.selectAdReleaseTimerList(timerParam);
+			if(releaseTimers!=null && releaseTimers.size()>0) {
+				Integer days = 0;
+				for(AdReleaseTimer releaseTimer :releaseTimers) {
+					days += differentDaysByMillisecond(releaseTimer.getReleaseBeginTime(), releaseTimer.getReleaseEndTime());
+				}
+				schedule.setReleaseDays(days);
+			}
+			schedule.setPayStatus(AdConstant.AD_HAS_PAY);
 			schedule.setReleaseStatus(AdConstant.AD_WAIT_REPUBLISH);
 			schedule.setUpdateBy(ShiroUtils.getLoginName());
 			schedule.setUpdateTime(new Date());
@@ -91,6 +103,12 @@ public class AdReleaseTimerServiceImpl implements IAdReleaseTimerService
 	    return adReleaseTimerMapper.updateAdReleaseTimer(adReleaseTimer);
 	}
 
+	public int differentDaysByMillisecond(Date date1, Date date2) {
+		int days = (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
+		// 在获得的绝对差天数上加1天
+		return days + 1;
+	}
+	
 	/**
      * 删除广告投放时段对象
      * 

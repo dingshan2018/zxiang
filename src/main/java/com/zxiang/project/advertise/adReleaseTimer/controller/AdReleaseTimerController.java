@@ -169,7 +169,7 @@ public class AdReleaseTimerController extends BaseController
 		Boolean repeatTime = false;
 		if(releaseTimers!=null && releaseTimers.size()>0) {
 			for(AdReleaseTimer timer : releaseTimers) {
-				if(timer.getAdReleaseTimerId() == adReleaseTimer.getAdReleaseTimerId()) {
+				if(timer.getAdReleaseTimerId().intValue() == adReleaseTimer.getAdReleaseTimerId().intValue()) {
 					if(timer.getReleaseBeginTime().getTime()<=new Date().getTime()) {
 						adReleaseTimer.setReleaseBeginTime(timer.getReleaseBeginTime());
 					}

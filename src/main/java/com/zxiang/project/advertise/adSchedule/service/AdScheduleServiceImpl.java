@@ -643,8 +643,10 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 
 				AdReleaseTimer adReleaseTimer = new AdReleaseTimer();
 				adReleaseTimer.setAdScheduleId(adScheduleId);
-				adReleaseTimer.setReleaseBeginTime(yyyyMMddSFormat.parse(beginTime));
-				adReleaseTimer.setReleaseEndTime(yyyyMMddSFormat.parse(lastTime));
+				adReleaseTimer.setReleaseBeginTime(
+						new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(beginTime + " 00:00:00"));
+				adReleaseTimer.setReleaseEndTime(
+								new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(lastTime + " 23:59:59"));
 				adReleaseTimer.setCreateBy(operatorUser);
 				adReleaseTimer.setCreateTime(createDate);
 				adReleaseTimerMapper.insertAdReleaseTimer(adReleaseTimer);
@@ -785,7 +787,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 			// 5.修改广告计划数据
 			// 投放终端数
 			adSchedule.setReleaseTermNum(deviceNum);
-
+			adSchedule.setReleaseDays(days);
 			return updateAdSchedule(adSchedule);
 
 		} catch (Exception e) {

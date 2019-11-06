@@ -96,18 +96,6 @@
 	        minView:2,
 	        showMeridian: 1,
 	        minuteStep: 1
-	      }).on('changeDate', function(ev){
-          if (ev.target.name === "beginTime") {
-            var endTime = $("[name=\"endTime\"]").eq(0);
-            if (endTime.val() && new Date(endTime.val()) < ev.date) {
-              endTime.val("");
-            }
-            endTime.datetimepicker('setStartDate',ev.date);
-            
-            $("[name=\"releaseBeginTime\"]").val(ev.date)
-          }else{
-        	$("[name=\"releaseEndTime\"]").val(ev.date) 
-          }
 	      });
 	    }
 	    initDateTimePicker();
