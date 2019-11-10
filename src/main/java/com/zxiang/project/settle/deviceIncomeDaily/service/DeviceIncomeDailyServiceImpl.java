@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.druid.util.StringUtils;
+import com.github.pagehelper.util.StringUtil;
 import com.zxiang.common.constant.Const;
 import com.zxiang.common.constant.RateConstants;
 import com.zxiang.common.constant.UserConstants;
@@ -37,6 +38,8 @@ import com.zxiang.project.client.join.domain.Join;
 import com.zxiang.project.client.join.mapper.JoinMapper;
 import com.zxiang.project.client.repair.domain.Repair;
 import com.zxiang.project.client.repair.mapper.RepairMapper;
+import com.zxiang.project.client.shopper.domain.Shopper;
+import com.zxiang.project.client.shopper.mapper.ShopperMapper;
 import com.zxiang.project.settle.deviceIncomeDaily.domain.DeviceIncomeDaily;
 import com.zxiang.project.settle.deviceIncomeDaily.mapper.DeviceIncomeDailyMapper;
 import com.zxiang.project.settle.userExtension.domain.UserExtension;
@@ -85,6 +88,8 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	private TissueRecordMapper tissueRecordMapper;
 	@Autowired
 	private DeviceMapper deviceMapper;
+	@Autowired
+	private ShopperMapper shopperMapper;
 	/**
      * 查询设备收入日统计信息
      * 
@@ -217,7 +222,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				HashMap<String, Object> order = orderlist.get(0);
 				String buyer_id = device.get("owner_id")+"";//机主
 				String isincome = order.get("isincome")+""; //是否是当天售出
-				
+				String shopper_id = device.get("shopper_id")+"";//店主
 				List<HashMap<String, Object>> tissuenumlist= selectzxtissuerecordlist(device.get("device_id")+"",""); //出纸数量
 				int tissuenum = tissuenumlist.size();
 				int tissuenumAll = selectzxtissuerecordAll(device.get("device_id")+"");
@@ -229,10 +234,10 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 						promotionerh5 = tissuenumlist.get(0).get("promotioner").toString();
 					}
 					//计算每日出纸费用
-					tissuedata(device,buyer_id,tissuenumAll,tissuenum,promotionerh5);
+					tissuedata(device,buyer_id,tissuenumAll,tissuenum,promotionerh5,shopper_id);
 				}
 				//计算广告费用
-				addata(device,buyer_id,tissuenum);
+				addata(device,buyer_id,tissuenum,shopper_id);
 			}
 			//增加每日统计出纸次数
 			Device deviceEntity = deviceMapper.selectDeviceById(Integer.parseInt(device.get("device_id")+""));
@@ -405,7 +410,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	/**
 	 * 计算每日出纸费用服务收益
 	 * */
-	public void tissueCurdata(HashMap<String, Object> map,String buyerid,int tissuenumAll,int tissuenum,String promotionerh5,Date currentTime) {
+	public void tissueCurdata(HashMap<String, Object> map,String buyerid,int tissuenumAll,int tissuenum,String promotionerh5,Date currentTime,String shopperId) {
 		//获取机主的信息
 		HashMap<String, Object> user = getusedata(buyerid,"","");
 		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
@@ -488,6 +493,14 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	   					   }
 	   					   
 	   				 }
+	   			     //新增店主出纸收益
+	   				 if(StringUtil.isNotEmpty(shopperId)) {
+	   					HashMap<String,Object> shopper = getusedata("",shopperId,UserConstants.USER_TYPE_SHOPPER);
+		   				 if(shopper!=null) {
+		   					 rate = Double.valueOf(shopper.get("scanRate") == null? "0.0":shopper.get("scanRate")+"");
+		   					 insertCurdata(rate*tissuenumAll,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenumAll,shopper,currentTime);
+		   				 }
+	   				 }
 				}
 			}
 		
@@ -529,7 +542,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	/**
 	 * 计算每日出纸费用服务收益
 	 * */
-	public void tissuedata(HashMap<String, Object> map,String buyerid,int tissuenumAll,int tissuenum,String promotionerh5) {
+	public void tissuedata(HashMap<String, Object> map,String buyerid,int tissuenumAll,int tissuenum,String promotionerh5,String shopperId) {
 		//获取机主的信息
 		HashMap<String, Object> user = getusedata(buyerid,"","");
 		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
@@ -610,8 +623,16 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	   						   rate = Double.valueOf(user.get("scanRate")==null?"0.0":user.get("scanRate")+"");
 		   					   insertdata(rate*tissuenumAll,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenumAll,user);
 	   					   }
-	   					   
 	   				 }
+	   				 //新增店主出纸收益
+	   				 if(StringUtil.isNotEmpty(shopperId)) {
+	   					HashMap<String,Object> shopper = getusedata("",shopperId,UserConstants.USER_TYPE_SHOPPER);
+		   				 if(shopper!=null) {
+		   					 rate = Double.valueOf(shopper.get("scanRate") == null? "0.0":shopper.get("scanRate")+"");
+		   					 insertdata(rate*tissuenumAll,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenumAll,shopper);
+		   				 }
+	   				 }
+	   				 
 				}
 			}
 		
@@ -651,7 +672,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	/**
 	 * 计算广告费用
 	 * */
-	public void addata(HashMap<String, Object> map,String buyerid,int tissuenum) {
+	public void addata(HashMap<String, Object> map,String buyerid,int tissuenum,String shopperId) {
 		boolean isplace = false;
 		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
 		HashMap<String, Object> placemap =  null;
@@ -725,6 +746,14 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 						   rate = Double.valueOf(user.get("adCarouselRate")==null?"0.0":user.get("adCarouselRate")+"");
 						   insertdata(rate*price,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,user);
 					 }
+					 //店主
+					 if(StringUtil.isNotEmpty(shopperId)) {
+		   					HashMap<String,Object> shopper = getusedata("",shopperId,UserConstants.USER_TYPE_SHOPPER);
+			   				 if(shopper!=null) {
+			   					 rate = Double.valueOf(shopper.get("adCarouselRate") == null? "0.0":shopper.get("adCarouselRate")+"");
+			   					 insertdata(rate*price,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,shopper);
+			   				 }
+		   			}
 				}
 				break;
 			case "02":
@@ -767,6 +796,13 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		   					  insertdata(rate*price,"01",RateConstants.RATETYPE_ADINCOME,price,0,user);
 	   					   }
 	   				 }
+	   				if(StringUtil.isNotEmpty(shopperId)) {
+	   					HashMap<String,Object> shopper = getusedata("",shopperId,UserConstants.USER_TYPE_SHOPPER);
+		   				 if(shopper!=null) {
+		   					 rate = Double.valueOf(shopper.get("adRate") == null? "0.0":shopper.get("adRate")+"");
+		   					 insertdata(rate*price,"01",RateConstants.RATETYPE_ADINCOME,price,0,shopper);
+		   				 }
+	   			}
 				}
 				break;
 			default:
@@ -796,7 +832,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	/**
 	 * 计算广告费用
 	 * */
-	public void adCurdata(HashMap<String, Object> map,String buyerid,int tissuenum,Date currentTime) {
+	public void adCurdata(HashMap<String, Object> map,String buyerid,int tissuenum,Date currentTime,String shopperId) {
 		boolean isplace = false;
 		int deviceId = Integer.valueOf(map.get("device_id")+""); //设备id
 		HashMap<String, Object> placemap =  null;
@@ -872,6 +908,14 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 							   rate = Double.valueOf(user.get("adCarouselRate")==null?"0.0":user.get("adCarouselRate")+"");
 							   insertCurdata(rate*price,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,user,currentTime);
 						 }
+						 //新增店主出纸收益
+		   				 if(StringUtil.isNotEmpty(shopperId)) {
+		   					HashMap<String,Object> shopper = getusedata("",shopperId,UserConstants.USER_TYPE_SHOPPER);
+			   				 if(shopper!=null) {
+			   					 rate = Double.valueOf(shopper.get("adCarouselRate") == null? "0.0":shopper.get("adCarouselRate")+"");
+			   					 insertCurdata(rate*price,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,shopper,currentTime);
+			   				 }
+		   				 }
 					}
 					break;
 				case "02":
@@ -913,6 +957,14 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		   						  rate = Double.valueOf(user.get("adRate")==null?"0.0":user.get("adRate")+"");
 			   					  insertCurdata(rate*price,"01",RateConstants.RATETYPE_ADINCOME,price,0,user,currentTime);
 		   					   }
+		   				 }
+		   			//新增店主出纸收益
+		   				 if(StringUtil.isNotEmpty(shopperId)) {
+		   					HashMap<String,Object> shopper = getusedata("",shopperId,UserConstants.USER_TYPE_SHOPPER);
+			   				 if(shopper!=null) {
+			   					 rate = Double.valueOf(shopper.get("adRate") == null? "0.0":shopper.get("adRate")+"");
+			   					insertCurdata(rate*price,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,shopper,currentTime);
+			   				 }
 		   				 }
 					}
 					break;
@@ -1068,6 +1120,9 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		}else if(user_type.equals(UserConstants.USER_TYPE_AGENT)) {
 			puser.put("agentId", puser_id);
 			user=iUserIncomeService.selectzxagent(puser);
+		}else if(user_type.equals(UserConstants.USER_TYPE_SHOPPER)) {
+			puser.put("shopperId", puser_id);
+			user=iUserIncomeService.selectShopperlist(puser);
 		}
 		if(user.size()>0) {
 			HashMap<String, Object> userdata =  user.get(0);
@@ -1347,7 +1402,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				HashMap<String, Object> order = orderlist.get(0);
 				String buyer_id = device.get("owner_id")+"";//机主
 				String isincome = order.get("isincome")+""; //是否是当天售出
-				
+				String shopper_id = device.get("shopper_id")+"";
 				HashMap<String,Object> tissueMap = new HashMap<String,Object>();
 				tissueMap.put("deviceId", device.get("device_id"));
 				tissueMap.put("scheduleId", "");
@@ -1366,10 +1421,10 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 						promotionerh5 = tissuenumlist.get(0).get("promotioner").toString();
 					}
 					//计算每日出纸费用
-					tissueCurdata(device,buyer_id,tissuenumAll,tissuenum,promotionerh5,currentTime);
+					tissueCurdata(device,buyer_id,tissuenumAll,tissuenum,promotionerh5,currentTime,shopper_id);
 				}
 				//计算广告费用
-				adCurdata(device,buyer_id,tissuenum,currentTime);
+				adCurdata(device,buyer_id,tissuenum,currentTime,shopper_id);
 			}
 		}
 		//需要推广代理人（查询前一天加入代理商）
@@ -1594,7 +1649,23 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 					balance = advertise.getBalance() == null ? money : advertise.getBalance().add(money);
 					frozenBalance = advertise.getFrozenBalance() == null ? new BigDecimal(0) : advertise.getFrozenBalance();
 					advertiseMapper.updateBalance(clientId, balance, null);
-				} else {
+				} else if(UserConstants.USER_TYPE_SHOPPER.equals(clientType)) { // 店主
+					Shopper shopper = shopperMapper.selectShopperById(clientId);
+					if(shopper == null) {
+						throw new RRException("未找到客户，clientId："+clientId+",clientType："+clientType);
+					}
+					if(!clientMap.containsKey(key)) {
+						lastfundLog.setClientId(clientId);
+						lastfundLog.setClientType(clientType);
+						FundLog lastAdvertiseLog = this.fundLogMapper.selectLastFundLog(lastfundLog);
+						shopper.setBalance(new BigDecimal(lastAdvertiseLog!=null?lastAdvertiseLog.getTotalBalance():"0.0"));
+						shopper.setFrozenBalance(new BigDecimal(lastAdvertiseLog!=null?lastAdvertiseLog.getFreezeBalance():"0.0"));
+						clientMap.put(key,shopper);
+					}
+					balance = shopper.getBalance() == null ? money : shopper.getBalance().add(money);
+					frozenBalance = shopper.getFrozenBalance() == null ? new BigDecimal(0) : shopper.getFrozenBalance();
+					shopperMapper.updateBalance(clientId, balance, null);
+				}else {
 					throw new RRException("客户类型有误，clientType："+clientType);
 				}
 				wrongFundLog.setTotalBalance(balance.toString());

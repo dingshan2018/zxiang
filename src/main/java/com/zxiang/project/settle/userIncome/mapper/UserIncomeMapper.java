@@ -129,4 +129,6 @@ public interface UserIncomeMapper
 	 * @return
 	 */
 	public List<HashMap<String, Object>> selectCurUsertotalIncome(HashMap<String,Object> param);
+
+	public List<HashMap<String, Object>> selectShopperlist(HashMap<String, Object> map);
 }

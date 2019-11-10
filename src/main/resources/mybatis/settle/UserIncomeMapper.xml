@@ -705,6 +705,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  AND repair_id= #{repairId} 
 		</if>
     </select>
+    
+     <select id="selectShopperlist"  resultType="java.util.HashMap">
+	   SELECT
+	     shopper_id    leader_id,
+	     manager_id coperatorId,
+         manager_name coperatorName, 
+		 ad_rate adRate,
+		 ad_carousel_rate adCarouselRate,
+		 scan_rate  scanRate,
+		 prom_direct_rate promDirectRate,
+		 prom_indirect_rate  promIndirectRate,
+		 prom_paper_rate promPaperRate,
+		 promotion_rate promotionRate,
+		 0.0 directAgentRate,
+		 0.0 serveRate,
+		 subsidy_rate subsidyRate
+		FROM
+		  zx_shopper 
+		WHERE 1=1 
+		<if test="shopperId != null and shopperId != ''">
+		  AND shopper_id= #{shopperId} 
+		</if>
+    </select>
      <!-- 服务网点地区 -->
     <select id="selectzxrepairarealist"  resultType="java.util.HashMap">
 	  SELECT 

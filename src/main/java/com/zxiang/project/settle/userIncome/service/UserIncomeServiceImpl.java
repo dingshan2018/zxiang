@@ -129,6 +129,11 @@ public class UserIncomeServiceImpl implements IUserIncomeService
 	public List<HashMap<String, Object>> selectzxrepairlist(HashMap<String, Object> map) {
 		return userIncomeMapper.selectzxrepairlist(map);
 	}
+	
+	@Override
+	public List<HashMap<String, Object>> selectShopperlist(HashMap<String, Object> map) {
+		return userIncomeMapper.selectShopperlist(map);
+	}
 
 	@Override
 	public List<HashMap<String, Object>> selectzxrepairarealist(HashMap<String, Object> map) {
