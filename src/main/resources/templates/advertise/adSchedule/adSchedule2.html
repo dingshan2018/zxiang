@@ -333,7 +333,7 @@
                     if(row.payStatus=='0'){
                     	actions.push('<a class="btn btn-warning btn-xs " onclick="adPayByAccount(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>支付</a> ');
                     }
-                    if(row.releaseStatus == '0'){
+                    if(row.releaseStatus == '0' && (row.status == '05' || row.status == '06')){
                     	actions.push('<a class="btn btn-warning btn-xs ' + republishFlag + '" onclick="republish(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>播放</a> ');
                     }
                     if(row.releaseStatus == '1'){

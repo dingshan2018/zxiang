@@ -162,7 +162,7 @@
         		$.modal.alertWarning("请选择一条记录");
     			return;
         	}
-    		var url = ctx + "client/fundLog/06/"+rowsData[0].joinId;
+    		var url = ctx + "client/fundLog/06/"+rowsData[0].shopperId;
             createMenuItem(url, $.table._option.modalName+'资金流水管理');
         }
         function getMoney(clientId,bankAccount,bankReceiver,bankName){

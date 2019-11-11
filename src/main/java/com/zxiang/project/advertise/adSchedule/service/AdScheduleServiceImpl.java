@@ -1319,6 +1319,10 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		if(param.containsKey("monitorNotifyUrl")) {
 			paramsMap.put("monitorNotifyUrl", param.get("monitorNotifyUrl").toString());
 		}
+		if(param.containsKey("eachPeriod")) {
+			Integer eachPeriod = Integer.parseInt(param.get("eachPeriod").toString());
+			paramsMap.put("spaceTime", eachPeriod*1000+"");
+		}
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("scheduleInfo", JSONObject.toJSONString(paramsMap));
 		String reqParam = Tools.paramsToString(paramMap);
