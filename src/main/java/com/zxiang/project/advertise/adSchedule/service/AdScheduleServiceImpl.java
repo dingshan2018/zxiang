@@ -39,6 +39,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.DateUtils;
 import com.zxiang.common.utils.StringUtils;
 import com.zxiang.common.utils.excel.EXCELObject;
 import com.zxiang.project.advertise.adMaterial.domain.AdMaterial;
@@ -266,7 +267,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				scheduleMap.put("scheduleType", adSchedule.getScheduleType());
 				scheduleMap.put("scheduleName", adSchedule.getScheduleName());
 				if(StringUtils.isNotBlank(adSchedule.getEachPeriod())) {
-					scheduleMap.put("eachPeriod", adSchedule.getEachPeriod());
+					Integer eachPeriod = Integer.parseInt(adSchedule.getEachPeriod())*1000;
+					scheduleMap.put("eachPeriod", eachPeriod);
 				}
 				String rspSchedule = saveSchedule(scheduleMap);
 				if(StringUtils.isNotEmpty(rspSchedule)) {
@@ -960,6 +962,12 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		String qrUrl = ad.getQrUrl();
 
 		if (AdConstant.RELEASE_TYPE_TERMINAL.equals(releasePosition)) {
+			AdMaterial adMaterialParam = new AdMaterial();
+			adMaterialParam.setAdScheduleId(adScheduleId);
+		    List<AdMaterial> materials = this.adMaterialMapper.selectAdMaterialList2(adMaterialParam);
+		    if(materials==null || materials.size()<=0) {
+		    	throw new RRException("素材未传，无法发布");
+		    }
 			// 1.发布时下发排期计划
 			String result = publishSchedule2(ad);
 			// 返回结果封装
@@ -1559,7 +1567,13 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				adDates.add(adDate);
 			}
 		}
-		if(adDates.size()<=0) {
+		if("2".equals(adSchedule.getScheduleType())) {
+			HashMap<String,Object> adDate = new HashMap<String,Object>();
+			adDate.put("beginDate", apiYYYYMMDDHHmmssFormat.format(DateUtils.getDate()));
+			adDate.put("endDate", "2099-12-31 23:59:59");
+			adDates.clear();
+			adDates.add(adDate);
+		}else if(adDates.size()<=0) {
 			throw new Exception("发布时间未设置");
 		}
 		

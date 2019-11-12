@@ -16,10 +16,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="playCnt"    column="play_cnt"    />
     </resultMap>
 	
 	<sql id="selectAdReleaseRecordVo">
-        select release_device_id, schedule_id,
+        select release_device_id, schedule_id,play_cnt,
         (select distinct zas.schedule_name from zx_ad_schedule zas where zarr.schedule_id =zas.`ad_schedule_id` ) scheduleName,
          sx_schedule_id, device_id, 
          (select distinct d.device_sn from zx_device d where zarr.device_id =d.`device_id` ) deviceSn,
@@ -27,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 	
 	<sql id="selectAdReleaseRecordVos">
-        select a.release_device_id, a.schedule_id, 
+        select a.release_device_id, a.schedule_id,a.play_cnt, 
         (SELECT DISTINCT zas.schedule_name FROM zx_ad_schedule zas WHERE a.schedule_id =zas.`ad_schedule_id` ) scheduleName,    
         a.sx_schedule_id, a.device_id, 
         (SELECT DISTINCT d.device_sn FROM zx_device d WHERE a.device_id =d.`device_id` ) deviceSn,
@@ -101,22 +102,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="playTime != null and playTime != '' ">play_time,</if>
 			<if test="price != null and price != '' ">price,</if>
 			<if test="createBy != null and createBy != '' ">create_by,</if>
-			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="createTime != null  ">create_time,</if>
 			<if test="updateBy != null and updateBy != '' ">update_by,</if>
-			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+			<if test="updateTime != null ">update_time,</if>
+			<if test="playCnt != null ">play_cnt,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="releaseDeviceId != null and releaseDeviceId != ''">#{releaseDeviceId},</if>
 			<if test="scheduleId != null and scheduleId != ''">#{scheduleId},</if>
 			<if test="sxScheduleId != null and sxScheduleId != ''">#{sxScheduleId},</if>
 			<if test="deviceId != null and deviceId != ''">#{deviceId},</if>
-			<if test="downTime != null and downTime != ''">#{downTime},</if>
-			<if test="playTime != null and playTime != ''">#{playTime},</if>
+			<if test="downTime != null ">#{downTime},</if>
+			<if test="playTime != null ">#{playTime},</if>
 			<if test="price != null and price != ''">#{price},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
-			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="createTime != null ">#{createTime},</if>
 			<if test="updateBy != null and updateBy != ''">#{updateBy},</if>
-			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+			<if test="updateTime != null ">#{updateTime},</if>
+			<if test="playCnt != null ">#{playCnt},</if>
          </trim>
     </insert>
 	 
@@ -133,6 +136,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="playCnt != null ">play_cnt=#{playCnt},</if>
         </trim>
         where release_device_id = #{releaseDeviceId}
     </update>

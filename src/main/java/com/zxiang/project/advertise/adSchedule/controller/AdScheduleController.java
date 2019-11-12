@@ -135,12 +135,12 @@ public class AdScheduleController extends BaseController
 	@GetMapping("/add")
 	public String add(ModelMap mmap)
 	{
-		List<ThemeTemplate> ThemeTemplateList = adScheduleService.getThemeList();
-		mmap.put("ThemeTemplateList", ThemeTemplateList);
+//		List<ThemeTemplate> ThemeTemplateList = adScheduleService.getThemeList();
+//		mmap.put("ThemeTemplateList", ThemeTemplateList);
 		mmap.put("advertiserList", advertiseMapper.selectAdvertiseList(new Advertise()));
 		//推荐人下拉框
 		List<User> userList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,UserConstants.USER_TYPE_PARTNER,
-				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);
+				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR,UserConstants.USER_TYPE_SHOPPER);
 		mmap.put("promotionerList", userList);
 		
 	    return prefix + "/add2";
@@ -162,8 +162,22 @@ public class AdScheduleController extends BaseController
 //			if("3".equals(adSchedule.getScheduleType())) {
 //				throw new RRException("手机广告，请在公众号进行投放");
 //			}
-			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
 			adSchedule.setStatus(AdConstant.AD_WAIT_ORDER);//待预约
+			if("3".equals(adSchedule.getScheduleType())) {
+				String eachPeriod = adSchedule.getEachPeriod();
+				if(StringUtils.isBlank(eachPeriod)) {
+					throw new RRException("广告周期未填");
+				}
+				Integer eachPeriodSeconds = Integer.parseInt(eachPeriod);
+				if(eachPeriodSeconds<60) {
+					throw new RRException("广告周期间隔太小，最小60秒");
+				}
+			}else if("2".equals(adSchedule.getScheduleType())) {
+				adSchedule.setStatus(AdConstant.AD_WAIT_PUBLISH);//待发布
+			}
+			
+			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
+			
 			adSchedule.setCreateBy(operatorUser);
 			adSchedule.setCreateTime(new Date());
 			adSchedule.setIsDel("0");

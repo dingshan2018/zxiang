@@ -43,6 +43,8 @@ public class AdReleaseRecord extends BaseEntity
 	
 	private String userId;
 	
+	private Integer playCnt;
+	
 	
 	public void setReleaseDeviceId(Integer releaseDeviceId) 
 	{
@@ -184,4 +186,12 @@ public class AdReleaseRecord extends BaseEntity
             .append("updateTime", getUpdateTime())
             .toString();
     }
+
+	public Integer getPlayCnt() {
+		return playCnt;
+	}
+
+	public void setPlayCnt(Integer playCnt) {
+		this.playCnt = playCnt;
+	}
 }
