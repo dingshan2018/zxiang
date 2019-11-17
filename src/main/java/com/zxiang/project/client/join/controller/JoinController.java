@@ -91,7 +91,7 @@ public class JoinController extends BaseController {
 		Join join = joinService.selectJoinById(joinId);
 		mmap.put("join", join);
 		List<User> payUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
-				UserConstants.USER_TYPE_AGENT, UserConstants.USER_TYPE_JOIN, UserConstants.USER_TYPE_REPAIR);
+				UserConstants.USER_TYPE_AGENT, UserConstants.USER_TYPE_JOIN, UserConstants.USER_TYPE_REPAIR, UserConstants.USER_TYPE_SHOPPER);
 		mmap.put("payUserList", payUserList); // 购机推荐人
 		return prefix + "/edit";
 	}

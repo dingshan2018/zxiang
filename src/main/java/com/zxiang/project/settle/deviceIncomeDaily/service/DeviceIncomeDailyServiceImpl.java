@@ -688,13 +688,15 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			HashMap<String, Object> selecadschedule = selecadschedulelist(Integer.valueOf(releaserecord.get("schedule_id").toString()));
 			String release_type = selecadschedule.get("release_position").toString(); //投放方式01终端轮播  02终端视频  03H5广告       (二维码广告还分公司（免费）和外部)
 			boolean ispromotioner = true; 
-			int	 promotioner = 0;
-			HashMap<String, Object> user = null ;
-			if(com.zxiang.common.utils.StringUtils.isNull(selecadschedule.get("promotioner"))) {
-				ispromotioner = false;
+			HashMap<String, Object> user = getusedata(buyerid,"","");
+			if(user.get("leader_id") !=null && user.get("leader_id") !="" ){ //直推人
+				//获取推荐人人员信息
+				user = getusedata(user.get("leader_id")+"","","");
+				if(!com.zxiang.common.utils.StringUtils.isNotNull(user)){
+					ispromotioner = false;
+				}
 			}else {
-				 promotioner = Integer.valueOf(selecadschedule.get("promotioner")+""); //推荐人
-				 user = getusedata(promotioner+"","","");
+				ispromotioner = false;
 			}
 			HashMap<String, Object> promotionagenmap = new HashMap<String, Object>();
 			HashMap<String, Object> repairmap = new HashMap<String, Object>();
@@ -705,6 +707,7 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			switch (release_type) {
 			case "01":
 				//--------------推广收益-----------------------
+				
 				if(ispromotioner) {
 					if(user!=null) {
 						rate = Double.valueOf(user.get("promotionRate")==null?"0.0":user.get("promotionRate")+"");
@@ -850,13 +853,15 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			if(selecadschedule!=null) {
 				String release_type = selecadschedule.get("release_position").toString(); //投放方式01终端轮播  02终端视频  03H5广告       (二维码广告还分公司（免费）和外部)
 				boolean ispromotioner = true; 
-				int	 promotioner = 0;
-				HashMap<String, Object> user = null ;
-				if(com.zxiang.common.utils.StringUtils.isNull(selecadschedule.get("promotioner"))) {
-					ispromotioner = false;
+				HashMap<String, Object> user = getusedata(buyerid,"","");
+				if(user.get("leader_id") !=null && user.get("leader_id") !="" ){ //直推人
+					//获取推荐人人员信息
+					user = getusedata(user.get("leader_id")+"","","");
+					if(!com.zxiang.common.utils.StringUtils.isNotNull(user)){
+						ispromotioner = false;
+					}
 				}else {
-					 promotioner = Integer.valueOf(selecadschedule.get("promotioner")+""); //推荐人
-					 user = getusedata(promotioner+"","","");
+					ispromotioner = false;
 				}
 				HashMap<String, Object> promotionagenmap = new HashMap<String, Object>();
 				HashMap<String, Object> repairmap = new HashMap<String, Object>();
