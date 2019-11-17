@@ -1,5 +1,6 @@
 package com.zxiang.project.client.repair.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -93,8 +94,17 @@ public class RepairController extends BaseController {
 		Repair repair = repairService.selectRepairById(repairId);
 		mmap.put("repair", repair);
 		List<User> payUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
-				UserConstants.USER_TYPE_AGENT, UserConstants.USER_TYPE_JOIN, UserConstants.USER_TYPE_REPAIR);
-		mmap.put("payUserList", payUserList); // 购机推荐人
+				UserConstants.USER_TYPE_AGENT, UserConstants.USER_TYPE_JOIN, UserConstants.USER_TYPE_REPAIR,UserConstants.USER_TYPE_SHOPPER);
+		List<User> nPayUserList = new ArrayList<User>();
+		if(payUserList!=null && payUserList.size()>0) {
+			for(User payUser :payUserList) {
+				if(payUser.getPuserId().intValue()==repair.getRepairId().intValue() && payUser.getUserType().equals("04")) {
+					continue;
+				}
+				nPayUserList.add(payUser);
+			}
+		}
+		mmap.put("payUserList", nPayUserList); // 购机推荐人
 		return prefix + "/edit";
 	}
 

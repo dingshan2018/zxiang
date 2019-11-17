@@ -1,5 +1,6 @@
 package com.zxiang.project.client.join.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -92,7 +93,16 @@ public class JoinController extends BaseController {
 		mmap.put("join", join);
 		List<User> payUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
 				UserConstants.USER_TYPE_AGENT, UserConstants.USER_TYPE_JOIN, UserConstants.USER_TYPE_REPAIR, UserConstants.USER_TYPE_SHOPPER);
-		mmap.put("payUserList", payUserList); // 购机推荐人
+		List<User> nPayUserList = new ArrayList<User>();
+		if(payUserList!=null && payUserList.size()>0) {
+			for(User payUser :payUserList) {
+				if(payUser.getPuserId().intValue()==join.getJoinId().intValue() && payUser.getUserType().equals("02")) {
+					continue;
+				}
+				nPayUserList.add(payUser);
+			}
+		}
+		mmap.put("payUserList", nPayUserList); // 购机推荐人
 		return prefix + "/edit";
 	}
 

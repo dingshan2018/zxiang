@@ -135,7 +135,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach> 
  	</delete>
  	<select id="selectUserListByUserType" parameterType="String" resultType="User">
- 		select user_id as userId,user_name as userName,phonenumber,puser_id as puserId,user_type as userType from sys_user where del_flag !=2 AND user_type in
+ 		select user_id as userId,CONCAT(user_name,'(',phonenumber,')') as userName,phonenumber,puser_id as puserId,user_type as userType from sys_user where del_flag !=2 AND user_type in
  		<foreach collection="array" item="userTypes" open="(" separator="," close=")">
  			#{userTypes}
         </foreach> 
