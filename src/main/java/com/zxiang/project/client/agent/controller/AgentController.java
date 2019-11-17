@@ -114,7 +114,16 @@ public class AgentController extends BaseController {
 		mmap.put("userList", userList);
 		List<User> payUserList = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,
 				UserConstants.USER_TYPE_AGENT, UserConstants.USER_TYPE_JOIN, UserConstants.USER_TYPE_REPAIR);
-		mmap.put("payUserList", payUserList); // 购机推荐人
+		List<User> nPayUserList = new ArrayList<User>();
+		if(payUserList!=null && payUserList.size()>0) {
+			for(User payUser :payUserList) {
+				if(payUser.getPuserId().intValue()==agent.getAgentId().intValue() && payUser.getUserType().equals("03")) {
+					continue;
+				}
+				nPayUserList.add(payUser);
+			}
+		}
+		mmap.put("payUserList", nPayUserList); // 购机推荐人
 		return prefix + "/edit";
 	}
 
