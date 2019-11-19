@@ -87,8 +87,8 @@ public class ReleaseDeviceServiceImpl implements IReleaseDeviceService
 		ReleaseDevice releaseDevice = releaseDeviceMapper.selectReleaseDeviceById(Integer.parseInt(Convert.toStrArray(ids)[0]));
 		AdSchedule schedule = adScheduleMapper.selectAdScheduleById(releaseDevice.getScheduleId());
 		if("01".equals(schedule.getReleasePosition())) {
-			schedule.setPayStatus("0");
-			schedule.setReleaseStatus("0");
+			schedule.setPayStatus(AdConstant.AD_HAS_PAY);
+			schedule.setReleaseStatus(AdConstant.AD_WAIT_REPUBLISH);
 			schedule.setUpdateBy(ShiroUtils.getLoginName());
 			schedule.setUpdateTime(new Date());
 			adScheduleMapper.updateAdSchedule(schedule);

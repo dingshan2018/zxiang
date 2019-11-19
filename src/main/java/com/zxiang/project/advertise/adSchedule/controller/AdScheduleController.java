@@ -173,6 +173,8 @@ public class AdScheduleController extends BaseController
 					throw new RRException("广告周期间隔太小，最小60秒");
 				}
 			}else if("2".equals(adSchedule.getScheduleType())) {
+				adSchedule.setPayStatus(AdConstant.AD_HAS_PAY);
+				adSchedule.setReleaseStatus(AdConstant.AD_WAIT_REPUBLISH);
 				adSchedule.setStatus(AdConstant.AD_WAIT_PUBLISH);//待发布
 			}
 			

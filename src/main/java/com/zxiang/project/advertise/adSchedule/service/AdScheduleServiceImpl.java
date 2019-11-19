@@ -1569,7 +1569,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 		}
 		if("2".equals(adSchedule.getScheduleType())) {
 			HashMap<String,Object> adDate = new HashMap<String,Object>();
-			adDate.put("beginDate", apiYYYYMMDDHHmmssFormat.format(DateUtils.getDate()));
+			adDate.put("beginDate", DateUtils.getDate()+" 00:00:00");
 			adDate.put("endDate", "2099-12-31 23:59:59");
 			adDates.clear();
 			adDates.add(adDate);

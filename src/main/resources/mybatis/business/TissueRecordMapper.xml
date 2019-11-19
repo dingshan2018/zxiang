@@ -66,7 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				AND date_format(tr.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
 			 </if>
 			 <!-- 按照代理商搜索  通过代理城市的场所进行关联-->
-             <if test="agentId != null and agentId != ''"> and tr.place_id in 
+             <if test="agentId != null and agentId != ''"> and exists
              	<!-- ( SELECT DISTINCT zp.place_id FROM zx_place zp 
              		WHERE zp.operator_id = (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
              			WHERE su.user_type='03' AND su.puser_id=#{agentId} AND su.user_id=p.operator_id)) -->
@@ -74,22 +74,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              		WHERE zp.city in (SELECT DISTINCT za.city FROM `zx_agent` za
              			WHERE za.agent_id=#{agentId} AND za.del_flag='0'))-->
              			
-             	( SELECT DISTINCT zp.place_id FROM zx_place zp 
-             		WHERE (zp.city in (SELECT DISTINCT za.city FROM `zx_agent` za
+             	( SELECT 1 FROM zx_place zp 
+             		WHERE zp.place_id=tr.place_id and (zp.city in (SELECT DISTINCT za.city FROM `zx_agent` za
              			WHERE za.agent_id=#{agentId} AND za.del_flag='0' and za.level=1)) or (zp.county in (SELECT DISTINCT za.county FROM `zx_agent` za
              			WHERE za.agent_id=#{agentId} AND za.del_flag='0' and za.level=2)))
              </if>
            	 <!-- 按照服务商搜索  通过场所维修员关联-->
-             <if test="repairId != null and repairId != ''">  and tr.place_id in 
+             <if test="repairId != null and repairId != ''">  and exists 
              	<!-- (SELECT DISTINCT zp.place_id FROM zx_place zp 
              		WHERE zp.repair_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
              			WHERE su.user_type='04' AND su.puser_id=#{repairId}  AND su.user_id=p.repair_id)) -->
-             	(SELECT DISTINCT zp.place_id FROM zx_place zp WHERE zp.service_point=#{repairId})
+             	(SELECT 1 FROM zx_place zp WHERE tr.place_id=zp.place_id and zp.service_point=#{repairId})
              </if>
              <!-- 按照机主搜索 通过设备机主关联-->
-             <if test="joinId != null and joinId != ''">  and tr.device_id in 
-             	(SELECT DISTINCT zd.device_id FROM zx_device zd 
-             		WHERE zd.owner_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_device d 
+             <if test="joinId != null and joinId != ''">  and exists 
+             	(SELECT 1 FROM zx_device zd 
+             		WHERE tr.device_id=zd.device_id and zd.owner_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_device d 
              			WHERE su.user_type='02' AND su.puser_id=#{joinId}  AND su.user_id=d.owner_id))
          	 </if>
          	 <if test="scheduleId != null and scheduleId != ''"> and schedule_id = #{scheduleId}</if>
@@ -270,27 +270,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				AND date_format(tr.create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
 			 </if>
 			 <!-- 按照代理商搜索  通过场所经办人关联-->
-             <if test="agentId != null and agentId != ''"> and tr.place_id in 
+             <if test="agentId != null and agentId != ''"> and exists
              	<!--  
              	( SELECT DISTINCT zp.place_id FROM zx_place zp 
              		WHERE zp.city in (SELECT DISTINCT za.city FROM `zx_agent` za
              			WHERE za.agent_id=#{agentId} AND za.del_flag='0'))-->
-             	( SELECT DISTINCT zp.place_id FROM zx_place zp 
-             		WHERE (zp.city in (SELECT DISTINCT za.city FROM `zx_agent` za
+             	( SELECT 1 FROM zx_place zp 
+             		WHERE zp.place_id=tr.place_id and (zp.city in (SELECT DISTINCT za.city FROM `zx_agent` za
              			WHERE za.agent_id=#{agentId} AND za.del_flag='0' and za.level=1)) or (zp.county in (SELECT DISTINCT za.county FROM `zx_agent` za
              			WHERE za.agent_id=#{agentId} AND za.del_flag='0' and za.level=2)))
              </if>
            	 <!-- 按照服务商搜索  通过场所维修员关联-->
-             <if test="repairId != null and repairId != ''">  and tr.place_id in 
+             <if test="repairId != null and repairId != ''">  and exists
              	<!-- (SELECT DISTINCT zp.place_id FROM zx_place zp 
              		WHERE zp.repair_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_place p 
              			WHERE su.user_type='04' AND su.puser_id=#{repairId}  AND su.user_id=p.repair_id)) -->
-             	(SELECT DISTINCT zp.place_id FROM zx_place zp WHERE zp.service_point=#{repairId})
+             	(SELECT 1 FROM zx_place zp WHERE tr.place_id=zp.place_id and zp.service_point=#{repairId})
              </if>
              <!-- 按照机主搜索 通过设备机主关联-->
-             <if test="joinId != null and joinId != ''">  and tr.device_id in 
-             	(SELECT DISTINCT zd.device_id FROM zx_device zd 
-             		WHERE zd.owner_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_device d 
+             <if test="joinId != null and joinId != ''">  and exists
+             	(SELECT 1 FROM zx_device zd 
+             		WHERE zd.device_id=tr.device_id and zd.owner_id IN (SELECT DISTINCT su.user_id FROM `sys_user` su,zx_device d 
              			WHERE su.user_type='02' AND su.puser_id=#{joinId}  AND su.user_id=d.owner_id))
          	 </if>
          	 <if test="scheduleId != null and scheduleId != ''"> and schedule_id = #{scheduleId}</if>
