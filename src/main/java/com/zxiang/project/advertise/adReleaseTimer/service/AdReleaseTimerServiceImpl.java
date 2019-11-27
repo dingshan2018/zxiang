@@ -65,7 +65,7 @@ public class AdReleaseTimerServiceImpl implements IAdReleaseTimerService
 		AdSchedule schedule = adScheduleMapper.selectAdScheduleById(adReleaseTimer.getAdScheduleId());
 		if("01".equals(schedule.getReleasePosition())) {
 			schedule.setPayStatus(AdConstant.AD_HAS_PAY);
-			schedule.setReleaseStatus(AdConstant.AD_WAIT_PUBLISH);
+			schedule.setReleaseStatus(AdConstant.AD_WAIT_REPUBLISH);
 			schedule.setUpdateBy(ShiroUtils.getLoginName());
 			schedule.setUpdateTime(new Date());
 			adScheduleMapper.updateAdSchedule(schedule);
