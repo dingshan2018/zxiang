@@ -255,6 +255,24 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 			String releasePosition = adSchedule.getReleasePosition();
 			// 是终端广告还是页面广告，页面H5广告不需要模板不需要审核不需要支付
 			if (AdConstant.RELEASE_TYPE_TERMINAL.equals(releasePosition)) {
+				if(StringUtils.isBlank(adSchedule.getScheduleType())) {
+					throw new RRException("广告类型未选择");
+				}
+				if("3".equals(adSchedule.getScheduleType())) {
+					String eachPeriod = adSchedule.getEachPeriod();
+					if(StringUtils.isBlank(eachPeriod)) {
+						throw new RRException("广告周期未填");
+					}
+					Integer eachPeriodSeconds = Integer.parseInt(eachPeriod);
+					if(eachPeriodSeconds<60) {
+						throw new RRException("广告周期间隔太小，最小60秒");
+					}
+				}else if("2".equals(adSchedule.getScheduleType())) {
+					adSchedule.setPayStatus(AdConstant.AD_HAS_PAY);
+					adSchedule.setReleaseStatus(AdConstant.AD_WAIT_REPUBLISH);
+					adSchedule.setStatus(AdConstant.AD_WAIT_PUBLISH);//待发布
+				}
+				
 				// 如果是终端广告有广告商，投放人就是广告商的managerID
 				Advertise advertise = advertiseMapper.selectAdvertiseById(adSchedule.getAdvertiser());
 				if (advertise != null) {
@@ -267,7 +285,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 				scheduleMap.put("scheduleType", adSchedule.getScheduleType());
 				scheduleMap.put("scheduleName", adSchedule.getScheduleName());
 				if(StringUtils.isNotBlank(adSchedule.getEachPeriod())) {
-					Integer eachPeriod = Integer.parseInt(adSchedule.getEachPeriod())*1000;
+					Integer eachPeriod = Integer.parseInt(adSchedule.getEachPeriod());
 					scheduleMap.put("eachPeriod", eachPeriod);
 				}
 				String rspSchedule = saveSchedule(scheduleMap);
@@ -788,7 +806,7 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 			}
 			// 5.修改广告计划数据
 			// 投放终端数
-			adSchedule.setReleaseTermNum(deviceNum);
+//			adSchedule.setReleaseTermNum(deviceNum);
 			adSchedule.setReleaseDays(days);
 			return updateAdSchedule(adSchedule);
 

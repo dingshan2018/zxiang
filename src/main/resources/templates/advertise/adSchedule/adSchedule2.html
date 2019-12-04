@@ -333,10 +333,10 @@
                     if(row.payStatus=='0'){
                     	actions.push('<a class="btn btn-warning btn-xs " onclick="adPayByAccount(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>支付</a> ');
                     }
-                    if(row.releaseStatus == '0' && (row.status == '05' || row.status == '06')){
+                    if(row.releaseStatus == '0' && (row.status == '05' || row.status == '06' || row.status == '04')){
                     	actions.push('<a class="btn btn-warning btn-xs ' + republishFlag + '" onclick="republish(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>播放</a> ');
                     }
-                    if(row.releaseStatus == '1'){
+                    if(row.releaseStatus == '1' && (row.status == '05' || row.status == '06' || row.status == '04')){
                     	actions.push('<a class="btn btn-danger btn-xs '+ removeAdFlag +'" onclick="removeAd(\'' + row.adScheduleId + '\')"><i class="fa fa-edit"></i>停播</a> ');
                     }
 					return actions.join('');
@@ -945,18 +945,8 @@
     	var del = false;
     	for(var i=0; i < rows.length; i++){
     		var adSchedule = getAdScheduleInfo(rows[i]);
-    		if(adSchedule.status == "04"){
-    			warnInfo = "广告计划 "+adSchedule.scheduleName+" 为待播放状态, 不允许删除!"
-    			del = true
-    			break;
-    		}
     		if(adSchedule.status == "05"){
     			warnInfo = "广告计划 "+adSchedule.scheduleName+" 已播放, 不允许删除!"
-    			del = true
-    			break;
-    		}
-    		if(adSchedule.payStatus == "1"){
-    			warnInfo = "广告计划 "+adSchedule.scheduleName+" 已支付, 不允许删除!"
     			del = true
     			break;
     		}

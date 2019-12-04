@@ -74,6 +74,8 @@ public class Terminal extends BaseEntity
 	
 	private String userId;
 	
+	private String deviceType;
+	
 	public void setTerminalId(Integer terminalId) 
 	{
 		this.terminalId = terminalId;
@@ -345,6 +347,14 @@ public class Terminal extends BaseEntity
 				+ ", offerKey=" + offerKey + ", logUrl=" + logUrl + ", deviceCode=" + deviceCode + ", deviceSn="
 				+ deviceSn + ", placeName=" + placeName + ", statusName=" + statusName + ", onlineStatusName="
 				+ onlineStatusName + ", userId=" + userId + "]";
+	}
+
+	public String getDeviceType() {
+		return deviceType;
+	}
+
+	public void setDeviceType(String deviceType) {
+		this.deviceType = deviceType;
 	}
 
 }

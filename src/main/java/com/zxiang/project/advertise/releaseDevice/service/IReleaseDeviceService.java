@@ -52,6 +52,8 @@ public interface IReleaseDeviceService
      */
 	public int deleteReleaseDeviceByIds(String ids);
 	
-	public int batchInsert(List<ReleaseDevice> devices);
+	public int batchInsert(List<ReleaseDevice> devices) throws Exception;
+
+	public void deleteReleaseDeviceByScheduleId(Integer adScheduleId);
 	
 }

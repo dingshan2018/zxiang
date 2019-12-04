@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zxiang.common.support.Convert;
 import com.zxiang.common.utils.security.ShiroUtils;
@@ -21,6 +22,7 @@ import com.zxiang.project.advertise.utils.constant.AdConstant;
  * @date 2018-11-22
  */
 @Service
+@Transactional(rollbackFor=Exception.class)
 public class ReleaseDeviceServiceImpl implements IReleaseDeviceService 
 {
 	@Autowired
@@ -97,7 +99,7 @@ public class ReleaseDeviceServiceImpl implements IReleaseDeviceService
 	}
 
 	@Override
-	public int batchInsert(List<ReleaseDevice> devices) {
+	public int batchInsert(List<ReleaseDevice> devices) throws  Exception {
 		AdSchedule schedule = adScheduleMapper.selectAdScheduleById(devices.get(0).getScheduleId());
 		releaseDeviceMapper.batchInsert(devices);
 		if("01".equals(schedule.getReleasePosition())) {
@@ -112,6 +114,11 @@ public class ReleaseDeviceServiceImpl implements IReleaseDeviceService
 			adScheduleMapper.updateAdSchedule(schedule);
 		}
 		return 1;
+	}
+
+	@Override
+	public void deleteReleaseDeviceByScheduleId(Integer adScheduleId) {
+		releaseDeviceMapper.deleteReleaseDeviceByScheduleId(adScheduleId);
 	}
 	
 }

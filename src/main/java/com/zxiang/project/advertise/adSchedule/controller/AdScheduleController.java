@@ -156,27 +156,11 @@ public class AdScheduleController extends BaseController
 	public AjaxResult addSave(AdSchedule adSchedule)
 	{		
 		try {
-			if(StringUtils.isBlank(adSchedule.getScheduleType())) {
-				throw new RRException("广告类型未选择");
-			}
+			
 //			if("3".equals(adSchedule.getScheduleType())) {
 //				throw new RRException("手机广告，请在公众号进行投放");
 //			}
 			adSchedule.setStatus(AdConstant.AD_WAIT_ORDER);//待预约
-			if("3".equals(adSchedule.getScheduleType())) {
-				String eachPeriod = adSchedule.getEachPeriod();
-				if(StringUtils.isBlank(eachPeriod)) {
-					throw new RRException("广告周期未填");
-				}
-				Integer eachPeriodSeconds = Integer.parseInt(eachPeriod);
-				if(eachPeriodSeconds<60) {
-					throw new RRException("广告周期间隔太小，最小60秒");
-				}
-			}else if("2".equals(adSchedule.getScheduleType())) {
-				adSchedule.setPayStatus(AdConstant.AD_HAS_PAY);
-				adSchedule.setReleaseStatus(AdConstant.AD_WAIT_REPUBLISH);
-				adSchedule.setStatus(AdConstant.AD_WAIT_PUBLISH);//待发布
-			}
 			
 			String operatorUser = getUser().getUserName()+"("+getUserId()+")";	
 			

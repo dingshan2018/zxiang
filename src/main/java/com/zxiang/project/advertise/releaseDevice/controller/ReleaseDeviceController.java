@@ -110,22 +110,24 @@ public class ReleaseDeviceController extends BaseController
 					List<Device> searchDevices = this.deviceService.selectDeviceList(device);
 					if(searchDevices!=null && searchDevices.size()>0) {
 						Device searchDevice = searchDevices.get(0);
-						ReleaseDevice releaseDeviceParam = new ReleaseDevice();
-						releaseDeviceParam.setScheduleId(schedule.getAdScheduleId());
-						releaseDeviceParam.setDeviceId(searchDevice.getDeviceId());
-						List<ReleaseDevice> releaseDeviceList = this.releaseDeviceService.selectReleaseDeviceList(releaseDeviceParam);
-						if(!(releaseDeviceList!=null && releaseDeviceList.size()>0)) {
-							ReleaseDevice release = new ReleaseDevice();
-							release.setScheduleId(schedule.getAdScheduleId());
-							release.setDeviceId(searchDevice.getDeviceId());
-							release.setReleasePosition(schedule.getReleasePosition());
-							releaseDevices.add(release);
-						}
+//						ReleaseDevice releaseDeviceParam = new ReleaseDevice();
+//						releaseDeviceParam.setScheduleId(schedule.getAdScheduleId());
+//						releaseDeviceParam.setDeviceId(searchDevice.getDeviceId());
+//						List<ReleaseDevice> releaseDeviceList = this.releaseDeviceService.selectReleaseDeviceList(releaseDeviceParam);
+//						if(!(releaseDeviceList!=null && releaseDeviceList.size()>0)) {
+//							
+//						}
+						ReleaseDevice release = new ReleaseDevice();
+						release.setScheduleId(schedule.getAdScheduleId());
+						release.setDeviceId(searchDevice.getDeviceId());
+						release.setReleasePosition(schedule.getReleasePosition());
+						releaseDevices.add(release);
 					}
 					
 				}
 			}
 			if(releaseDevices!=null && releaseDevices.size()>0) {
+				this.releaseDeviceService.deleteReleaseDeviceByScheduleId(schedule.getAdScheduleId());				
 				return toAjax(releaseDeviceService.batchInsert(releaseDevices));
 			}else {
 				return AjaxResult.error("投放设备未找到");
@@ -187,18 +189,23 @@ public class ReleaseDeviceController extends BaseController
 	@ResponseBody
 	public AjaxResult batchAdd(ReleaseDevice releaseDevice)
 	{	
-		String deviceIds = releaseDevice.getDeviceIds();
-		String[] deviceIdArr = deviceIds.split(",");
-		List<ReleaseDevice> releaseDevices = new ArrayList<ReleaseDevice>();
-		AdSchedule adSchedule = this.adScheduleService.selectAdScheduleById(releaseDevice.getScheduleId());
-		for(String deviceId : deviceIdArr) {
-			ReleaseDevice release = new ReleaseDevice();
-			release.setScheduleId(releaseDevice.getScheduleId());
-			release.setDeviceId(Integer.parseInt(deviceId));
-			release.setReleasePosition(adSchedule.getReleasePosition());
-			releaseDevices.add(release);
+		try {
+			String deviceIds = releaseDevice.getDeviceIds();
+			String[] deviceIdArr = deviceIds.split(",");
+			List<ReleaseDevice> releaseDevices = new ArrayList<ReleaseDevice>();
+			AdSchedule adSchedule = this.adScheduleService.selectAdScheduleById(releaseDevice.getScheduleId());
+			for(String deviceId : deviceIdArr) {
+				ReleaseDevice release = new ReleaseDevice();
+				release.setScheduleId(releaseDevice.getScheduleId());
+				release.setDeviceId(Integer.parseInt(deviceId));
+				release.setReleasePosition(adSchedule.getReleasePosition());
+				releaseDevices.add(release);
+			}
+			return toAjax(releaseDeviceService.batchInsert(releaseDevices));
+		}catch(Exception e) {
+			e.printStackTrace();
+			return AjaxResult.error(e.getMessage());
 		}
-		return toAjax(releaseDeviceService.batchInsert(releaseDevices));
 	}
 	
 	/**
