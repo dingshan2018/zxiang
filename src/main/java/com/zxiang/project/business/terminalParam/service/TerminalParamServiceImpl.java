@@ -65,6 +65,18 @@ public class TerminalParamServiceImpl implements ITerminalParamService
 	@Override
 	public int insertTerminalParam(TerminalParam terminalParam)
 	{
+		TerminalParam param = new TerminalParam();
+		param.setTerminalId(terminalParam.getTerminalId());
+		param.setParamKey(terminalParam.getParamKey());
+		List<TerminalParam> oldParams = terminalParamMapper.selectTerminalParamList(param);
+		if(oldParams!=null && oldParams.size()>0) {
+			TerminalParam oldParam = oldParams.get(0);
+			oldParam.setParamValue1(terminalParam.getParamValue1());
+			oldParam.setParamValue2(terminalParam.getParamValue2());
+			oldParam.setParamValue3(terminalParam.getParamValue3());
+			oldParam.setParamValue4(terminalParam.getParamValue4());
+			return terminalParamMapper.updateTerminalParam(oldParam);
+		}
 	    return terminalParamMapper.insertTerminalParam(terminalParam);
 	}
 	

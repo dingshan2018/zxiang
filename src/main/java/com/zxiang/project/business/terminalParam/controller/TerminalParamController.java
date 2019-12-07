@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -81,7 +82,17 @@ public class TerminalParamController extends BaseController
 	{		
 		String createor = getUser().getUserName();
 		long userId = getUserId();
-
+		if("volumn".equals(terminalParam.getParamKey())) {
+			String volumn = terminalParam.getParamValue1();
+			if(!StringUtils.isNumeric(volumn)) {
+				return AjaxResult.error("音量请填数字");
+			}
+			Integer volumnVal = Integer.parseInt(volumn);
+			if(volumnVal.intValue()>15) {
+				return AjaxResult.error("音量不能超过15");
+			}
+			terminalParam.setParamValue1(volumnVal+"");
+		}
 		terminalParam.setCreateBy(createor+"("+userId+")");
 		terminalParam.setCreateTime(new Date());
 		return toAjax(terminalParamService.insertTerminalParam(terminalParam));
@@ -108,6 +119,17 @@ public class TerminalParamController extends BaseController
 	@ResponseBody
 	public AjaxResult editSave(TerminalParam terminalParam)
 	{		
+		if("volumn".equals(terminalParam.getParamKey())) {
+			String volumn = terminalParam.getParamValue1();
+			if(!StringUtils.isNumeric(volumn)) {
+				return AjaxResult.error("音量请填数字");
+			}
+			Integer volumnVal = Integer.parseInt(volumn);
+			if(volumnVal.intValue()>15) {
+				return AjaxResult.error("音量不能超过15");
+			}
+			terminalParam.setParamValue1(volumnVal+"");
+		}
 		return toAjax(terminalParamService.updateTerminalParam(terminalParam));
 	}
 	
