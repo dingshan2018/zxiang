@@ -96,7 +96,7 @@ public class JoinController extends BaseController {
 		List<User> nPayUserList = new ArrayList<User>();
 		if(payUserList!=null && payUserList.size()>0) {
 			for(User payUser :payUserList) {
-				if(payUser.getPuserId().intValue()==join.getJoinId().intValue() && payUser.getUserType().equals("02")) {
+				if(payUser.getPuserId()!=null&&payUser.getPuserId().intValue()==join.getJoinId().intValue() && payUser.getUserType().equals("02")) {
 					continue;
 				}
 				nPayUserList.add(payUser);
