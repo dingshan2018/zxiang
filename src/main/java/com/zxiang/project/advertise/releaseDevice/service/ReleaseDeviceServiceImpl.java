@@ -62,7 +62,16 @@ public class ReleaseDeviceServiceImpl implements IReleaseDeviceService
 	@Override
 	public int insertReleaseDevice(ReleaseDevice releaseDevice)
 	{
-	    return releaseDeviceMapper.insertReleaseDevice(releaseDevice);
+	    int ret = releaseDeviceMapper.insertReleaseDevice(releaseDevice);
+	    AdSchedule schedule = adScheduleMapper.selectAdScheduleById(releaseDevice.getScheduleId());
+	    ReleaseDevice releaseDevice1 = new ReleaseDevice();
+		releaseDevice1.setScheduleId(schedule.getAdScheduleId());
+		List<ReleaseDevice> deviceList = this.releaseDeviceMapper.selectReleaseDeviceList(releaseDevice1);
+		schedule.setReleaseTermNum(deviceList.size());
+		schedule.setUpdateBy(ShiroUtils.getLoginName());
+		schedule.setUpdateTime(new Date());
+		adScheduleMapper.updateAdSchedule(schedule);
+	    return ret;
 	}
 	
 	/**
@@ -95,7 +104,16 @@ public class ReleaseDeviceServiceImpl implements IReleaseDeviceService
 			schedule.setUpdateTime(new Date());
 			adScheduleMapper.updateAdSchedule(schedule);
 		}
-		return releaseDeviceMapper.deleteReleaseDeviceByIds(Convert.toStrArray(ids));
+		
+		int ret = releaseDeviceMapper.deleteReleaseDeviceByIds(Convert.toStrArray(ids));
+		ReleaseDevice releaseDevice1 = new ReleaseDevice();
+		releaseDevice1.setScheduleId(schedule.getAdScheduleId());
+		List<ReleaseDevice> deviceList = this.releaseDeviceMapper.selectReleaseDeviceList(releaseDevice1);
+		schedule.setReleaseTermNum(deviceList.size());
+		schedule.setUpdateBy(ShiroUtils.getLoginName());
+		schedule.setUpdateTime(new Date());
+		adScheduleMapper.updateAdSchedule(schedule);
+		return ret;
 	}
 
 	@Override
@@ -103,16 +121,16 @@ public class ReleaseDeviceServiceImpl implements IReleaseDeviceService
 		AdSchedule schedule = adScheduleMapper.selectAdScheduleById(devices.get(0).getScheduleId());
 		releaseDeviceMapper.batchInsert(devices);
 		if("01".equals(schedule.getReleasePosition())) {
-			ReleaseDevice releaseDevice = new ReleaseDevice();
-			releaseDevice.setScheduleId(schedule.getAdScheduleId());
-			List<ReleaseDevice> deviceList = this.releaseDeviceMapper.selectReleaseDeviceList(releaseDevice);
-			schedule.setReleaseTermNum(deviceList.size());
 			schedule.setPayStatus(AdConstant.AD_HAS_PAY);
 			schedule.setReleaseStatus(AdConstant.AD_WAIT_REPUBLISH);
-			schedule.setUpdateBy(ShiroUtils.getLoginName());
-			schedule.setUpdateTime(new Date());
-			adScheduleMapper.updateAdSchedule(schedule);
 		}
+		ReleaseDevice releaseDevice = new ReleaseDevice();
+		releaseDevice.setScheduleId(schedule.getAdScheduleId());
+		List<ReleaseDevice> deviceList = this.releaseDeviceMapper.selectReleaseDeviceList(releaseDevice);
+		schedule.setReleaseTermNum(deviceList.size());
+		schedule.setUpdateBy(ShiroUtils.getLoginName());
+		schedule.setUpdateTime(new Date());
+		adScheduleMapper.updateAdSchedule(schedule);
 		return 1;
 	}
 
