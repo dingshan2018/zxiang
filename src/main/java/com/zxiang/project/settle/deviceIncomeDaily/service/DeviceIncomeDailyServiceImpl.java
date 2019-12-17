@@ -48,6 +48,8 @@ import com.zxiang.project.settle.userExtension.service.IUserExtensionService;
 import com.zxiang.project.settle.userIncome.domain.UserIncome;
 import com.zxiang.project.settle.userIncome.mapper.UserIncomeMapper;
 import com.zxiang.project.settle.userIncome.service.IUserIncomeService;
+import com.zxiang.project.system.user.domain.User;
+import com.zxiang.project.system.user.mapper.UserMapper;
 
 /**
  * 设备收入日统计 服务层实现
@@ -90,6 +92,9 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	private DeviceMapper deviceMapper;
 	@Autowired
 	private ShopperMapper shopperMapper;
+	@Autowired
+	private UserMapper userMapper;
+	
 	/**
      * 查询设备收入日统计信息
      * 
@@ -494,12 +499,15 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	   					   
 	   				 }
 	   			     //新增店主出纸收益
-	   				 if(StringUtil.isNotEmpty(shopperId)) {
-	   					HashMap<String,Object> shopper = getusedata("",shopperId,UserConstants.USER_TYPE_SHOPPER);
+	   				 if(StringUtil.isNotEmpty(shopperId)&&StringUtils.isNumber(shopperId)) {
+	   					User shopuser = userMapper.selectUserById(Long.parseLong(shopperId));
+	   					if(shopuser!=null && shopuser.getPuserId()!=null){
+	   						HashMap<String,Object> shopper = getusedata("",shopuser.getPuserId()+"",UserConstants.USER_TYPE_SHOPPER);
 		   				 if(shopper!=null) {
 		   					 rate = Double.valueOf(shopper.get("scanRate") == null? "0.0":shopper.get("scanRate")+"");
 		   					 insertCurdata(rate*tissuenumAll,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenumAll,shopper,currentTime);
 		   				 }
+	   					}
 	   				 }
 				}
 			}
@@ -625,12 +633,15 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	   					   }
 	   				 }
 	   				 //新增店主出纸收益
-	   				 if(StringUtil.isNotEmpty(shopperId)) {
-	   					HashMap<String,Object> shopper = getusedata("",shopperId,UserConstants.USER_TYPE_SHOPPER);
+	   				 if(StringUtil.isNotEmpty(shopperId)&&StringUtils.isNumber(shopperId)) {
+	   					User shopuser = userMapper.selectUserById(Long.parseLong(shopperId));
+	   					if(shopuser!=null && shopuser.getPuserId()!=null){
+	   						HashMap<String,Object> shopper = getusedata("",shopuser.getPuserId()+"",UserConstants.USER_TYPE_SHOPPER);
 		   				 if(shopper!=null) {
 		   					 rate = Double.valueOf(shopper.get("scanRate") == null? "0.0":shopper.get("scanRate")+"");
 		   					 insertdata(rate*tissuenumAll,"01",RateConstants.RATETYPE_PAPERINCOME,0.0,tissuenumAll,shopper);
 		   				 }
+	   					}
 	   				 }
 	   				 
 				}
@@ -750,12 +761,15 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 						   insertdata(rate*price,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,user);
 					 }
 					 //店主
-					 if(StringUtil.isNotEmpty(shopperId)) {
-		   					HashMap<String,Object> shopper = getusedata("",shopperId,UserConstants.USER_TYPE_SHOPPER);
+					 if(StringUtil.isNotEmpty(shopperId)&&StringUtils.isNumber(shopperId)) {
+						 	User shopuser = userMapper.selectUserById(Long.parseLong(shopperId));
+		   					if(shopuser!=null && shopuser.getPuserId()!=null){
+		   						HashMap<String,Object> shopper = getusedata("",shopuser.getPuserId()+"",UserConstants.USER_TYPE_SHOPPER);
 			   				 if(shopper!=null) {
 			   					 rate = Double.valueOf(shopper.get("adCarouselRate") == null? "0.0":shopper.get("adCarouselRate")+"");
 			   					 insertdata(rate*price,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,shopper);
 			   				 }
+		   					}
 		   			}
 				}
 				break;
@@ -799,12 +813,15 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		   					  insertdata(rate*price,"01",RateConstants.RATETYPE_ADINCOME,price,0,user);
 	   					   }
 	   				 }
-	   				if(StringUtil.isNotEmpty(shopperId)) {
-	   					HashMap<String,Object> shopper = getusedata("",shopperId,UserConstants.USER_TYPE_SHOPPER);
+	   				if(StringUtil.isNotEmpty(shopperId)&&StringUtils.isNumber(shopperId)) {
+	   					User shopuser = userMapper.selectUserById(Long.parseLong(shopperId));
+	   					if(shopuser!=null && shopuser.getPuserId()!=null){
+	   						HashMap<String,Object> shopper = getusedata("",shopuser.getPuserId()+"",UserConstants.USER_TYPE_SHOPPER);
 		   				 if(shopper!=null) {
 		   					 rate = Double.valueOf(shopper.get("adRate") == null? "0.0":shopper.get("adRate")+"");
 		   					 insertdata(rate*price,"01",RateConstants.RATETYPE_ADINCOME,price,0,shopper);
 		   				 }
+	   					}
 	   			}
 				}
 				break;
@@ -914,12 +931,16 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 							   insertCurdata(rate*price,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,user,currentTime);
 						 }
 						 //新增店主出纸收益
-		   				 if(StringUtil.isNotEmpty(shopperId)) {
-		   					HashMap<String,Object> shopper = getusedata("",shopperId,UserConstants.USER_TYPE_SHOPPER);
-			   				 if(shopper!=null) {
-			   					 rate = Double.valueOf(shopper.get("adCarouselRate") == null? "0.0":shopper.get("adCarouselRate")+"");
-			   					 insertCurdata(rate*price,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,shopper,currentTime);
-			   				 }
+		   				 if(StringUtil.isNotEmpty(shopperId)&&StringUtils.isNumber(shopperId)) {
+		   					User shopuser = userMapper.selectUserById(Long.parseLong(shopperId));
+		   					if(shopuser!=null && shopuser.getPuserId()!=null){
+		   						HashMap<String,Object> shopper = getusedata("",shopuser.getPuserId()+"",UserConstants.USER_TYPE_SHOPPER);
+				   				 if(shopper!=null) {
+				   					 rate = Double.valueOf(shopper.get("adCarouselRate") == null? "0.0":shopper.get("adCarouselRate")+"");
+				   					 insertCurdata(rate*price,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,shopper,currentTime);
+				   				 }
+		   					}
+		   					
 		   				 }
 					}
 					break;
@@ -964,12 +985,15 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 		   					   }
 		   				 }
 		   			//新增店主出纸收益
-		   				 if(StringUtil.isNotEmpty(shopperId)) {
-		   					HashMap<String,Object> shopper = getusedata("",shopperId,UserConstants.USER_TYPE_SHOPPER);
-			   				 if(shopper!=null) {
-			   					 rate = Double.valueOf(shopper.get("adRate") == null? "0.0":shopper.get("adRate")+"");
-			   					insertCurdata(rate*price,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,shopper,currentTime);
-			   				 }
+		   				 if(StringUtil.isNotEmpty(shopperId)&&StringUtils.isNumber(shopperId)) {
+		   					User shopuser = userMapper.selectUserById(Long.parseLong(shopperId));
+		   					if(shopuser!=null && shopuser.getPuserId()!=null){
+		   						HashMap<String,Object> shopper = getusedata("",shopuser.getPuserId()+"",UserConstants.USER_TYPE_SHOPPER);
+				   				 if(shopper!=null) {
+				   					 rate = Double.valueOf(shopper.get("adRate") == null? "0.0":shopper.get("adRate")+"");
+				   					insertCurdata(rate*price,"01",RateConstants.RATETYPE_ADCAROUSELINCOME,price,0,shopper,currentTime);
+				   				 }
+		   					}
 		   				 }
 					}
 					break;
@@ -1188,16 +1212,16 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				iUserIncomeService.updateUserIncome(userIncome);
 			}else{
 				userIncome.setCoperatorName(user.get("coperatorName")+"");
-				userIncome.setAdRate(Float.valueOf(user.get("adRate")+"")); //视频广告系数
-				userIncome.setAdCarouselRate(Float.valueOf(user.get("adCarouselRate")+""));//轮播广告系数
-				userIncome.setScanRate(Float.valueOf(user.get("scanRate")+""));//二维码广告系数
-				userIncome.setPromDirectRate(Float.valueOf(user.get("promDirectRate")+""));//直推机子分润
-				userIncome.setPromIndirectRate(Float.valueOf(user.get("promIndirectRate")+""));//间推机子分润
-				userIncome.setPromPaperRate(Float.valueOf(user.get("promPaperRate")+""));//推广出纸收益
-				userIncome.setPromotionRate(Float.valueOf(user.get("promotionRate")+""));//推广广告系数
-				userIncome.setDirectAgentRate(Float.valueOf(user.get("directAgentRate")+""));//直推代理分润系数
-				userIncome.setServeRate(Float.valueOf(user.get("serveRate")+""));//服务出纸收益
-				userIncome.setSubsidyRate(Float.valueOf(user.get("subsidyRate")+""));//办公补贴
+				userIncome.setAdRate(Float.valueOf((user.containsKey("adRate")?user.get("adRate"):"0.0")+"")); //视频广告系数
+				userIncome.setAdCarouselRate(Float.valueOf((user.containsKey("adCarouselRate")?user.get("adCarouselRate"):"0.0")+""));//轮播广告系数
+				userIncome.setScanRate(Float.valueOf((user.containsKey("scanRate")?user.get("scanRate"):"0.0")+""));//二维码广告系数
+				userIncome.setPromDirectRate(Float.valueOf((user.containsKey("promDirectRate")?user.get("promDirectRate"):"0.0")+""));//直推机子分润
+				userIncome.setPromIndirectRate(Float.valueOf((user.containsKey("promIndirectRate")?user.get("promIndirectRate"):"0.0")+""));//间推机子分润
+				userIncome.setPromPaperRate(Float.valueOf((user.containsKey("promPaperRate")?user.get("promPaperRate"):"0.0")+""));//推广出纸收益
+				userIncome.setPromotionRate(Float.valueOf((user.containsKey("promotionRate")?user.get("promotionRate"):"0.0")+""));//推广广告系数
+				userIncome.setDirectAgentRate(Float.valueOf((user.containsKey("directAgentRate")?user.get("directAgentRate"):"0.0")+""));//直推代理分润系数
+				userIncome.setServeRate(Float.valueOf((user.containsKey("serveRate")?user.get("serveRate"):"0.0")+""));//服务出纸收益
+				userIncome.setSubsidyRate(Float.valueOf((user.containsKey("subsidyRate")?user.get("subsidyRate"):"0.0")+""));//办公补贴
 				iUserIncomeService.insertUserIncome(userIncome);
 			}		
 			
@@ -1251,16 +1275,16 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			userIncomeMapper.updateUserIncome(userIncome);
 		}else{
 			userIncome.setCoperatorName(user.get("coperatorName")+"");
-			userIncome.setAdRate(Float.valueOf(user.get("adRate")+"")); //视频广告系数
-			userIncome.setAdCarouselRate(Float.valueOf(user.get("adCarouselRate")+""));//轮播广告系数
-			userIncome.setScanRate(Float.valueOf(user.get("scanRate")+""));//二维码广告系数
-			userIncome.setPromDirectRate(Float.valueOf(user.get("promDirectRate")+""));//直推机子分润
-			userIncome.setPromIndirectRate(Float.valueOf(user.get("promIndirectRate")+""));//间推机子分润
-			userIncome.setPromPaperRate(Float.valueOf(user.get("promPaperRate")+""));//推广出纸收益
-			userIncome.setPromotionRate(Float.valueOf(user.get("promotionRate")+""));//推广广告系数
-			userIncome.setDirectAgentRate(Float.valueOf(user.get("directAgentRate")+""));//直推代理分润系数
-			userIncome.setServeRate(Float.valueOf(user.get("serveRate")+""));//服务出纸收益
-			userIncome.setSubsidyRate(Float.valueOf(user.get("subsidyRate")+""));//办公补贴
+			userIncome.setAdRate(Float.valueOf((user.containsKey("adRate")?user.get("adRate"):"0.0")+"")); //视频广告系数
+			userIncome.setAdCarouselRate(Float.valueOf((user.containsKey("adCarouselRate")?user.get("adCarouselRate"):"0.0")+""));//轮播广告系数
+			userIncome.setScanRate(Float.valueOf((user.containsKey("scanRate")?user.get("scanRate"):"0.0")+""));//二维码广告系数
+			userIncome.setPromDirectRate(Float.valueOf((user.containsKey("promDirectRate")?user.get("promDirectRate"):"0.0")+""));//直推机子分润
+			userIncome.setPromIndirectRate(Float.valueOf((user.containsKey("promIndirectRate")?user.get("promIndirectRate"):"0.0")+""));//间推机子分润
+			userIncome.setPromPaperRate(Float.valueOf((user.containsKey("promPaperRate")?user.get("promPaperRate"):"0.0")+""));//推广出纸收益
+			userIncome.setPromotionRate(Float.valueOf((user.containsKey("promotionRate")?user.get("promotionRate"):"0.0")+""));//推广广告系数
+			userIncome.setDirectAgentRate(Float.valueOf((user.containsKey("directAgentRate")?user.get("directAgentRate"):"0.0")+""));//直推代理分润系数
+			userIncome.setServeRate(Float.valueOf((user.containsKey("serveRate")?user.get("serveRate"):"0.0")+""));//服务出纸收益
+			userIncome.setSubsidyRate(Float.valueOf((user.containsKey("subsidyRate")?user.get("subsidyRate"):"0.0")+""));//办公补贴
 			userIncomeMapper.insertCurUserIncome(userIncome);
 		}		
 		
@@ -1478,6 +1502,14 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				balance = repair.getBalance() == null ? money : repair.getBalance().add(money);
 				frozenBalance = repair.getFrozenBalance() == null ? new BigDecimal(0) : repair.getFrozenBalance();
 				repairMapper.updateBalance(clientId, balance, null);
+			}else if (UserConstants.USER_TYPE_SHOPPER.equals(clientType)) { // 店主
+				Shopper shopper = shopperMapper.selectShopperById(clientId);
+				if (shopper == null) {
+					throw new RRException("未找到客户，clientId：" + clientId + ",clientType：" + clientType);
+				}
+				balance = shopper.getBalance() == null ? money : shopper.getBalance().add(money);
+				frozenBalance = shopper.getFrozenBalance() == null ? new BigDecimal(0) : shopper.getFrozenBalance();
+				shopperMapper.updateBalance(clientId, balance, null);
 			} else {
 				throw new RRException("客户类型有误，clientType："+clientType);
 			}

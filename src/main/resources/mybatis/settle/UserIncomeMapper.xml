@@ -709,8 +709,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
      <select id="selectShopperlist"  resultType="java.util.HashMap">
 	   SELECT
 	     shopper_id    leader_id,
-	     manager_id coperatorId,
-         manager_name coperatorName, 
+	     shopper_id coperatorId,
+         shopper_name coperatorName, 
 		 ad_rate adRate,
 		 ad_carousel_rate adCarouselRate,
 		 scan_rate  scanRate,

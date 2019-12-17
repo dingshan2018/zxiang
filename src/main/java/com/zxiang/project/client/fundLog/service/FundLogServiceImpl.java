@@ -200,7 +200,7 @@ public class FundLogServiceImpl implements IFundLogService {
 			}
 			balance = shopper.getBalance() == null ? money : shopper.getBalance().add(money);
 			frozenBalance = shopper.getFrozenBalance() == null ? new BigDecimal(0) : shopper.getFrozenBalance();
-			advertiseMapper.updateBalance(clientId, balance, null);
+			shopperMapper.updateBalance(clientId, balance, null);
 		} else {
 			throw new RRException("客户类型有误，clientType：" + clientType);
 		}
