@@ -264,8 +264,8 @@ public class AdScheduleServiceImpl implements IAdScheduleService {
 						throw new RRException("广告周期未填");
 					}
 					Integer eachPeriodSeconds = Integer.parseInt(eachPeriod);
-					if(eachPeriodSeconds<60) {
-						throw new RRException("广告周期间隔太小，最小60秒");
+					if(eachPeriodSeconds<180) {
+						throw new RRException("广告周期间隔太小，最小180秒");
 					}
 				}else if("2".equals(adSchedule.getScheduleType())) {
 					adSchedule.setPayStatus(AdConstant.AD_HAS_PAY);
