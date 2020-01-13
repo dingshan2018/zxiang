@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.advertise.releaseDetail.mapper.ReleaseDetailMapper">
+    
+    <resultMap type="ReleaseDetail" id="ReleaseDetailResult">
+        <result property="releaseDetailId"    column="release_detail_id"    />
+        <result property="scheduleId"    column="schedule_id"    />
+        <result property="scheduleName"    column="schedule_name"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="terminalId"    column="terminal_id"    />
+        <result property="deviceCode"    column="device_code"    />
+        <result property="address"    column="address"    />
+        <result property="ownerId"    column="owner_id"    />
+        <result property="ownerName"    column="owner_name"    />
+        <result property="repairId"    column="repair_id"    />
+        <result property="repairName"    column="repair_name"    />
+        <result property="agentId"    column="agent_id"    />
+        <result property="agentName"    column="agent_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="province"    column="province"    />
+        <result property="city"    column="city"    />
+        <result property="county"    column="county"    />
+    </resultMap>
+	
+	<sql id="selectReleaseDetailVo">
+        select release_detail_id, schedule_id, schedule_name, device_id, terminal_id, device_code, address, owner_id, owner_name, repair_id, repair_name, agent_id, agent_name, create_time, province, city, county, (select distinct a.pname from sys_area a where a.id =zx_release_detail.`province` ) provinceName,
+         city,(select distinct a.pname from sys_area a where a.id =zx_release_detail.`city` ) cityName,
+         county,(select distinct a.pname from sys_area a where a.id =zx_release_detail.`county` ) countyName from zx_release_detail
+    </sql>
+	
+    <select id="selectReleaseDetailList" parameterType="ReleaseDetail" resultMap="ReleaseDetailResult">
+        <include refid="selectReleaseDetailVo"/>
+        <where>  
+            <if test="releaseDetailId != null and releaseDetailId != ''"> and release_detail_id = #{releaseDetailId}</if>
+             <if test="scheduleId != null and scheduleId != ''"> and schedule_id = #{scheduleId}</if>
+             <if test="scheduleName != null and scheduleName != ''"> and schedule_name like CONCAT('%', #{scheduleName}, '%')</if>
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
+             <if test="deviceCode != null and deviceCode != ''"> and device_code like CONCAT('%',#{deviceCode} , '%')</if>
+             <if test="address != null and address != ''"> and address = #{address}</if>
+             <if test="ownerId != null and ownerId != ''"> and owner_id = #{ownerId}</if>
+             <if test="ownerName != null and ownerName != ''"> and owner_name = #{ownerName}</if>
+             <if test="repairId != null and repairId != ''"> and repair_id = #{repairId}</if>
+             <if test="repairName != null and repairName != ''"> and repair_name = #{repairName}</if>
+             <if test="agentId != null and agentId != ''"> and agent_id = #{agentId}</if>
+             <if test="agentName != null and agentName != ''"> and agent_name = #{agentName}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="params != null and params.beginTime != null and params.beginTime != ''"> and create_time &gt;=#{params.beginTime} </if>
+             <if test="params != null and params.endTime != null and params.endTime != '' "> and create_time &lt;=#{params.endTime} </if>
+             <if test="province != null"> and province = #{province}</if>
+             <if test="city != null"> and city = #{city}</if>
+             <if test="county != null"> and county = #{county}</if>
+         </where>
+         order by create_time desc
+    </select>
+    
+    <select id="selectReleaseDetailById" parameterType="Integer" resultMap="ReleaseDetailResult">
+        <include refid="selectReleaseDetailVo"/>
+        where release_detail_id = #{releaseDetailId}
+    </select>
+        
+    <insert id="insertReleaseDetail" parameterType="ReleaseDetail">
+        insert into zx_release_detail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="releaseDetailId != null and releaseDetailId != '' ">release_detail_id,</if>
+			<if test="scheduleId != null and scheduleId != '' ">schedule_id,</if>
+			<if test="scheduleName != null and scheduleName != '' ">schedule_name,</if>
+			<if test="deviceId != null and deviceId != '' ">device_id,</if>
+			<if test="terminalId != null and terminalId != '' ">terminal_id,</if>
+			<if test="deviceCode != null and deviceCode != '' ">device_code,</if>
+			<if test="address != null and address != '' ">address,</if>
+			<if test="ownerId != null and ownerId != '' ">owner_id,</if>
+			<if test="ownerName != null and ownerName != '' ">owner_name,</if>
+			<if test="repairId != null and repairId != '' ">repair_id,</if>
+			<if test="repairName != null and repairName != '' ">repair_name,</if>
+			<if test="agentId != null and agentId != '' ">agent_id,</if>
+			<if test="agentName != null and agentName != '' ">agent_name,</if>
+			<if test="createTime != null ">create_time,</if>
+			<if test="province != null"> province,</if>
+            <if test="city != null"> city,</if>
+            <if test="county != null"> county,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="releaseDetailId != null and releaseDetailId != ''">#{releaseDetailId},</if>
+			<if test="scheduleId != null and scheduleId != ''">#{scheduleId},</if>
+			<if test="scheduleName != null and scheduleName != ''">#{scheduleName},</if>
+			<if test="deviceId != null and deviceId != ''">#{deviceId},</if>
+			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
+			<if test="deviceCode != null and deviceCode != ''">#{deviceCode},</if>
+			<if test="address != null and address != ''">#{address},</if>
+			<if test="ownerId != null and ownerId != ''">#{ownerId},</if>
+			<if test="ownerName != null and ownerName != ''">#{ownerName},</if>
+			<if test="repairId != null and repairId != ''">#{repairId},</if>
+			<if test="repairName != null and repairName != ''">#{repairName},</if>
+			<if test="agentId != null and agentId != ''">#{agentId},</if>
+			<if test="agentName != null and agentName != ''">#{agentName},</if>
+			<if test="createTime != null">#{createTime},</if>
+			<if test="province != null"> #{province},</if>
+            <if test="city != null"> #{city},</if>
+            <if test="county != null"> #{county},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateReleaseDetail" parameterType="ReleaseDetail">
+        update zx_release_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="scheduleId != null  ">schedule_id = #{scheduleId},</if>
+            <if test="scheduleName != null  and scheduleName != ''  ">schedule_name = #{scheduleName},</if>
+            <if test="deviceId != null  ">device_id = #{deviceId},</if>
+            <if test="terminalId != null  ">terminal_id = #{terminalId},</if>
+            <if test="deviceCode != null  and deviceCode != ''  ">device_code = #{deviceCode},</if>
+            <if test="address != null  and address != ''  ">address = #{address},</if>
+            <if test="ownerId != null  ">owner_id = #{ownerId},</if>
+            <if test="ownerName != null  and ownerName != ''  ">owner_name = #{ownerName},</if>
+            <if test="repairId != null  ">repair_id = #{repairId},</if>
+            <if test="repairName != null  and repairName != ''  ">repair_name = #{repairName},</if>
+            <if test="agentId != null  ">agent_id = #{agentId},</if>
+            <if test="agentName != null  and agentName != ''  ">agent_name = #{agentName},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="province != null"> province = #{province},</if>
+            <if test="city != null"> city = #{city},</if>
+            <if test="county != null"> county = #{county},</if>
+        </trim>
+        where release_detail_id = #{releaseDetailId}
+    </update>
+
+	<delete id="deleteReleaseDetailById" parameterType="Integer">
+        delete from zx_release_detail where release_detail_id = #{releaseDetailId}
+    </delete>
+	
+    <delete id="deleteReleaseDetailByIds" parameterType="String">
+        delete from zx_release_detail where release_detail_id in 
+        <foreach item="releaseDetailId" collection="array" open="(" separator="," close=")">
+            #{releaseDetailId}
+        </foreach>
+    </delete>
+    
+</mapper>
