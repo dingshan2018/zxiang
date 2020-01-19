@@ -136,7 +136,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				AND #{params.county} like CONCAT('%',',',p.county,',','%')
 			 </if>
          </where>
-         ORDER BY p.place_id DESC 
+         ORDER BY p.create_time desc 
     </select>
     
     <select id="selectPlaceById" parameterType="Integer" resultMap="PlaceResult">

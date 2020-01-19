@@ -150,7 +150,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              	and d.terminal_id IS NOT NULL
              </if>
          </where>
-         ORDER BY d.device_id DESC 
+         order by d.province desc,d.city desc,d.county desc,d.owner_id desc,d.shopper_id desc,d.device_id desc 
     </select>
     
     <!-- 查询库存设备列表  -->

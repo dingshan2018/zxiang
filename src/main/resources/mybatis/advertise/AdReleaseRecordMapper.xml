@@ -62,7 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="updateBy != null and updateBy != ''"> and a.update_by = #{updateBy}</if>
              <if test="updateTime != null and updateTime != ''"> and a.update_time = #{updateTime}</if>
          </where>
-          ORDER BY a.release_device_id DESC
+          ORDER BY a.play_time desc
     </select>
     
     <select id="countAdReleaseDay" parameterType="Long" resultType="int">

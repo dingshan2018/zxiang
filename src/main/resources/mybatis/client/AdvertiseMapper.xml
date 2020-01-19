@@ -60,6 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="updateBy != null and updateBy != ''"> and a.update_by = #{updateBy}</if>
              <if test="updateTime != null"> and a.update_time = #{updateTime}</if>
          </where>
+         order by a.create_time desc
     </select>
     
     <select id="selectAdvertiseById" parameterType="Integer" resultMap="AdvertiseResult">

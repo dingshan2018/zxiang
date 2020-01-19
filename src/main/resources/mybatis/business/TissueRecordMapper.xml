@@ -96,7 +96,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="price != null and price != ''"> and price = #{price}</if>
              <if test="tissueLen != null and tissueLen != ''"> and tissue_len = #{tissueLen}</if>
          </where>
-         ORDER BY tissue_record_id DESC 
+         ORDER BY create_time desc 
     </select>
     
     <select id="selectTissueRecordById" parameterType="Integer" resultMap="TissueRecordResult">
