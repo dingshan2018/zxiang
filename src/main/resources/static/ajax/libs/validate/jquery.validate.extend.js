@@ -18,9 +18,10 @@ $(document).ready(function(){
 	},"请填写正确的座机号码");
 	//姓名校验
 	jQuery.validator.addMethod("isName",function(value,element){
-		var name=/^[\u4e00-\u9fa5]{2,6}$/;
+		//var name=/^[\u4e00-\u9fa5]{2,14}$/;
+		var name=/^([\u4e00-\u9fa5()（）0-9]{1,20}|[a-zA-Z\.\s()（）0-9]{1,20})$/;
 		return this.optional(element) || (name.test(value));
-	},"姓名只能用汉字,长度2-4位");
+	},"姓名只能汉字体数字组合或英文数字组合，长度只能小于10位");
 	//金额校验
 	jQuery.validator.addMethod("isMoney",function(value,element){
 		var money=/(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/;

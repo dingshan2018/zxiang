@@ -46,7 +46,7 @@ public class ScheduleConfig {
 		factory.setQuartzProperties(prop);
 
 		factory.setSchedulerName("ZXiangScheduler");
-		
+
 		// 延时启动
 		factory.setStartupDelay(1);
 		factory.setApplicationContextSchedulerContextKey("applicationContextKey");
