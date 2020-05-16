@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxiang.project.record.onlinedevice.mapper.OnlineDeviceMapper">
+    
+    <resultMap type="OnlineDevice" id="OnlineDeviceResult">
+        <result property="deviceOnlineId"    column="device_online_id"    />
+        <result property="sumDate"    column="sum_date"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="deviceCode"    column="device_code"    />
+        <result property="terminalId"    column="terminal_id"    />
+        <result property="address"    column="address"    />
+        <result property="releaseAddress"    column="release_address"    />
+        <result property="agentId"    column="agent_id"    />
+        <result property="joinId"    column="join_id"    />
+        <result property="repairId"    column="repair_id"    />
+        <result property="shopperId"    column="shopper_id"    />
+        <result property="onlineTime"    column="online_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectOnlineDeviceVo">
+        select device_online_id, sum_date, device_id, device_code, terminal_id, address, release_address, agent_id, join_id, repair_id, shopper_id, online_time, create_time, update_time from zx_online_device
+    </sql>
+	
+    <select id="selectOnlineDeviceList" parameterType="OnlineDevice" resultMap="OnlineDeviceResult">
+        <include refid="selectOnlineDeviceVo"/>
+        <where>  
+            <if test="deviceOnlineId != null and deviceOnlineId != ''"> and device_online_id = #{deviceOnlineId}</if>
+             <if test="sumDate != null and sumDate != ''"> and sum_date = #{sumDate}</if>
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="deviceCode != null and deviceCode != ''"> and device_code = #{deviceCode}</if>
+             <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
+             <if test="address != null and address != ''"> and address = #{address}</if>
+             <if test="releaseAddress != null and releaseAddress != ''"> and release_address = #{releaseAddress}</if>
+             <if test="agentId != null and agentId != ''"> and agent_id = #{agentId}</if>
+             <if test="joinId != null and joinId != ''"> and join_id = #{joinId}</if>
+             <if test="repairId != null and repairId != ''"> and repair_id = #{repairId}</if>
+             <if test="shopperId != null and shopperId != ''"> and shopper_id = #{shopperId}</if>
+             <if test="onlineTime != null and onlineTime != ''"> and online_time = #{onlineTime}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectOnlineDeviceById" parameterType="Integer" resultMap="OnlineDeviceResult">
+        <include refid="selectOnlineDeviceVo"/>
+        where device_online_id = #{deviceOnlineId}
+    </select>
+        
+    <insert id="insertOnlineDevice" parameterType="OnlineDevice">
+        insert into zx_online_device
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="deviceOnlineId != null and deviceOnlineId != '' ">device_online_id,</if>
+			<if test="sumDate != null and sumDate != '' ">sum_date,</if>
+			<if test="deviceId != null and deviceId != '' ">device_id,</if>
+			<if test="deviceCode != null and deviceCode != '' ">device_code,</if>
+			<if test="terminalId != null and terminalId != '' ">terminal_id,</if>
+			<if test="address != null and address != '' ">address,</if>
+			<if test="releaseAddress != null and releaseAddress != '' ">release_address,</if>
+			<if test="agentId != null and agentId != '' ">agent_id,</if>
+			<if test="joinId != null and joinId != '' ">join_id,</if>
+			<if test="repairId != null and repairId != '' ">repair_id,</if>
+			<if test="shopperId != null and shopperId != '' ">shopper_id,</if>
+			<if test="onlineTime != null and onlineTime != '' ">online_time,</if>
+			<if test="createTime != null and createTime != '' ">create_time,</if>
+			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="deviceOnlineId != null and deviceOnlineId != ''">#{deviceOnlineId},</if>
+			<if test="sumDate != null and sumDate != ''">#{sumDate},</if>
+			<if test="deviceId != null and deviceId != ''">#{deviceId},</if>
+			<if test="deviceCode != null and deviceCode != ''">#{deviceCode},</if>
+			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
+			<if test="address != null and address != ''">#{address},</if>
+			<if test="releaseAddress != null and releaseAddress != ''">#{releaseAddress},</if>
+			<if test="agentId != null and agentId != ''">#{agentId},</if>
+			<if test="joinId != null and joinId != ''">#{joinId},</if>
+			<if test="repairId != null and repairId != ''">#{repairId},</if>
+			<if test="shopperId != null and shopperId != ''">#{shopperId},</if>
+			<if test="onlineTime != null and onlineTime != ''">#{onlineTime},</if>
+			<if test="createTime != null and createTime != ''">#{createTime},</if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateOnlineDevice" parameterType="OnlineDevice">
+        update zx_online_device
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sumDate != null  ">sum_date = #{sumDate},</if>
+            <if test="deviceId != null  ">device_id = #{deviceId},</if>
+            <if test="deviceCode != null  and deviceCode != ''  ">device_code = #{deviceCode},</if>
+            <if test="terminalId != null  ">terminal_id = #{terminalId},</if>
+            <if test="address != null  and address != ''  ">address = #{address},</if>
+            <if test="releaseAddress != null  and releaseAddress != ''  ">release_address = #{releaseAddress},</if>
+            <if test="agentId != null  ">agent_id = #{agentId},</if>
+            <if test="joinId != null  ">join_id = #{joinId},</if>
+            <if test="repairId != null  ">repair_id = #{repairId},</if>
+            <if test="shopperId != null  ">shopper_id = #{shopperId},</if>
+            <if test="onlineTime != null  ">online_time = #{onlineTime},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where device_online_id = #{deviceOnlineId}
+    </update>
+
+	<delete id="deleteOnlineDeviceById" parameterType="Integer">
+        delete from zx_online_device where device_online_id = #{deviceOnlineId}
+    </delete>
+	
+    <delete id="deleteOnlineDeviceByIds" parameterType="String">
+        delete from zx_online_device where device_online_id in 
+        <foreach item="deviceOnlineId" collection="array" open="(" separator="," close=")">
+            #{deviceOnlineId}
+        </foreach>
+    </delete>
+    
+</mapper>

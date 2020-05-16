@@ -96,6 +96,10 @@ public class Device extends BaseEntity
 	
 	private String statusName;
 	private String ownerName;
+	// 今日累积时长
+	private Long curTime;
+	// 累积时长
+	private Long totalTime;
 	
 	private String userId ;
 	
@@ -649,5 +653,22 @@ public class Device extends BaseEntity
 	public void setShopperName(String shopperName) {
 		this.shopperName = shopperName;
 	}
+
+	public Long getCurTime() {
+		return curTime;
+	}
+
+	public void setCurTime(Long curTime) {
+		this.curTime = curTime;
+	}
+
+	public Long getTotalTime() {
+		return totalTime;
+	}
+
+	public void setTotalTime(Long totalTime) {
+		this.totalTime = totalTime;
+	}
+	
 	
 }
