@@ -58,7 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="updateTime != null and updateTime != ''"> and w.update_time = #{updateTime}</if>
              <if test="userName != null and userName.trim() != ''"> and u.user_name like concat('%', #{userName}, '%')</if>
          </where>
-         order by a.create_time desc
+         order by w.create_time desc
     </select>
     
     <select id="selectWxUserById" parameterType="Integer" resultMap="WxUserResult">
