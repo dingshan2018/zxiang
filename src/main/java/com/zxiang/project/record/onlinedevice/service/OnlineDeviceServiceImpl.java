@@ -1,5 +1,6 @@
 package com.zxiang.project.record.onlinedevice.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,11 @@ public class OnlineDeviceServiceImpl implements IOnlineDeviceService
 	public int deleteOnlineDeviceByIds(String ids)
 	{
 		return onlineDeviceMapper.deleteOnlineDeviceByIds(Convert.toStrArray(ids));
+	}
+
+	@Override
+	public List<HashMap<String, Object>> selectOnlineDeviceData(OnlineDevice onlineDevice) {
+		return onlineDeviceMapper.selectOnlineDeviceData(onlineDevice);
 	}
 	
 }

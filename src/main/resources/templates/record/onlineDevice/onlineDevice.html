@@ -4,20 +4,55 @@
 <head th:include="include :: header"></head>
 <body class="gray-bg">
     <div class="container-div">
-		<div class="btn-group hidden-xs" id="toolbar" role="group">
-			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="settle:onlineDevice:add">
-				<i class="fa fa-plus"></i> 新增
-			</a>
-			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="settle:onlineDevice:remove">
-				<i class="fa fa-trash-o"></i> 删除
-			</a>
-		</div>
+		<div class="col-sm-12 select-info">
+			<form id="change-form"  class="form-horizontal m">
+				<div class="select-list">
+					<ul>
+						<li>
+							设备编号： <input type="text" name="params[deviceCodes]" id="deviceCode"/>
+						</li>
+						<li>
+			                <span class="userType">用户类型：</span>
+			                <select
+												name="userType"
+												data-live-search="true"
+												class="block-plugin__select-picker selectpicker"
+												data-style="btn-white btn-sm">
+				                <option value="">所有</option>
+				                <option value="0">代理商</option>
+				                <option value="1">维护人员</option>
+				                <option value="2">机主</option>
+				                <option value="3">店主</option>
+				            </select>
+			            </li>
+			            <li>
+							搜索信息： <input type="text" name="userName" id="userName" th:value="${userName}"/>
+						</li>
+						
+					</ul>
+					<ul>
+						
+						<li>
+							月份：<div class="control-time-slot" style="float:right">
+					            <input type="text" class="time-input form-control date-time-picker" id="onlineTime" placeholder="统计月份" name="params[onlineTime]" readonly/>
+					        </div>
+						</li>
+						<li>
+						<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+									<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+					        	
+						</li>
+					</ul>
+							</form>
+						</div>
 			
 		<div class="col-sm-12 select-table table-striped">
 			<table id="bootstrap-table" data-mobile-responsive="true"></table>
 		</div>
     </div>
     <div th:include="include :: footer"></div>
+    <script th:src="@{/js/bootstrap-datetimepicker.min.js}"></script>
+    <script th:src="@{/js/bootstrap-datetimepicker.zh-CN.js}"></script>
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('settle:onlineDevice:edit')}]];
         var removeFlag = [[${@permission.hasPermi('settle:onlineDevice:remove')}]];
@@ -25,33 +60,17 @@
 
         $(function() {
             var options = {
-                url: prefix + "/list",
+                url: prefix + "/data",
                 createUrl: prefix + "/add",
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
-                modalName: "设备在线时长",
+                modalName: "开机记录查询",
                 columns: [{
 		            checkbox: true
 		        },
 				{
-					field : 'deviceOnlineId', 
-					title : 'ID' 
-				},
-				{
-					field : 'sumDate', 
-					title : '统计日期' 
-				},
-				{
-					field : 'deviceId', 
-					title : '设备ID' 
-				},
-				{
 					field : 'deviceCode', 
 					title : '设备编码' 
-				},
-				{
-					field : 'terminalId', 
-					title : '终端ID' 
 				},
 				{
 					field : 'address', 
@@ -61,47 +80,83 @@
 					field : 'releaseAddress', 
 					title : '投放地址' 
 				},
+
 				{
-					field : 'agentId', 
-					title : '代理商ID' 
+					field : 'agentName', 
+					title : '所属代理商' 
 				},
 				{
-					field : 'joinId', 
-					title : '机主' 
+					field : 'totalTime', 
+					title : '开机累计时长' 
 				},
 				{
-					field : 'repairId', 
-					title : '维护ID' 
+					field : 'day1', 
+					title : '前1天' 
 				},
 				{
-					field : 'shopperId', 
-					title : '店主ID' 
+					field : 'day2', 
+					title : '前2天' 
 				},
 				{
-					field : 'onlineTime', 
-					title : '在线时长' 
+					field : 'day3', 
+					title : '前3天' 
 				},
 				{
-					field : 'createTime', 
-					title : '创建时间' 
+					field : 'day4', 
+					title : '前4天' 
 				},
 				{
-					field : 'updateTime', 
-					title : '修改时间' 
+					field : 'day5', 
+					title : '前5天' 
+				},
+				{
+					field : 'day6', 
+					title : '前6天' 
+				},
+				{
+					field : 'day7', 
+					title : '前7天' 
 				},
 		        {
 		            title: '操作',
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	var actions = [];
-		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.deviceOnlineId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.deviceOnlineId + '\')"><i class="fa fa-remove"></i>删除</a>');
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="showDetail(\'' + row.deviceCode + '\')"><i class="fa fa-edit"></i>明细</a> ');
 						return actions.join('');
 		            }
 		        }]
             };
             $.table.init(options);
         });
+        function showDetail(deviceCode) {
+    		var url = prefix + "/detail/" + deviceCode;
+    		var onlineTime = $("#onlineTime").val();
+    		if(onlineTime != undefined && onlineTime != '' ){
+    			url = url + "?onlineTime="+onlineTime;
+    		}
+    		$.modal.open("开机明细", url);
+      	}
+
+     // 日期选择器初始化
+	    function initDateTimePicker (select) {
+	      $(select || '.date-time-picker').datetimepicker({
+	        language:  'zh-CN',
+	        //format: 'yyyy-mm-dd hh:ii',
+	        format: 'yyyy年mm月',
+	        todayBtn:  1,
+	        autoclose: true,
+	        todayHighlight: 1,
+	        startView: 2,
+	        minView:2,
+	        showMeridian: 1,
+	        minuteStep: 1,
+	        forceParse: false
+	      })
+
+	    }
+	    initDateTimePicker();
+
     </script>
 </body>
 </html>

@@ -1,6 +1,8 @@
 package com.zxiang.project.record.onlinedevice.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zxiang.common.utils.StringUtils;
 import com.zxiang.framework.aspectj.lang.annotation.Log;
 import com.zxiang.framework.aspectj.lang.enums.BusinessType;
 import com.zxiang.framework.web.controller.BaseController;
@@ -42,15 +45,51 @@ public class OnlineDeviceController extends BaseController
 	    return prefix + "/onlineDevice";
 	}
 	
+	@RequiresPermissions("settle:onlineDevice:view")
+	@GetMapping("/detail/{deviceCode}")
+	public String onlineDeviceDetail(@PathVariable String deviceCode,String onlineTime, ModelMap mmap)
+	{
+		mmap.put("deviceCode", deviceCode);
+		if(StringUtils.isNotEmpty(onlineTime)) {
+			mmap.put("onlineTime", onlineTime);
+		}
+	    return prefix + "/onlineDeviceDetail";
+	}
+	
+	/**
+	 * 查询设备在线统计时长列表
+	 */
+	@RequiresPermissions("settle:onlineDevice:data")
+	@PostMapping("/data")
+	@ResponseBody
+	public TableDataInfo data(OnlineDevice onlineDevice)
+	{
+		startPage();
+		if(onlineDevice.getParams() != null && !onlineDevice.getParams().containsKey("onlineTime") ) {
+			Map<String,Object> params = new HashMap<String,Object>();
+			params.put("onlineTime", "");
+			onlineDevice.setParams(params);
+		}
+		
+        List<HashMap<String,Object>> list = onlineDeviceService.selectOnlineDeviceData(onlineDevice);
+		return getDataTable(list);
+	}
+	
 	/**
 	 * 查询设备在线时长列表
 	 */
 	@RequiresPermissions("settle:onlineDevice:list")
-	@PostMapping("/list")
+	@PostMapping("/list/{deviceCode}")
 	@ResponseBody
-	public TableDataInfo list(OnlineDevice onlineDevice)
+	public TableDataInfo list(OnlineDevice onlineDevice,String statTime)
 	{
 		startPage();
+		if(StringUtils.isNotBlank(statTime)) {
+			Map<String,Object> params = new HashMap<String,Object>();
+			params.put("onlineTime", statTime);
+			onlineDevice.setParams(params);
+		}
+		
         List<OnlineDevice> list = onlineDeviceService.selectOnlineDeviceList(onlineDevice);
 		return getDataTable(list);
 	}

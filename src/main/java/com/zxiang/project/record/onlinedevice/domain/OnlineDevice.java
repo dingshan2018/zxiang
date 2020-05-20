@@ -39,11 +39,18 @@ public class OnlineDevice extends BaseEntity
 	private Integer shopperId;
 	/** 在线时长 */
 	private Long onlineTime;
+	private String totalTime;
 	/** 创建时间 */
 	private Date createTime;
 	/** 修改时间 */
 	private Date updateTime;
 
+	private String userType;
+	
+	private String userName;
+	
+	
+	
 	public void setDeviceOnlineId(Integer deviceOnlineId) 
 	{
 		this.deviceOnlineId = deviceOnlineId;
@@ -170,8 +177,24 @@ public class OnlineDevice extends BaseEntity
 	{
 		return updateTime;
 	}
+	
+    public String getUserType() {
+		return userType;
+	}
 
-    public String toString() {
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("deviceOnlineId", getDeviceOnlineId())
             .append("sumDate", getSumDate())
@@ -189,4 +212,12 @@ public class OnlineDevice extends BaseEntity
             .append("updateTime", getUpdateTime())
             .toString();
     }
+
+	public String getTotalTime() {
+		return totalTime;
+	}
+
+	public void setTotalTime(String totalTime) {
+		this.totalTime = totalTime;
+	}
 }

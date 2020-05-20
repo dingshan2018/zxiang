@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+     	<input type="hidden" name="deviceCode" id="deviceCode" th:value="${deviceCode}"/>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('settle:onlineDevice:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('settle:onlineDevice:remove')}]];
+        var prefix = ctx + "record/onlineDevice"
+        var onlineTime = [[${onlineTime}]];
+		var deviceCode = [[${deviceCode}]];
+        $(function() {
+            var options = {
+                url: prefix + "/list/"+deviceCode+"?statTime="+onlineTime,
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "设备在线时长明细",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'deviceOnlineId', 
+					title : 'ID' 
+				},
+				{
+					field : 'sumDate', 
+					title : '统计日期' 
+				},
+				{
+					field : 'deviceCode', 
+					title : '设备编码' 
+				},
+				{
+					field : 'address', 
+					title : 'GPS地址' 
+				},
+				{
+					field : 'releaseAddress', 
+					title : '投放地址' 
+				},
+
+				{
+					field : 'totalTime', 
+					title : '在线时长' 
+				}]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

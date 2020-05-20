@@ -4,6 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zxiang.project.record.onlinedevice.mapper.OnlineDeviceMapper">
     
+        
     <resultMap type="OnlineDevice" id="OnlineDeviceResult">
         <result property="deviceOnlineId"    column="device_online_id"    />
         <result property="sumDate"    column="sum_date"    />
@@ -22,14 +23,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectOnlineDeviceVo">
-        select device_online_id, sum_date, device_id, device_code, terminal_id, address, release_address, agent_id, join_id, repair_id, shopper_id, online_time, create_time, update_time from zx_online_device
+        select device_online_id, sum_date, device_id, device_code, terminal_id, address, release_address, agent_id, join_id, repair_id, shopper_id, round(online_time/1000/60/60,2) as totalTime, online_time, create_time, update_time from zx_online_device
     </sql>
 	
     <select id="selectOnlineDeviceList" parameterType="OnlineDevice" resultMap="OnlineDeviceResult">
         <include refid="selectOnlineDeviceVo"/>
         <where>  
+            
+			(
+			<if test="params != null and params.onlineTime!=null and params.onlineTime!='' ">  date_format(sum_date, '%Y年%m月') =#{params.onlineTime} </if>
+			<if test='params != null and params.onlineTime!=null and  params.onlineTime=="" '> date_format(sum_date, '%Y-%m') = date_format(
+					date_sub(curdate(), INTERVAL 1 DAY),
+					'%Y-%m'
+				)</if>
+				
+			)
             <if test="deviceOnlineId != null and deviceOnlineId != ''"> and device_online_id = #{deviceOnlineId}</if>
-             <if test="sumDate != null and sumDate != ''"> and sum_date = #{sumDate}</if>
+             <if test="sumDate != null "> and sum_date = #{sumDate}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
              <if test="deviceCode != null and deviceCode != ''"> and device_code = #{deviceCode}</if>
              <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
@@ -39,10 +49,133 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="joinId != null and joinId != ''"> and join_id = #{joinId}</if>
              <if test="repairId != null and repairId != ''"> and repair_id = #{repairId}</if>
              <if test="shopperId != null and shopperId != ''"> and shopper_id = #{shopperId}</if>
-             <if test="onlineTime != null and onlineTime != ''"> and online_time = #{onlineTime}</if>
-             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
-             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+             <if test="onlineTime != null "> and online_time = #{onlineTime}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             
          </where>
+         order by sum_date desc
+    </select>
+    
+    <select id="selectOnlineDeviceData" parameterType="OnlineDevice" resultType="HashMap">
+        SELECT
+			round(sum(
+				IF (
+				<if test="params != null and params.onlineTime!=null and params.onlineTime!='' "> date_format(sum_date, '%Y年%m月') = #{params.onlineTime} </if>
+		        <if test='params != null and params.onlineTime!=null and  params.onlineTime=="" '> date_format(sum_date, '%Y-%m') = date_format(
+				  date_sub(curdate(), INTERVAL 1 DAY),
+				  '%Y-%m'
+			    )</if>
+                    ,
+					online_time,
+					0
+				)
+			)/1000/60/60,1) AS totalTime,
+			round(sum(
+		
+				IF (
+					sum_date = date_sub(curdate(), INTERVAL 1 DAY),
+					online_time,
+					0
+				)
+			)/1000/60/60,1) AS day1,
+			round(sum(
+				IF (
+					sum_date = date_sub(curdate(), INTERVAL 2 DAY),
+					online_time,
+					0
+				)
+			)/1000/60/60,1) AS day2,
+			round(sum(
+				IF (
+					sum_date = date_sub(curdate(), INTERVAL 3 DAY),
+					online_time,
+					0
+				)
+			)/1000/60/60,1) AS day3,
+			round(sum(
+		
+				IF (
+					sum_date = date_sub(curdate(), INTERVAL 4 DAY),
+					online_time,
+					0
+				)
+			)/1000/60/60,1) AS day4,
+			round(sum(
+				IF (
+					sum_date = date_sub(curdate(), INTERVAL 5 DAY),
+					online_time,
+					0
+				)
+			)/1000/60/60,1) AS day5,
+			round(sum(
+		
+				IF (
+					sum_date = date_sub(curdate(), INTERVAL 6 DAY),
+					online_time,
+					0
+				)
+			)/1000/60/60,1) AS day6,
+			round(sum(
+				IF (
+					sum_date = date_sub(curdate(), INTERVAL 7 DAY),
+					online_time,
+					0
+				)
+			)/1000/60/60,1) AS day7,
+			device_code as deviceCode,
+			address,
+			release_address as releaseAddress,
+			(
+				SELECT
+					za.agent_name
+				FROM
+					zx_agent za
+				WHERE
+					za.agent_id = zx_online_device.agent_id
+			) AS agentName
+		FROM
+			zx_online_device
+        WHERE
+		(
+			(
+				DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= sum_date
+			) OR
+		<if test="params != null and params.onlineTime!=null and params.onlineTime!='' ">  date_format(sum_date, '%Y年%m月') =#{params.onlineTime} </if>
+		<if test='params != null and params.onlineTime!=null and  params.onlineTime=="" '> date_format(sum_date, '%Y-%m') = date_format(
+				date_sub(curdate(), INTERVAL 1 DAY),
+				'%Y-%m'
+			)</if>
+			
+		)
+		<if test="params != null and params.deviceCodes!=null and params.deviceCodes!='' "> and find_in_set(device_code,#{params.deviceCodes})</if>
+		<if test="deviceCode != null and deviceCode != ''"> and device_code = #{deviceCode}</if>
+		<if test='userType != null and userType == "0" and userName!=null and userName!="" '> and agent_id in(select agent_id from zx_agent where agent_name like concat('%',#{userName},'%'))</if>
+        <if test='userType != null and userType == "1" and userName!=null and userName!="" '> and repair_id in(select repair_id from zx_repair where repair_name like concat('%',#{userName},'%'))</if>
+        <if test='userType != null and userType == "2" and userName!=null and userName!="" '> and join_id in(select join_id from zx_join where joiner_name like concat('%',#{userName},'%'))</if>
+		<if test='userType != null and userType == "3" and userName!=null and userName!="" '> and shopper_id in(select shopper_id from zx_shopper where shopper_name like concat('%',#{userName},'%'))</if>
+        group by device_code
+    </select>
+    
+    <select id="selectOneOnlineDevice" parameterType="OnlineDevice" resultMap="OnlineDeviceResult">
+        <include refid="selectOnlineDeviceVo"/>
+        <where>  
+            <if test="deviceOnlineId != null and deviceOnlineId != ''"> and device_online_id = #{deviceOnlineId}</if>
+             <if test="sumDate != null "> and sum_date = #{sumDate}</if>
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="deviceCode != null and deviceCode != ''"> and device_code = #{deviceCode}</if>
+             <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
+             <if test="address != null and address != ''"> and address = #{address}</if>
+             <if test="releaseAddress != null and releaseAddress != ''"> and release_address = #{releaseAddress}</if>
+             <if test="agentId != null and agentId != ''"> and agent_id = #{agentId}</if>
+             <if test="joinId != null and joinId != ''"> and join_id = #{joinId}</if>
+             <if test="repairId != null and repairId != ''"> and repair_id = #{repairId}</if>
+             <if test="shopperId != null and shopperId != ''"> and shopper_id = #{shopperId}</if>
+             <if test="onlineTime != null "> and online_time = #{onlineTime}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+         </where>
+         limit 1
     </select>
     
     <select id="selectOnlineDeviceById" parameterType="Integer" resultMap="OnlineDeviceResult">
@@ -54,7 +187,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into zx_online_device
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="deviceOnlineId != null and deviceOnlineId != '' ">device_online_id,</if>
-			<if test="sumDate != null and sumDate != '' ">sum_date,</if>
+			<if test="sumDate != null ">sum_date,</if>
 			<if test="deviceId != null and deviceId != '' ">device_id,</if>
 			<if test="deviceCode != null and deviceCode != '' ">device_code,</if>
 			<if test="terminalId != null and terminalId != '' ">terminal_id,</if>
@@ -64,13 +197,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="joinId != null and joinId != '' ">join_id,</if>
 			<if test="repairId != null and repairId != '' ">repair_id,</if>
 			<if test="shopperId != null and shopperId != '' ">shopper_id,</if>
-			<if test="onlineTime != null and onlineTime != '' ">online_time,</if>
-			<if test="createTime != null and createTime != '' ">create_time,</if>
-			<if test="updateTime != null and updateTime != '' ">update_time,</if>
+			<if test="onlineTime != null ">online_time,</if>
+			<if test="createTime != null ">create_time,</if>
+			<if test="updateTime != null  ">update_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="deviceOnlineId != null and deviceOnlineId != ''">#{deviceOnlineId},</if>
-			<if test="sumDate != null and sumDate != ''">#{sumDate},</if>
+			<if test="sumDate != null ">#{sumDate},</if>
 			<if test="deviceId != null and deviceId != ''">#{deviceId},</if>
 			<if test="deviceCode != null and deviceCode != ''">#{deviceCode},</if>
 			<if test="terminalId != null and terminalId != ''">#{terminalId},</if>
@@ -80,9 +213,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="joinId != null and joinId != ''">#{joinId},</if>
 			<if test="repairId != null and repairId != ''">#{repairId},</if>
 			<if test="shopperId != null and shopperId != ''">#{shopperId},</if>
-			<if test="onlineTime != null and onlineTime != ''">#{onlineTime},</if>
-			<if test="createTime != null and createTime != ''">#{createTime},</if>
-			<if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+			<if test="onlineTime != null ">#{onlineTime},</if>
+			<if test="createTime != null ">#{createTime},</if>
+			<if test="updateTime != null">#{updateTime},</if>
          </trim>
     </insert>
 	 
@@ -116,5 +249,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{deviceOnlineId}
         </foreach>
     </delete>
+    
     
 </mapper>

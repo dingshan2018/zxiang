@@ -1,5 +1,6 @@
 package com.zxiang.project.record.onlinedevice.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.zxiang.project.record.onlinedevice.domain.OnlineDevice;
@@ -51,5 +52,7 @@ public interface IOnlineDeviceService
      * @return 结果
      */
 	public int deleteOnlineDeviceByIds(String ids);
+
+	public List<HashMap<String, Object>> selectOnlineDeviceData(OnlineDevice onlineDevice);
 	
 }
