@@ -76,6 +76,10 @@ public class Terminal extends BaseEntity
 	
 	private String deviceType;
 	
+	private String address;
+	
+	private String build;
+	
 	public void setTerminalId(Integer terminalId) 
 	{
 		this.terminalId = terminalId;
@@ -357,4 +361,20 @@ public class Terminal extends BaseEntity
 		this.deviceType = deviceType;
 	}
 
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getBuild() {
+		return build;
+	}
+
+	public void setBuild(String build) {
+		this.build = build;
+	}
+    
 }

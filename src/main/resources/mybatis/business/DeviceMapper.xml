@@ -80,6 +80,39 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          (SELECT p.`county` FROM `zx_place` p WHERE p.place_id=d.`place_id`)) agentLevel2    
           from zx_device d 
     </sql>
+	<sql id="selectDeviceInfoVo">
+        select media_id,device_id, device_code, device_sn, device_type,
+         terminal_id,
+         province, 
+        city, 
+        county,
+         (select distinct t.terminal_code from zx_terminal t where t.terminal_id =d.`terminal_id` ) terminalCode,
+         (select t.address from zx_terminal t where t.terminal_id =d.`terminal_id` ) address,
+         place_id, owner_id,    
+         (select distinct u.puser_id from sys_user u where u.user_id =d.`owner_id` ) joinId,
+         shopper_id as shopperId,
+         (SELECT DISTINCT zr.repair_id FROM zx_repair zr WHERE zr.repair_id =
+         (SELECT p.`service_point` FROM `zx_place` p WHERE p.place_id=d.`place_id`)) repairId,
+          (SELECT DISTINCT za.agent_id FROM zx_agent za WHERE za.del_flag!=2 AND za.city 
+          =(SELECT p.`city` FROM `zx_place` p WHERE p.place_id=d.`place_id`) AND za.county IS NULL) agentId1,
+         (SELECT DISTINCT za.agent_id FROM zx_agent za WHERE za.del_flag!=2 AND za.city =
+         (SELECT p.`city` FROM `zx_place` p WHERE p.place_id=d.`place_id`) AND za.county =
+         (SELECT p.`county` FROM `zx_place` p WHERE p.place_id=d.`place_id`)) agentId2    
+          from zx_device d 
+    </sql>
+	
+	<select id="selectDeviceInfo" parameterType="Device" resultType="HashMap">
+        <include refid="selectDeviceInfoVo"/>
+        <where>  
+            <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="deviceCode != null and deviceCode != ''"> and device_code  like concat('%',#{deviceCode},'%')</if>
+             <if test="deviceSn != null and deviceSn != ''"> and device_sn = #{deviceSn}</if>
+             <if test="deviceType != null and deviceType != ''"> and device_type = #{deviceType}</if>
+             <if test="terminalId != null and terminalId != ''"> and terminal_id = #{terminalId}</if>
+             <if test="placeId != null and placeId != ''"> and place_id = #{placeId}</if>
+         </where>
+		 limit 1
+	</select>
 	
 	<!-- 查询运营设备列表  -->
     <select id="selectDeviceList" parameterType="Device" resultMap="DeviceResult">

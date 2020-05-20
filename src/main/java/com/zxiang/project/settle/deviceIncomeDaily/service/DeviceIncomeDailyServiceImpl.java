@@ -24,8 +24,11 @@ import com.zxiang.common.constant.RateConstants;
 import com.zxiang.common.constant.UserConstants;
 import com.zxiang.common.exception.RRException;
 import com.zxiang.common.support.Convert;
+import com.zxiang.common.utils.DateUtils;
 import com.zxiang.project.business.device.domain.Device;
 import com.zxiang.project.business.device.mapper.DeviceMapper;
+import com.zxiang.project.business.terminal.domain.Terminal;
+import com.zxiang.project.business.terminal.mapper.TerminalMapper;
 import com.zxiang.project.business.tissueRecord.mapper.TissueRecordMapper;
 import com.zxiang.project.client.advertise.domain.Advertise;
 import com.zxiang.project.client.advertise.mapper.AdvertiseMapper;
@@ -40,6 +43,8 @@ import com.zxiang.project.client.repair.domain.Repair;
 import com.zxiang.project.client.repair.mapper.RepairMapper;
 import com.zxiang.project.client.shopper.domain.Shopper;
 import com.zxiang.project.client.shopper.mapper.ShopperMapper;
+import com.zxiang.project.record.onlinedevice.domain.OnlineDevice;
+import com.zxiang.project.record.onlinedevice.mapper.OnlineDeviceMapper;
 import com.zxiang.project.settle.deviceIncomeDaily.domain.DeviceIncomeDaily;
 import com.zxiang.project.settle.deviceIncomeDaily.mapper.DeviceIncomeDailyMapper;
 import com.zxiang.project.settle.userExtension.domain.UserExtension;
@@ -94,6 +99,10 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 	private ShopperMapper shopperMapper;
 	@Autowired
 	private UserMapper userMapper;
+	@Autowired
+	private OnlineDeviceMapper onlineDeviceMapper;
+	@Autowired
+	private TerminalMapper terminalMapper;
 	
 	/**
      * 查询设备收入日统计信息
@@ -265,6 +274,32 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				deviceEntity.setInvalidCnt(0l);
 			}
 			deviceMapper.updateDevice(deviceEntity);
+			
+			// 定时器，如果统计到设备不存在，则插入一条0的开机记录
+			OnlineDevice onlineDev = new OnlineDevice();
+			onlineDev.setDeviceId(deviceEntity.getDeviceId());
+			onlineDev.setSumDate(DateUtils.getBeginDayOfYesterday());
+			List<OnlineDevice> todayOnlineDev = onlineDeviceMapper.selectOnlineDeviceList(onlineDev);
+			if(todayOnlineDev == null || todayOnlineDev.size()<=0) {
+				Device devParam = new Device();
+				Terminal terminal = this.terminalMapper.selectTerminalById(deviceEntity.getTerminalId());
+				devParam.setDeviceId(terminal.getDeviceId());
+				Map<String,Object> deviceInfo = this.deviceMapper.selectDeviceInfo(devParam);
+				if(deviceInfo!=null) {
+					onlineDev.setAgentId((deviceInfo.containsKey("agentId2")&&StringUtil.isNotEmpty(deviceInfo.get("agentId2").toString()))?Integer.parseInt(deviceInfo.get("agentId2").toString()):null);
+					onlineDev.setJoinId((deviceInfo.containsKey("joinId")&&StringUtil.isNotEmpty(deviceInfo.get("joinId").toString()))?Integer.parseInt(deviceInfo.get("joinId").toString()):null);
+					onlineDev.setRepairId((deviceInfo.containsKey("repairId")&&StringUtil.isNotEmpty(deviceInfo.get("repairId").toString()))?Integer.parseInt(deviceInfo.get("repairId").toString()):null);
+					onlineDev.setShopperId((deviceInfo.containsKey("shopperId")&&StringUtil.isNotEmpty(deviceInfo.get("shopperId").toString()))?Integer.parseInt(deviceInfo.get("shopperId").toString()):null);
+				}
+				onlineDev.setDeviceCode(deviceEntity.getDeviceCode());
+				onlineDev.setAddress(terminal.getAddress());
+				onlineDev.setReleaseAddress(deviceEntity.getAddress());
+				onlineDev.setOnlineTime(0l);
+				onlineDev.setCreateTime(new Date());
+				onlineDev.setUpdateTime(new Date());
+				this.onlineDeviceMapper.insertOnlineDevice(onlineDev);
+			}
+			
 		}
 		//需要推广代理人（查询前一天加入代理商）
 		promotionagent();
@@ -1455,6 +1490,32 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 				//计算广告费用
 				adCurdata(device,buyer_id,tissuenum,currentTime,shopper_id);
 			}
+			
+			// 定时器，如果统计到设备不存在，则插入一条0的开机记录
+			Device deviceEntity = this.deviceMapper.selectDeviceById(Integer.parseInt(device.get("device_id").toString()));
+						OnlineDevice onlineDev = new OnlineDevice();
+						onlineDev.setDeviceId(deviceEntity.getDeviceId());
+						onlineDev.setSumDate(currentTime);
+						List<OnlineDevice> todayOnlineDev = onlineDeviceMapper.selectOnlineDeviceList(onlineDev);
+						if(todayOnlineDev == null || todayOnlineDev.size()<=0) {
+							Device devParam = new Device();
+							Terminal terminal = this.terminalMapper.selectTerminalById(deviceEntity.getTerminalId());
+							devParam.setDeviceId(terminal.getDeviceId());
+							Map<String,Object> deviceInfo = this.deviceMapper.selectDeviceInfo(devParam);
+							if(deviceInfo!=null) {
+								onlineDev.setAgentId((deviceInfo.containsKey("agentId2")&&StringUtil.isNotEmpty(deviceInfo.get("agentId2").toString()))?Integer.parseInt(deviceInfo.get("agentId2").toString()):null);
+								onlineDev.setJoinId((deviceInfo.containsKey("joinId")&&StringUtil.isNotEmpty(deviceInfo.get("joinId").toString()))?Integer.parseInt(deviceInfo.get("joinId").toString()):null);
+								onlineDev.setRepairId((deviceInfo.containsKey("repairId")&&StringUtil.isNotEmpty(deviceInfo.get("repairId").toString()))?Integer.parseInt(deviceInfo.get("repairId").toString()):null);
+								onlineDev.setShopperId((deviceInfo.containsKey("shopperId")&&StringUtil.isNotEmpty(deviceInfo.get("shopperId").toString()))?Integer.parseInt(deviceInfo.get("shopperId").toString()):null);
+							}
+							onlineDev.setDeviceCode(deviceEntity.getDeviceCode());
+							onlineDev.setAddress(terminal.getAddress());
+							onlineDev.setReleaseAddress(deviceEntity.getAddress());
+							onlineDev.setOnlineTime(0l);
+							onlineDev.setCreateTime(new Date());
+							onlineDev.setUpdateTime(new Date());
+							this.onlineDeviceMapper.insertOnlineDevice(onlineDev);
+						}
 		}
 		//需要推广代理人（查询前一天加入代理商）
 		curpromotionagent(currentTime);

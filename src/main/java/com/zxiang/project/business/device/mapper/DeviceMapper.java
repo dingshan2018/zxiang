@@ -132,5 +132,7 @@ public interface DeviceMapper
 	 */
 	public List queryExport(HashMap<String, String> params);
 
+	public Map<String, Object> selectDeviceInfo(Device devParam);
+
 	
 }
