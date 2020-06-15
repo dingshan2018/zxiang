@@ -30,7 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="scheduleId != null and scheduleId != ''"> and zrd.schedule_id = #{scheduleId}</if>
              <if test="releasePosition != null and releasePosition != ''"> and zrd.release_position = #{releasePosition}</if>
              <if test="deviceId != null and deviceId != ''"> and zrd.device_id = #{deviceId}</if>
-             <if test="deviceCode != null and deviceCode != ''"> and zd.device_code = #{deviceCode}</if>
+             <if test="deviceCode != null and deviceCode != ''"> and find_in_set(zd.device_code, #{deviceCode}) </if>
              <if test="placeId != null and placeId != ''"> and zd.place_id = #{placeId}</if>
              <if test="province != null"> and zp.province = #{province}</if>
              <if test="city != null"> and zp.city = #{city}</if>

@@ -30,14 +30,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectOnlineDeviceVo"/>
         <where>  
             
-			(
-			<if test="params != null and params.onlineTime!=null and params.onlineTime!='' ">  date_format(sum_date, '%Y年%m月') =#{params.onlineTime} </if>
-			<if test='params != null and params.onlineTime!=null and  params.onlineTime=="" '> date_format(sum_date, '%Y-%m') = date_format(
+			<if test="params != null and params.onlineTime!=null and params.onlineTime!='' "> and date_format(sum_date, '%Y年%m月') =#{params.onlineTime} and sum_date &lt;&gt; curdate() </if>
+			<if test='params != null and params.onlineTime!=null and  params.onlineTime=="" '> and  date_format(sum_date, '%Y-%m') = date_format(
 					date_sub(curdate(), INTERVAL 1 DAY),
-					'%Y-%m'
-				)</if>
-				
-			)
+					'%Y-%m' 
+				) and sum_date &lt;&gt; curdate() </if>
             <if test="deviceOnlineId != null and deviceOnlineId != ''"> and device_online_id = #{deviceOnlineId}</if>
              <if test="sumDate != null "> and sum_date = #{sumDate}</if>
              <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
@@ -61,11 +58,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT
 			round(sum(
 				IF (
-				<if test="params != null and params.onlineTime!=null and params.onlineTime!='' "> date_format(sum_date, '%Y年%m月') = #{params.onlineTime} </if>
+				<if test="params != null and params.onlineTime!=null and params.onlineTime!='' "> date_format(sum_date, '%Y年%m月') = #{params.onlineTime} and sum_date &lt;&gt; curdate() </if>
 		        <if test='params != null and params.onlineTime!=null and  params.onlineTime=="" '> date_format(sum_date, '%Y-%m') = date_format(
 				  date_sub(curdate(), INTERVAL 1 DAY),
 				  '%Y-%m'
-			    )</if>
+			    )  and sum_date &lt;&gt; curdate() </if>
                     ,
 					online_time,
 					0
@@ -141,11 +138,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			(
 				DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= sum_date
 			) OR
-		<if test="params != null and params.onlineTime!=null and params.onlineTime!='' ">  date_format(sum_date, '%Y年%m月') =#{params.onlineTime} </if>
-		<if test='params != null and params.onlineTime!=null and  params.onlineTime=="" '> date_format(sum_date, '%Y-%m') = date_format(
+		<if test="params != null and params.onlineTime!=null and params.onlineTime!='' ">  (date_format(sum_date, '%Y年%m月') =#{params.onlineTime} and sum_date &lt;&gt; curdate() ) </if>
+		<if test='params != null and params.onlineTime!=null and  params.onlineTime=="" '> (date_format(sum_date, '%Y-%m') = date_format(
 				date_sub(curdate(), INTERVAL 1 DAY),
 				'%Y-%m'
-			)</if>
+			) and sum_date &lt;&gt; curdate() )</if>
 			
 		)
 		<if test="params != null and params.deviceCodes!=null and params.deviceCodes!='' "> and find_in_set(device_code,#{params.deviceCodes})</if>

@@ -283,21 +283,25 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 			if(todayOnlineDev == null || todayOnlineDev.size()<=0) {
 				Device devParam = new Device();
 				Terminal terminal = this.terminalMapper.selectTerminalById(deviceEntity.getTerminalId());
-				devParam.setDeviceId(terminal.getDeviceId());
-				Map<String,Object> deviceInfo = this.deviceMapper.selectDeviceInfo(devParam);
-				if(deviceInfo!=null) {
-					onlineDev.setAgentId((deviceInfo.containsKey("agentId2")&&StringUtil.isNotEmpty(deviceInfo.get("agentId2").toString()))?Integer.parseInt(deviceInfo.get("agentId2").toString()):null);
-					onlineDev.setJoinId((deviceInfo.containsKey("joinId")&&StringUtil.isNotEmpty(deviceInfo.get("joinId").toString()))?Integer.parseInt(deviceInfo.get("joinId").toString()):null);
-					onlineDev.setRepairId((deviceInfo.containsKey("repairId")&&StringUtil.isNotEmpty(deviceInfo.get("repairId").toString()))?Integer.parseInt(deviceInfo.get("repairId").toString()):null);
-					onlineDev.setShopperId((deviceInfo.containsKey("shopperId")&&StringUtil.isNotEmpty(deviceInfo.get("shopperId").toString()))?Integer.parseInt(deviceInfo.get("shopperId").toString()):null);
+				if(terminal!=null) {
+					onlineDev.setAddress(terminal.getAddress());
 				}
-				onlineDev.setDeviceCode(deviceEntity.getDeviceCode());
-				onlineDev.setAddress(terminal.getAddress());
-				onlineDev.setReleaseAddress(deviceEntity.getAddress());
-				onlineDev.setOnlineTime(0l);
-				onlineDev.setCreateTime(new Date());
-				onlineDev.setUpdateTime(new Date());
-				this.onlineDeviceMapper.insertOnlineDevice(onlineDev);
+					devParam.setDeviceId(deviceEntity.getDeviceId());
+					Map<String,Object> deviceInfo = this.deviceMapper.selectDeviceInfo(devParam);
+					if(deviceInfo!=null) {
+						onlineDev.setAgentId((deviceInfo.containsKey("agentId2")&&StringUtil.isNotEmpty(deviceInfo.get("agentId2").toString()))?Integer.parseInt(deviceInfo.get("agentId2").toString()):null);
+						onlineDev.setJoinId((deviceInfo.containsKey("joinId")&&StringUtil.isNotEmpty(deviceInfo.get("joinId").toString()))?Integer.parseInt(deviceInfo.get("joinId").toString()):null);
+						onlineDev.setRepairId((deviceInfo.containsKey("repairId")&&StringUtil.isNotEmpty(deviceInfo.get("repairId").toString()))?Integer.parseInt(deviceInfo.get("repairId").toString()):null);
+						onlineDev.setShopperId((deviceInfo.containsKey("shopperId")&&StringUtil.isNotEmpty(deviceInfo.get("shopperId").toString()))?Integer.parseInt(deviceInfo.get("shopperId").toString()):null);
+					}
+					onlineDev.setDeviceCode(deviceEntity.getDeviceCode());
+					onlineDev.setReleaseAddress(deviceEntity.getAddress());
+					onlineDev.setOnlineTime(0l);
+					onlineDev.setCreateTime(new Date());
+					onlineDev.setUpdateTime(new Date());
+					this.onlineDeviceMapper.insertOnlineDevice(onlineDev);
+
+				
 			}
 			
 		}
@@ -1500,21 +1504,26 @@ public class DeviceIncomeDailyServiceImpl implements IDeviceIncomeDailyService
 						if(todayOnlineDev == null || todayOnlineDev.size()<=0) {
 							Device devParam = new Device();
 							Terminal terminal = this.terminalMapper.selectTerminalById(deviceEntity.getTerminalId());
-							devParam.setDeviceId(terminal.getDeviceId());
-							Map<String,Object> deviceInfo = this.deviceMapper.selectDeviceInfo(devParam);
-							if(deviceInfo!=null) {
-								onlineDev.setAgentId((deviceInfo.containsKey("agentId2")&&StringUtil.isNotEmpty(deviceInfo.get("agentId2").toString()))?Integer.parseInt(deviceInfo.get("agentId2").toString()):null);
-								onlineDev.setJoinId((deviceInfo.containsKey("joinId")&&StringUtil.isNotEmpty(deviceInfo.get("joinId").toString()))?Integer.parseInt(deviceInfo.get("joinId").toString()):null);
-								onlineDev.setRepairId((deviceInfo.containsKey("repairId")&&StringUtil.isNotEmpty(deviceInfo.get("repairId").toString()))?Integer.parseInt(deviceInfo.get("repairId").toString()):null);
-								onlineDev.setShopperId((deviceInfo.containsKey("shopperId")&&StringUtil.isNotEmpty(deviceInfo.get("shopperId").toString()))?Integer.parseInt(deviceInfo.get("shopperId").toString()):null);
+							if(terminal!=null) {
+								onlineDev.setAddress(terminal.getAddress());
 							}
-							onlineDev.setDeviceCode(deviceEntity.getDeviceCode());
-							onlineDev.setAddress(terminal.getAddress());
-							onlineDev.setReleaseAddress(deviceEntity.getAddress());
-							onlineDev.setOnlineTime(0l);
-							onlineDev.setCreateTime(new Date());
-							onlineDev.setUpdateTime(new Date());
-							this.onlineDeviceMapper.insertOnlineDevice(onlineDev);
+								devParam.setDeviceId(deviceEntity.getDeviceId());
+								Map<String,Object> deviceInfo = this.deviceMapper.selectDeviceInfo(devParam);
+								if(deviceInfo!=null) {
+									onlineDev.setAgentId((deviceInfo.containsKey("agentId2")&&StringUtil.isNotEmpty(deviceInfo.get("agentId2").toString()))?Integer.parseInt(deviceInfo.get("agentId2").toString()):null);
+									onlineDev.setJoinId((deviceInfo.containsKey("joinId")&&StringUtil.isNotEmpty(deviceInfo.get("joinId").toString()))?Integer.parseInt(deviceInfo.get("joinId").toString()):null);
+									onlineDev.setRepairId((deviceInfo.containsKey("repairId")&&StringUtil.isNotEmpty(deviceInfo.get("repairId").toString()))?Integer.parseInt(deviceInfo.get("repairId").toString()):null);
+									onlineDev.setShopperId((deviceInfo.containsKey("shopperId")&&StringUtil.isNotEmpty(deviceInfo.get("shopperId").toString()))?Integer.parseInt(deviceInfo.get("shopperId").toString()):null);
+								}
+								onlineDev.setDeviceCode(deviceEntity.getDeviceCode());
+								
+								onlineDev.setReleaseAddress(deviceEntity.getAddress());
+								onlineDev.setOnlineTime(0l);
+								onlineDev.setCreateTime(new Date());
+								onlineDev.setUpdateTime(new Date());
+								this.onlineDeviceMapper.insertOnlineDevice(onlineDev);
+//							}
+							
 						}
 		}
 		//需要推广代理人（查询前一天加入代理商）

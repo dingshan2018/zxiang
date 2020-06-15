@@ -1,5 +1,6 @@
 package com.zxiang.project.business.place.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,7 @@ import com.zxiang.project.business.place.domain.Place;
 import com.zxiang.project.business.place.service.IPlaceService;
 import com.zxiang.project.client.repair.domain.Repair;
 import com.zxiang.project.client.repair.service.IRepairService;
+import com.zxiang.project.system.area.domain.Area;
 import com.zxiang.project.system.area.service.IAreaService;
 import com.zxiang.project.system.user.domain.User;
 import com.zxiang.project.system.user.mapper.UserMapper;
@@ -129,9 +131,21 @@ public class PlaceController extends BaseController
 		
 		mmap.put("placeDropBoxList", placeService.selectDropBoxList());
 		
-		mmap.put("provinceDropBoxList", areaService.selectDropBoxList(0L));
-		mmap.put("cityDropBoxList", areaService.selectDropBoxList(place.getProvince()));
-		mmap.put("countyDropBoxList", areaService.selectDropBoxList(place.getCity()));
+//		mmap.put("provinceDropBoxList", areaService.selectDropBoxList(0L));
+//		mmap.put("cityDropBoxList", areaService.selectDropBoxList(place.getProvince()));
+//		mmap.put("countyDropBoxList", areaService.selectDropBoxList(place.getCity()));
+		
+		List<Area> provinceList = areaService.selectDropBoxList(0);
+		mmap.put("provinceList", provinceList == null ? new ArrayList<Area>() : provinceList);
+		if (place.getProvince() != null) {
+			List<Area> cityList = areaService.selectDropBoxList(place.getProvince());
+			mmap.put("cityList", cityList);
+		}
+		if (place.getCity() != null) {
+			List<Area> countyList = areaService.selectDropBoxList(place.getCity());
+			mmap.put("countyList", countyList == null ? new ArrayList<Area>() : countyList);
+		}
+		
 		
 		List<User> userListAll = userService.selectUserListByUserType(UserConstants.USER_TYPE_ADVERTISE,UserConstants.USER_TYPE_PARTNER,
 				UserConstants.USER_TYPE_AGENT,UserConstants.USER_TYPE_JOIN,UserConstants.USER_TYPE_REPAIR);

@@ -52,6 +52,8 @@ public class OnlineDeviceController extends BaseController
 		mmap.put("deviceCode", deviceCode);
 		if(StringUtils.isNotEmpty(onlineTime)) {
 			mmap.put("onlineTime", onlineTime);
+		}else {
+			mmap.put("onlineTime", "");
 		}
 	    return prefix + "/onlineDeviceDetail";
 	}
@@ -65,7 +67,7 @@ public class OnlineDeviceController extends BaseController
 	public TableDataInfo data(OnlineDevice onlineDevice)
 	{
 		startPage();
-		if(onlineDevice.getParams() != null && !onlineDevice.getParams().containsKey("onlineTime") ) {
+		if((onlineDevice.getParams() == null) || (onlineDevice.getParams() != null && !onlineDevice.getParams().containsKey("onlineTime")) ) {
 			Map<String,Object> params = new HashMap<String,Object>();
 			params.put("onlineTime", "");
 			onlineDevice.setParams(params);
@@ -87,6 +89,10 @@ public class OnlineDeviceController extends BaseController
 		if(StringUtils.isNotBlank(statTime)) {
 			Map<String,Object> params = new HashMap<String,Object>();
 			params.put("onlineTime", statTime);
+			onlineDevice.setParams(params);
+		}else {
+			Map<String,Object> params = new HashMap<String,Object>();
+			params.put("onlineTime", "");
 			onlineDevice.setParams(params);
 		}
 		

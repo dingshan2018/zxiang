@@ -19,13 +19,58 @@
                 </div>
             </div>
             <div class="form-group">
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>省份：</label>
+				<div class="col-sm-8">
+					<select
+						name="province"
+						id="province"
+						data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
+                       	<option value="">---请选择---</option>
+                       	<option  th:selected="${place.province eq c.id}" th:each="c:${provinceList}"  th:value="${c.id}" th:text="${c.pname}"/>
+                       	
+                    </select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>城市：</label>
+				<div class="col-sm-8">
+					<select
+						name="city"
+						id="city"
+            data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
+                        <option value="">---请选择---</option>
+                        <option  th:selected="${place.city eq c.id}" th:each="c:${cityList}"  th:value="${c.id}" th:text="${c.pname}"/>
+                        
+                    </select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>区县：</label>
+				<div class="col-sm-8">
+					<select
+						name="county"
+						id="county"
+            data-live-search="true"
+						class="form-control block-plugin__select-picker selectpicker"
+						data-style="btn-white btn-sm">
+                        <option value="">---请选择---</option>
+                        <option  th:selected="${place.county eq c.id}" th:each="c:${countyList}"  th:value="${c.id}" th:text="${c.pname}"/>
+                        
+                    </select>
+				</div>
+			</div>
+            <!--  <div class="form-group">
                 <label class="col-sm-3 control-label">省份：</label>
                 <div class="col-sm-8">
                     <!-- <select id="province" name="province" class="form-control">
 						<option th:each="province:${provinceDropBoxList}" th:value="${province.id}"
 						 th:text="${province.pname}" th:field="*{province}"></option>
 					</select> -->
-					<input id="province" name="province" th:field="*{province}"  type="hidden">
+					<!--  <input id="province" name="province" th:field="*{province}"  type="hidden">
 					<input id="provinceName" name="provinceName" th:field="*{provinceName}" class="form-control" type="text" readonly="readonly">
                 </div>
             </div>
@@ -42,7 +87,7 @@
 					<input id="county" name="county" th:field="*{county}"  type="hidden">
 					<input id="countyName" name="countyName" th:field="*{countyName}" class="form-control" type="text" readonly="readonly">
                 </div>
-            </div>
+            </div>-->
             <!-- <div class="form-group">
                 <label class="col-sm-3 control-label">父级场所：</label>
                 <div class="col-sm-8">
@@ -122,6 +167,7 @@
                     <input id="packet" name="packet" th:field="*{packet}" class="form-control" type="text">
                 </div>
             </div> -->
+            <!--  
             <div class="form-group">
                 <label class="col-sm-3 control-label">出纸价格：</label>
                 <div class="col-sm-8">
@@ -143,6 +189,7 @@
 	                </select>
                 </div>
             </div>
+            -->
             <div class="form-group">
                 <label class="col-sm-3 control-label"><span style="color: red;">*&nbsp;</span>服务网点：</label>
                 <div class="col-sm-8">
